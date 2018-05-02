@@ -1,0 +1,2 @@
+# SuperMemoAssistant
+Work In Progress

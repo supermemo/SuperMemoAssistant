@@ -1,3 +1,15 @@
 [submodule "libs/Patagames.Pdf.Wpf"]
 path = libs/Patagames.Pdf.Wpf
 url = git://github.com/supermemo/Pdf.Wpf.git
+[submodule "src/Plugins/SuperMemoAssistant.Plugins.LateX"]
+	path = src/Plugins/SuperMemoAssistant.Plugins.LateX
+	url = git@github.com:supermemo/SuperMemoAssistant.Plugins.LateX.git
+[submodule "src/Plugins/SuperMemoAssistant.Plugins.PDF"]
+	path = src/Plugins/SuperMemoAssistant.Plugins.PDF
+	url = git@github.com:supermemo/SuperMemoAssistant.Plugins.PDF.git
+[submodule "libs/Process.NET"]
+	path = libs/Process.NET
+	url = git@github.com:supermemo/Process.NET.git
+[submodule "libs/pngcs"]
+	path = libs/pngcs
+	url = git@github.com:supermemo/pngcs.git

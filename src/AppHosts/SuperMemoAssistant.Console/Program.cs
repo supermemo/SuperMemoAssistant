@@ -1,31 +1,58 @@
-﻿using FlaUI.Core;
-using FlaUI.Core.AutomationElements;
+﻿#region License & Metadata
+
+// The MIT License (MIT)
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the 
+// Software is furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+// 
+// 
+// Created On:   2018/05/02 16:03
+// Modified On:  2018/07/27 15:50
+// Modified By:  Alexis
+
+#endregion
+
+
+
+
+using System.Linq;
+using FlaUI.Core;
 using FlaUI.UIA3;
-using Interop.mshtml;
-using Newtonsoft.Json;
-using SuperMemoAssistant.Interop.Sys;
+using SuperMemoAssistant.Interop;
+using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SuperMemo;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 //using SuperMemoAssistant.COM.InternetExplorer;
 //using SuperMemoAssistant.SuperMemo.Common.Core;
 //using SuperMemoAssistant.SuperMemo.Common.Files;
 //using SuperMemoAssistant.SuperMemo17.Core;
-using System.Linq;
-using System.Windows.Input;
 
 namespace SuperMemoAssistant.Console
 {
-  class Program
-  {
-    static void Main(string[] args)
+    internal class Program
     {
-      var smCol = new SMCollection("SMATest", SMConst.CollectionPath);
-      bool ret = SMA.Instance.Start(smCol);
+        private static void Main(string[] args)
+        {
+            var smCol = new SMCollection("SMATest",
+                                         SMConst.CollectionPath);
+            bool ret = SMA.Instance.Start(smCol);
 
-      global::System.Console.ReadKey();
-    }
+            global::System.Console.ReadKey();
+        }
 
 #if false
     static void Main(string[] args)
@@ -153,35 +180,35 @@ namespace SuperMemoAssistant.Console
       System.Console.ReadKey();
     }
 #endif
-      private static void UIAutomationTest()
-    {
-      using (var ui = new UIA3Automation())
-      {
-        var app = Application.Attach("sm17.exe");
-        
+        private static void UIAutomationTest()
+        {
+            using (var ui = new UIA3Automation())
+            {
+                var app = Application.Attach("sm17.exe");
 
-        //var main = app.GetMainWindow(ui);
-        var windows = app.GetAllTopLevelWindows(ui);
-        var elWdw = windows.FirstOrDefault(w => w.ClassName == "TElWind");
 
-        //var learnBar = contentWdw.FindChildAt(2).FindFirstChild();
-        //var pasteArticleBtn = learnBar.FindChildAt(4);
-        //var learnBtn = contentWdw.FindFirstChild().AsButton();
-        //var menus = windows[1].FindAllChildren(cf => cf.Menu());
-        //Keyboard.Focus()
+                //var main = app.GetMainWindow(ui);
+                var windows = app.GetAllTopLevelWindows(ui);
+                var elWdw   = windows.FirstOrDefault(w => w.ClassName == "TElWind");
 
-        var ieServer = elWdw.FindFirstDescendant(c => c.ByClassName("Internet Explorer_Server"));
-        var ieHwnd = ieServer.FrameworkAutomationElement.NativeWindowHandle.Value;
-        //IHTMLDocument2 ieDocument = IEComHelper.GetDocumentFromHwnd(ieHwnd);
-        //IHTMLWindow2 ieWindow = ieDocument.parentWindow;
+                //var learnBar = contentWdw.FindChildAt(2).FindFirstChild();
+                //var pasteArticleBtn = learnBar.FindChildAt(4);
+                //var learnBtn = contentWdw.FindFirstChild().AsButton();
+                //var menus = windows[1].FindAllChildren(cf => cf.Menu());
+                //Keyboard.Focus()
 
-        //((IHTMLDocument5)ieDocument).
-        //ieWindow.execScript("alert('This is a test');");
+                var ieServer = elWdw.FindFirstDescendant(c => c.ByClassName("Internet Explorer_Server"));
+                var ieHwnd   = ieServer.FrameworkAutomationElement.NativeWindowHandle.Value;
+                //IHTMLDocument2 ieDocument = IEComHelper.GetDocumentFromHwnd(ieHwnd);
+                //IHTMLWindow2 ieWindow = ieDocument.parentWindow;
 
-        //ieDocument.url = "http://google.com";
-        
-        windows.ToString();
-      }
+                //((IHTMLDocument5)ieDocument).
+                //ieWindow.execScript("alert('This is a test');");
+
+                //ieDocument.url = "http://google.com";
+
+                windows.ToString();
+            }
+        }
     }
-  }
 }

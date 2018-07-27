@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Alex Incogito</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/supermemo/SuperMemoAssistant/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/supermemo/SuperMemoAssistant</projectUrl>
+    <iconUrl>https://github.com/supermemo/SuperMemoAssistant/sma.ico</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Enables interactions with SuperMemo Assistant for Plugin developers</description>
+    <releaseNotes>Preview release</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>SuperMemo SuperMemoAssistant Plugin Plugins</tags>
+  </metadata>
+</package>

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SuperMemoAssistant.Sys.Collections;
 using Xunit;
-using static SuperMemoAssistant.SuperMemo.System.Collections.SparseClusteredArray<int>;
+using static SuperMemoAssistant.Sys.Collections.SparseClusteredArray<int>;
 
 namespace SuperMemoAssistant.SuperMemo.System.Collections
 {

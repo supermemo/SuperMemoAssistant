@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+src/Plugins/
+src/Services/
+src/Core/SuperMemoAssistant.Interop/
+
 # User-specific files
 *.suo
 *.user
@@ -286,3 +290,9 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+/src/Core/SuperMemoAssistant.Core/EasyHook32.dll
+/src/Core/SuperMemoAssistant.Core/EasyHook32Svc.exe
+/src/Core/SuperMemoAssistant.Core/EasyHook64.dll
+/src/Core/SuperMemoAssistant.Core/EasyHook64Svc.exe
+/src/Core/SuperMemoAssistant.Core/EasyLoad32.dll
+/src/Core/SuperMemoAssistant.Core/EasyLoad64.dll

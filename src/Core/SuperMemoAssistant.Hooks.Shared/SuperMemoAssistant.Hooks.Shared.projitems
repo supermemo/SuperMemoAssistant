@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>83e8b3ab-4b3c-4e1c-871d-c71170d956c8</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>SuperMemoAssistant.Hooks</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)HookConst.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ISMHook.IO.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ISMHook.System.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SMHook.Callback.cs" />
+  </ItemGroup>
+</Project>

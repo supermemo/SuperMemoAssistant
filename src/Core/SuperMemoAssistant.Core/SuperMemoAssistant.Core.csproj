@@ -1,0 +1,298 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7550628D-0630-4A42-B0B7-55D26F981365}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SuperMemoAssistant</RootNamespace>
+    <AssemblyName>SuperMemoAssistant.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <AssemblyVersion>0.1.572</AssemblyVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility" />
+    <Reference Include="Anotar.Serilog, Version=4.5.0.0, Culture=neutral, PublicKeyToken=9d5b24f0733c26f7, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Anotar.Serilog.Fody.4.5.0\lib\net452\Anotar.Serilog.dll</HintPath>
+    </Reference>
+    <Reference Include="Ben.Demystifier, Version=0.1.0.0, Culture=neutral, PublicKeyToken=a6d206e05440431a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Ben.Demystifier.0.1.1\lib\net45\Ben.Demystifier.dll</HintPath>
+    </Reference>
+    <Reference Include="EasyHook, Version=2.7.6684.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\EasyHook.2.7.6684\lib\net40\EasyHook.dll</HintPath>
+    </Reference>
+    <Reference Include="FlaUI.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FlaUI.Core.2.0.0-alpha6\lib\net45\FlaUI.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FlaUI.UIA3, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FlaUI.UIA3.2.0.0-alpha6\lib\net45\FlaUI.UIA3.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.UIAutomationClient, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FlaUI.UIA3.2.0.0-alpha6\lib\net45\Interop.UIAutomationClient.dll</HintPath>
+      <Private>True</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\JetBrains.Annotations.11.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\..\..\packages\Unofficial.Microsoft.mshtml.7.0.3300\lib\net40\Microsoft.mshtml.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop, Version=1.0.168.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="ModuleInit, Version=1.8.0.0, Culture=neutral, PublicKeyToken=409b3227471b0f0d, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\ModuleInit.Fody.1.8.0\lib\net452\ModuleInit.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Nito.AsyncEx.4.0.1\lib\net45\Nito.AsyncEx.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Concurrent, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Nito.AsyncEx.4.0.1\lib\net45\Nito.AsyncEx.Concurrent.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Enlightenment, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Nito.AsyncEx.4.0.1\lib\net45\Nito.AsyncEx.Enlightenment.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Serilog.2.7.1\lib\net46\Serilog.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Enrichers.Demystify, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Serilog.Enrichers.Demystify.0.1.0-dev-00016\lib\net45\Serilog.Enrichers.Demystify.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Async, Version=1.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Serilog.Sinks.Async.1.3.0\lib\net45\Serilog.Sinks.Async.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Debug, Version=1.0.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Serilog.Sinks.Debug.1.0.1\lib\net46\Serilog.Sinks.Debug.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.File, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Serilog.Sinks.File.4.0.0\lib\net45\Serilog.Sinks.File.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.RollingFile, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Serilog.Sinks.RollingFile.3.3.0\lib\net45\Serilog.Sinks.RollingFile.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.Composition.Registration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Reflection.Context" />
+    <Reference Include="System.Reflection.Metadata, Version=1.4.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Reflection.Metadata.1.6.0\lib\netstandard2.0\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationClient" />
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="Visualize, Version=1.1.0.0, Culture=neutral, PublicKeyToken=409b3227471b0f0d, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Visualize.Fody.1.1.0\lib\net452\Visualize.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AsyncErrorHandler.cs" />
+    <Compile Include="COM\InternetExplorer\IEComHelper.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ComponentControlBase.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlGroup.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlImage.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlRtf.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlText.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlTextBased.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlWeb.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\SMNatives.cs" />
+    <Compile Include="SuperMemo\SuperMemoRegistry.cs" />
+    <Compile Include="SuperMemo\SuperMemoUI.cs" />
+    <Compile Include="Sys\Exceptions\HookException.cs" />
+    <Compile Include="ModuleInitializer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentBase.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\ComponentGroup.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentHtml.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentImage.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\ComponentRegistry.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentRtf.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentShapes.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentSound.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentSpelling.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentText.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentVideo.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Elements\Types\Task.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Elements\Types\Topic.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Elements\Types\ElementBase.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Elements\ElementRegistry.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Elements\Types\Item.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Files\InfComponentsElem.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Files\InfContentsElem.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Files\InfElementsElem.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Registry\Types\VideoRegistry.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Registry\Types\SoundRegistry.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Registry\Members\Sound.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Registry\Members\Video.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Registry\Members\Template.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Registry\Members\Image.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Registry\Types\ImageRegistry.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Registry\Types\TemplateRegistry.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Registry\Members\RegistryMemberBase.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Registry\Members\RegistryLinkType.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Registry\Members\Concept.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Registry\Members\Text.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Registry\Types\ConceptRegistry.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Registry\Types\TextRegistry.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\UI\ElementData\ElementDataWdw.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\UI\Element\ElementWdw.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\UI\MainBar\MainBarWdw.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\UI\MainBar\Menu\EditMenu.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\UI\MainBar\Menu\EditMenusMenu.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\UI\MainBar\Menu\MainMenu.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\UI\MenuBase.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\UI\MenuNode.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\UI\MenuRoot.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\UI\WdwBase.cs" />
+    <Compile Include="SuperMemo\Hooks\SMHookIOBase.cs" />
+    <Compile Include="Sys\Collections\SparseClusteredArray.Bounds.cs" />
+    <Compile Include="Sys\Collections\SparseClusteredArray.cs" />
+    <Compile Include="Sys\Collections\SparseClusteredArray.Enumerables.cs" />
+    <Compile Include="Sys\Collections\SparseClusteredArray.Enumerators.cs" />
+    <Compile Include="Sys\Collections\SparseClusteredArray.Segment.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Registry\Types\RegistryBase.cs" />
+    <Compile Include="SuperMemo\Hooks\SMHookEngine.cs" />
+    <Compile Include="SuperMemo\SuperMemoAssistant.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Elements\Types\ConceptGroup.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Files\RegMemElem.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Files\RegRtxElem.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\SuperMemo17.cs" />
+    <Compile Include="SuperMemo\SuperMemo.Base.cs" />
+    <Compile Include="Sys\Collections\SparseClusteredArray.Streams.cs" />
+    <Compile Include="Plugins\PluginMgr.cs" />
+    <Compile Include="Sys\InitOnLoad.cs" />
+    <Compile Include="Sys\NativeFuncScanner.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FodyWeavers.xml">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="EasyHook32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyHook32Svc.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyHook64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyHook64Svc.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyLoad32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyLoad64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Services\SuperMemoAssistant.Services.Medias.Images\SuperMemoAssistant.Services.Medias.Images.csproj">
+      <Project>{677647e4-f052-41d0-915a-ad76da72463e}</Project>
+      <Name>SuperMemoAssistant.Services.Medias.Images</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Services\SuperMemoAssistant.Services.UIAutomation\SuperMemoAssistant.Services.UIAutomation.csproj">
+      <Project>{7fcecaff-f232-4a04-98fe-8233eb1908c6}</Project>
+      <Name>SuperMemoAssistant.Services.UIAutomation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Core\SuperMemoAssistant.Interop\SuperMemoAssistant.Interop.csproj">
+      <Project>{FD0E1BE8-BED3-4AB0-A9C8-022A2DBC8450}</Project>
+      <Name>SuperMemoAssistant.Interop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Core\SuperMemoAssistant.PluginsHost\SuperMemoAssistant.PluginsHost.csproj">
+      <Project>{9799923C-3DE6-48BF-B459-AA3029016727}</Project>
+      <Name>SuperMemoAssistant.PluginsHost</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="..\..\..\src\Core\SuperMemoAssistant.Hooks.Shared\SuperMemoAssistant.Hooks.Shared.projitems" Label="Shared" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\Fody.3.0.3\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.3.0.3\build\Fody.targets'))" />
+  </Target>
+  <Import Project="..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
+  <Import Project="..\..\..\packages\Fody.3.0.3\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.3.0.3\build\Fody.targets')" />
+</Project>

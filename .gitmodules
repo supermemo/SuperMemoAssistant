@@ -1,0 +1,3 @@
+[submodule "libs/Patagames.Pdf.Wpf"]
+path = libs/Patagames.Pdf.Wpf
+url = git://github.com/supermemo/Pdf.Wpf.git

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/12 18:33
-// Modified On:  2018/06/21 12:06
+// Created On:   2018/09/04 19:49
+// Modified On:  2018/09/04 19:51
 // Modified By:  Alexis
 
 #endregion
@@ -31,31 +31,34 @@
 
 
 using System;
-using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
+using System.Windows;
 
-namespace SuperMemoAssistant.Interop.SuperMemo.UI.Element
+namespace SuperMemoAssistant.Sys
 {
-  public interface IElementWdw : IWdw
+  public class ClipboardSnapshot : IDisposable
   {
-    IControlGroup ControlGroup { get; }
+    #region Properties & Fields - Non-Public
 
-    int      CurrentElementId { get; }
-    IElement CurrentElement   { get; }
+    private IDataObject Content { get; set; }
 
-    int CurrentConceptId { get; }
-    int CurrentRootId    { get; set; }
-    int CurrentHookId    { get; set; }
+    #endregion
 
-    bool SetCurrentConcept(int conceptId);
-    bool GoToElement(int       elementId);
-    
-    bool PasteArticle();
-    bool PasteElement();
 
-    bool Done();
 
-    event Action<SMElementArgs> OnElementChanged;
+
+    #region Constructors
+
+    public ClipboardSnapshot()
+    {
+      Content = Clipboard.GetDataObject();
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+      Clipboard.SetDataObject(Content);
+    }
+
+    #endregion
   }
 }

@@ -79,9 +79,10 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
       Thread messageLoop = new Thread(delegate() { Application.Run(new MessageWindow()); })
       {
         Name         = "KeyboardHotKeyService_MessageLoopThread",
-        IsBackground = true
+        IsBackground = true,
       };
 
+      messageLoop.SetApartmentState(ApartmentState.STA);
       messageLoop.Start();
     }
 

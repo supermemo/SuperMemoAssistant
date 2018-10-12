@@ -67,11 +67,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     protected IPointer CurrentHookIdPtr    { get; set; }
 
     //protected AutomationElement ContentPane { get; set; }
-
-    protected NativeFunc<bool, IntPtr>  PasteArticleFunc        { get; set; }
-    private   NativeAction<IntPtr, int> SetDefaultConceptMethod { get; set; }
-    private   NativeAction<IntPtr, int> GoToMethod              { get; set; }
-    private   NativeAction<IntPtr>      DoneMethod              { get; set; }
+    
+    protected NativeFunc<bool, IntPtr>  PasteArticleFunc         { get; set; }
+    protected NativeFunc<bool, IntPtr>  PasteElementFunc         { get; set; }
+    protected NativeAction<IntPtr, int> SetDefaultConceptMethod { get; set; }
+    protected NativeAction<IntPtr, int> GoToMethod              { get; set; }
+    protected NativeAction<IntPtr>      DoneMethod              { get; set; }
 
     #endregion
 
@@ -123,6 +124,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
       if (elem == null || elem.Deleted || elem is IConceptGroup == false)
         return false;
 
+      throw new NotImplementedException(); // SetDefaultConcept is actually a TSMMain method
+
       return SetDefaultConceptMethod(
         ElementWdwPtr.Read<IntPtr>(),
         conceptId,
@@ -141,13 +144,15 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
                         SMProcess.ThreadFactory.MainThread);
     }
 
-    public bool PasteArticle(int    elementId,
-                             string html)
+    public bool PasteArticle()
     {
-      // TODO: Restore clipboard
-      Clipboard.SetText(html);
-
       return PasteArticleFunc(ElementWdwPtr.Read<IntPtr>(),
+                              SMProcess.ThreadFactory.MainThread);
+    }
+
+    public bool PasteElement()
+    {
+      return PasteElementFunc(ElementWdwPtr.Read<IntPtr>(),
                               SMProcess.ThreadFactory.MainThread);
     }
 
@@ -185,6 +190,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
       CurrentHookIdPtr    = SMProcess[SMNatives.Globals.CurrentHookIdPtr];
 
       PasteArticleFunc = funcScanner.GetNativeFunc<bool, IntPtr>(SMNatives.TElWind.PasteArticleSig);
+      PasteElementFunc = funcScanner.GetNativeFunc<bool, IntPtr>(SMNatives.TElWind.PasteElementCallSig);
       GoToMethod       = funcScanner.GetNativeAction<IntPtr, int>(SMNatives.TElWind.GoToElementCallSig);
       DoneMethod       = funcScanner.GetNativeAction<IntPtr>(SMNatives.TElWind.DoneSig);
 
@@ -208,6 +214,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
       CurrentHookIdPtr    = null;
 
       PasteArticleFunc = null;
+      PasteElementFunc = null;
       GoToMethod       = null;
       DoneMethod       = null;
     }

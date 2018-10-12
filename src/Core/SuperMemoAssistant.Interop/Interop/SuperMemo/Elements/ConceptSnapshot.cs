@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/12 18:33
-// Modified On:  2018/06/21 12:06
+// Created On:   2018/09/04 19:55
+// Modified On:  2018/09/04 19:56
 // Modified By:  Alexis
 
 #endregion
@@ -31,31 +31,34 @@
 
 
 using System;
-using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
+using SuperMemoAssistant.Services;
 
-namespace SuperMemoAssistant.Interop.SuperMemo.UI.Element
+namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 {
-  public interface IElementWdw : IWdw
+  public class ConceptSnapshot : IDisposable
   {
-    IControlGroup ControlGroup { get; }
+    #region Properties & Fields - Non-Public
 
-    int      CurrentElementId { get; }
-    IElement CurrentElement   { get; }
+    private int ConceptElementId { get; set; }
 
-    int CurrentConceptId { get; }
-    int CurrentRootId    { get; set; }
-    int CurrentHookId    { get; set; }
+    #endregion
 
-    bool SetCurrentConcept(int conceptId);
-    bool GoToElement(int       elementId);
-    
-    bool PasteArticle();
-    bool PasteElement();
 
-    bool Done();
 
-    event Action<SMElementArgs> OnElementChanged;
+
+    #region Constructors
+
+    public ConceptSnapshot()
+    {
+      ConceptElementId = Svc.SMA.UI.ElementWindow.CurrentConceptId;
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+      Svc.SMA.UI.ElementWindow.SetCurrentConcept(ConceptElementId);
+    }
+
+    #endregion
   }
 }

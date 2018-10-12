@@ -37,6 +37,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using Anotar.Serilog;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Extensions;
@@ -44,6 +45,7 @@ using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
+using SuperMemoAssistant.Services;
 using SuperMemoAssistant.SuperMemo.Hooks;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
@@ -181,12 +183,50 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
     //
     // UI
 
-    public Task<bool> Add(ElementBuilder builder)
+    public bool Add(ElementBuilder builder)
     {
-      throw new NotImplementedException();
+      List<IDisposable> toDispose = new List<IDisposable>();
+
+      try
+      {
+        if (builder.Parent != null)
+        {
+          toDispose.Add(new HookSnapshot());
+          Svc.SMA.UI.ElementWindow.CurrentHookId = builder.Parent.Id;
+        }
+
+        if (builder.Concept != null)
+        {
+          toDispose.Add(new ConceptSnapshot());
+          Svc.SMA.UI.ElementWindow.SetCurrentConcept(builder.Concept.Id);
+        }
+
+        toDispose.Add(new ClipboardSnapshot());
+        Clipboard.SetText(builder.Content);
+
+        switch (builder.Type)
+        {
+          case ElementType.Topic:
+            Svc.SMA.UI.ElementWindow.PasteArticle();
+            break;
+
+          default:
+            throw new NotImplementedException();
+        }
+
+        return true;
+      }
+      catch (Exception ex)
+      {
+        return false;
+      }
+      finally
+      {
+        toDispose.ForEach(d => d.Dispose());
+      }
     }
 
-    public Task<bool> Delete(IElement element)
+    public bool Delete(IElement element)
     {
       throw new NotImplementedException();
     }

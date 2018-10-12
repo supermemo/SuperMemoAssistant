@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/21 12:37
-// Modified On:  2018/06/21 12:41
+// Created On:   2018/06/21 12:42
+// Modified On:  2018/08/31 14:09
 // Modified By:  Alexis
 
 #endregion
@@ -30,6 +30,7 @@
 
 
 
+using System;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
 
@@ -40,11 +41,20 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
     #region Constructors
 
     /// <inheritdoc />
-    public ControlRtf(int           id,
-                      ControlGroup  @group)
+    public ControlRtf(int          id,
+                      ControlGroup @group)
       : base(id,
              ComponentType.Rtf,
              @group) { }
+
+    #endregion
+
+
+
+
+    #region Properties Impl - Public
+
+    public override int TextMemberId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     #endregion
   }

@@ -42,8 +42,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
   {
     IElement Root { get; }
 
-    Task<bool> Add(ElementBuilder builder);
-    Task<bool> Delete(IElement    element);
+    bool Add(ElementBuilder builder);
+    bool Delete(IElement    element);
 
     event Action<SMElementArgs>        OnElementCreated;
     event Action<SMElementChangedArgs> OnElementModified;

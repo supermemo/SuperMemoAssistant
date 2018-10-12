@@ -42,14 +42,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
     {
       #region Constants & Statics
 
-      //public static IntPtr CurrentConceptPtr = new IntPtr(0x00BB3D60);
-
-      public static readonly IntPtr CurrentConceptIdPtr = new IntPtr(0x00BB3D60);
-      public static readonly IntPtr CurrentRootIdPtr    = new IntPtr(0x00BB3D64);
-      public static readonly IntPtr CurrentHookIdPtr    = new IntPtr(0x00BB3D68);
+      public static readonly IntPtr CurrentConceptIdPtr = new IntPtr(0x00BBCDD0);
+      public static readonly IntPtr CurrentRootIdPtr    = new IntPtr(0x00BBCDD4);
+      public static readonly IntPtr CurrentHookIdPtr    = new IntPtr(0x00BBCDD8);
 
       #endregion
     }
+
 
     public static class TControl
     {
@@ -67,31 +66,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
       #endregion
     }
 
-    public static class TAncestor
-    {
-      #region Constants & Statics
-
-      public static IntPtr InstancePtr = new IntPtr(0x00BB3C94);
-
-      #endregion
-    }
-
-
-    public static class TContents
-    {
-      #region Constants & Statics
-
-      public static IntPtr InstancePtr = new IntPtr(0x00BB3DF0);
-
-      #endregion
-    }
-
 
     public static class TElWind
     {
       #region Constants & Statics
 
-      public static IntPtr InstancePtr = new IntPtr(0x00BB7080);
+      public static IntPtr InstancePtr = new IntPtr(0x00BC00F0);
 
       public static readonly ObjPtr ElementIdPtr = new ObjPtr(InstancePtr,
                                                               0x0DDD);
@@ -181,7 +161,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
     {
       #region Constants & Statics
 
-      public static IntPtr InstancePtr = new IntPtr(0x00BB6E10);
+      public static IntPtr InstancePtr = new IntPtr(0x00BBFE80);
 
       // Address = 4 first ? wildcards
       public static readonly IMemoryPattern SelectDefaultConceptCallSig = new DwordCallPattern(

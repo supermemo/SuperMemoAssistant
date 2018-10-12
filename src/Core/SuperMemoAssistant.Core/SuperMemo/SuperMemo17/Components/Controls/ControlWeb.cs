@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/21 12:26
-// Modified On:  2018/06/21 12:50
+// Modified On:  2018/08/31 14:08
 // Modified By:  Alexis
 
 #endregion
@@ -35,6 +35,7 @@ using mshtml;
 using SuperMemoAssistant.COM.InternetExplorer;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
+using SuperMemoAssistant.Services;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 {
@@ -53,9 +54,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
     #region Constructors
 
     /// <inheritdoc />
-    public ControlWeb(int           id,
-                      ControlGroup  @group,
-                      int           nativeControlAddr)
+    public ControlWeb(int          id,
+                      ControlGroup @group,
+                      int          nativeControlAddr)
       : base(id,
              ComponentType.Html,
              @group)
@@ -70,6 +71,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
     #region Properties Impl - Public
 
+    public override string Text { get => Document.body.outerHTML; set => Document.body.outerHTML = value; }
+
     /// <inheritdoc />
     public IHTMLDocument2 Document => _document ?? (_document = GetDocument());
 
@@ -82,9 +85,16 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
     private IHTMLDocument2 GetDocument()
     {
-      IntPtr hwnd = _group._smProcess.Memory.Read<IntPtr>(
+      IntPtr shellEmbedHwnd = _group._smProcess.Memory.Read<IntPtr>(
         new IntPtr(_nativeControlAddr + SMNatives.TControl.HandleOffset)
       );
+
+      var ieSrvFrame = Svc.UIAutomation.FromHandle(shellEmbedHwnd).FindFirstDescendant(c => c.ByClassName("Internet Explorer_Server"));
+
+      if (ieSrvFrame == null)
+        return null;
+
+      IntPtr hwnd = ieSrvFrame.FrameworkAutomationElement.NativeWindowHandle.Value;
 
       return IEComHelper.GetDocumentFromHwnd(hwnd);
     }

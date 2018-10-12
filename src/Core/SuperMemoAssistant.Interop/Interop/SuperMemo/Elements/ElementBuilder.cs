@@ -11,7 +11,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
   public class ElementBuilder
   {
     public ElementType Type { get; private set; }
-    public String Name { get; private set; }
+    public string Content { get; private set; }
     public int Id { get; private set; }
     public IElement Parent { get; private set; }
     public IConcept Concept { get; private set; }
@@ -21,10 +21,10 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
     private List<IComponent> ComponentsInternal { get; set; }
     private List<IConcept> LinkedConceptsInternal { get; set; }
 
-    public ElementBuilder(ElementType type, string name)
+    public ElementBuilder(ElementType type, string content)
     {
       Type = type;
-      Name = name;
+      Content = content;
 
       LinkedConceptsInternal = new List<IConcept>();
       ComponentsInternal = new List<IComponent>();
@@ -32,6 +32,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 
     public ElementBuilder WithId(int id)
     {
+      throw new NotImplementedException();
       Id = id;
       return this;
     }
@@ -50,30 +51,35 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 
     public ElementBuilder AddLinkedConcepts(IEnumerable<IConcept> concepts)
     {
+      throw new NotImplementedException();
       LinkedConceptsInternal.AddRange(concepts);
       return this;
     }
 
     public ElementBuilder AddLinkedConcept(IConcept concept)
     {
+      throw new NotImplementedException();
       LinkedConceptsInternal.Add(concept);
       return this;
     }
 
     public ElementBuilder AddComponentGroup(IComponentGroup componentGroup)
     {
+      throw new NotImplementedException();
       ComponentsInternal.AddRange(componentGroup.Components);
       return this;
     }
 
     public ElementBuilder AddComponents(IEnumerable<IComponent> components)
     {
+      throw new NotImplementedException();
       ComponentsInternal.AddRange(components);
       return this;
     }
 
     public ElementBuilder AddComponent(IComponent component)
     {
+      throw new NotImplementedException();
       ComponentsInternal.Add(component);
       return this;
     }

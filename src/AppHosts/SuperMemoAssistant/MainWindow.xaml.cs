@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/08 15:19
-// Modified On:  2018/06/10 09:37
+// Modified On:  2018/07/27 20:07
 // Modified By:  Alexis
 
 #endregion
@@ -37,6 +37,7 @@ using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.Plugins.PDF;
 using SuperMemoAssistant.SuperMemo;
 
 namespace SuperMemoAssistant
@@ -51,10 +52,11 @@ namespace SuperMemoAssistant
       InitializeComponent();
       //Visibility = Visibility.Hidden;
 
-      var smCol = new SMCollection("SMATest", SMConst.CollectionPath);
+      var smCol = new SMCollection("SMATest",
+                                   SMConst.CollectionPath);
       bool ret = SMA.Instance.Start(smCol);
 
-      //TestPdf();
+      TestPdf();
     }
 
     #endregion
@@ -80,37 +82,56 @@ namespace SuperMemoAssistant
 
     private void TestPdf()
     {
-      PdfCommon.Initialize();
-
-      IPDFViewer.LoadDocument("D:\\Temp\\test2.pdf");
+      //PdfCommon.Initialize();
+      //IPDFViewer.LoadDocument("D:\\Temp\\test2.pdf");
     }
 
     private void Test_Click(object          sender,
                             RoutedEventArgs e)
     {
+
+      //SMA.Instance.Registry.Element.Add(
+      //  new Interop.SuperMemo.Elements.ElementBuilder(
+      //      Interop.SuperMemo.Elements.Models.ElementType.Topic,
+      //      "This is a topic content")
+      //    .WithParent(SMA.Instance.UI.ElementWindow.CurrentElement)
+      //);
+      
+      //SMA.Instance.UI.ElementWindow.PasteArticle();
+
       //bool res1 = SMA.Instance.UI.ElementWindow.GoToElement(1);
       //bool res2 = SMA.Instance.UI.ElementWindow.PasteArticle(1,
       //                                           "This is <b>HTML</b>.");
 
       //System.Diagnostics.Debug.WriteLine($"{res1} {res2}");
 
+#if false
+      var curEl = SMA.Instance.UI.ElementWindow.CurrentElement;
+      
+      System.Diagnostics.Debug.WriteLine(curEl.Title);
+      System.Diagnostics.Debug.WriteLine(curEl.Parent.Title);
+      System.Diagnostics.Debug.WriteLine(curEl.Parent.Parent.Title);
+#endif
+
+#if false
       var ctrl = SMA.Instance.UI.ElementWindow.ControlGroup[0];
 
       switch (ctrl.Type)
       {
         case ComponentType.Html:
-          var htmlCtrl = ctrl as IControlWeb;
+          var htmlCtrl = (IControlWeb)ctrl;
           
           System.Diagnostics.Debug.WriteLine(htmlCtrl.Text);
           break;
 
         case ComponentType.Text:
         case ComponentType.Rtf:
-          var textCtrl = ctrl as IControlTextBase;
+          var textCtrl = (IControlTextBase)ctrl;
 
           System.Diagnostics.Debug.WriteLine(textCtrl.Text);
           break;
       }
+#endif
 
       //SMA.Instance.UI.ElementWindow.Done();
 

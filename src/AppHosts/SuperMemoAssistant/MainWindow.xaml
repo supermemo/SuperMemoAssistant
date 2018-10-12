@@ -27,10 +27,10 @@
                   CanContentScroll="True"
                   VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Auto">
-      <pdf:IPDFViewer Name="IPDFViewer"
+      <!--<pdf:IPDFViewer Name="IPDFViewer"
                       Background="#828689"
-                      SizeMode="Zoom" />
-    </ScrollViewer>
+                      SizeMode="Zoom" />-->
+</ScrollViewer>
 
     <ToolBarTray Grid.Row="2">
       <!--<toolBars:PdfToolBarZoomEx PdfViewer="{Binding ElementName=IPDFViewer}"

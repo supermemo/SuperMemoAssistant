@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/20 19:20
-// Modified On:  2018/06/21 16:57
+// Modified On:  2018/08/31 14:02
 // Modified By:  Alexis
 
 #endregion
@@ -36,6 +36,9 @@ using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 {
+  /// <summary>
+  /// Set as non-abstract to act as a generic control until all control types are implemented.
+  /// </summary>
   public class ComponentControlBase : MarshalByRefObject, IControl
   {
     #region Properties & Fields - Non-Public

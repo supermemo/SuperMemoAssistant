@@ -42,7 +42,7 @@ using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 {
-  public class ControlGroup : IControlGroup, IDisposable
+  public class ControlGroup : SMMarshalByRefObject, IControlGroup, IDisposable
   {
     #region Constants & Statics
 
@@ -122,9 +122,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
     /// <inheritdoc />
     public IControl this[int idx] => GetControl(idx);
     /// <inheritdoc />
-    public int Count => CountPtr?.Read<int>() ?? throw new InvalidOperationException(DisposedException);
+    public int Count => CountPtr?.Read<byte>() ?? throw new InvalidOperationException(DisposedException);
     /// <inheritdoc />
-    public int FocusedControlIndex => FocusedControlNoPtr?.Read<int>() - 1 ?? throw new InvalidOperationException(DisposedException);
+    public int FocusedControlIndex => FocusedControlNoPtr?.Read<byte>() - 1 ?? throw new InvalidOperationException(DisposedException);
     /// <inheritdoc />
     public bool IsModified => IsModifiedPtr?.Read<bool>() ?? throw new InvalidOperationException(DisposedException);
 

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/21 12:26
-// Modified On:  2018/06/21 12:42
+// Modified On:  2018/08/31 14:04
 // Modified By:  Alexis
 
 #endregion
@@ -31,19 +31,20 @@
 
 
 using System;
+using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 {
-  public class ControlTextBased : ComponentControlBase
+  public abstract class ControlTextBased : ComponentControlBase, IControlText
   {
     #region Constructors
 
     /// <inheritdoc />
-    public ControlTextBased(int           id,
-                            ComponentType type,
-                            ControlGroup  group)
+    protected ControlTextBased(int           id,
+                               ComponentType type,
+                               ControlGroup  group)
       : base(id,
              type,
              group) { }
@@ -53,29 +54,26 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
 
 
-    #region Properties & Fields - Public
+    #region Properties Impl - Public
 
-    /// <inheritdoc />
-    public string Text
+    public virtual string Text
     {
       get => _group.GetText(this);
       set => _group.SetText(this,
-                           value);
+                            value);
     }
 
-    /// <inheritdoc />
-    public IText TextMember
+    public virtual IText TextMember
     {
       get => SMA.Instance.Registry.Text[TextMemberId];
       set => TextMemberId = value?.Id ?? throw new ArgumentNullException();
     }
 
-    /// <inheritdoc />
-    public int TextMemberId
+    public virtual int TextMemberId
     {
       get => _group.GetTextRegMember(this);
       set => _group.SetTextRegMember(this,
-                                    value);
+                                     value);
     }
 
     #endregion

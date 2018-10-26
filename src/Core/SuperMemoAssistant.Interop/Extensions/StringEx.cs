@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/03 03:18
-// Modified On:  2018/06/06 13:51
+// Modified On:  2018/10/26 21:45
 // Modified By:  Alexis
 
 #endregion
@@ -55,7 +55,8 @@ namespace SuperMemoAssistant.Extensions
                                     string      replace,
                                     int         nth)
     {
-      int pos = text.NthIdexOf(search, nth);
+      int pos = text.NthIdexOf(search,
+                               nth);
 
       return pos < 0
         ? text
@@ -75,6 +76,20 @@ namespace SuperMemoAssistant.Extensions
         nth--;
 
       return pos;
+    }
+
+    public static string Base64Encode(this string plainText)
+    {
+      var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+
+      return Convert.ToBase64String(plainTextBytes);
+    }
+
+    public static string Base64Decode(this string base64EncodedData)
+    {
+      var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
+
+      return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
     }
 
     #endregion

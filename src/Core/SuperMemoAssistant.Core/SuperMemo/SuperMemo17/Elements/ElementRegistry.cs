@@ -202,7 +202,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
         }
 
         toDispose.Add(new ClipboardSnapshot());
-        Clipboard.SetText(builder.Content);
+
+        if (builder.Html)
+          ClipboardHelper.CopyToClipboard(builder.Content,
+                                          builder.Content);
+
+        else
+          Clipboard.SetText(builder.Content);
 
         switch (builder.Type)
         {

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:27
-// Modified On:  2018/06/02 00:01
+// Modified On:  2018/10/26 22:48
 // Modified By:  Alexis
 
 #endregion
@@ -40,20 +40,24 @@ namespace SuperMemoAssistant.Services.IO.FS
 {
   public interface ICollectionFSService
   {
-    CollectionFile              this[int fileId] { get; }
+    CollectionFile this[int fileId] { get; }
+
     IEnumerable<CollectionFile> ForElement(int        elementId,
                                            ISMAPlugin plugin = null);
+
     IEnumerable<CollectionFile> ForPlugin(ISMAPlugin plugin);
 
     CollectionFile Create(ISMAPlugin     requester,
                           int            elementId,
                           Action<Stream> streamWriter,
                           string         extension,
-                          string crc32 = null);
+                          string         crc32 = null);
 
     bool DeleteById(int fileId);
-    int  DeleteByElementId(int        elementId,
-                           ISMAPlugin plugin = null);
-    int  DeleteByPlugin(ISMAPlugin plugin);
+
+    int DeleteByElementId(int        elementId,
+                          ISMAPlugin plugin = null);
+
+    int DeleteByPlugin(ISMAPlugin plugin);
   }
 }

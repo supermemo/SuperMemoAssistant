@@ -293,3 +293,4 @@ __pycache__/
 /src/Core/SuperMemoAssistant.Core/EasyHook64Svc.exe
 /src/Core/SuperMemoAssistant.Core/EasyLoad32.dll
 /src/Core/SuperMemoAssistant.Core/EasyLoad64.dll
+*.rsls

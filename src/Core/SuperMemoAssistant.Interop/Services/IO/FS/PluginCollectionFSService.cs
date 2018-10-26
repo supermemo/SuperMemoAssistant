@@ -81,17 +81,27 @@ namespace SuperMemoAssistant.Services.IO.FS
     {
       return Service.ForElement(elementId, plugin);
     }
-
-    /// <inheritdoc />
-    public IEnumerable<CollectionFile> ForPlugin(ISMAPlugin plugin)
+    
+    public IEnumerable<CollectionFile> ForElementWithPlugin(int elementId)
     {
-      return Service.ForPlugin(plugin);
+      return Service.ForElement(elementId, Plugin);
     }
 
     /// <inheritdoc />
-    public CollectionFile Create(ISMAPlugin requester, int elementId, Action<Stream> streamWriter, string extension, string crc32 = null)
+    public IEnumerable<CollectionFile> ForPlugin(ISMAPlugin plugin = null)
     {
-      return Service.Create(requester, elementId, streamWriter, extension, crc32);
+      return Service.ForPlugin(plugin ?? Plugin);
+    }
+
+    /// <inheritdoc />
+    public CollectionFile Create(ISMAPlugin plugin, int elementId, Action<Stream> streamWriter, string extension, string crc32 = null)
+    {
+      return Service.Create(plugin, elementId, streamWriter, extension, crc32);
+    }
+    
+    public CollectionFile Create(int elementId, Action<Stream> streamWriter, string extension, string crc32 = null)
+    {
+      return Service.Create(Plugin, elementId, streamWriter, extension, crc32);
     }
 
     /// <inheritdoc />
@@ -105,11 +115,16 @@ namespace SuperMemoAssistant.Services.IO.FS
     {
       return Service.DeleteByElementId(elementId, plugin);
     }
+    
+    public int DeleteByElementIdWithPlugin(int elementId)
+    {
+      return Service.DeleteByElementId(elementId, Plugin);
+    }
 
     /// <inheritdoc />
-    public int DeleteByPlugin(ISMAPlugin plugin)
+    public int DeleteByPlugin(ISMAPlugin plugin = null)
     {
-      return Service.DeleteByPlugin(plugin);
+      return Service.DeleteByPlugin(plugin ?? Plugin);
     }
 
     #endregion

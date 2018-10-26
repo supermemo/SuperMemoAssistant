@@ -37,6 +37,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.Devices;
@@ -47,7 +48,8 @@ using SuperMemoAssistant.Sys;
 namespace SuperMemoAssistant.Interop.Plugins
 {
   [PartNotDiscoverable]
-  public abstract class SMAPluginBase : SMMarshalByRefObject, ISMAPlugin
+  public abstract class SMAPluginBase<TPlugin> : SMMarshalByRefObject, ISMAPlugin
+    where TPlugin : SMAPluginBase<TPlugin>
   {
     #region Properties & Fields - Non-Public
 
@@ -94,9 +96,9 @@ namespace SuperMemoAssistant.Interop.Plugins
     #region Properties Impl - Public
 
     /// <inheritdoc />
-    public Guid Id => GetAssemblyGuid();
+    public Guid Id => AssemblyEx.GetAssemblyGuid();
     /// <inheritdoc />
-    public string Version => GetAssemblyVersion();
+    public string Version => AssemblyEx.GetAssemblyVersion();
 
     #endregion
 
@@ -113,34 +115,16 @@ namespace SuperMemoAssistant.Interop.Plugins
 
     private void Init()
     {
-      Svc.SMA = Container.GetExportedValue<ISuperMemoAssistant>();
+      Svc<TPlugin>.PluginContext = this;
 
-      Svc.CollectionFS = new PluginCollectionFSService(this,
+      Svc<TPlugin>.SMA = Container.GetExportedValue<ISuperMemoAssistant>();
+
+      Svc<TPlugin>.CollectionFS = new PluginCollectionFSService(this,
                                                        Container.GetExportedValue<ICollectionFSService>());
-      Svc.Configuration  = new ConfigurationService(this);
-      Svc.KeyboardHotKey = Container.GetExportedValue<IKeyboardHotKeyService>();
+      Svc<TPlugin>.Configuration  = new ConfigurationService(this);
+      Svc<TPlugin>.KeyboardHotKey = Container.GetExportedValue<IKeyboardHotKeyService>();
 
       OnInit();
-    }
-
-    public static Guid GetAssemblyGuid()
-    {
-      var assembly = Assembly.GetExecutingAssembly();
-      var guidAttr = assembly.GetCustomAttributes(typeof(GuidAttribute),
-                                                  true);
-
-      var guidStr = ((GuidAttribute)guidAttr.FirstOrDefault())?.Value
-        ?? throw new NullReferenceException("GUID can't be null");
-
-      return Guid.Parse(guidStr);
-    }
-
-    public static string GetAssemblyVersion()
-    {
-      var assembly = Assembly.GetExecutingAssembly();
-      var fvi      = FileVersionInfo.GetVersionInfo(assembly.Location);
-
-      return fvi.FileVersion;
     }
 
     #endregion

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 15:25
-// Modified On:  2018/06/02 00:42
+// Modified On:  2018/10/26 22:54
 // Modified By:  Alexis
 
 #endregion
@@ -30,15 +30,19 @@
 
 
 
+using System;
 using FlaUI.UIA3;
+using SuperMemoAssistant.Interop.Plugins;
+using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.Devices;
 using SuperMemoAssistant.Services.IO.FS;
-using SuperMemoAssistant.Interop.SuperMemo;
 
 namespace SuperMemoAssistant.Services
 {
-  public static partial class Svc
+  public class Svc : Svc<object> { }
+
+  public class Svc<T>
   {
     #region Constants & Statics
 
@@ -49,6 +53,8 @@ namespace SuperMemoAssistant.Services
     public static ConfigurationService      Configuration  { get; set; }
 
     public static ISuperMemoAssistant SMA { get; set; }
+
+    public static ISMAPlugin PluginContext { get; set; }
 
     #endregion
   }

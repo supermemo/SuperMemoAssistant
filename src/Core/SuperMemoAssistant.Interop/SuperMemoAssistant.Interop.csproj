@@ -112,6 +112,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\AssemblyEx.cs" />
     <Compile Include="Extensions\BinaryReaderEx.cs" />
     <Compile Include="Extensions\DelegateEx.cs" />
     <Compile Include="Extensions\DictionaryEx.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Interop\SuperMemo\Components\Controls\IControlWeb.cs" />
     <Compile Include="Interop\SuperMemo\Components\Controls\IControlTextBase.cs" />
     <Compile Include="Sys\ActionProxy.cs" />
+    <Compile Include="Sys\ClipboardHelper.cs" />
     <Compile Include="Sys\ClipboardSnapshot.cs" />
     <Compile Include="Sys\IO\Devices\HotKey.cs" />
     <Compile Include="Sys\IO\Devices\HotKeyEventArgs.cs" />

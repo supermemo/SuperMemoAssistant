@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Anotar.Serilog;
 using SuperMemoAssistant.Extensions;
+using SuperMemoAssistant.Interop.SuperMemo.Components;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
@@ -27,7 +28,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     public int ParentId { get; protected set; }
     public int FirstChildId { get; protected set; }
     public int LastChildId { get; protected set; }
-    public int NexSiblingId { get; protected set; }
+    public int NextSiblingId { get; protected set; }
     public int PrevSiblingId { get; protected set; }
 
     public int DescendantCount { get; protected set; }
@@ -56,7 +57,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
       ParentId = SetValue(cttElem.parentId, nameof(ParentId));
       FirstChildId = SetValue(cttElem.firstChildId, nameof(FirstChildId));
       LastChildId = SetValue(cttElem.lastChildId, nameof(LastChildId));
-      NexSiblingId = SetValue(cttElem.nextSiblingId, nameof(NexSiblingId));
+      NextSiblingId = SetValue(cttElem.nextSiblingId, nameof(NextSiblingId));
       PrevSiblingId = SetValue(cttElem.prevSiblingId, nameof(PrevSiblingId));
 
       DescendantCount = SetValue(cttElem.descendantCount, nameof(DescendantCount));
@@ -92,7 +93,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
       ParentId = SetValue(ParentId, cttElem.parentId, nameof(ParentId), ref flags);
       FirstChildId = SetValue(FirstChildId,cttElem.firstChildId, nameof(FirstChildId), ref flags);
       LastChildId = SetValue(LastChildId, cttElem.lastChildId, nameof(LastChildId), ref flags);
-      NexSiblingId = SetValue(NexSiblingId, cttElem.nextSiblingId, nameof(NexSiblingId), ref flags);
+      NextSiblingId = SetValue(NextSiblingId, cttElem.nextSiblingId, nameof(NextSiblingId), ref flags);
       PrevSiblingId = SetValue(PrevSiblingId, cttElem.prevSiblingId, nameof(PrevSiblingId), ref flags);
 
       DescendantCount = SetValue(DescendantCount, cttElem.descendantCount, nameof(DescendantCount), ref flags);
@@ -149,14 +150,17 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
     public string Title => SMA.Instance.Registry.Text?[TitleTextId]?.Name;
 
+    public IComponentGroup ComponentGroup => SMA.Instance.Registry.Component?[ComponentPos];
     public IElement Template => SMA.Instance.Registry.Element?[TemplateId];
     public IConcept Concept => SMA.Instance.Registry.Concept?[ConceptId];
 
     public IElement Parent => SMA.Instance.Registry.Element?[ParentId];
     public IElement FirstChild => SMA.Instance.Registry.Element?[FirstChildId];
     public IElement LastChild => SMA.Instance.Registry.Element?[LastChildId];
-    public IElement NexSibling => SMA.Instance.Registry.Element?[NexSiblingId];
+    public IElement NextSibling => SMA.Instance.Registry.Element?[NextSiblingId];
     public IElement PrevSibling => SMA.Instance.Registry.Element?[PrevSiblingId];
+
+    public IEnumerable<IElement> Children => EnumerateChildren();
 
 
     public Task<bool> Delete()
@@ -179,6 +183,35 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
       throw new System.NotImplementedException();
     }
 
+    public IEnumerable<IElement> EnumerateChildren()
+    {
+      List<IElement> ret = new List<IElement>();
+
+      if (ChildrenCount <= 0)
+        return ret;
+      
+      IElement itEl = FirstChild;
+
+      do
+      {
+        ret.Add(itEl);
+
+        itEl = itEl.NextSibling;
+      } while (itEl != null);
+
+      return ret;
+      /*
+      if (ChildrenCount <= 0)
+        yield return null;
+
+      IElement itEl = FirstChild;
+
+      do
+      {
+        yield return itEl;
+      } while (itEl.NextSibling != null);
+      */
+    }
 
 
     //
@@ -202,7 +235,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
       { "ParentId", ElementFieldFlags.Parent },
       { "FirstChildId", ElementFieldFlags.FirstChild },
       { "LastChildId", ElementFieldFlags.LastChild },
-      { "NexSiblingId", ElementFieldFlags.NextSibling },
+      { "NextSiblingId", ElementFieldFlags.NextSibling },
       { "PrevSiblingId", ElementFieldFlags.PrevSibling },
       { "DescendantCount", ElementFieldFlags.DescendantCount },
       { "ChildrenCount", ElementFieldFlags.ChildrenCount },

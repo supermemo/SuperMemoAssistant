@@ -23,7 +23,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
     public string GetFilePath()
     {
       //switch ()
-      return GetFilePath(".jpg");
+      return GetFilePath("jpg");
     }
 
     public async Task<Bitmap> GetContentAsync()

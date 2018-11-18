@@ -93,6 +93,32 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
 
   /// <summary>Element-related events</summary>
   [Serializable]
+  public class SMDisplayedElementChangedArgs : SMEventArgs
+  {
+    #region Constructors
+
+    public SMDisplayedElementChangedArgs(ISuperMemo smMgmt, IElement newElement, IElement oldElement)
+      : base(smMgmt)
+    {
+      NewElement = newElement;
+      OldElement = oldElement;
+    }
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+    
+    public IElement NewElement { get; }
+    public IElement OldElement { get; }
+
+    #endregion
+  }
+
+  /// <summary>Element-related events</summary>
+  [Serializable]
   public class SMElementArgs : SMEventArgs
   {
     #region Constructors

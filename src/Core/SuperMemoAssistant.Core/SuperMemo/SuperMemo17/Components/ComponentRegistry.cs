@@ -252,6 +252,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components
           while (compCount-- > 0 && (comp = ParseCompStream(binStream)) != null)
             cGroup.AddComponent(comp);
 
+          ret.Add(cGroup);
           binStream.BaseStream.Seek(position + length,
                                     SeekOrigin.Begin);
         }

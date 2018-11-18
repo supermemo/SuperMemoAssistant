@@ -14,7 +14,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
   /// - pointer to the *.lst file storing the list of elements using a given member,
   /// - etc.
   /// </summary>
-  [StructLayout(LayoutKind.Explicit, Size = 30)]
+  [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 30)]
   public unsafe struct RegMemElem
   {
     [FieldOffset(0)]

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
 {
-  [StructLayout(LayoutKind.Explicit, Size = 37)]
+  [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 37)]
   public struct InfContentsElem
   {
     [FieldOffset(0)]

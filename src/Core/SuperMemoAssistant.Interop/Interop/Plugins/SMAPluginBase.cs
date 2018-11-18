@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/30 17:30
-// Modified On:  2018/06/06 03:40
+// Created On:   2018/07/27 12:55
+// Modified On:  2018/11/16 21:55
 // Modified By:  Alexis
 
 #endregion
@@ -34,15 +34,11 @@ using System;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.Devices;
 using SuperMemoAssistant.Services.IO.FS;
-using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.Interop.Plugins
@@ -117,10 +113,8 @@ namespace SuperMemoAssistant.Interop.Plugins
     {
       Svc<TPlugin>.PluginContext = this;
 
-      Svc<TPlugin>.SMA = Container.GetExportedValue<ISuperMemoAssistant>();
-
       Svc<TPlugin>.CollectionFS = new PluginCollectionFSService(this,
-                                                       Container.GetExportedValue<ICollectionFSService>());
+                                                                Container.GetExportedValue<ICollectionFSService>());
       Svc<TPlugin>.Configuration  = new ConfigurationService(this);
       Svc<TPlugin>.KeyboardHotKey = Container.GetExportedValue<IKeyboardHotKeyService>();
 

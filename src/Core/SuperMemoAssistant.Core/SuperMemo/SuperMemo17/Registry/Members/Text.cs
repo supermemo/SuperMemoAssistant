@@ -23,10 +23,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 
     public string GetFilePath()
     {
-      return GetFilePath(".htm");
+      return GetFilePath("htm");
     }
 
-    public async Task<string> GetContentAsync()
+    public string GetContent()
     {
       switch (LinkType)
       {
@@ -37,7 +37,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
           return RtxValue;
 
         case RegistryLinkType.FileAndRtx:
-          return await Task.Run(() => File.ReadAllText(GetFilePath()));
+          return File.ReadAllText(GetFilePath());
 
         case RegistryLinkType.Rtf:
           break;

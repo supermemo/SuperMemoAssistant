@@ -68,7 +68,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components
     #region Properties Impl - Public
 
     public IComponent this[int idx] => (IComponent)ComponentsInternal.ElementAtOrDefault(idx);
-    public IEnumerable<IComponent> Components => ComponentsInternal.Select(c => (IComponent)c);
+    public IEnumerable<IComponent> Components => ComponentsInternal.Select(c => (IComponent)c).ToList();
     public int                     Count      => ComponentsInternal.Count;
     public int                     Offset     { get; set; }
 

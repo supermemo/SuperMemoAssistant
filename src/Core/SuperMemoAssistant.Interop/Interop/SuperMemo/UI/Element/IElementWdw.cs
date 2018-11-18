@@ -56,6 +56,6 @@ namespace SuperMemoAssistant.Interop.SuperMemo.UI.Element
 
     bool Done();
 
-    event Action<SMElementArgs> OnElementChanged;
+    event Action<SMDisplayedElementChangedArgs> OnElementChanged;
   }
 }

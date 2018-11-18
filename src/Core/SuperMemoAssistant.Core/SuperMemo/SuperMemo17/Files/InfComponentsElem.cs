@@ -2,7 +2,7 @@
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
 {
-  [StructLayout(LayoutKind.Sequential, Size = 29)]
+  [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 29)]
   public unsafe struct InfComponentsHtml
   {
     public byte         unknown1;
@@ -18,7 +18,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
     public fixed byte   unknown4[7];
   }
 
-  [StructLayout(LayoutKind.Sequential, Size = 35)]
+  [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 35)]
   public unsafe struct InfComponentsText
   {
     public byte         unknown1;
@@ -36,7 +36,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
     public fixed byte   unknown4[9];
   }
 
-  [StructLayout(LayoutKind.Sequential, Size = 30)]
+  [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 30)]
   public unsafe struct InfComponentsRtf
   {
     public byte         unknown1;
@@ -54,7 +54,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
     public fixed byte   unknown4[4];
   }
 
-  [StructLayout(LayoutKind.Sequential, Size = 35)]
+  [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 35)]
   public unsafe struct InfComponentsSpelling
   {
     public byte         unknown1;
@@ -72,7 +72,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
     public fixed byte   unknown4[8];
   }
 
-  [StructLayout(LayoutKind.Sequential, Size = 26)]
+  [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 26)]
   public unsafe struct InfComponentsImage
   {
     public byte         unknown1;
@@ -87,7 +87,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
     public fixed byte   unknown3[3];
   }
 
-  [StructLayout(LayoutKind.Sequential, Size = 49)]
+  [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 49)]
   public unsafe struct InfComponentsSound
   {
     public byte         unknown1;
@@ -113,7 +113,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
     public byte         panel;
   }
 
-  [StructLayout(LayoutKind.Sequential, Size = 32)]
+  [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 32)]
   public unsafe struct InfComponentsVideo
   {
     public byte         unknown1;
@@ -133,7 +133,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
     public byte         panel;
   }
 
-  [StructLayout(LayoutKind.Sequential, Size = 28)]
+  [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 28)]
   public unsafe struct InfComponentsShape
   {
     public byte         unknown1;

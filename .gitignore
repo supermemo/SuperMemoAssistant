@@ -294,3 +294,9 @@ __pycache__/
 /src/Core/SuperMemoAssistant.Core/EasyLoad32.dll
 /src/Core/SuperMemoAssistant.Core/EasyLoad64.dll
 *.rsls
+/src/Core/SuperMemoAssistant.Hooks.InjectLib/EasyHook32.dll
+/src/Core/SuperMemoAssistant.Hooks.InjectLib/EasyHook32Svc.exe
+/src/Core/SuperMemoAssistant.Hooks.InjectLib/EasyHook64.dll
+/src/Core/SuperMemoAssistant.Hooks.InjectLib/EasyHook64Svc.exe
+/src/Core/SuperMemoAssistant.Hooks.InjectLib/EasyLoad32.dll
+/src/Core/SuperMemoAssistant.Hooks.InjectLib/EasyLoad64.dll

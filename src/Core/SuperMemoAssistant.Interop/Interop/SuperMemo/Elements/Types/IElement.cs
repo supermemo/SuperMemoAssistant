@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/01 14:10
-// Modified On:  2018/06/07 00:51
+// Created On:   2018/07/27 12:55
+// Modified On:  2018/10/28 15:36
 // Modified By:  Alexis
 
 #endregion
@@ -31,7 +31,9 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using SuperMemoAssistant.Interop.SuperMemo.Components;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 
@@ -43,8 +45,9 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements.Types
     string Title   { get; }
     bool   Deleted { get; }
 
-    IElement Template { get; }
-    IConcept Concept  { get; }
+    IComponentGroup ComponentGroup { get; }
+    IElement        Template       { get; }
+    IConcept        Concept        { get; }
 
 
     //
@@ -53,12 +56,13 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements.Types
     IElement Parent      { get; }
     IElement FirstChild  { get; }
     IElement LastChild   { get; }
-    IElement NexSibling  { get; }
+    IElement NextSibling { get; }
     IElement PrevSibling { get; }
 
     int DescendantCount { get; }
     int ChildrenCount   { get; }
 
+    IEnumerable<IElement> Children { get; }
 
     //
     // Helpers

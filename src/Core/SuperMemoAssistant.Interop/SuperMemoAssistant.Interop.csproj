@@ -125,6 +125,7 @@
     <Compile Include="Extensions\ProcessEx.cs" />
     <Compile Include="Extensions\StringEx.cs" />
     <Compile Include="Interop\SuperMemo\Elements\ConceptSnapshot.cs" />
+    <Compile Include="Interop\SuperMemo\Elements\ElementClipboard.cs" />
     <Compile Include="Interop\SuperMemo\Elements\HookSnapshot.cs" />
     <Compile Include="Services\IO\FS\PluginCollectionFSService.cs" />
     <Compile Include="Interop\SuperMemo\Components\Controls\IControl.cs" />

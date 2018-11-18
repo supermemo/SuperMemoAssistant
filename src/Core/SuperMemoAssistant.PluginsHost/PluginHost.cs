@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/31 13:44
-// Modified On:  2018/06/03 09:45
+// Modified On:  2018/11/17 02:10
 // Modified By:  Alexis
 
 #endregion
@@ -39,13 +39,15 @@ using System.IO;
 using System.Linq;
 using System.Security;
 using System.Security.Permissions;
-using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Extensions;
+using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.Plugins;
-using SuperMemoAssistant.Services.IO.Devices;
+using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.PluginsHost.Services.Devices;
+using SuperMemoAssistant.Services;
+using SuperMemoAssistant.Services.IO.Devices;
+using SuperMemoAssistant.Sys;
 
 // ReSharper disable PossibleMultipleEnumeration
 
@@ -66,8 +68,8 @@ namespace SuperMemoAssistant.PluginsHost
 
     #region Properties & Fields - Non-Public
 
-    private   IEnumerable<ISMAPlugin> _plugins;
-    protected Dictionary<string, DirectoryCatalog>  DirectoryCatalogs { get; set; }
+    private   IEnumerable<ISMAPlugin>              _plugins;
+    protected Dictionary<string, DirectoryCatalog> DirectoryCatalogs { get; set; }
 
     #endregion
 
@@ -145,6 +147,23 @@ namespace SuperMemoAssistant.PluginsHost
       Container = new CompositionContainer(catalog);
       Container.ComposeExportedValue<CompositionContainer>(Container);
       Container.ComposeExportedValue<IKeyboardHotKeyService>(KeyboardHotKeyService.Instance);
+
+      SetupApplication();
+    }
+
+    public void PostSetup()
+    {
+      SetupServices();
+    }
+
+    private void SetupServices()
+    {
+      Svc.SMA = Get<ISuperMemoAssistant>();
+    }
+
+    private void SetupApplication()
+    {
+      new System.Windows.Application();
     }
 
     public void Recompose()
@@ -158,10 +177,7 @@ namespace SuperMemoAssistant.PluginsHost
       _plugins = BuildPlugins();
     }
 
-    public void Reload(string guid)
-    {
-
-    }
+    public void Reload(string guid) { }
 
     public void Export<T>(T instance)
     {
@@ -184,7 +200,8 @@ namespace SuperMemoAssistant.PluginsHost
       DirectoryEx.EnsureExists(collection.GetSMAPluginsFolder());
       DirectoryEx.EnsureExists(collection.GetSMASystemFolder());
 
-      var assemblyPaths = String.Join(";", GetAssemblyPaths());
+      var assemblyPaths = String.Join(";",
+                                      GetAssemblyPaths());
 
       var setup = new AppDomainSetup()
       {
@@ -216,12 +233,14 @@ namespace SuperMemoAssistant.PluginsHost
     private static Dictionary<string, DirectoryCatalog> GenerateDirectoryCatalogs(RegistrationBuilder regBuilder)
     {
       return GetPluginsPath()
-        .Select(p =>
-        {
-          var guid = PathEx.GetLastSegment(p);
-          return (guid, new DirectoryCatalog(p, regBuilder));
-        })
-        .ToDictionary(k => k.Item1, v => v.Item2);
+             .Select(p =>
+             {
+               var guid = PathEx.GetLastSegment(p);
+               return (guid, new DirectoryCatalog(p,
+                                                  regBuilder));
+             })
+             .ToDictionary(k => k.Item1,
+                           v => v.Item2);
     }
 
     private static List<string> GetAssemblyPaths()
@@ -243,6 +262,7 @@ namespace SuperMemoAssistant.PluginsHost
 
     private static PermissionSet GetPermissions(SMCollection collection)
     {
+      // TODO: Switch back to restricted
       var permissions = new PermissionSet(PermissionState.Unrestricted);
 
       //permissions.SetPermission(new EnvironmentPermission(PermissionState.Unrestricted));
@@ -257,7 +277,8 @@ namespace SuperMemoAssistant.PluginsHost
           | SecurityPermissionFlag.Assertion | SecurityPermissionFlag.RemotingConfiguration | SecurityPermissionFlag.ControlThread));*/
 
       permissions.RemovePermission(typeof(FileIOPermission));
-      permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess, Path.GetTempPath()));
+      permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess,
+                                                     Path.GetTempPath()));
       permissions.AddPermission(new FileIOPermission(
                                   FileIOPermissionAccess.PathDiscovery | FileIOPermissionAccess.Read,
                                   Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles))
@@ -266,12 +287,16 @@ namespace SuperMemoAssistant.PluginsHost
                                   FileIOPermissionAccess.PathDiscovery | FileIOPermissionAccess.Read,
                                   Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFilesX86))
       );
-      permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess, collection.GetSMAFolder()));
-      permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess, SMAConst.Paths.AppDataPath));
-      permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess, AppDomain.CurrentDomain.BaseDirectory));
+      permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess,
+                                                     collection.GetSMAFolder()));
+      permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess,
+                                                     SMAConst.Paths.AppDataPath));
+      permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess,
+                                                     AppDomain.CurrentDomain.BaseDirectory));
 
       return permissions;
     }
+
 
     #endregion
   }

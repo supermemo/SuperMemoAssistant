@@ -82,7 +82,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
       public static readonly ObjPtr FocusedComponentPtr = new ObjPtr(InstancePtr,
                                                                      0x11DF);
 
-      // Address = 4 first ? wildcards
+      // Jump Addresses = 4 first ? wildcards
       public static readonly IMemoryPattern GoToElementCallSig = new DwordCallPattern(
         "E8 ? ? ? ? 80 7D FB 23",
         1);

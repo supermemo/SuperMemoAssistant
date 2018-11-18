@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
 {
-  [StructLayout(LayoutKind.Explicit, Size = 118)]
+  [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 118)]
   public unsafe struct InfElementsElem
   {
     [FieldOffset(0)]

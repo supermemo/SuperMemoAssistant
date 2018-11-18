@@ -200,21 +200,39 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
           toDispose.Add(new ConceptSnapshot());
           Svc.SMA.UI.ElementWindow.SetCurrentConcept(builder.Concept.Id);
         }
-
+        
         toDispose.Add(new ClipboardSnapshot());
 
-        if (builder.Html)
-          ClipboardHelper.CopyToClipboard(builder.Content,
-                                          builder.Content);
+        if (builder.ShouldDisplay)
+        {
+          if (builder.Html)
+            ClipboardHelper.CopyToClipboard(builder.Content,
+                                            builder.Content);
+
+          else
+            Clipboard.SetText(builder.Content);
+        }
 
         else
-          Clipboard.SetText(builder.Content);
+        {
+          Clipboard.SetText(ElementClipboard.FromElementBuilder(builder));
+        }
 
         switch (builder.Type)
         {
           case ElementType.Topic:
-            Svc.SMA.UI.ElementWindow.PasteArticle();
+            if (builder.ShouldDisplay)
+              Svc.SMA.UI.ElementWindow.PasteArticle();
+
+            else
+              Svc.SMA.UI.ElementWindow.PasteElement();
+
             break;
+
+          case ElementType.Item:
+          case ElementType.ConceptGroup:
+          case ElementType.Task:
+          case ElementType.Unknown3:
 
           default:
             throw new NotImplementedException();

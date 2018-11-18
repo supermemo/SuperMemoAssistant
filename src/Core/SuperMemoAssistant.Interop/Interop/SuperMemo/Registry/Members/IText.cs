@@ -8,6 +8,6 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Registry.Members
 {
   public interface IText : IRegistryMember
   {
-    Task<string> GetContentAsync();
+    string GetContent();
   }
 }

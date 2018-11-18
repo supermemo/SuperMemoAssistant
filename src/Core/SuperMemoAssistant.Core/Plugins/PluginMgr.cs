@@ -128,6 +128,8 @@ namespace SuperMemoAssistant.Plugins
       Runner.Export<IElementDataWdw>(ElementDataWdw.Instance);
       Runner.Export<IElementWdw>(ElementWdw.Instance);
 
+      Runner.PostSetup();
+
       foreach (var plugin in Runner.Plugins)
         System.Diagnostics.Debug.WriteLine($"[PluginMgr] Loaded plugin {plugin.Name} ({plugin.Version})");
     }

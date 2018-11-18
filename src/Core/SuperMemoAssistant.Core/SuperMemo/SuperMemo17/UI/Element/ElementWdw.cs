@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/24 13:11
-// Modified On:  2018/06/21 12:07
+// Modified On:  2018/11/16 21:55
 // Modified By:  Alexis
 
 #endregion
@@ -31,10 +31,7 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Windows;
 using Anotar.Serilog;
-using mshtml;
 using Process.NET.Memory;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
@@ -60,6 +57,61 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
 
     #region Properties & Fields - Non-Public
 
+    //protected void OnStructureChanged(AutomationElement   _,
+    //                                  StructureChangeType changeType,
+    //                                  int[]               values)
+    //{
+    //  if (values.Length != 2)
+    //    return;
+
+    //  switch (changeType)
+    //  {
+    //    case StructureChangeType.ChildAdded:
+    //      if (RequiresRefresh == false)
+    //        _htmlDocuments.Clear();
+
+    //      RequiresRefresh = true;
+
+    //      var component = UIAuto.FromHandle(new IntPtr(values[1]));
+    //      ProcessComponent(component);
+    //      break;
+    //  }
+    //}
+
+    //protected IEnumerable<IHTMLDocument2> RefreshComponents()
+    //{
+    //  if (SMProcess.Native.HasExited)
+    //    return new List<IHTMLDocument2>();
+
+    //  foreach (var comp in ContentPane.FindAllChildren())
+    //    ProcessComponent(comp);
+
+    //  RequiresRefresh = false;
+
+    //  return _htmlDocuments;
+    //}
+
+    //protected void ProcessComponent(AutomationElement comp)
+    //{
+    //  switch (comp.ClassName)
+    //  {
+    //    case "Shell Embedding": // IE
+    //      var            ieServer   = comp.FindFirstDescendant(c => c.ByClassName("Internet Explorer_Server"));
+    //      var            ieHwnd     = ieServer.FrameworkAutomationElement.NativeWindowHandle.Value;
+    //      IHTMLDocument2 ieDocument = IEComHelper.GetDocumentFromHwnd(ieHwnd);
+
+    //      _htmlDocuments.Add(ieDocument);
+    //      break;
+
+    //    case "TRichEdit": // RTF
+    //      break;
+    //  }
+    //}
+
+    protected ControlGroup _controlGroup = null;
+
+    protected int LastElementId { get; set; }
+
     protected IPointer ElementWdwPtr       { get; set; }
     protected IPointer ElementIdPtr        { get; set; }
     protected IPointer CurrentConceptIdPtr { get; set; }
@@ -67,12 +119,21 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     protected IPointer CurrentHookIdPtr    { get; set; }
 
     //protected AutomationElement ContentPane { get; set; }
-    
-    protected NativeFunc<bool, IntPtr>  PasteArticleFunc         { get; set; }
-    protected NativeFunc<bool, IntPtr>  PasteElementFunc         { get; set; }
+
+    protected NativeFunc<bool, IntPtr>  PasteArticleFunc        { get; set; }
+    protected NativeFunc<bool, IntPtr>  PasteElementFunc        { get; set; }
     protected NativeAction<IntPtr, int> SetDefaultConceptMethod { get; set; }
     protected NativeAction<IntPtr, int> GoToMethod              { get; set; }
     protected NativeAction<IntPtr>      DoneMethod              { get; set; }
+
+
+
+
+    #region Properties & Fields
+
+    protected bool RequiresRefresh { get; set; } = false;
+
+    #endregion
 
     #endregion
 
@@ -196,8 +257,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
 
       ElementIdPtr.RegisterValueChangedEventHandler<int>(OnElementChangedInternal);
 
-      OnElementChanged(new SMElementArgs(SMA.Instance,
-                                         CurrentElement));
+      LastElementId = CurrentElementId;
+      OnElementChanged(new SMDisplayedElementChangedArgs(SMA.Instance,
+                                                         CurrentElement,
+                                                         null));
 
       return true;
     }
@@ -228,8 +291,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
 
       try
       {
-        OnElementChanged?.Invoke(new SMElementArgs(SMA.Instance,
-                                                   CurrentElement));
+        var lastElement = SMA.Instance.Registry.Element[LastElementId];
+        LastElementId = CurrentElementId;
+
+        OnElementChanged?.Invoke(
+          new SMDisplayedElementChangedArgs(SMA.Instance,
+                                            CurrentElement,
+                                            lastElement)
+        );
       }
       catch (Exception ex)
       {
@@ -239,69 +308,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
 
       return false;
     }
-
-    #endregion
-
-
-
-    //protected void OnStructureChanged(AutomationElement   _,
-    //                                  StructureChangeType changeType,
-    //                                  int[]               values)
-    //{
-    //  if (values.Length != 2)
-    //    return;
-
-    //  switch (changeType)
-    //  {
-    //    case StructureChangeType.ChildAdded:
-    //      if (RequiresRefresh == false)
-    //        _htmlDocuments.Clear();
-
-    //      RequiresRefresh = true;
-
-    //      var component = UIAuto.FromHandle(new IntPtr(values[1]));
-    //      ProcessComponent(component);
-    //      break;
-    //  }
-    //}
-
-    //protected IEnumerable<IHTMLDocument2> RefreshComponents()
-    //{
-    //  if (SMProcess.Native.HasExited)
-    //    return new List<IHTMLDocument2>();
-
-    //  foreach (var comp in ContentPane.FindAllChildren())
-    //    ProcessComponent(comp);
-
-    //  RequiresRefresh = false;
-
-    //  return _htmlDocuments;
-    //}
-
-    //protected void ProcessComponent(AutomationElement comp)
-    //{
-    //  switch (comp.ClassName)
-    //  {
-    //    case "Shell Embedding": // IE
-    //      var            ieServer   = comp.FindFirstDescendant(c => c.ByClassName("Internet Explorer_Server"));
-    //      var            ieHwnd     = ieServer.FrameworkAutomationElement.NativeWindowHandle.Value;
-    //      IHTMLDocument2 ieDocument = IEComHelper.GetDocumentFromHwnd(ieHwnd);
-
-    //      _htmlDocuments.Add(ieDocument);
-    //      break;
-
-    //    case "TRichEdit": // RTF
-    //      break;
-    //  }
-    //}
-    
-    protected ControlGroup _controlGroup = null;
-
-
-
-    #region Properties & Fields
-
-    protected bool RequiresRefresh { get; set; } = false;
 
     #endregion
 
@@ -336,7 +342,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     }
 
     /// <inheritdoc />
-    public event Action<SMElementArgs> OnElementChanged;
+    public event Action<SMDisplayedElementChangedArgs> OnElementChanged;
 
 
     //

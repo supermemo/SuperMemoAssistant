@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/10/26 23:34
+// Modified On:  2018/11/17 01:40
 // Modified By:  Alexis
 
 #endregion
@@ -40,6 +40,7 @@ using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 {
+  [Serializable]
   public class ElementBuilder
   {
     #region Properties & Fields - Non-Public
@@ -62,6 +63,9 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
       Content = content;
       Html    = html;
 
+      ShouldDisplay = true;
+      Title = null;
+
       LinkedConceptsInternal = new List<IConcept>();
       ComponentsInternal     = new List<IComponent>();
     }
@@ -75,7 +79,9 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 
     public ElementType             Type           { get; private set; }
     public string                  Content        { get; private set; }
+    public string                  Title          { get; private set; }
     public bool                    Html           { get; set; }
+    public bool                    ShouldDisplay  { get; set; }
     public int                     Id             { get; private set; }
     public IElement                Parent         { get; private set; }
     public IConcept                Concept        { get; private set; }
@@ -94,6 +100,24 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
       throw new NotImplementedException();
 
       Id = id;
+      return this;
+    }
+
+    public ElementBuilder WithTitle(string title)
+    {
+      Title = title;
+      return this;
+    }
+
+    public ElementBuilder Display()
+    {
+      ShouldDisplay = true;
+      return this;
+    }
+
+    public ElementBuilder DoNotDisplay()
+    {
+      ShouldDisplay = false;
       return this;
     }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Core
 {

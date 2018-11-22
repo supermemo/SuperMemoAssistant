@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/12 18:26
-// Modified On:  2018/07/27 13:51
+// Modified On:  2018/11/22 18:32
 // Modified By:  Alexis
 
 #endregion
@@ -42,219 +42,223 @@ using SuperMemoAssistant.Sys.UIAutomation;
 
 namespace SuperMemoAssistant.SuperMemo
 {
-    /// <summary>Convenience class that implements helpers</summary>
-    public abstract class SuperMemoBase
-        : UIAutomationBase,
-          ISuperMemo,
-          ISMHookSystem
+  /// <summary>Convenience class that implements helpers</summary>
+  public abstract class SuperMemoBase
+    : UIAutomationBase,
+      ISuperMemo,
+      ISMHookSystem
+  {
+    #region Properties & Fields - Non-Public
+
+    protected Application SMApp { get; private set; }
+
+    #endregion
+
+
+
+
+    #region Constructors
+
+    protected SuperMemoBase(SMCollection collection)
     {
-        #region Properties & Fields - Non-Public
+      Collection = collection;
 
-        protected Application SMApp { get; private set; }
+      OnPreInit();
 
-        #endregion
+      SMProcess = SMHookEngine.Instance.CreateAndHook(
+        collection,
+        this,
+        GetIOCallbacks()
+      );
 
+      SMProcess.Native.Exited += OnSMExited;
 
+      OnPostInit();
 
-
-        #region Constructors
-
-        protected SuperMemoBase(SMCollection collection)
-        {
-            Collection = collection;
-
-            OnPreInit();
-
-            SMProcess = SMHookEngine.Instance.CreateAndHook(
-                collection,
-                this,
-                GetIOCallbacks()
-            );
-
-            SMProcess.Native.Exited += OnSMExited;
-
-            OnPostInit();
-
-            SMHookEngine.Instance.SignalWakeUp();
-        }
-
-        /// <inheritdoc />
-        public override void Dispose()
-        {
-            SMHookEngine.Instance.CleanupHooks();
-
-            SMProcess.Native.Exited -= OnSMExited;
-
-            try
-            {
-                OnSMStoppedEvent?.Invoke(this,
-                                         new SMProcessArgs(this,
-                                                           SMProcess));
-            }
-            catch (Exception ex)
-            {
-                // TODO: Log
-            }
-
-            base.Dispose();
-        }
-
-        #endregion
-
-
-
-
-        #region Properties Impl - Public
-
-        public          SMCollection       Collection { get; }
-        public override IProcess           SMProcess  { get; set; }
-        public          ISuperMemoRegistry Registry   => SuperMemoRegistry.Instance;
-        public          ISuperMemoUI       UI         => SuperMemoUI.Instance;
-
-        #endregion
-
-
-
-
-        #region Methods Impl
-
-        //
-        // SM Hook
-
-        public virtual void OnException(Exception ex)
-        {
-            // TODO: Log ?
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-
-
-
-        #region Methods
-
-        //
-        // SM-App Lifecycle
-
-        protected virtual void OnSMExited(object    called,
-                                          EventArgs args)
-        {
-            Dispose();
-        }
-
-        protected virtual void OnPreInit()
-        {
-            SMA.Instance.OnSMStartingImpl(this);
-        }
-
-        protected virtual void OnPostInit()
-        {
-            SMA.Instance.OnSMStartedImpl();
-        }
-
-        #endregion
-
-
-
-
-        #region Methods Abs
-
-        protected abstract IEnumerable<ISMHookIO> GetIOCallbacks();
-
-
-        //
-        // UI Automation Core
-        /*
-      protected FocusChangedEventHandlerBase FocusChangedHandler { get; set; }
-  
-      protected virtual void SetupUI()
-      {
-        SMApp = Application.Attach(SMProcess);
-  
-      }
-  
-      protected virtual void CleanupUIAutomation()
-      {
-        UnregisterUIAutomationEvents();
-      }
-  
-      private virtual void RegisterUIAutomationEvents()
-      {
-        FocusChangedHandler = UIAuto.RegisterFocusChangedEvent(OnFocusChangedGlobal);
-  
-        // WindowOpenedEvent
-        RegisterAutomationEvent(
-          UIAuto.EventLibrary.Window.WindowOpenedEvent,
-          TreeScope.Children,
-          IsSMProcess,
-          OnWindowOpened,
-          WrapAutomationEvent(OnWindowOpenedEvent));
-  
-        // WindowClosedEvent
-        RegisterAutomationEvent(
-          UIAuto.EventLibrary.Window.WindowClosedEvent,
-          TreeScope.Children,
-          IsSMProcess,
-          OnWindowClosed,
-          WrapAutomationEvent(OnWindowClosedEvent));
-      }
-  
-      private override void UnregisterUIAutomationEvents()
-      {
-        UIAuto.UnregisterFocusChangedEvent(FocusChangedHandler);
-        FocusChangedHandler = null;
-  
-        base.UnregisterUIAutomationEvents();
-      }
-  
-      protected virtual void OnFocusChangedGlobal(AutomationElement elem)
-      {
-        if (elem.Properties.ProcessId == SMProcess.Id)
-          OnFocusChanged(elem);
-      }
-  
-  
-  
-      //
-      // UI Automation Events
-  
-      /// <summary>
-      /// Notification for a SM-related focus changed event.
-      /// </summary>
-      /// <param name="elem"></param>
-      /// <param name="eventId"></param>
-      protected abstract void OnFocusChanged(AutomationElement elem);
-  
-      /// <summary>
-      /// Notification for a SM-related window open event.
-      /// </summary>
-      /// <param name="elem"></param>
-      /// <param name="eventId"></param>
-      protected abstract void OnWindowOpened(AutomationElement elem, EventId eventId);
-      /// <summary>
-      /// Notification for a SM-related window close event.
-      /// </summary>
-      /// <param name="elem"></param>
-      /// <param name="eventId"></param>
-      protected abstract void OnWindowClosed(AutomationElement elem, EventId eventId);
-      */
-
-
-        //
-        // ISuperMemo Methods
-
-        public abstract SMAppVersion AppVersion { get; }
-
-        #endregion
-
-
-
-
-        #region Events
-
-        public event EventHandler<SMProcessArgs> OnSMStoppedEvent;
-
-        #endregion
+      SMHookEngine.Instance.SignalWakeUp();
     }
+
+    /// <inheritdoc />
+    public override void Dispose()
+    {
+      SMProcess.Native.Exited -= OnSMExited;
+
+      try
+      {
+        SMHookEngine.Instance.CleanupHooks();
+      }
+      catch (Exception) { }
+
+      try
+      {
+        OnSMStoppedEvent?.Invoke(this,
+                                 new SMProcessArgs(this,
+                                                   SMProcess));
+      }
+      catch (Exception ex)
+      {
+        // TODO: Log
+      }
+
+      base.Dispose();
+    }
+
+    #endregion
+
+
+
+
+    #region Properties Impl - Public
+
+    public          SMCollection       Collection { get; }
+    public override IProcess           SMProcess  { get; set; }
+    public          ISuperMemoRegistry Registry   => SuperMemoRegistry.Instance;
+    public          ISuperMemoUI       UI         => SuperMemoUI.Instance;
+
+    #endregion
+
+
+
+
+    #region Methods Impl
+
+    //
+    // SM Hook
+
+    public virtual void OnException(Exception ex)
+    {
+      // TODO: Log ?
+      throw new NotImplementedException();
+    }
+
+    #endregion
+
+
+
+
+    #region Methods
+
+    //
+    // SM-App Lifecycle
+
+    protected virtual void OnSMExited(object    called,
+                                      EventArgs args)
+    {
+      Dispose();
+    }
+
+    protected virtual void OnPreInit()
+    {
+      SMA.Instance.OnSMStartingImpl(this);
+    }
+
+    protected virtual void OnPostInit()
+    {
+      SMA.Instance.OnSMStartedImpl();
+    }
+
+    #endregion
+
+
+
+
+    #region Methods Abs
+
+    protected abstract IEnumerable<ISMHookIO> GetIOCallbacks();
+
+
+    //
+    // UI Automation Core
+    /*
+    protected FocusChangedEventHandlerBase FocusChangedHandler { get; set; }
+
+    protected virtual void SetupUI()
+    {
+      SMApp = Application.Attach(SMProcess);
+
+    }
+
+    protected virtual void CleanupUIAutomation()
+    {
+      UnregisterUIAutomationEvents();
+    }
+
+    private virtual void RegisterUIAutomationEvents()
+    {
+      FocusChangedHandler = UIAuto.RegisterFocusChangedEvent(OnFocusChangedGlobal);
+
+      // WindowOpenedEvent
+      RegisterAutomationEvent(
+        UIAuto.EventLibrary.Window.WindowOpenedEvent,
+        TreeScope.Children,
+        IsSMProcess,
+        OnWindowOpened,
+        WrapAutomationEvent(OnWindowOpenedEvent));
+
+      // WindowClosedEvent
+      RegisterAutomationEvent(
+        UIAuto.EventLibrary.Window.WindowClosedEvent,
+        TreeScope.Children,
+        IsSMProcess,
+        OnWindowClosed,
+        WrapAutomationEvent(OnWindowClosedEvent));
+    }
+
+    private override void UnregisterUIAutomationEvents()
+    {
+      UIAuto.UnregisterFocusChangedEvent(FocusChangedHandler);
+      FocusChangedHandler = null;
+
+      base.UnregisterUIAutomationEvents();
+    }
+
+    protected virtual void OnFocusChangedGlobal(AutomationElement elem)
+    {
+      if (elem.Properties.ProcessId == SMProcess.Id)
+        OnFocusChanged(elem);
+    }
+
+
+
+    //
+    // UI Automation Events
+
+    /// <summary>
+    /// Notification for a SM-related focus changed event.
+    /// </summary>
+    /// <param name="elem"></param>
+    /// <param name="eventId"></param>
+    protected abstract void OnFocusChanged(AutomationElement elem);
+
+    /// <summary>
+    /// Notification for a SM-related window open event.
+    /// </summary>
+    /// <param name="elem"></param>
+    /// <param name="eventId"></param>
+    protected abstract void OnWindowOpened(AutomationElement elem, EventId eventId);
+    /// <summary>
+    /// Notification for a SM-related window close event.
+    /// </summary>
+    /// <param name="elem"></param>
+    /// <param name="eventId"></param>
+    protected abstract void OnWindowClosed(AutomationElement elem, EventId eventId);
+    */
+
+
+    //
+    // ISuperMemo Methods
+
+    public abstract SMAppVersion AppVersion { get; }
+
+    #endregion
+
+
+
+
+    #region Events
+
+    public event EventHandler<SMProcessArgs> OnSMStoppedEvent;
+
+    #endregion
+  }
 }

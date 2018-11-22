@@ -119,6 +119,8 @@
     <Compile Include="Extensions\DirectoryEx.cs" />
     <Compile Include="Extensions\EventHandlerEx.cs" />
     <Compile Include="Extensions\FileEx.cs" />
+    <Compile Include="Extensions\IComponentEx.cs" />
+    <Compile Include="Extensions\IControlEx.cs" />
     <Compile Include="Extensions\IEnumerableEx.cs" />
     <Compile Include="Extensions\ObjectEx.cs" />
     <Compile Include="Extensions\PathEx.cs" />

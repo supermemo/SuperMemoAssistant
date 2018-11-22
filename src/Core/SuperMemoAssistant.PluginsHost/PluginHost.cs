@@ -163,7 +163,10 @@ namespace SuperMemoAssistant.PluginsHost
 
     private void SetupApplication()
     {
-      new System.Windows.Application();
+      new System.Windows.Application()
+      {
+        ShutdownMode = System.Windows.ShutdownMode.OnExplicitShutdown
+      };
     }
 
     public void Recompose()

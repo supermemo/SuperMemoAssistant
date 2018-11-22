@@ -39,7 +39,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
     public void Update(RegMemElem mem, RegRtElem rt)
     {
 #if DEBUG
-      System.Diagnostics.Debug.WriteLine("[{0} {1}] Updating", this.GetType().Name, Id);
+      //System.Diagnostics.Debug.WriteLine("[{0} {1}] Updating", this.GetType().Name, Id);
 #endif
 
       if (mem.rtxOffset == 0)

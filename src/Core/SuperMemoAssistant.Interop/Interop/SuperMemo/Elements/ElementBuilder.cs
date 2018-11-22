@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/11/17 01:40
+// Modified On:  2018/11/19 16:16
 // Modified By:  Alexis
 
 #endregion
@@ -64,7 +64,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
       Html    = html;
 
       ShouldDisplay = true;
-      Title = null;
+      Title         = null;
 
       LinkedConceptsInternal = new List<IConcept>();
       ComponentsInternal     = new List<IComponent>();
@@ -79,9 +79,9 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 
     public ElementType             Type           { get; private set; }
     public string                  Content        { get; private set; }
+    public bool                    Html           { get; private set; }
     public string                  Title          { get; private set; }
-    public bool                    Html           { get; set; }
-    public bool                    ShouldDisplay  { get; set; }
+    public bool                    ShouldDisplay  { get; private set; }
     public int                     Id             { get; private set; }
     public IElement                Parent         { get; private set; }
     public IConcept                Concept        { get; private set; }
@@ -117,6 +117,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 
     public ElementBuilder DoNotDisplay()
     {
+      throw new NotImplementedException(); // TODO: Find a SM method to hook for that purpose
+
       ShouldDisplay = false;
       return this;
     }

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/21 12:26
-// Modified On:  2018/08/31 14:08
+// Modified On:  2018/11/20 13:46
 // Modified By:  Alexis
 
 #endregion
@@ -31,6 +31,9 @@
 
 
 using System;
+using System.Threading;
+using FlaUI.Core.AutomationElements;
+using FlaUI.Core.Exceptions;
 using mshtml;
 using SuperMemoAssistant.COM.InternetExplorer;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
@@ -85,11 +88,30 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
     private IHTMLDocument2 GetDocument()
     {
-      IntPtr shellEmbedHwnd = _group._smProcess.Memory.Read<IntPtr>(
-        new IntPtr(_nativeControlAddr + SMNatives.TControl.HandleOffset)
-      );
+      AutomationElement ieSrvFrame = null;
+      int retries = 5;
 
-      var ieSrvFrame = Svc.UIAutomation.FromHandle(shellEmbedHwnd).FindFirstDescendant(c => c.ByClassName("Internet Explorer_Server"));
+      while (retries-- > 0 && ieSrvFrame == null)
+      {
+        try
+        {
+          IntPtr shellEmbedHwnd = _group._smProcess.Memory.Read<IntPtr>(
+            new IntPtr(_nativeControlAddr + SMNatives.TControl.HandleOffset)
+          );
+
+          ieSrvFrame = Svc.UIAutomation.FromHandle(shellEmbedHwnd).FindFirstDescendant(c => c.ByClassName("Internet Explorer_Server"));
+        }
+        catch (ElementNotAvailableException)
+        {
+          Thread.Sleep(50);
+        }
+        catch (TimeoutException) { }
+        catch (Exception ex)
+        {
+          // TODO: Log, notify, ...
+          break;
+        }
+      }
 
       if (ieSrvFrame == null)
         return null;

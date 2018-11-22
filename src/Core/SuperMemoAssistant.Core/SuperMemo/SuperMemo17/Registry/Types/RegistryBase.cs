@@ -153,7 +153,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
     public override IEnumerable<string> GetTargetFilePaths()
     {
-      return TargetFiles.Select(f => Collection.GetInfoFilePath(f));
+      return TargetFiles.Select(f => Collection.GetRegistryFilePath(f));
     }
 
     /// <inheritdoc />

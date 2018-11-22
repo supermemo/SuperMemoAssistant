@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:12
-// Modified On:  2018/06/07 01:00
+// Modified On:  2018/11/20 15:41
 // Modified By:  Alexis
 
 #endregion
@@ -36,11 +36,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using Anotar.Serilog;
-using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Extensions;
+using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
@@ -51,7 +50,6 @@ using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.Sys.Collections;
-using Task = SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types.Task;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 {
@@ -149,9 +147,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
           elElems
         );
 
-      foreach (int id in cttElems.Keys.Union(elElems.Keys))
+      foreach (int id in cttElems.Keys)
         Commit(id,
                cttElems.SafeGet(id),
+               null);
+
+      foreach (int id in elElems.Keys)
+        Commit(id,
+               null,
                elElems.SafeGet(id));
     }
 
@@ -200,7 +203,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
           toDispose.Add(new ConceptSnapshot());
           Svc.SMA.UI.ElementWindow.SetCurrentConcept(builder.Concept.Id);
         }
-        
+
         toDispose.Add(new ClipboardSnapshot());
 
         if (builder.ShouldDisplay)
@@ -225,7 +228,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
               Svc.SMA.UI.ElementWindow.PasteArticle();
 
             else
-              Svc.SMA.UI.ElementWindow.PasteElement();
+              Svc.SMA.UI.ElementWindow.PasteElement(); // TODO: Doesn't work. Still displays element.
 
             break;
 
@@ -334,9 +337,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
       }
     }
 
-    protected virtual void Commit(int             id,
-                                  InfContentsElem cttElem,
-                                  InfElementsElem elElem)
+    protected virtual void Commit(int              id,
+                                  InfContentsElem? cttElem,
+                                  InfElementsElem? elElem)
     {
       var el = Elements.SafeGet(id);
 
@@ -374,8 +377,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
       else
       {
         el = CreateInternal(id,
-                            cttElem,
-                            elElem);
+                            cttElem ?? default(InfContentsElem),
+                            elElem ?? default(InfElementsElem));
         Elements[id] = el;
 
         try

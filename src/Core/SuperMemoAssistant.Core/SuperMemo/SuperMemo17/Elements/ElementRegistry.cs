@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:12
-// Modified On:  2018/11/23 20:08
+// Modified On:  2018/11/26 12:32
 // Modified By:  Alexis
 
 #endregion
@@ -50,7 +50,6 @@ using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.Sys.Collections;
-using SuperMemoAssistant.Sys.Drawing;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 {
@@ -101,7 +100,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
     // Elements
 
     public IElement this[int id] => (IElement)Elements.SafeGet(id);
-    
+
     public int Count => Root.DescendantCount + 1;
 
     #endregion
@@ -182,8 +181,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
           return null;
       }
     }
-
-
     //
     // UI
 
@@ -207,23 +204,39 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 
         toDispose.Add(new ClipboardSnapshot());
 
+        ElementCreationMethod creationMethod;
+
         if (builder.ShouldDisplay)
         {
           switch (builder.ContentType)
           {
             case ElementBuilder.ContentTypeEnum.RawText:
-              Clipboard.SetText((string)builder.Content);
+              creationMethod = ElementCreationMethod.ClipboardContent;
+
+              if (!(builder.Contents[0] is ElementBuilder.TextContent rawTextContent))
+                throw new InvalidCastException("ContentTypeEnum.RawText contained a non-text IContent");
+
+              Clipboard.SetText(rawTextContent.Text);
               break;
 
             case ElementBuilder.ContentTypeEnum.Html:
-              ClipboardHelper.CopyToClipboard((string)builder.Content,
-                                              (string)builder.Content);
+              creationMethod = ElementCreationMethod.ClipboardContent;
+
+              if (!(builder.Contents[0] is ElementBuilder.TextContent htmlTextContent))
+                throw new InvalidCastException("ContentTypeEnum.RawText contained a non-text IContent");
+
+              ClipboardHelper.CopyToClipboard(htmlTextContent.Text,
+                                              htmlTextContent.Text);
               break;
 
             case ElementBuilder.ContentTypeEnum.Image:
-              ImageWrapper imgWrapper = (ImageWrapper)builder.Content;
-              Clipboard.SetImage(imgWrapper.ToBitmapImage());
+              creationMethod = ElementCreationMethod.ClipboardElement;
+
+              Clipboard.SetText(ElementClipboardBuilder.FromElementBuilder(builder));
               break;
+
+            default:
+              throw new NotImplementedException();
           }
         }
 
@@ -231,17 +244,18 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
         {
           throw new NotImplementedException();
 
-          Clipboard.SetText(ElementClipboard.FromElementBuilder(builder));
+          creationMethod = ElementCreationMethod.ClipboardElement;
+          Clipboard.SetText(ElementClipboardBuilder.FromElementBuilder(builder));
         }
 
         switch (builder.Type)
         {
           case ElementType.Topic:
-            if (builder.ShouldDisplay)
+            if (creationMethod == ElementCreationMethod.ClipboardContent)
               Svc.SMA.UI.ElementWindow.PasteArticle();
 
-            else
-              Svc.SMA.UI.ElementWindow.PasteElement(); // TODO: Doesn't work. Still displays element.
+            else if (creationMethod == ElementCreationMethod.ClipboardElement)
+              Svc.SMA.UI.ElementWindow.PasteElement();
 
             break;
 
@@ -417,6 +431,19 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
     public event Action<SMElementArgs>        OnElementCreated;
     public event Action<SMElementArgs>        OnElementDeleted;
     public event Action<SMElementChangedArgs> OnElementModified;
+
+    #endregion
+
+
+
+
+    #region Enums
+
+    private enum ElementCreationMethod
+    {
+      ClipboardContent,
+      ClipboardElement,
+    }
 
     #endregion
   }

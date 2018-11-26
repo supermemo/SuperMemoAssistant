@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/11/23 19:47
+// Modified On:  2018/11/26 12:13
 // Modified By:  Alexis
 
 #endregion
@@ -32,13 +32,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Linq;
 using SuperMemoAssistant.Interop.SuperMemo.Components;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
-using SuperMemoAssistant.Sys.Drawing;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 {
@@ -47,8 +46,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
   {
     #region Properties & Fields - Non-Public
 
-    private List<IComponent> ComponentsInternal     { get; set; }
-    private List<IConcept>   LinkedConceptsInternal { get; set; }
+    private List<IComponent> ComponentsInternal     { get; }
+    private List<IConcept>   LinkedConceptsInternal { get; }
 
     #endregion
 
@@ -57,36 +56,31 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 
     #region Constructors
 
+    public ElementBuilder(ElementType       type,
+                          params IContent[] contents)
+    {
+      Type = type;
+
+      Contents.AddRange(contents);
+      ContentType = Contents.Aggregate(
+        ContentTypeEnum.None,
+        (typeAcc,
+         content) => typeAcc | content.ContentType
+      );
+
+      ShouldDisplay = true;
+      Title         = null;
+
+      LinkedConceptsInternal = new List<IConcept>();
+      ComponentsInternal     = new List<IComponent>();
+    }
+
     public ElementBuilder(ElementType type,
                           string      content,
                           bool        html = true)
-    {
-      Type    = type;
-      Content = content;
-      ContentType = html
-        ? ContentType = ContentTypeEnum.Html
-        : ContentTypeEnum.RawText;
-
-      ShouldDisplay = true;
-      Title         = null;
-
-      LinkedConceptsInternal = new List<IConcept>();
-      ComponentsInternal     = new List<IComponent>();
-    }
-
-    public ElementBuilder(ElementType type,
-                          Image       content)
-    {
-      Type        = type;
-      Content     = new ImageWrapper(content);
-      ContentType = ContentTypeEnum.Image;
-
-      ShouldDisplay = true;
-      Title         = null;
-
-      LinkedConceptsInternal = new List<IConcept>();
-      ComponentsInternal     = new List<IComponent>();
-    }
+      : this(type,
+             new TextContent(html,
+                             content)) { }
 
     #endregion
 
@@ -96,7 +90,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
     #region Properties & Fields - Public
 
     public ElementType             Type           { get; }
-    public object                  Content        { get; }
+    public List<IContent>          Contents       { get; } = new List<IContent>();
     public ContentTypeEnum         ContentType    { get; }
     public string                  Title          { get; private set; }
     public bool                    ShouldDisplay  { get; private set; }
@@ -200,13 +194,91 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 
     #region Enums
 
+    [Flags]
     public enum ContentTypeEnum
     {
-      RawText,
-      Html,
-      Image,
+      None            = 0,
+      RawText         = 1,
+      Html            = 2,
+      Image           = 4,
+      ImageAndRawText = RawText | Image,
+      ImageAndHtml    = Html | Image,
+      ImageAndText    = RawText | Html | Image,
     }
 
     #endregion
+
+
+
+
+    public interface IContent
+    {
+      ContentTypeEnum ContentType { get; }
+    }
+
+    [Serializable]
+    public class TextContent : IContent
+    {
+      #region Constructors
+
+      public TextContent(bool   html,
+                         string text)
+      {
+        Html = html;
+        Text = text;
+      }
+
+      #endregion
+
+
+
+
+      #region Properties & Fields - Public
+
+      public bool   Html { get; set; }
+      public string Text { get; set; }
+
+      #endregion
+
+
+
+
+      #region Properties Impl - Public
+
+      public ContentTypeEnum ContentType => Html ? ContentTypeEnum.Html : ContentTypeEnum.RawText;
+
+      #endregion
+    }
+
+    [Serializable]
+    public class ImageContent : IContent
+    {
+      #region Constructors
+
+      public ImageContent(int registryId)
+      {
+        RegistryId = registryId;
+      }
+
+      #endregion
+
+
+
+
+      #region Properties & Fields - Public
+
+      public int RegistryId { get; set; }
+
+      #endregion
+
+
+
+
+      #region Properties Impl - Public
+
+      public ContentTypeEnum ContentType => ContentTypeEnum.Image;
+
+      #endregion
+    }
   }
 }

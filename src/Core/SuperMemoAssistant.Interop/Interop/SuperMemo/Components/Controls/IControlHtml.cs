@@ -1,4 +1,5 @@
 ﻿#region License & Metadata
+
 // The MIT License (MIT)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -20,16 +21,20 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/18 11:50
-// Modified On:  2018/06/18 11:50
+// Created On:   2018/07/27 12:55
+// Modified On:  2018/11/26 11:13
 // Modified By:  Alexis
+
 #endregion
+
+
+
 
 using mshtml;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Components.Controls
 {
-  public interface IControlWeb : IControlTextBase
+  public interface IControlHtml : IControlTextBase
   {
     IHTMLDocument2 Document { get; }
   }

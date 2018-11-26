@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/20 19:39
-// Modified On:  2018/06/21 12:57
+// Modified On:  2018/11/26 11:19
 // Modified By:  Alexis
 
 #endregion
@@ -33,6 +33,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Process.NET;
 using Process.NET.Extensions;
 using Process.NET.Memory;
@@ -135,6 +136,41 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
     #region Methods Impl
 
+    public IControlHtml GetFirstHtmlControl()
+    {
+      return GetFirstControl<IControlHtml>();
+    }
+
+    public IControlImage GetFirstImageControl()
+    {
+      return GetFirstControl<IControlImage>();
+    }
+
+    public IControlRtf GetFirstRtfControl()
+    {
+      return GetFirstControl<IControlRtf>();
+    }
+
+    //public IControlSound GetFirstSoundControl()
+    //{
+    //  return GetFirstControl<IControlSound>();
+    //}
+
+    //public IControlSpelling GetFirstSpellingControl()
+    //{
+    //  return GetFirstControl<IControlSpelling>();
+    //}
+
+    public IControlText GetFirstTextControl()
+    {
+      return GetFirstControl<IControlText>();
+    }
+
+    //public IControlVideo GetFirstVideoControl()
+    //{
+    //  return GetFirstControl<IControlVideo>();
+    //}
+
     /// <inheritdoc />
     IEnumerator IEnumerable.GetEnumerator()
     {
@@ -157,6 +193,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
 
     #region Methods
+
+    private T GetFirstControl<T>()
+      where T : class, IControl
+    {
+      return this.FirstOrDefault(c => c is T) as T;
+    }
 
     private IControl GetControl(int idx)
     {
@@ -227,10 +269,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
                                 this);
 
         case 0x0D:
-          return new ControlWeb(idx,
-                                this,
-                                _smProcess.Memory.Read<int>(SMNatives.TElWind.ObjectsPtr,
-                                                            4 * idx));
+          return new ControlHtml(idx,
+                                 this,
+                                 _smProcess.Memory.Read<int>(SMNatives.TElWind.ObjectsPtr,
+                                                             4 * idx));
 
         case 0x0E:
           return new ComponentControlBase(idx,

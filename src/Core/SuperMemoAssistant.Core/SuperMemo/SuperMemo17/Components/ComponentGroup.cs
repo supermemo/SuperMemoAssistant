@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/21 17:15
-// Modified On:  2018/06/07 00:57
+// Modified On:  2018/11/26 11:09
 // Modified By:  Alexis
 
 #endregion
@@ -77,7 +77,73 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components
 
 
 
+    #region Methods Impl
+
+    public IComponentHtml GetFirstHtmlComponent()
+    {
+      return GetFirstComponent<IComponentHtml>();
+    }
+
+    public IComponentImage GetFirstImageComponent()
+    {
+      return GetFirstComponent<IComponentImage>();
+    }
+
+    public IComponentRtf GetFirstRtfComponent()
+    {
+      return GetFirstComponent<IComponentRtf>();
+    }
+
+    public IComponentShapeRectangle GetFirstRectangleShapeComponent()
+    {
+      return GetFirstComponent<IComponentShapeRectangle>();
+    }
+
+    public IComponentShapeRoundedRectangle GetFirstRoundedRectangleShapeComponent()
+    {
+      return GetFirstComponent<IComponentShapeRoundedRectangle>();
+    }
+
+    public IComponentShapeEllipse GetFirstEllipseComponent()
+    {
+      return GetFirstComponent<IComponentShapeEllipse>();
+    }
+
+    public IComponentSound GetFirstSoundComponent()
+    {
+      return GetFirstComponent<IComponentSound>();
+    }
+
+    public IComponentSpelling GetFirstSpellingComponent()
+    {
+      return GetFirstComponent<IComponentSpelling>();
+    }
+
+    public IComponentText GetFirstTextComponent()
+    {
+      return GetFirstComponent<IComponentText>();
+    }
+
+    public IComponentVideo GetFirstVideoComponent()
+    {
+      return GetFirstComponent<IComponentVideo>();
+    }
+
+    #endregion
+
+
+
+
     #region Methods
+
+    private T GetFirstComponent<T>()
+      where T : class, IComponent
+    {
+      if (ComponentsInternal == null || ComponentsInternal.Count == 0)
+        return null;
+
+      return ComponentsInternal.FirstOrDefault(c => c is T) as T;
+    }
 
     internal void AddComponent(ComponentBase component)
     {

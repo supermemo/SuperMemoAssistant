@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:13
-// Modified On:  2018/11/25 16:45
+// Modified On:  2018/11/26 10:33
 // Modified By:  Alexis
 
 #endregion
@@ -170,14 +170,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     {
       return TargetFiles.Select(f => Collection.GetRegistryFilePath(f));
     }
-
-    /// <inheritdoc />
+    
     IEnumerator IEnumerable.GetEnumerator()
     {
       return GetEnumerator();
     }
-
-    /// <inheritdoc />
+    
     public IEnumerator<IMember> GetEnumerator()
     {
       return Members.Values.ToList().GetEnumerator();

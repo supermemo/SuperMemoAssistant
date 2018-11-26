@@ -119,7 +119,7 @@ namespace SuperMemoAssistant
       switch (ctrl.Type)
       {
         case ComponentType.Html:
-          var htmlCtrl = (IControlWeb)ctrl;
+          var htmlCtrl = (IControlHtml)ctrl;
           
           System.Diagnostics.Debug.WriteLine(htmlCtrl.Text);
           break;

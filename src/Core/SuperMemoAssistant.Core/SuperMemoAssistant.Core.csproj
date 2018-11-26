@@ -165,7 +165,7 @@
     <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlRtf.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlText.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlTextBased.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlWeb.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlHtml.cs" />
     <Compile Include="SuperMemo\SuperMemo17\SMNatives.cs" />
     <Compile Include="SuperMemo\SuperMemoRegistry.cs" />
     <Compile Include="SuperMemo\SuperMemoUI.cs" />

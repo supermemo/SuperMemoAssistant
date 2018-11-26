@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/11/17 01:26
-// Modified On:  2018/11/19 16:16
+// Modified On:  2018/11/26 13:18
 // Modified By:  Alexis
 
 #endregion
@@ -31,11 +31,12 @@
 
 
 using System;
+using System.IO;
 using SuperMemoAssistant.Services;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 {
-  public static class ElementClipboard
+  public static class ElementClipboardBuilder
   {
     #region Constants & Statics
 
@@ -70,22 +71,48 @@ ReadPointComponent=0
 ReadPointStart=0
 ReadPointLength=0
 ReadPointScrollTop=0
-ComponentNo=1
+{5}
+Begin RepHist #1
+ElNo=1 Rep=1 Date={6} Hour={7:#.###} Int=0 Grade=10 Laps=0 Priority=0
+End RepHist #1
+End Element #1";
+    private const string ComponentsArticle = @"ComponentNo=1
 Begin Component #1
 Type=HTML
 Cors=(104,199,9699,9296)
 DisplayAt=255
 Hyperlink=0
-Text=
+Text={0}
+TestElement=0
+ReadOnly=0
+FullHTML=1
+Style=0
+End Component #1";
+    private const string ComponentsArticlePicture = @"ComponentNo=2
+Begin Component #1
+Type=HTML
+Cors=(200,400,5000,9200)
+DisplayAt=255
+Hyperlink=0
+Text={0}
 TestElement=0
 ReadOnly=0
 FullHTML=1
 Style=0
 End Component #1
-Begin RepHist #1
-ElNo=1 Rep=1 Date={4} Hour={5:#.###} Int=0 Grade=10 Laps=0 Priority=0
-End RepHist #1
-End Element #1";
+Begin Component #2
+Type=Image
+Cors=(5395,402,4394,9196)
+DisplayAt=255
+Hyperlink=0
+ImageName={1}
+ImageFile={2}
+Stretch=2
+ClickPlay=0
+TestElement=0
+Transparent=0
+Zoom=[0,0,0,0]
+End Component #2";
 
     #endregion
 
@@ -113,7 +140,49 @@ End Element #1";
                            title,
                            type,
                            lastRep,
+                           GenerateComponentsStr(elemBuilder),
+                           lastRep,
                            lastRepTime);
+    }
+
+    private static string GenerateComponentsStr(ElementBuilder elemBuilder)
+    {
+      switch (elemBuilder.ContentType)
+      {
+        case ElementBuilder.ContentTypeEnum.Html:
+        case ElementBuilder.ContentTypeEnum.RawText:
+          throw new NotImplementedException();
+
+        case ElementBuilder.ContentTypeEnum.Image:
+          var imgContent = (ElementBuilder.ImageContent)elemBuilder.Contents[0];
+
+          if (imgContent == null)
+            throw new InvalidCastException("ContentTypeEnum.Image contained a non-image IContent");
+
+          var imgMember = Svc.SMA.Registry.Image[imgContent.RegistryId];
+
+          if (imgMember == null) // || imgMember.Empty) // TODO: Why is Empty always true ?
+            throw new ArgumentException($"Image member {imgContent.RegistryId} doesn't exist or is deleted.");
+
+          var filePath = imgMember.GetFilePath();
+
+          if (File.Exists(filePath) == false)
+            throw new InvalidOperationException($"File path '{filePath}' doesn't exist for image member id {imgContent.RegistryId}");
+
+          return string.Format(
+            ComponentsArticlePicture,
+            imgMember.Name,
+            imgMember.Name,
+            filePath
+          );
+
+        case ElementBuilder.ContentTypeEnum.ImageAndRawText:
+        case ElementBuilder.ContentTypeEnum.ImageAndHtml:
+          throw new NotImplementedException();
+
+        default:
+          throw new NotImplementedException();
+      }
     }
 
     #endregion

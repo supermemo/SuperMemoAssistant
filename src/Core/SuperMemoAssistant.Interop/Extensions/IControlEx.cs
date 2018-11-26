@@ -34,9 +34,9 @@ namespace SuperMemoAssistant.Extensions
 {
   public static class IControlEx
   {
-    public static IControlWeb AsWeb(this IControl ctrl)
+    public static IControlHtml AsHtml(this IControl ctrl)
     {
-      return (IControlWeb)ctrl;
+      return (IControlHtml)ctrl;
     }
     
     public static IControlRtf AsRtf(this IControl ctrl)

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/21 12:26
-// Modified On:  2018/11/20 13:46
+// Modified On:  2018/11/26 11:13
 // Modified By:  Alexis
 
 #endregion
@@ -42,7 +42,7 @@ using SuperMemoAssistant.Services;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 {
-  public class ControlWeb : ControlTextBased, IControlWeb
+  public class ControlHtml : ControlTextBased, IControlHtml
   {
     #region Properties & Fields - Non-Public
 
@@ -57,9 +57,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
     #region Constructors
 
     /// <inheritdoc />
-    public ControlWeb(int          id,
-                      ControlGroup @group,
-                      int          nativeControlAddr)
+    public ControlHtml(int          id,
+                       ControlGroup @group,
+                       int          nativeControlAddr)
       : base(id,
              ComponentType.Html,
              @group)
@@ -74,10 +74,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
     #region Properties Impl - Public
 
-    public override string Text { get => Document.body.innerHTML; set => Document.body.innerHTML = value; }
-
     /// <inheritdoc />
     public IHTMLDocument2 Document => _document ?? (_document = GetDocument());
+
+    public override string Text { get => Document.body.innerHTML; set => Document.body.innerHTML = value; }
 
     #endregion
 
@@ -89,10 +89,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
     private IHTMLDocument2 GetDocument()
     {
       AutomationElement ieSrvFrame = null;
-      int retries = 5;
+      int               retries    = 5;
 
       while (retries-- > 0 && ieSrvFrame == null)
-      {
         try
         {
           IntPtr shellEmbedHwnd = _group._smProcess.Memory.Read<IntPtr>(
@@ -111,7 +110,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
           // TODO: Log, notify, ...
           break;
         }
-      }
 
       if (ieSrvFrame == null)
         return null;

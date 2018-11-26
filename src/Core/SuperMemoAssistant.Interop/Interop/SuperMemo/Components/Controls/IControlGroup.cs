@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/20 19:33
-// Modified On:  2018/06/20 20:03
+// Created On:   2018/07/27 12:55
+// Modified On:  2018/11/26 11:15
 // Modified By:  Alexis
 
 #endregion
@@ -41,9 +41,18 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Components.Controls
     IControl this[int idx] { get; }
     int Count { get; }
 
+    bool IsModified { get; }
+
     IControl FocusedControl      { get; }
     int      FocusedControlIndex { get; }
 
-    bool IsModified { get; }
+    IControlHtml  GetFirstHtmlControl();
+    IControlImage GetFirstImageControl();
+    IControlRtf   GetFirstRtfControl();
+    IControlText  GetFirstTextControl();
+
+    //IControlSound                 GetFirstSoundControl();
+    //IControlSpelling              GetFirstSpellingControl();
+    //IControlVideo                 GetFirstVideoControl();
   }
 }

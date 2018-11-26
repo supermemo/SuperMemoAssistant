@@ -39,6 +39,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.UI.Element
 {
   public interface IElementWdw : IWdw
   {
+    bool FocusWindow();
+
     IControlGroup ControlGroup { get; }
 
     int      CurrentElementId { get; }
@@ -54,6 +56,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.UI.Element
     bool PasteArticle();
     bool PasteElement();
 
+    bool Delete();
     bool Done();
 
     event Action<SMDisplayedElementChangedArgs> OnElementChanged;

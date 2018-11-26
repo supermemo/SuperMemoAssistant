@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/12 18:26
-// Modified On:  2018/11/22 18:32
+// Modified On:  2018/11/26 00:08
 // Modified By:  Alexis
 
 #endregion
@@ -34,10 +34,12 @@ using System;
 using System.Collections.Generic;
 using FlaUI.Core;
 using Process.NET;
+using Process.NET.Memory;
 using SuperMemoAssistant.Hooks;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SuperMemo.Hooks;
+using SuperMemoAssistant.SuperMemo.SuperMemo17;
 using SuperMemoAssistant.Sys.UIAutomation;
 
 namespace SuperMemoAssistant.SuperMemo
@@ -51,6 +53,9 @@ namespace SuperMemoAssistant.SuperMemo
     #region Properties & Fields - Non-Public
 
     protected Application SMApp { get; private set; }
+
+
+    private IPointer IgnoreUserConfirmationPtr { get; set; }
 
     #endregion
 
@@ -81,6 +86,8 @@ namespace SuperMemoAssistant.SuperMemo
     /// <inheritdoc />
     public override void Dispose()
     {
+      IgnoreUserConfirmationPtr = null;
+
       SMProcess.Native.Exited -= OnSMExited;
 
       try
@@ -110,10 +117,16 @@ namespace SuperMemoAssistant.SuperMemo
 
     #region Properties Impl - Public
 
-    public          SMCollection       Collection { get; }
-    public override IProcess           SMProcess  { get; set; }
-    public          ISuperMemoRegistry Registry   => SuperMemoRegistry.Instance;
-    public          ISuperMemoUI       UI         => SuperMemoUI.Instance;
+    public          SMCollection Collection { get; }
+    public override IProcess     SMProcess  { get; set; }
+    public bool IgnoreUserConfirmation
+    {
+      get => IgnoreUserConfirmationPtr.Read<bool>();
+      set => IgnoreUserConfirmationPtr.Write<bool>(0,
+                                                   value);
+    }
+    public ISuperMemoRegistry Registry => SuperMemoRegistry.Instance;
+    public ISuperMemoUI       UI       => SuperMemoUI.Instance;
 
     #endregion
 
@@ -155,6 +168,8 @@ namespace SuperMemoAssistant.SuperMemo
     protected virtual void OnPostInit()
     {
       SMA.Instance.OnSMStartedImpl();
+
+      IgnoreUserConfirmationPtr = SMProcess[SMNatives.Globals.IgnoreUserConfirmationPtr];
     }
 
     #endregion

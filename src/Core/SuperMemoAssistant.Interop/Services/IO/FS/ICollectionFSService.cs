@@ -40,6 +40,8 @@ namespace SuperMemoAssistant.Services.IO.FS
 {
   public interface ICollectionFSService
   {
+    string GetPluginResourcePath(ISMAPlugin plugin);
+
     CollectionFile this[int fileId] { get; }
 
     IEnumerable<CollectionFile> ForElement(int        elementId,

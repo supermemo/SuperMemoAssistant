@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/31 23:55
-// Modified On:  2018/06/01 01:22
+// Created On:   2018/06/01 14:29
+// Modified On:  2018/11/23 12:39
 // Modified By:  Alexis
 
 #endregion
@@ -38,12 +38,11 @@ using System.Linq;
 using Anotar.Serilog;
 using JetBrains.Annotations;
 using LiteDB;
-using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.Plugins;
-using SuperMemoAssistant.Services.IO.FS;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.Services.IO.FS;
 using SuperMemoAssistant.Sys.IO.FS;
 
 namespace SuperMemoAssistant.PluginsHost.Services.FS
@@ -72,18 +71,12 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
       LoadDb();
     }
 
-    /// <inheritdoc />
-    public void Dispose()
-    {
-      DbFiles = null;
-    }
-
     #endregion
 
 
 
 
-    #region Properties & Fields - Public
+    #region Properties Impl - Public
 
     public CollectionFile this[int fileId] => FromDbFile(DbFiles.FindById(fileId));
 
@@ -92,34 +85,19 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
 
 
 
-    #region Methods
+    #region Methods Impl
 
-    public int PruneOrphans()
-    {
-      int count = 0;
-      var allFiles = DbFiles.FindAll();
-
-      foreach (var group in allFiles.GroupBy(f => f.ElementId))
-      {
-        var element = SMA.Registry.Element[group.Key];
-
-        if (element != null)
-          continue;
-
-        count += Delete(group);
-      }
-
-      return count;
-    }
-
-    public IEnumerable<CollectionFile> ForElement(int elementId,
+    public IEnumerable<CollectionFile> ForElement(int        elementId,
                                                   ISMAPlugin plugin = null)
     {
-      Query query = Query.EQ("ElementId", elementId);
+      Query query = Query.EQ("ElementId",
+                             elementId);
 
       if (plugin != null)
-        query = Query.And(query, Query.EQ("PluginId", plugin.Id));
-      
+        query = Query.And(query,
+                          Query.EQ("PluginId",
+                                   plugin.Id));
+
       return DbFiles.Find(query).Select(FromDbFile);
     }
 
@@ -130,11 +108,11 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
     }
 
     public CollectionFile Create(
-      [NotNull] ISMAPlugin requester, 
-      int elementId, 
-      [NotNull] Action<Stream> streamWriter, 
-      string extension, 
-      string crc32 = null)
+      [NotNull] ISMAPlugin     requester,
+      int                      elementId,
+      [NotNull] Action<Stream> streamWriter,
+      string                   extension,
+      string                   crc32 = null)
     {
       if (elementId <= 0)
         return null;
@@ -149,7 +127,7 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
         {
           ElementId = elementId,
           Extension = extension ?? string.Empty,
-          PluginId = requester.Id
+          PluginId  = requester.Id
         };
 
         dbFile.Id = DbFiles.Insert(dbFile).AsInt32;
@@ -158,7 +136,9 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
 
         DirectoryEx.EnsureExists(Path.GetDirectoryName(colFile.Path));
 
-        using (var stream = File.Open(colFile.Path, System.IO.FileMode.Create, FileAccess.ReadWrite))
+        using (var stream = File.Open(colFile.Path,
+                                      System.IO.FileMode.Create,
+                                      FileAccess.ReadWrite))
           streamWriter(stream);
 
         if (crc32 != null)
@@ -184,7 +164,7 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
         {
           // TODO: Log
         }
-        
+
         throw ex;
       }
     }
@@ -213,12 +193,16 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
     }
 
     /// <inheritdoc />
-    public int DeleteByElementId(int elementId, ISMAPlugin plugin = null)
+    public int DeleteByElementId(int        elementId,
+                                 ISMAPlugin plugin = null)
     {
-      Query query = Query.EQ("ElementId", elementId);
+      Query query = Query.EQ("ElementId",
+                             elementId);
 
       if (plugin != null)
-        query = Query.And(query, Query.EQ("PluginId", plugin.Id));
+        query = Query.And(query,
+                          Query.EQ("PluginId",
+                                   plugin.Id));
 
       return Delete(DbFiles.Find(query));
     }
@@ -229,12 +213,52 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
       return Delete(DbFiles.Find(f => f.PluginId == plugin.Id));
     }
 
+    #endregion
+
+
+
+
+    #region Methods
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+      DbFiles = null;
+    }
+
+    /// <inheritdoc />
+    public string GetPluginResourcePath(ISMAPlugin plugin)
+    {
+      var path = SMA.Collection.GetSMAPluginsFolder(plugin);
+
+      DirectoryEx.EnsureExists(path);
+
+      return path;
+    }
+
+    public int PruneOrphans()
+    {
+      int count    = 0;
+      var allFiles = DbFiles.FindAll();
+
+      foreach (var group in allFiles.GroupBy(f => f.ElementId))
+      {
+        var element = SMA.Registry.Element[group.Key];
+
+        if (element != null)
+          continue;
+
+        count += Delete(group);
+      }
+
+      return count;
+    }
+
     private int Delete(IEnumerable<CollectionFS_File> dbFiles)
     {
       var toDelete = new List<CollectionFS_File>(dbFiles.Count());
 
       foreach (var file in dbFiles)
-      {
         try
         {
           File.Delete(GetFilePath(file));
@@ -243,11 +267,13 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
         }
         catch (Exception ex)
         {
-          LogTo.Error(ex, "Failed to delete {file}", file);
+          LogTo.Error(ex,
+                      "Failed to delete {file}",
+                      file);
         }
-      }
 
-      return DbFiles.Delete(Query.In("Id", toDelete.Select(f => new BsonValue(f.Id))));
+      return DbFiles.Delete(Query.In("Id",
+                                     toDelete.Select(f => new BsonValue(f.Id))));
     }
 
     private CollectionFile FromDbFile(CollectionFS_File dbFile)
@@ -256,9 +282,9 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
 
       return new CollectionFile
       {
-        Id = dbFile.Id,
+        Id        = dbFile.Id,
         ElementId = dbFile.ElementId,
-        Path = filePath
+        Path      = filePath
       };
     }
 
@@ -270,7 +296,8 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
 
     private string GetFilePath(CollectionFS_File dbFile)
     {
-      return SMA.Collection.GetSMAElementsFilePath(dbFile.ElementId, $"{dbFile.Id}{GetFileExtension(dbFile.Extension)}");
+      return SMA.Collection.GetSMAElementsFilePath(dbFile.ElementId,
+                                                   $"{dbFile.Id}{GetFileExtension(dbFile.Extension)}");
     }
 
     private string GetFileExtension(string extension)

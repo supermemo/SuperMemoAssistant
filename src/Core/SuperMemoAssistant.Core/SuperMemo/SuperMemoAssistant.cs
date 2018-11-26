@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/08 13:06
-// Modified On:  2018/07/27 13:51
+// Modified On:  2018/11/26 00:11
 // Modified By:  Alexis
 
 #endregion
@@ -45,211 +45,220 @@ using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo
 {
+  /// <summary>
+  ///   Wrapper around a SM management instance that handles SuperMemo App lifecycle events
+  ///   (start, exit, ...) and provides a safe interface to interact with SuperMemo
+  /// </summary>
+  [InitOnLoad]
+  public class SMA
+    : SMMarshalByRefObject,
+      ISuperMemoAssistant, // Proxy for wrapped SMxx object
+      IDisposable
+  {
+    #region Constants & Statics
+
+    protected static readonly Dictionary<Regex, Func<SMCollection, SuperMemoBase>>
+      SMTitleFactoryMap =
+        new Dictionary<Regex, Func<SMCollection, SuperMemoBase>>
+        {
+          {
+            new Regex(SM17.RE_WindowTitle,
+                      RegexOptions.Compiled | RegexOptions.IgnoreCase),
+            c => new SM17(c)
+          }
+        };
+
+
+    public static SMA Instance { get; } = new SMA();
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Non-Public
+
+    internal SuperMemoBase SMMgmt { get; set; }
+
+    #endregion
+
+
+
+
+    #region Constructors
+
     /// <summary>
-    ///     Wrapper around a SM management instance that handles SuperMemo App lifecycle events
-    ///     (start, exit, ...) and provides a safe interface to interact with SuperMemo
+    ///   Create an instance of the wrapper that will start a SM instance and attach the
+    ///   management engine.
     /// </summary>
-    [InitOnLoad]
-    public class SMA
-        : SMMarshalByRefObject,
-          ISuperMemoAssistant, // Proxy for wrapped SMxx object
-          IDisposable
+    protected SMA()
     {
-        #region Constants & Statics
+      Svc.SMA = this;
+      //StartMonitoring();
+    }
 
-        protected static readonly Dictionary<Regex, Func<SMCollection, SuperMemoBase>>
-            SMTitleFactoryMap =
-                new Dictionary<Regex, Func<SMCollection, SuperMemoBase>>
-                {
-                    {
-                        new Regex(SM17.RE_WindowTitle,
-                                  RegexOptions.Compiled | RegexOptions.IgnoreCase),
-                        c => new SM17(c)
-                    }
-                };
+    /// <inheritdoc />
+    public virtual void Dispose()
+    {
+      //StopMonitoring();
 
+      SMMgmt?.Dispose();
+    }
 
-        public static SMA Instance { get; } = new SMA();
-
-        #endregion
+    #endregion
 
 
 
 
-        #region Properties & Fields - Non-Public
+    #region Properties Impl - Public
 
-        internal SuperMemoBase SMMgmt { get; set; }
+    /// <inheritdoc />
+    public SMCollection Collection { get => SMMgmt?.Collection; private set => throw new InvalidOperationException(); }
+    /// <inheritdoc />
+    public virtual SMAppVersion AppVersion => SMMgmt?.AppVersion ?? SMConst.Versions.vInvalid;
+    /// <inheritdoc />
+    public IProcess SMProcess => SMMgmt?.SMProcess;
+    /// <inheritdoc />
+    public bool IgnoreUserConfirmation
+    {
+      get => SMMgmt?.IgnoreUserConfirmation ?? false;
+      set
+      {
+        if (SMMgmt != null) SMMgmt.IgnoreUserConfirmation = value;
+      }
+    }
 
-        #endregion
+    public ISuperMemoRegistry Registry => SuperMemoRegistry.Instance;
+    public ISuperMemoUI       UI       => SuperMemoUI.Instance;
+
+    /// <inheritdoc />
+    public bool IsRunning => SMMgmt != null;
+
+    #endregion
 
 
 
 
-        #region Constructors
+    #region Methods Impl
 
-        /// <summary>
-        ///     Create an instance of the wrapper that will start a SM instance and attach the
-        ///     management engine.
-        /// </summary>
-        protected SMA()
+    //
+    // Collection loading management
+
+    public bool Start(SMCollection collection)
+    {
+      if (SMMgmt != null)
+        return false;
+
+      try
+      {
+        // TODO: Look at PE version and select Management Engine version
+        var dummy = new SM17(collection);
+
+        // TODO: Ensure opened collection (windows title) matches parameter
+      }
+      catch (Exception ex)
+      {
+        SMMgmt = null;
+
+        try
         {
-            Svc.SMA = this;
-            //StartMonitoring();
+          OnSMStoppedEvent?.Invoke(this,
+                                   new SMProcessArgs(this,
+                                                     null));
         }
+        catch (Exception pluginEx) { }
 
-        /// <inheritdoc />
-        public virtual void Dispose()
+        // TODO: Handle exception
+
+        return false;
+      }
+
+      return true;
+    }
+
+    #endregion
+
+
+
+
+    #region Methods
+
+    public void OnSMStartingImpl(SuperMemoBase smMgmt)
+    {
+      SMMgmt = smMgmt;
+
+      try
+      {
+        OnSMStartingEvent?.Invoke(this,
+                                  new SMEventArgs(this));
+      }
+      catch (Exception ex) { }
+    }
+
+    /// <summary>Called from this very class when a new matching SM Instance is found</summary>
+    /// <param name="sender"></param>
+    /// <param name="args"></param>
+    public void OnSMStartedImpl()
+    {
+      SMMgmt.OnSMStoppedEvent += OnSMStoppedImpl;
+
+      try
+      {
+        OnSMStartedEvent?.Invoke(this,
+                                 new SMProcessArgs(this,
+                                                   SMProcess));
+      }
+      catch (Exception ex)
+      {
+        // TODO: Log
+      }
+    }
+
+    protected void OnSMStoppedImpl(object        sender,
+                                   SMProcessArgs args)
+    {
+      SMMgmt = null;
+
+      try
+      {
+        OnSMStoppedEvent?.Invoke(this,
+                                 ProxifyArgs(args));
+      }
+      catch (Exception ex)
+      {
+        // TODO: Log
+      }
+    }
+
+    protected EventHandler<T> MakeEventProxy<T>(EventHandler<T> eventProxy)
+      where T : SMEventArgs
+    {
+      void Proxy(object sm,
+                 T      args)
+      {
+        try
         {
-            //StopMonitoring();
-
-            SMMgmt?.Dispose();
+          eventProxy?.Invoke(this,
+                             ProxifyArgs(args));
         }
-
-        #endregion
-
-
-
-
-        #region Properties Impl - Public
-
-        /// <inheritdoc />
-        public SMCollection Collection { get => SMMgmt?.Collection; private set => throw new InvalidOperationException(); }
-        /// <inheritdoc />
-        public virtual SMAppVersion AppVersion => SMMgmt?.AppVersion ?? SMConst.Versions.vInvalid;
-        /// <inheritdoc />
-        public IProcess SMProcess => SMMgmt?.SMProcess;
-
-        public ISuperMemoRegistry Registry => SuperMemoRegistry.Instance;
-        public ISuperMemoUI       UI       => SuperMemoUI.Instance;
-
-        /// <inheritdoc />
-        public bool IsRunning => SMMgmt != null;
-
-        #endregion
-
-
-
-
-        #region Methods Impl
-
-        //
-        // Collection loading management
-
-        public bool Start(SMCollection collection)
+        catch (Exception ex)
         {
-            if (SMMgmt != null)
-                return false;
-
-            try
-            {
-                // TODO: Look at PE version and select Management Engine version
-                var dummy = new SM17(collection);
-
-                // TODO: Ensure opened collection (windows title) matches parameter
-            }
-            catch (Exception ex)
-            {
-                SMMgmt = null;
-
-                try
-                {
-                    OnSMStoppedEvent?.Invoke(this,
-                                             new SMProcessArgs(this,
-                                                               null));
-                }
-                catch (Exception pluginEx) { }
-
-                // TODO: Handle exception
-
-                return false;
-            }
-
-            return true;
+          // TODO: Log
         }
+      }
 
-        #endregion
+      return Proxy;
+    }
 
-
-
-
-        #region Methods
-
-        public void OnSMStartingImpl(SuperMemoBase smMgmt)
-        {
-            SMMgmt = smMgmt;
-
-            try
-            {
-                OnSMStartingEvent?.Invoke(this,
-                                          new SMEventArgs(this));
-            }
-            catch (Exception ex) { }
-        }
-
-        /// <summary>Called from this very class when a new matching SM Instance is found</summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        public void OnSMStartedImpl()
-        {
-            SMMgmt.OnSMStoppedEvent += OnSMStoppedImpl;
-
-            try
-            {
-                OnSMStartedEvent?.Invoke(this,
-                                         new SMProcessArgs(this,
-                                                           SMProcess));
-            }
-            catch (Exception ex)
-            {
-                // TODO: Log
-            }
-        }
-
-        protected void OnSMStoppedImpl(object        sender,
-                                       SMProcessArgs args)
-        {
-            SMMgmt = null;
-
-            try
-            {
-                OnSMStoppedEvent?.Invoke(this,
-                                         ProxifyArgs(args));
-            }
-            catch (Exception ex)
-            {
-                // TODO: Log
-            }
-        }
-
-        protected EventHandler<T> MakeEventProxy<T>(EventHandler<T> eventProxy)
-            where T : SMEventArgs
-        {
-            void Proxy(object sm,
-                       T      args)
-            {
-                try
-                {
-                    eventProxy?.Invoke(this,
-                                       ProxifyArgs(args));
-                }
-                catch (Exception ex)
-                {
-                    // TODO: Log
-                }
-            }
-
-            return Proxy;
-        }
-
-        protected T ProxifyArgs<T>(T args)
-            where T : SMEventArgs
-        {
-            return args.With(a => a.SMMgmt = this);
-        }
+    protected T ProxifyArgs<T>(T args)
+      where T : SMEventArgs
+    {
+      return args.With(a => a.SMMgmt = this);
+    }
 
 
-        //
-        // Process-monitoring-related
+    //
+    // Process-monitoring-related
 
 /*
 /// <summary>
@@ -355,40 +364,40 @@ namespace SuperMemoAssistant.SuperMemo
     }
 */
 
-        /// <summary>Probe running smXX.exe processes</summary>
-        /// <returns>Open collection names</returns>
-        public static IEnumerable<SMCollection> GetRunningInstances()
-        {
-            var allTitleRegEx = SMTitleFactoryMap.Keys;
+    /// <summary>Probe running smXX.exe processes</summary>
+    /// <returns>Open collection names</returns>
+    public static IEnumerable<SMCollection> GetRunningInstances()
+    {
+      var allTitleRegEx = SMTitleFactoryMap.Keys;
 
-            return System.Diagnostics.Process.GetProcesses()
-                         .Select(p => allTitleRegEx
-                                      .Select(r => r.Match(p.ProcessName))
-                                      .FirstOrDefault(r => r.Success)
-                                      ?.Groups
-                         )
-                         .Where(g => g != null)
-                         .Select(g => new SMCollection(g[1].Value,
-                                                       g[2].Value));
-        }
-
-        #endregion
-
-
-
-
-        #region Events
-
-        //
-        // ISuperMemo Events
-
-        /// <inheritdoc />
-        public virtual event EventHandler<SMProcessArgs> OnSMStartedEvent;
-        /// <inheritdoc />
-        public virtual event EventHandler<SMEventArgs> OnSMStartingEvent;
-        /// <inheritdoc />
-        public virtual event EventHandler<SMProcessArgs> OnSMStoppedEvent;
-
-        #endregion
+      return System.Diagnostics.Process.GetProcesses()
+                   .Select(p => allTitleRegEx
+                                .Select(r => r.Match(p.ProcessName))
+                                .FirstOrDefault(r => r.Success)
+                                ?.Groups
+                   )
+                   .Where(g => g != null)
+                   .Select(g => new SMCollection(g[1].Value,
+                                                 g[2].Value));
     }
+
+    #endregion
+
+
+
+
+    #region Events
+
+    //
+    // ISuperMemo Events
+
+    /// <inheritdoc />
+    public virtual event EventHandler<SMProcessArgs> OnSMStartedEvent;
+    /// <inheritdoc />
+    public virtual event EventHandler<SMEventArgs> OnSMStartingEvent;
+    /// <inheritdoc />
+    public virtual event EventHandler<SMProcessArgs> OnSMStoppedEvent;
+
+    #endregion
+  }
 }

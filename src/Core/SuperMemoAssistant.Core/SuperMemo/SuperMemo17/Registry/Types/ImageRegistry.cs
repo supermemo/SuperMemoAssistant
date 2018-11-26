@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/19 20:49
-// Modified On:  2018/05/30 23:27
+// Created On:   2018/06/01 14:13
+// Modified On:  2018/11/26 00:14
 // Modified By:  Alexis
 
 #endregion
@@ -31,6 +31,7 @@
 
 
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
@@ -38,6 +39,7 @@ using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members;
 using SuperMemoAssistant.Sys;
+using SuperMemoAssistant.Sys.Drawing;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 {
@@ -58,6 +60,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override string MemFileName => SMConst.Files.ImageMemFileName;
     protected override string RtxFileName => SMConst.Files.ImageRtxFileName;
     protected override string RtfFileName => null;
+    protected override IntPtr RegistryPtr => new IntPtr(SMNatives.TRegistry.ImageRegistryInstance.Read<int>(SMA.Instance.SMProcess.Memory));
 
     #endregion
 
@@ -75,14 +78,42 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
     #region Methods Impl
 
-    protected override Image Create(int id, RegMemElem mem, RegRtElem rtxOrRtf)
+    protected override Image Create(int        id,
+                                    RegMemElem mem,
+                                    RegRtElem  rtxOrRtf)
     {
-      return new Image(id, mem, rtxOrRtf);
+      return new Image(id,
+                       mem,
+                       rtxOrRtf);
     }
 
-    public Task<IImage> AddAsync(string imageName, string imagePath)
+    public Task<IImage> AddAsync(string imageName,
+                                 string imagePath)
     {
       throw new NotImplementedException();
+    }
+
+    public int AddMember(ImageWrapper imageWrapper,
+                         string       registryName)
+    {
+      int ret = -1;
+
+      try
+      {
+        var      filePath = Path.GetTempFileName() + ".png";
+        FileInfo fi       = imageWrapper.ToFile(filePath);
+
+        ret = ImportFile(filePath,
+                         registryName);
+
+        fi.Delete();
+      }
+      catch
+      {
+        return -1;
+      }
+
+      return ret;
     }
 
     #endregion

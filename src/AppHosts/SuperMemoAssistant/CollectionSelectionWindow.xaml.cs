@@ -35,6 +35,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using Microsoft.Win32;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 
@@ -79,6 +80,9 @@ namespace SuperMemoAssistant
         SavedCollections.Add(collection);
 
       lbCollections.ItemsSource = SavedCollections;
+
+      if (SavedCollections.Count > 0)
+        lbCollections.SelectedIndex = 0;
     }
 
     private void btnBrowse_Click(object          sender,
@@ -158,5 +162,12 @@ namespace SuperMemoAssistant
     }
 
     #endregion
+
+    private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+      if (e.Key == Key.Enter && btnOpen.IsEnabled)
+        btnOpen_Click(sender,
+                      e);
+    }
   }
 }

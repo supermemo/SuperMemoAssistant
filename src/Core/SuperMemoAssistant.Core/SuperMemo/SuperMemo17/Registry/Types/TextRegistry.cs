@@ -58,6 +58,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override string MemFileName => SMConst.Files.TextMemFileName;
     protected override string RtxFileName => SMConst.Files.TextRtxFileName;
     protected override string RtfFileName => SMConst.Files.TextRtfFileName;
+    protected override IntPtr RegistryPtr => new IntPtr(SMNatives.TRegistry.TextRegistryInstance.Read<int>(SMA.Instance.SMProcess.Memory));
 
     #endregion
 

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/02 00:38
-// Modified On:  2018/06/02 00:40
+// Modified On:  2018/11/23 12:40
 // Modified By:  Alexis
 
 #endregion
@@ -53,7 +53,8 @@ namespace SuperMemoAssistant.Services.IO.FS
 
     #region Constructors
 
-    public PluginCollectionFSService(ISMAPlugin plugin, ICollectionFSService service)
+    public PluginCollectionFSService(ISMAPlugin           plugin,
+                                     ICollectionFSService service)
     {
       Plugin  = plugin;
       Service = service;
@@ -77,14 +78,17 @@ namespace SuperMemoAssistant.Services.IO.FS
     #region Methods Impl
 
     /// <inheritdoc />
-    public IEnumerable<CollectionFile> ForElement(int elementId, ISMAPlugin plugin = null)
+    public string GetPluginResourcePath(ISMAPlugin plugin)
     {
-      return Service.ForElement(elementId, plugin);
+      return Service.GetPluginResourcePath(plugin);
     }
-    
-    public IEnumerable<CollectionFile> ForElementWithPlugin(int elementId)
+
+    /// <inheritdoc />
+    public IEnumerable<CollectionFile> ForElement(int        elementId,
+                                                  ISMAPlugin plugin = null)
     {
-      return Service.ForElement(elementId, Plugin);
+      return Service.ForElement(elementId,
+                                plugin);
     }
 
     /// <inheritdoc />
@@ -94,14 +98,17 @@ namespace SuperMemoAssistant.Services.IO.FS
     }
 
     /// <inheritdoc />
-    public CollectionFile Create(ISMAPlugin plugin, int elementId, Action<Stream> streamWriter, string extension, string crc32 = null)
+    public CollectionFile Create(ISMAPlugin     plugin,
+                                 int            elementId,
+                                 Action<Stream> streamWriter,
+                                 string         extension,
+                                 string         crc32 = null)
     {
-      return Service.Create(plugin, elementId, streamWriter, extension, crc32);
-    }
-    
-    public CollectionFile Create(int elementId, Action<Stream> streamWriter, string extension, string crc32 = null)
-    {
-      return Service.Create(Plugin, elementId, streamWriter, extension, crc32);
+      return Service.Create(plugin,
+                            elementId,
+                            streamWriter,
+                            extension,
+                            crc32);
     }
 
     /// <inheritdoc />
@@ -111,20 +118,48 @@ namespace SuperMemoAssistant.Services.IO.FS
     }
 
     /// <inheritdoc />
-    public int DeleteByElementId(int elementId, ISMAPlugin plugin = null)
+    public int DeleteByElementId(int        elementId,
+                                 ISMAPlugin plugin = null)
     {
-      return Service.DeleteByElementId(elementId, plugin);
-    }
-    
-    public int DeleteByElementIdWithPlugin(int elementId)
-    {
-      return Service.DeleteByElementId(elementId, Plugin);
+      return Service.DeleteByElementId(elementId,
+                                       plugin);
     }
 
     /// <inheritdoc />
     public int DeleteByPlugin(ISMAPlugin plugin = null)
     {
       return Service.DeleteByPlugin(plugin ?? Plugin);
+    }
+
+    #endregion
+
+
+
+
+    #region Methods
+
+    public IEnumerable<CollectionFile> ForElementWithPlugin(int elementId)
+    {
+      return Service.ForElement(elementId,
+                                Plugin);
+    }
+
+    public CollectionFile Create(int            elementId,
+                                 Action<Stream> streamWriter,
+                                 string         extension,
+                                 string         crc32 = null)
+    {
+      return Service.Create(Plugin,
+                            elementId,
+                            streamWriter,
+                            extension,
+                            crc32);
+    }
+
+    public int DeleteByElementIdWithPlugin(int elementId)
+    {
+      return Service.DeleteByElementId(elementId,
+                                       Plugin);
     }
 
     #endregion

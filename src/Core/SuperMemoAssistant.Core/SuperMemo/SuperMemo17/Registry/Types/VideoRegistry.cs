@@ -58,6 +58,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override string MemFileName => SMConst.Files.VideoMemFileName;
     protected override string RtxFileName => SMConst.Files.VideoRtxFileName;
     protected override string RtfFileName => null;
+    /// <inheritdoc />
+    protected override IntPtr RegistryPtr => new IntPtr(SMNatives.TRegistry.VideoRegistryInstance.Read<int>(SMA.Instance.SMProcess.Memory));
     protected override bool   IsOptional  => true;
 
     #endregion

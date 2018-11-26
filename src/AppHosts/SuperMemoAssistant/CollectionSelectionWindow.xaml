@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:SuperMemoAssistant"
         xmlns:core="clr-namespace:SuperMemoAssistant.Interop.SuperMemo.Core;assembly=SuperMemoAssistant.Interop"
         mc:Ignorable="d"
+        KeyDown="Window_KeyDown"
         Title="Collection Selection" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
@@ -40,13 +41,14 @@
             <Button Name="btnBrowse"
                     Grid.Column="1"
                     Margin="10"
-                    Content="Browse"
-                    Click="btnBrowse_Click" />
+                    Click="btnBrowse_Click">
+                <AccessText>_Browse</AccessText>
+            </Button>
             <Button Name="btnOpen"
                     Grid.Column="2"
                     Margin="10"
-                    Content="Open"
                     Click="btnOpen_Click">
+                <AccessText>_Open</AccessText>
                 <Button.Style>
                     <Style>
                         <Style.Triggers>

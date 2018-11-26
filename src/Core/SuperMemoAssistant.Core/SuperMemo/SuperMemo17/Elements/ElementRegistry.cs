@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:12
-// Modified On:  2018/11/20 15:41
+// Modified On:  2018/11/23 20:08
 // Modified By:  Alexis
 
 #endregion
@@ -50,6 +50,7 @@ using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.Sys.Collections;
+using SuperMemoAssistant.Sys.Drawing;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 {
@@ -100,7 +101,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
     // Elements
 
     public IElement this[int id] => (IElement)Elements.SafeGet(id);
-
+    
     public int Count => Root.DescendantCount + 1;
 
     #endregion
@@ -208,16 +209,28 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 
         if (builder.ShouldDisplay)
         {
-          if (builder.Html)
-            ClipboardHelper.CopyToClipboard(builder.Content,
-                                            builder.Content);
+          switch (builder.ContentType)
+          {
+            case ElementBuilder.ContentTypeEnum.RawText:
+              Clipboard.SetText((string)builder.Content);
+              break;
 
-          else
-            Clipboard.SetText(builder.Content);
+            case ElementBuilder.ContentTypeEnum.Html:
+              ClipboardHelper.CopyToClipboard((string)builder.Content,
+                                              (string)builder.Content);
+              break;
+
+            case ElementBuilder.ContentTypeEnum.Image:
+              ImageWrapper imgWrapper = (ImageWrapper)builder.Content;
+              Clipboard.SetImage(imgWrapper.ToBitmapImage());
+              break;
+          }
         }
 
         else
         {
+          throw new NotImplementedException();
+
           Clipboard.SetText(ElementClipboard.FromElementBuilder(builder));
         }
 

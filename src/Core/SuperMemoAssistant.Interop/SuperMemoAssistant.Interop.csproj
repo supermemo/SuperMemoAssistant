@@ -140,6 +140,7 @@
     <Compile Include="Sys\ActionProxy.cs" />
     <Compile Include="Sys\ClipboardHelper.cs" />
     <Compile Include="Sys\ClipboardSnapshot.cs" />
+    <Compile Include="Sys\Drawing\ImageWrapper.cs" />
     <Compile Include="Sys\IO\Devices\HotKey.cs" />
     <Compile Include="Sys\IO\Devices\HotKeyEventArgs.cs" />
     <Compile Include="Services\IO\Devices\IKeyboardHotKeyService.cs" />
@@ -240,6 +241,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\..\..\libs\Process.NET\src\Process.NET\Process.NET.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\..\packages\Fody.3.1.7\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.3.1.7\build\Fody.targets')" />

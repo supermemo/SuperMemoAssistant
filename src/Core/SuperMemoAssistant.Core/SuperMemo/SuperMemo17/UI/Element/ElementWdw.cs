@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/24 13:11
-// Modified On:  2018/11/16 21:55
+// Modified On:  2018/11/24 18:42
 // Modified By:  Alexis
 
 #endregion
@@ -124,6 +124,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     protected NativeFunc<bool, IntPtr>  PasteElementFunc        { get; set; }
     protected NativeAction<IntPtr, int> SetDefaultConceptMethod { get; set; }
     protected NativeAction<IntPtr, int> GoToMethod              { get; set; }
+    protected NativeAction<IntPtr>      DeleteMethod            { get; set; }
     protected NativeAction<IntPtr>      DoneMethod              { get; set; }
 
 
@@ -178,6 +179,20 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     //                      eventId);
     //}
 
+    public bool FocusWindow()
+    {
+      try
+      {
+        Window.Focus();
+
+        return true;
+      }
+      catch
+      {
+        return false;
+      }
+    }
+
     public bool SetCurrentConcept(int conceptId)
     {
       var elem = SMA.Instance.Registry.Element[conceptId];
@@ -195,32 +210,73 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
 
     public bool GoToElement(int elementId)
     {
-      var elem = SMA.Instance.Registry.Element[elementId];
+      try
+      {
+        var elem = SMA.Instance.Registry.Element[elementId];
 
-      if (elem == null || elem.Deleted)
+        if (elem == null || elem.Deleted)
+          return false;
+
+        return GoToMethod(ElementWdwPtr.Read<IntPtr>(),
+                          elementId,
+                          SMProcess.ThreadFactory.MainThread);
+      }
+      catch
+      {
         return false;
-
-      return GoToMethod(ElementWdwPtr.Read<IntPtr>(),
-                        elementId,
-                        SMProcess.ThreadFactory.MainThread);
+      }
     }
 
     public bool PasteArticle()
     {
-      return PasteArticleFunc(ElementWdwPtr.Read<IntPtr>(),
-                              SMProcess.ThreadFactory.MainThread);
+      try
+      {
+        return PasteArticleFunc(ElementWdwPtr.Read<IntPtr>(),
+                                SMProcess.ThreadFactory.MainThread);
+      }
+      catch
+      {
+        return false;
+      }
     }
 
     public bool PasteElement()
     {
-      return PasteElementFunc(ElementWdwPtr.Read<IntPtr>(),
-                              SMProcess.ThreadFactory.MainThread);
+      try
+      {
+        return PasteElementFunc(ElementWdwPtr.Read<IntPtr>(),
+                                SMProcess.ThreadFactory.MainThread);
+      }
+      catch
+      {
+        return false;
+      }
+    }
+
+    public bool Delete()
+    {
+      try
+      {
+        return DeleteMethod(ElementWdwPtr.Read<IntPtr>(),
+                            SMProcess.ThreadFactory.MainThread);
+      }
+      catch
+      {
+        return false;
+      }
     }
 
     public bool Done()
     {
-      return DoneMethod(ElementWdwPtr.Read<IntPtr>(),
-                        SMProcess.ThreadFactory.MainThread);
+      try
+      {
+        return DoneMethod(ElementWdwPtr.Read<IntPtr>(),
+                          SMProcess.ThreadFactory.MainThread);
+      }
+      catch
+      {
+        return false;
+      }
     }
 
     #endregion
@@ -253,6 +309,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
       PasteArticleFunc = funcScanner.GetNativeFunc<bool, IntPtr>(SMNatives.TElWind.PasteArticleSig);
       PasteElementFunc = funcScanner.GetNativeFunc<bool, IntPtr>(SMNatives.TElWind.PasteElementCallSig);
       GoToMethod       = funcScanner.GetNativeAction<IntPtr, int>(SMNatives.TElWind.GoToElementCallSig);
+      DeleteMethod     = funcScanner.GetNativeAction<IntPtr>(SMNatives.TElWind.DeleteCurrentElementCallSig);
       DoneMethod       = funcScanner.GetNativeAction<IntPtr>(SMNatives.TElWind.DoneSig);
 
       ElementIdPtr.RegisterValueChangedEventHandler<int>(OnElementChangedInternal);

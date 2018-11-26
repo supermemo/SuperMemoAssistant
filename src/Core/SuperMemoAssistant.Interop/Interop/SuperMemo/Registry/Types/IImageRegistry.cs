@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
+using SuperMemoAssistant.Sys.Drawing;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Registry.Types
 {
@@ -11,5 +12,9 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Registry.Types
     /// </summary>
     /// <returns>Waitable task yielding success result of the operation</returns>
     Task<IImage> AddAsync(string imageName, string imagePath);
+    
+    int AddMember(ImageWrapper imageWrapper,
+                  string       registryName);
+    int AddMember(string path);
   }
 }

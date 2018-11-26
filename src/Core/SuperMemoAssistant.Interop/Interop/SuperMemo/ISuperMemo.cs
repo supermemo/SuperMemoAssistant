@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/12 18:33
-// Modified On:  2018/06/01 22:35
+// Created On:   2018/07/27 12:55
+// Modified On:  2018/11/26 00:03
 // Modified By:  Alexis
 
 #endregion
@@ -46,6 +46,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo
     SMAppVersion AppVersion { get; }
     SMCollection Collection { get; }
     IProcess     SMProcess  { get; }
+
+    bool IgnoreUserConfirmation { get; set; }
 
     ISuperMemoRegistry Registry { get; }
     ISuperMemoUI       UI       { get; }

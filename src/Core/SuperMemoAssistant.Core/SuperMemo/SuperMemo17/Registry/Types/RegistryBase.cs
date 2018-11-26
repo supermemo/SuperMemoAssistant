@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/12 18:45
-// Modified On:  2018/05/30 22:17
+// Created On:   2018/06/01 14:13
+// Modified On:  2018/11/25 16:45
 // Modified By:  Alexis
 
 #endregion
@@ -30,12 +30,14 @@
 
 
 
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Process.NET.Types;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
@@ -43,6 +45,7 @@ using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
 using SuperMemoAssistant.SuperMemo.Hooks;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members;
+using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.Sys.Collections;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
@@ -79,6 +82,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected abstract string RtxFileName { get; }
     protected abstract string RtfFileName { get; }
 
+
+    protected          NativeFunc<int, IntPtr, DelphiUString>                AddMemberFunc  { get; set; }
+    protected          NativeFunc<int, IntPtr, DelphiUString, DelphiUString> ImportFileFunc { get; set; }
+    protected abstract IntPtr                                                RegistryPtr    { get; }
+
     #endregion
 
 
@@ -100,6 +108,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override void Initialize()
     {
       CommitFromFiles();
+
+      SMA.Instance.OnSMStartedEvent += OnSMStartedEvent;
+      SMA.Instance.OnSMStoppedEvent += OnSMStoppedEvent;
     }
 
     protected override void Cleanup()
@@ -114,7 +125,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
       foreach (SegmentStream memStream in MemSCA.GetStreams())
       {
         var memElems = StreamToStruct<RegMemElem>(
-          memStream, RegMemElem.SizeOfMemElem
+          memStream,
+          RegMemElem.SizeOfMemElem
         );
 
         foreach (var memElem in memElems.OrderBy(kv => kv.Value.rtxOffset))
@@ -129,9 +141,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
             RegRtElem rtxElem = default(RegRtElem);
 
             if (rtStream != null)
-              rtxElem = ParseRtStream(rtStream, memElem.Value);
+              rtxElem = ParseRtStream(rtStream,
+                                      memElem.Value);
 
-            Commit(memElem.Key, memElem.Value, rtxElem);
+            Commit(memElem.Key,
+                   memElem.Value,
+                   rtxElem);
           }
         }
       }
@@ -175,11 +190,69 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
     #region Methods
 
+    public int AddMember(string textOrPath)
+    {
+      try
+      {
+        return AddMemberFunc(RegistryPtr,
+                             new DelphiUString(textOrPath),
+                             SMA.Instance.SMProcess.ThreadFactory.MainThread);
+      }
+      catch
+      {
+        return -1;
+      }
+    }
+
+    public int ImportFile(string textOrPath,
+                          string registryName)
+    {
+      try
+      {
+        SMA.Instance.IgnoreUserConfirmation = true;
+
+        return ImportFileFunc(RegistryPtr,
+                              new DelphiUString(textOrPath),
+                              new DelphiUString(registryName),
+                              SMA.Instance.SMProcess.ThreadFactory.MainThread);
+      }
+      catch
+      {
+        return -1;
+      }
+      finally
+      {
+        try
+        {
+          SMA.Instance.IgnoreUserConfirmation = false;
+        }
+        catch { }
+      }
+    }
+
+    private void OnSMStartedEvent(object        sender,
+                                  SMProcessArgs e)
+    {
+      var funcScanner = new NativeFuncScanner(SMA.Instance.SMProcess,
+                                              Process.NET.Native.Types.CallingConventions.Register);
+
+      AddMemberFunc  = funcScanner.GetNativeFunc<int, IntPtr, DelphiUString>(SMNatives.TRegistry.AddMember);
+      ImportFileFunc = funcScanner.GetNativeFunc<int, IntPtr, DelphiUString, DelphiUString>(SMNatives.TRegistry.ImportFile);
+    }
+
+    private void OnSMStoppedEvent(object        sender,
+                                  SMProcessArgs e)
+    {
+      AddMemberFunc  = null;
+      ImportFileFunc = null;
+    }
+
 
     //
     // Native format parsing
 
-    protected static RegRtElem ParseRtStream(Stream rtxStream, RegMemElem mem)
+    protected static RegRtElem ParseRtStream(Stream     rtxStream,
+                                             RegMemElem mem)
     {
       if (mem.rtxOffset == 0)
         return new RegRtElem()
@@ -189,9 +262,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
           unknown = 2,
         };
 
-      using (BinaryReader binStream = new BinaryReader(rtxStream, Encoding.Default, true))
+      using (BinaryReader binStream = new BinaryReader(rtxStream,
+                                                       Encoding.Default,
+                                                       true))
       {
-        rtxStream.Seek(mem.rtxOffset - 1, SeekOrigin.Begin);
+        rtxStream.Seek(mem.rtxOffset - 1,
+                       SeekOrigin.Begin);
 
         RegRtElem rtx = new RegRtElem
         {
@@ -221,30 +297,39 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
         //using (Stream rtfStream = File.OpenRead(rtfFilePath))
       {
         Dictionary<int, RegMemElem> memElems = StreamToStruct<RegMemElem>(
-          memStream, RegMemElem.SizeOfMemElem
+          memStream,
+          RegMemElem.SizeOfMemElem
         );
 
         foreach (var memElem in memElems.OrderBy(kv => kv.Value.rtxOffset))
         {
-          var rtxElem = ParseRtStream(rtxStream, memElem.Value);
+          var rtxElem = ParseRtStream(rtxStream,
+                                      memElem.Value);
 
-          Commit(memElem.Key, memElem.Value, rtxElem);
+          Commit(memElem.Key,
+                 memElem.Value,
+                 rtxElem);
         }
       }
     }
 
-    protected virtual void Commit(int id, RegMemElem mem, RegRtElem rtxOrRtf)
+    protected virtual void Commit(int        id,
+                                  RegMemElem mem,
+                                  RegRtElem  rtxOrRtf)
     {
       // TODO: Rtf
       var member = Members.SafeGet(id);
 
       if (member == null)
       {
-        Members[id] = Create(id, mem, rtxOrRtf);
+        Members[id] = Create(id,
+                             mem,
+                             rtxOrRtf);
         return;
       }
 
-      member.Update(mem, rtxOrRtf);
+      member.Update(mem,
+                    rtxOrRtf);
     }
 
     #endregion
@@ -254,7 +339,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
     #region Methods Abs
 
-    protected abstract TMember Create(int id, RegMemElem mem, RegRtElem rtxOrRtf);
+    protected abstract TMember Create(int        id,
+                                      RegMemElem mem,
+                                      RegRtElem  rtxOrRtf);
 
     #endregion
   }

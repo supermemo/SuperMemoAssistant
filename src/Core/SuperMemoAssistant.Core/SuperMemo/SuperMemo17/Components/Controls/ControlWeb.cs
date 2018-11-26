@@ -74,7 +74,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
     #region Properties Impl - Public
 
-    public override string Text { get => Document.body.outerHTML; set => Document.body.outerHTML = value; }
+    public override string Text { get => Document.body.innerHTML; set => Document.body.innerHTML = value; }
 
     /// <inheritdoc />
     public IHTMLDocument2 Document => _document ?? (_document = GetDocument());

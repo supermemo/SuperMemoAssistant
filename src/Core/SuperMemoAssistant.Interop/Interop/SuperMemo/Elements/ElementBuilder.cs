@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/11/19 16:16
+// Modified On:  2018/11/23 19:47
 // Modified By:  Alexis
 
 #endregion
@@ -32,11 +32,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using SuperMemoAssistant.Interop.SuperMemo.Components;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
+using SuperMemoAssistant.Sys.Drawing;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 {
@@ -61,7 +63,23 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
     {
       Type    = type;
       Content = content;
-      Html    = html;
+      ContentType = html
+        ? ContentType = ContentTypeEnum.Html
+        : ContentTypeEnum.RawText;
+
+      ShouldDisplay = true;
+      Title         = null;
+
+      LinkedConceptsInternal = new List<IConcept>();
+      ComponentsInternal     = new List<IComponent>();
+    }
+
+    public ElementBuilder(ElementType type,
+                          Image       content)
+    {
+      Type        = type;
+      Content     = new ImageWrapper(content);
+      ContentType = ContentTypeEnum.Image;
 
       ShouldDisplay = true;
       Title         = null;
@@ -77,9 +95,9 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 
     #region Properties & Fields - Public
 
-    public ElementType             Type           { get; private set; }
-    public string                  Content        { get; private set; }
-    public bool                    Html           { get; private set; }
+    public ElementType             Type           { get; }
+    public object                  Content        { get; }
+    public ContentTypeEnum         ContentType    { get; }
     public string                  Title          { get; private set; }
     public bool                    ShouldDisplay  { get; private set; }
     public int                     Id             { get; private set; }
@@ -173,6 +191,20 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 
       ComponentsInternal.Add(component);
       return this;
+    }
+
+    #endregion
+
+
+
+
+    #region Enums
+
+    public enum ContentTypeEnum
+    {
+      RawText,
+      Html,
+      Image,
     }
 
     #endregion

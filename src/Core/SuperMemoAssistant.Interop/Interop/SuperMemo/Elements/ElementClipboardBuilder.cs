@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/11/17 01:26
-// Modified On:  2018/11/26 13:18
+// Modified On:  2018/12/04 22:29
 // Modified By:  Alexis
 
 #endregion
@@ -32,6 +32,7 @@
 
 using System;
 using System.IO;
+using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Services;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Elements
@@ -58,7 +59,7 @@ LastRepetition={4}
 AFactor=1.200
 UFactor=1.000
 ForgettingIndex=10
-Reference=
+Reference={5}
 SourceArticle=0
 End ElementInfo #1
 ElementColor=-16777211
@@ -71,18 +72,31 @@ ReadPointComponent=0
 ReadPointStart=0
 ReadPointLength=0
 ReadPointScrollTop=0
-{5}
+{6}
 Begin RepHist #1
-ElNo=1 Rep=1 Date={6} Hour={7:#.###} Int=0 Grade=10 Laps=0 Priority=0
+ElNo=1 Rep=1 Date={4} Hour={7:#.###} Int=0 Grade=10 Laps=0 Priority=0
 End RepHist #1
 End Element #1";
-    private const string ComponentsArticle = @"ComponentNo=1
+    private const string ComponentsArticleText = @"ComponentNo=1
 Begin Component #1
 Type=HTML
 Cors=(104,199,9699,9296)
 DisplayAt=255
 Hyperlink=0
 Text={0}
+TestElement=0
+ReadOnly=0
+FullHTML=1
+Style=0
+End Component #1";
+    private const string ComponentsArticleHTMFile = @"ComponentNo=1
+Begin Component #1
+Type=HTML
+Cors=(104,199,9699,9296)
+DisplayAt=255
+Hyperlink=0
+HTMName=htm
+HTMFile={0}
 TestElement=0
 ReadOnly=0
 FullHTML=1
@@ -128,11 +142,26 @@ End Component #2";
       int      parentId       = elemBuilder.Parent?.Id ?? 1;
       string title = elemBuilder.Title ?? string.Empty; /*elemBuilder.Content.Substring(0,
                                                                         10);*/
-      string type = elemBuilder.Type == Models.ElementType.Topic
-        ? "Topic"
-        : "Item";
       string lastRep     = DateTime.Today.ToString("dd.MM.yy");
       double lastRepTime = Math.Floor((now.Minute * 60 + now.Second) * 1000 / 3600.0);
+      string type;
+
+      switch (elemBuilder.Type)
+      {
+        case ElementType.Topic:
+          type = "Topic";
+          break;
+
+        case ElementType.Item:
+          type = "Item";
+          break;
+
+        case ElementType.ConceptGroup:
+        case ElementType.Task:
+        case ElementType.Unknown3:
+        default:
+          throw new NotImplementedException();
+      }
 
       return string.Format(ElementClipboardFormat,
                            collectionPath,
@@ -140,8 +169,8 @@ End Component #2";
                            title,
                            type,
                            lastRep,
+                           elemBuilder.Reference?.ToString() ?? string.Empty,
                            GenerateComponentsStr(elemBuilder),
-                           lastRep,
                            lastRepTime);
     }
 
@@ -151,7 +180,15 @@ End Component #2";
       {
         case ElementBuilder.ContentTypeEnum.Html:
         case ElementBuilder.ContentTypeEnum.RawText:
-          throw new NotImplementedException();
+          var txtContent = (ElementBuilder.TextContent)elemBuilder.Contents[0];
+
+          if (txtContent == null)
+            throw new InvalidCastException("ContentTypeEnum.Html or ContentTypeEnum.RawText contained a non-text IContent");
+
+          return string.Format(
+            ComponentsArticleHTMFile,
+            WriteToFile(txtContent)
+          );
 
         case ElementBuilder.ContentTypeEnum.Image:
           var imgContent = (ElementBuilder.ImageContent)elemBuilder.Contents[0];
@@ -183,6 +220,17 @@ End Component #2";
         default:
           throw new NotImplementedException();
       }
+    }
+
+    private static string WriteToFile(ElementBuilder.TextContent textContent)
+    {
+      var filePath = Path.Combine(Path.GetTempPath(),
+                                  "sm_element.htm");
+
+      File.WriteAllText(filePath,
+                        textContent.Text + "\r\n<span />");
+
+      return filePath;
     }
 
     #endregion

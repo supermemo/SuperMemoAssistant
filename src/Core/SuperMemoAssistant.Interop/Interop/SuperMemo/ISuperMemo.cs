@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/11/26 00:03
+// Modified On:  2018/12/07 14:13
 // Modified By:  Alexis
 
 #endregion
@@ -56,6 +56,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo
   public interface ISuperMemoRegistry
   {
     IElementRegistry   Element   { get; }
+    IBinaryRegistry    Binary    { get; }
     IComponentRegistry Component { get; }
     IConceptRegistry   Concept   { get; }
     ITextRegistry      Text      { get; }

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/12 18:26
-// Modified On:  2018/05/31 00:03
+// Created On:   2018/06/01 14:11
+// Modified On:  2018/12/10 12:53
 // Modified By:  Alexis
 
 #endregion
@@ -32,7 +32,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels.Ipc;
@@ -99,7 +98,8 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     //
     // System callbacks
 
-    public override bool OnHookInstalled(bool success, Exception hookEx = null)
+    public override bool OnHookInstalled(bool      success,
+                                         Exception hookEx = null)
     {
       try
       {
@@ -110,7 +110,8 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex, "Failed to Signal InitEvent for Hook Install Success");
+        LogTo.Error(ex,
+                    "Failed to Signal InitEvent for Hook Install Success");
 
         return false;
       }
@@ -118,9 +119,11 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     public override void KeepAlive() { }
 
-    public override void Debug(string msg, params object[] args)
+    public override void Debug(string          msg,
+                               params object[] args)
     {
-      System.Diagnostics.Debug.WriteLine(msg, args);
+      System.Diagnostics.Debug.WriteLine(msg,
+                                         args);
     }
 
     public override void OnException(Exception ex)
@@ -141,24 +144,32 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     }
 
     /// <inheritdoc />
-    public override void OnFileCreate(string filePath, IntPtr fileHandle)
+    public override void OnFileCreate(string filePath,
+                                      IntPtr fileHandle)
     {
       for (int i = 0; i < IOCallbacks.Count; i++)
-        IOCallbacks[i].OnFileCreate(filePath, fileHandle);
+        IOCallbacks[i].OnFileCreate(filePath,
+                                    fileHandle);
     }
 
     /// <inheritdoc />
-    public override void OnFileSeek(IntPtr fileHandle, UInt32 position)
+    public override void OnFileSeek(IntPtr fileHandle,
+                                    UInt32 position)
     {
       for (int i = 0; i < IOCallbacks.Count; i++)
-        IOCallbacks[i].OnFileSeek(fileHandle, position);
+        IOCallbacks[i].OnFileSeek(fileHandle,
+                                  position);
     }
 
     /// <inheritdoc />
-    public override void OnFileWrite(IntPtr fileHandle, Byte[] buffer, UInt32 count)
+    public override void OnFileWrite(IntPtr fileHandle,
+                                     Byte[] buffer,
+                                     UInt32 count)
     {
       for (int i = 0; i < IOCallbacks.Count; i++)
-        IOCallbacks[i].OnFileWrite(fileHandle, buffer, count);
+        IOCallbacks[i].OnFileWrite(fileHandle,
+                                   buffer,
+                                   count);
     }
 
     /// <inheritdoc />
@@ -196,7 +207,6 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
         HookSuccess   = false;
         HookException = null;
-        int pID = -1;
 
         // Start a new IPC server
         StartIPCServer();
@@ -206,9 +216,11 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
         RemoteHooking.CreateAndInject(
           SMConst.BinPath,
           collection.GetKnoFilePath(),
-          0, InjectionOptions.Default, SMAConst.Assembly.GetInjectionLibFilePath(),
+          0,
+          InjectionOptions.Default,
+          SMAConst.Assembly.GetInjectionLibFilePath(),
           null,
-          out pID
+          out var pId
         );
 
         // Wait for Signal from OnHookInstalled with timeout
@@ -218,13 +230,15 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
         {
           StopIPCServer();
 
-          var ex = new HookException("Hook setup failed", HookException);
-          HookException  = null;
+          var ex = new HookException("Hook setup failed",
+                                     HookException);
+          HookException = null;
 
           throw ex;
         }
 
-        return new ProcessSharp(pID, Process.NET.Memory.MemoryType.Remote);
+        return new ProcessSharp(pId,
+                                Process.NET.Memory.MemoryType.Remote);
       }
       finally
       {

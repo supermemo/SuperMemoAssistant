@@ -10,9 +10,5 @@ namespace SuperMemoAssistant.Interop.SuperMemo.UI.ElementData
 {
   public interface IElementDataWdw : IWdw
   {
-    int CurrentElementId { get; }
-    IElement CurrentElement { get; }
-
-    event Action<SMElementArgs> OnElementChanged;
   }
 }

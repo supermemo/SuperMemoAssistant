@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/07/27 12:55
-// Modified On:  2018/12/07 13:59
+// Created On:   2018/12/07 13:59
+// Modified On:  2018/12/07 14:19
 // Modified By:  Alexis
 
 #endregion
@@ -30,13 +30,59 @@
 
 
 
-using System.Drawing;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
+using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 
-namespace SuperMemoAssistant.Interop.SuperMemo.Registry.Members
+namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 {
-  public interface IImage : IRegistryMember
+  public class Binary : RegistryMemberBase, IBinary
   {
-    Task<Bitmap> GetContentAsync();
+    #region Constructors
+
+    public Binary(int        id,
+                  RegMemElem mem,
+                  RegRtElem  rt)
+      : base(id,
+             mem,
+             rt) { }
+
+    #endregion
+
+
+
+
+    #region Methods Impl
+
+    public string GetFilePath()
+    {
+      //TODO: switch () on filetype
+      return GetFilePath("unknown");
+    }
+
+    public Task<bool> DeleteAsync()
+    {
+      throw new NotImplementedException();
+    }
+
+    public IEnumerable<IElement> GetLinkedElements()
+    {
+      throw new NotImplementedException();
+    }
+
+    public Task<bool> NeuralAsync()
+    {
+      throw new NotImplementedException();
+    }
+
+    public Task<bool> RenameAsync(string newName)
+    {
+      throw new NotImplementedException();
+    }
+
+    #endregion
   }
 }

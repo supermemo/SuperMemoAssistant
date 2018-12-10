@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/20 19:39
-// Modified On:  2018/11/26 11:19
+// Modified On:  2018/11/29 12:59
 // Modified By:  Alexis
 
 #endregion
@@ -37,6 +37,7 @@ using System.Linq;
 using Process.NET;
 using Process.NET.Extensions;
 using Process.NET.Memory;
+using Process.NET.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
 using SuperMemoAssistant.Sys;
@@ -51,12 +52,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
 
     //private static NativeFunc<int, IntPtr, int>      GetTypeFunc             { get; set; }
-    private static NativeFunc<string, IntPtr, int>   GetTextFunc             { get; set; }
-    private static NativeAction<IntPtr, int, string> SetTextMethod           { get; set; }
-    private static NativeFunc<int, IntPtr, int>      GetTextRegMemberFunc    { get; set; }
-    private static NativeAction<IntPtr, int, int>    SetTextRegMemberMethod  { get; set; }
-    private static NativeFunc<int, IntPtr, int>      GetImageRegMemberFunc   { get; set; }
-    private static NativeAction<IntPtr, int, int>    SetImageRegMemberMethod { get; set; }
+    private static NativeFunc<string, IntPtr, int>          GetTextFunc             { get; set; }
+    private static NativeAction<IntPtr, int, DelphiUString> SetTextMethod           { get; set; }
+    private static NativeFunc<int, IntPtr, int>             GetTextRegMemberFunc    { get; set; }
+    private static NativeAction<IntPtr, int, int>           SetTextRegMemberMethod  { get; set; }
+    private static NativeFunc<int, IntPtr, int>             GetImageRegMemberFunc   { get; set; }
+    private static NativeAction<IntPtr, int, int>           SetImageRegMemberMethod { get; set; }
 
     #endregion
 
@@ -127,7 +128,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
     /// <inheritdoc />
     public int FocusedControlIndex => FocusedControlNoPtr?.Read<byte>() - 1 ?? throw new InvalidOperationException(DisposedException);
     /// <inheritdoc />
-    public bool IsModified => IsModifiedPtr?.Read<bool>() ?? throw new InvalidOperationException(DisposedException);
+    public bool IsModified
+    {
+      get => IsModifiedPtr?.Read<bool>() ?? throw new InvalidOperationException(DisposedException);
+      set => IsModifiedPtr?.Write<bool>(0,
+                                        value);
+    }
 
     #endregion
 
@@ -304,7 +310,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
       return SetTextMethod(new IntPtr(_componentDataAddr),
                            control.Id + 1,
-                           text,
+                           new DelphiUString(text),
                            _smProcess.ThreadFactory.MainThread);
     }
 
@@ -365,11 +371,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
       //GetTypeFunc             = funcScanner.GetNativeFunc<IntPtr, int, int>(SMNatives.TElWind.TComponentData.GetTypeCallSig);
       GetTextFunc             = funcScanner.GetNativeFunc<string, IntPtr, int>(SMNatives.TElWind.TComponentData.GetTextCallSig);
-      SetTextMethod           = funcScanner.GetNativeAction<IntPtr, int, string>(SMNatives.TElWind.TComponentData.SetTextCallSig);
+      SetTextMethod           = funcScanner.GetNativeAction<IntPtr, int, DelphiUString>(SMNatives.TElWind.TComponentData.SetTextCallSig);
       GetTextRegMemberFunc    = funcScanner.GetNativeFunc<int, IntPtr, int>(SMNatives.TElWind.TComponentData.GetTextRegMemberCallSig);
       SetTextRegMemberMethod  = funcScanner.GetNativeAction<IntPtr, int, int>(SMNatives.TElWind.TComponentData.SetTextRegMemberCallSig);
       GetImageRegMemberFunc   = funcScanner.GetNativeFunc<int, IntPtr, int>(SMNatives.TElWind.TComponentData.GetImageRegMemberCallSig);
       SetImageRegMemberMethod = funcScanner.GetNativeAction<IntPtr, int, int>(SMNatives.TElWind.TComponentData.SetImageRegMemberCallSig);
+
+      funcScanner.Cleanup();
     }
 
     #endregion

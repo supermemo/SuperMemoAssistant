@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/09/04 19:49
-// Modified On:  2018/09/04 19:51
+// Modified On:  2018/12/04 14:27
 // Modified By:  Alexis
 
 #endregion
@@ -31,6 +31,8 @@
 
 
 using System;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 
 namespace SuperMemoAssistant.Sys
@@ -56,7 +58,20 @@ namespace SuperMemoAssistant.Sys
     /// <inheritdoc />
     public void Dispose()
     {
-      Clipboard.SetDataObject(Content);
+      int retries = 5;
+
+      while (retries-- > 0)
+        try
+        {
+          // Race conditions might happen.
+          // System.Runtime.InteropServices.COMException (0x800401D0): OpenClipboard Failed (Exception from HRESULT: 0x800401D0 (CLIPBRD_E_CANT_OPEN))
+          Clipboard.SetDataObject(Content);
+          break;
+        }
+        catch (COMException)
+        {
+          Thread.Sleep(10);
+        }
     }
 
     #endregion

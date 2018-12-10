@@ -132,33 +132,35 @@ namespace SuperMemoAssistant.Services.Medias.Images
       return ReadChunk<byte[], PngChunkUNKNOWN>(filePath, chunkId, c => c?.GetData());
     }
 
+#if false
     /// <summary>
     /// iTXt International textual data
     /// </summary>
     /// <param name="filePath"></param>
     /// <returns></returns>
-    //public static string ReadITxtChunk(string filePath)
-    //{
-    //  return ReadChunk<string, PngChunkITXT>(filePath, PngChunkITXT.ID, c => c?.GetVal());
-    //}
+    public static string ReadITxtChunk(string filePath)
+    {
+      return ReadChunk<string, PngChunkITXT>(filePath, PngChunkITXT.ID, c => c?.GetVal());
+    }
 
     /// <summary>
     /// zTXt Compressed textual data
     /// </summary>
     /// <param name="filePath"></param>
     /// <returns></returns>
-    //public static string ReadZTxtChunk(string filePath)
-    //{
-    //  return ReadChunk<string, PngChunkZTXT>(filePath, PngChunkZTXT.ID, c => c?.GetVal());
-    //}
+    public static string ReadZTxtChunk(string filePath)
+    {
+      return ReadChunk<string, PngChunkZTXT>(filePath, PngChunkZTXT.ID, c => c?.GetVal());
+    }
 
     /// <summary>tEXt Textual data</summary>
     /// <param name="filePath"></param>
     /// <returns></returns>
-    //public static string ReadTxtChunk(string filePath)
-    //{
-    //  return ReadChunk<string, PngChunkTEXT>(filePath, PngChunkTEXT.ID, c => c?.GetVal());
-    //}
+    public static string ReadTxtChunk(string filePath)
+    {
+      return ReadChunk<string, PngChunkTEXT>(filePath, PngChunkTEXT.ID, c => c?.GetVal());
+    }
+#endif
 
     private static TRet ReadChunk<TRet, TChunk>(string filePath, string chunkId, Func<TChunk, TRet> valueFunc)
       where TChunk : PngChunk

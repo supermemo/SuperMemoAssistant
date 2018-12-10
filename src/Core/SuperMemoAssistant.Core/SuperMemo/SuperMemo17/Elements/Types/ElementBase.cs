@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:12
-// Modified On:  2018/11/20 15:41
+// Modified On:  2018/12/10 13:08
 // Modified By:  Alexis
 
 #endregion
@@ -52,14 +52,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     //
     // Internal helpers
 
-    protected Dictionary<string, ElementFieldFlags> FieldFlagMapping = new Dictionary<string, ElementFieldFlags>()
+    protected Dictionary<string, ElementFieldFlags> FieldFlagMapping { get; } = new Dictionary<string, ElementFieldFlags>()
     {
       { "TextId", ElementFieldFlags.Name },
       { "Deleted", ElementFieldFlags.Deleted },
       { "TemplateId", ElementFieldFlags.Template },
       { "ConceptId", ElementFieldFlags.Concept },
       { "ComponentPos", ElementFieldFlags.Components },
-      { "AF", ElementFieldFlags.AFactor },
+      { "AFactor", ElementFieldFlags.AFactor },
       { "ParentId", ElementFieldFlags.Parent },
       { "FirstChildId", ElementFieldFlags.FirstChild },
       { "LastChildId", ElementFieldFlags.LastChild },
@@ -102,7 +102,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
                               nameof(ComponentPos));
       OnComponentPosChanged(-1,
                             ComponentPos);
-      //AF = SetDbg(elElem.AF, nameof(AF));
+      //AFactor = SetDbg(elElem.AFactor, nameof(AFactor));
 
       ParentId = SetValue(cttElem.parentId,
                           nameof(ParentId));
@@ -145,7 +145,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     public int ConceptId  { get; protected set; }
 
     public int    ComponentPos { get; protected set; }
-    public char[] AF           { get; protected set; }
+    public byte[] AFactor      { get; protected set; }
 
     public int ParentId      { get; protected set; }
     public int FirstChildId  { get; protected set; }
@@ -210,7 +210,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
                                 nameof(ComponentPos),
                                 ref flags,
                                 OnComponentPosChanged);
-        //AF = SetDbg(elElem.Value.AF, nameof(AF));
+        //AFactor = SetDbg(elElem.Value.AFactor, nameof(AFactor));
       }
 
       if (cttElem != null)

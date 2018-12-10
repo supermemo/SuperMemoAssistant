@@ -33,6 +33,7 @@
 using System;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.UI.Element
@@ -55,6 +56,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.UI.Element
     
     bool PasteArticle();
     bool PasteElement();
+    int AppendElement(ElementType elementType);
+    bool AddElementFromText(string elementDesc);
 
     bool Delete();
     bool Done();

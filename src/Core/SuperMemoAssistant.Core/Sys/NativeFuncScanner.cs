@@ -50,13 +50,8 @@ namespace SuperMemoAssistant.Sys
   public delegate bool NativeAction<in T1, in T2>(T1        param1, T2 param2, IRemoteThread executingThread = null);
   public delegate bool NativeAction<in T1, in T2, in T3>(T1 param1, T2 param2, T3 param3, IRemoteThread executingThread = null);
 
-  public class NativeFuncScanner
+  public class NativeFuncScanner : IDisposable
   {
-    private readonly CallingConventions _convention;
-
-
-
-
     #region Properties & Fields - Non-Public
 
     protected PatternScanner  Scanner { get; set; }
@@ -168,5 +163,22 @@ namespace SuperMemoAssistant.Sys
     }
 
     #endregion
+
+
+
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+      Factory?.Dispose();
+
+      Factory = null;
+      Scanner = null;
+    }
+
+    public void Cleanup()
+    {
+      Scanner = null;
+    }
   }
 }

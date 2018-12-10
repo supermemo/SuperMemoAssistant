@@ -1,5 +1,4 @@
 ﻿#region License & Metadata
-
 // The MIT License (MIT)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -21,22 +20,17 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/07/27 12:55
-// Modified On:  2018/12/07 13:59
+// Created On:   2018/06/18 11:50
+// Modified On:  2018/06/18 11:50
 // Modified By:  Alexis
-
 #endregion
 
+using mshtml;
 
-
-
-using System.Drawing;
-using System.Threading.Tasks;
-
-namespace SuperMemoAssistant.Interop.SuperMemo.Registry.Members
+namespace SuperMemoAssistant.Interop.SuperMemo.Components.Controls
 {
-  public interface IImage : IRegistryMember
+  public interface IControlWeb : IControlTextBase
   {
-    Task<Bitmap> GetContentAsync();
+    IHTMLDocument2 Document { get; }
   }
 }

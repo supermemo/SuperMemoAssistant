@@ -1,4 +1,5 @@
 ﻿#region License & Metadata
+
 // The MIT License (MIT)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -21,21 +22,22 @@
 // 
 // 
 // Created On:   2018/05/30 22:06
-// Modified On:  2018/05/30 22:06
+// Modified On:  2018/12/10 12:52
 // Modified By:  Alexis
+
 #endregion
 
 
 
 
-using SuperMemoAssistant.Sys;
-
 namespace SuperMemoAssistant
 {
   public static class ModuleInitializer
   {
-    public static void Initialize()
-    {
-    }
+    #region Methods
+
+    public static void Initialize() { }
+
+    #endregion
   }
 }

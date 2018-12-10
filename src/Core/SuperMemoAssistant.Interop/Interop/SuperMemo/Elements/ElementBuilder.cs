@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/11/26 12:13
+// Modified On:  2018/12/09 02:37
 // Modified By:  Alexis
 
 #endregion
@@ -33,6 +33,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using SuperMemoAssistant.Interop.SuperMemo.Components;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
@@ -82,6 +83,15 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
              new TextContent(html,
                              content)) { }
 
+    public ElementBuilder(ElementType type,
+                          string      content,
+                          bool        html,
+                          Encoding    encoding)
+      : this(type,
+             new TextContent(html,
+                             content,
+                             encoding)) { }
+
     #endregion
 
 
@@ -93,6 +103,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
     public List<IContent>          Contents       { get; } = new List<IContent>();
     public ContentTypeEnum         ContentType    { get; }
     public string                  Title          { get; private set; }
+    public ElemReference           Reference      { get; private set; }
     public bool                    ShouldDisplay  { get; private set; }
     public int                     Id             { get; private set; }
     public IElement                Parent         { get; private set; }
@@ -121,6 +132,12 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
       return this;
     }
 
+    public ElementBuilder WithReference(Func<ElemReference, ElemReference> refBuilder)
+    {
+      Reference = refBuilder(new ElemReference());
+      return this;
+    }
+
     public ElementBuilder Display()
     {
       ShouldDisplay = true;
@@ -129,8 +146,6 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 
     public ElementBuilder DoNotDisplay()
     {
-      throw new NotImplementedException(); // TODO: Find a SM method to hook for that purpose
-
       ShouldDisplay = false;
       return this;
     }
@@ -210,6 +225,147 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 
 
 
+    
+    [Serializable]
+    public class ElemReference
+    {
+      #region Properties & Fields - Public
+
+      public string                   Author  { get; set; }
+      public string                   Title   { get; set; }
+      public List<(string, DateTime?)> Dates   { get; } = new List<(string, DateTime?)>();
+      public string                   Source  { get; set; }
+      public string                   Link    { get; set; }
+      public string                   Email   { get; set; }
+      public string                   Comment { get; set; }
+
+      #endregion
+
+
+
+
+      #region Methods Impl
+
+      public override string ToString()
+      {
+        List<string> refParts = new List<string>();
+
+        if (string.IsNullOrWhiteSpace(Title) == false)
+          refParts.Add($"#Title: {Title}");
+
+        if (string.IsNullOrWhiteSpace(Author) == false)
+          refParts.Add(
+            string.IsNullOrWhiteSpace(Email)
+              ? $"#Author: {Author}"
+              : $"#Author: {Author} [mailto:{Email}]"
+          );
+
+        if (Dates != null && Dates.Any())
+        {
+          var dateStrs = Dates.Select(d => string.Format(d.Item1,
+                                                         d.Item2?.ToString("MMM dd, yyyy, hh:mm:ss")));
+          var dateStr = string.Join(" ; ",
+                                    dateStrs);
+
+          refParts.Add($"#Date: {dateStr}");
+        }
+
+        if (string.IsNullOrWhiteSpace(Source) == false)
+          refParts.Add($"#Source: {Source}");
+
+        if (string.IsNullOrWhiteSpace(Link) == false)
+          refParts.Add($"#Link: <a href=\"{Link}\">{Link}</a>");
+
+        if (string.IsNullOrWhiteSpace(Email) == false)
+          refParts.Add($"#E-mail: {Email}");
+
+        if (string.IsNullOrWhiteSpace(Comment) == false)
+          refParts.Add($"#Comment: {Comment}");
+
+        if (refParts.Any() == false)
+          return string.Empty;
+
+        return string.Format(SMConst.Elements.ReferenceFormat,
+                             string.Join("<br>",
+                                         refParts));
+      }
+
+      #endregion
+
+
+
+
+      #region Methods
+
+      public ElemReference WithAuthor(string author)
+      {
+        Author = author;
+        return this;
+      }
+
+      public ElemReference WithTitle(string title)
+      {
+        Title = title;
+        return this;
+      }
+
+      public ElemReference WithDate(DateTime date,
+                                    string   fmt = "{0}")
+      {
+        Dates.Clear();
+
+        return AddDate(date,
+                       fmt);
+      }
+
+      public ElemReference WithDate(string date)
+      {
+        Dates.Clear();
+
+        return AddDate(date);
+      }
+
+      public ElemReference AddDate(DateTime date,
+                                   string   fmt = "{0}")
+      {
+        Dates.Add((fmt, date));
+
+        return this;
+      }
+
+      public ElemReference AddDate(string date)
+      {
+        Dates.Add((date, null));
+
+        return this;
+      }
+
+      public ElemReference WithSource(string source)
+      {
+        Source = source;
+        return this;
+      }
+
+      public ElemReference WithLink(string link)
+      {
+        Link = link;
+        return this;
+      }
+
+      public ElemReference WithEmail(string email)
+      {
+        Email = email;
+        return this;
+      }
+
+      public ElemReference WithComment(string comment)
+      {
+        Comment = comment;
+        return this;
+      }
+
+      #endregion
+    }
 
     public interface IContent
     {
@@ -223,9 +379,17 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 
       public TextContent(bool   html,
                          string text)
+        : this(html,
+               text,
+               Encoding.UTF8) { }
+
+      public TextContent(bool     html,
+                         string   text,
+                         Encoding encoding)
       {
-        Html = html;
-        Text = text;
+        Html     = html;
+        Text     = text;
+        Encoding = encoding;
       }
 
       #endregion
@@ -235,8 +399,9 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 
       #region Properties & Fields - Public
 
-      public bool   Html { get; set; }
-      public string Text { get; set; }
+      public bool     Html     { get; set; }
+      public string   Text     { get; set; }
+      public Encoding Encoding { get; set; }
 
       #endregion
 

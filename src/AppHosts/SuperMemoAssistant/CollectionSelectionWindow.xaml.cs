@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/11/22 15:10
-// Modified On:  2018/11/22 18:13
+// Modified On:  2018/12/10 12:51
 // Modified By:  Alexis
 
 #endregion
@@ -161,13 +161,17 @@ namespace SuperMemoAssistant
         ?? new List<string>();
     }
 
-    #endregion
-
-    private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    private void Window_KeyDown(object       sender,
+                                KeyEventArgs e)
     {
       if (e.Key == Key.Enter && btnOpen.IsEnabled)
         btnOpen_Click(sender,
                       e);
+
+      else if (e.Key == Key.Escape)
+        Close();
     }
+
+    #endregion
   }
 }

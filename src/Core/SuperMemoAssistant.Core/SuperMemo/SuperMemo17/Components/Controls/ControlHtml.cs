@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/21 12:26
-// Modified On:  2018/11/26 11:13
+// Modified On:  2018/11/29 19:23
 // Modified By:  Alexis
 
 #endregion
@@ -32,6 +32,7 @@
 
 using System;
 using System.Threading;
+using Anotar.Serilog;
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Exceptions;
 using mshtml;
@@ -39,6 +40,7 @@ using SuperMemoAssistant.COM.InternetExplorer;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
 using SuperMemoAssistant.Services;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 {
@@ -77,7 +79,16 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
     /// <inheritdoc />
     public IHTMLDocument2 Document => _document ?? (_document = GetDocument());
 
-    public override string Text { get => Document.body.innerHTML; set => Document.body.innerHTML = value; }
+    public override string Text
+    {
+      get => Document.body.innerHTML;
+      set
+      {
+        Document.body.innerHTML = value;
+        ElementWdw.Instance.SetText(this,
+                                    value);
+      }
+    }
 
     #endregion
 
@@ -89,9 +100,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
     private IHTMLDocument2 GetDocument()
     {
       AutomationElement ieSrvFrame = null;
-      int               retries    = 5;
+      DateTime          start      = DateTime.Now;
 
-      while (retries-- > 0 && ieSrvFrame == null)
+      while (ieSrvFrame == null && (DateTime.Now - start).TotalMilliseconds <= 1000)
         try
         {
           IntPtr shellEmbedHwnd = _group._smProcess.Memory.Read<IntPtr>(
@@ -104,10 +115,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
         {
           Thread.Sleep(50);
         }
-        catch (TimeoutException) { }
+        catch (TimeoutException)
+        {
+          Thread.Sleep(50);
+        }
         catch (Exception ex)
         {
-          // TODO: Log, notify, ...
+          LogTo.Error(ex,
+                      "Failed to acquire IHTMLDocument2's ShellEmbed handle");
           break;
         }
 

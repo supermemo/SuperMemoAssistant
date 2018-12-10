@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/31 13:45
-// Modified On:  2018/06/01 14:22
+// Created On:   2018/07/27 12:54
+// Modified On:  2018/12/09 02:07
 // Modified By:  Alexis
 
 #endregion
@@ -30,8 +30,6 @@
 
 
 
-using System;
-using System.IO;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 
 // ReSharper disable InconsistentNaming
@@ -42,12 +40,22 @@ namespace SuperMemoAssistant.Interop
   {
     #region Constants & Statics
 
-    public const string BinPath        = "C:\\SuperMemo\\sm17.exe";
-    public const string CollectionPath = "D:\\Supermemo\\Test\\";
+    public const string BinPath = "C:\\SuperMemo\\sm17.exe";
 
     #endregion
 
 
+
+
+    public static class Elements
+    {
+      #region Constants & Statics
+
+      public const string ReferenceFormat =
+        @"<br><br><hr SuperMemo><SuperMemoReference><H5 dir=ltr align=left><FONT style=""COLOR: transparent"" size=1>#SuperMemo Reference:</FONT><BR><FONT class=reference>{0}</FONT></SuperMemoReference>";
+
+      #endregion
+    }
 
 
     public static class Paths
@@ -65,6 +73,8 @@ namespace SuperMemoAssistant.Interop
     {
       #region Constants & Statics
 
+      public const string BinaryMemFileName    = "program.mem";
+      public const string BinaryRtxFileName    = "program.rtx";
       public const string ConceptMemFileName   = "concept.mem";
       public const string ConceptRtxFileName   = "concept.rtx";
       public const string ContentsFileName     = "contents.dat";
@@ -101,8 +111,11 @@ namespace SuperMemoAssistant.Interop
     {
       #region Constants & Statics
 
-      public static readonly SMAppVersion vInvalid = new SMAppVersion(-1, -1, -1);
-      public static readonly SMAppVersion v17_3    = new SMAppVersion(17, 3);
+      public static readonly SMAppVersion vInvalid = new SMAppVersion(-1,
+                                                                      -1,
+                                                                      -1);
+      public static readonly SMAppVersion v17_3 = new SMAppVersion(17,
+                                                                   3);
 
       #endregion
     }

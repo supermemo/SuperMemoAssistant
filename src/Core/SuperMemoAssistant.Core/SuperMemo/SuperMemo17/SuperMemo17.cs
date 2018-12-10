@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/08 01:24
-// Modified On:  2018/05/31 00:07
+// Modified On:  2018/12/04 14:59
 // Modified By:  Alexis
 
 #endregion
@@ -33,22 +33,10 @@
 using System.Collections.Generic;
 using SuperMemoAssistant.Hooks;
 using SuperMemoAssistant.Interop;
-using SuperMemoAssistant.Interop.SuperMemo.Components;
-using SuperMemoAssistant.Interop.SuperMemo.Components.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Interop.SuperMemo.Elements;
-using SuperMemoAssistant.Interop.SuperMemo.Registry;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
-using SuperMemoAssistant.Interop.SuperMemo.UI.Element;
-using SuperMemoAssistant.Interop.SuperMemo.UI.ElementData;
-using SuperMemoAssistant.Interop.SuperMemo.UI.MainBar;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Components;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.ElementData;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.MainBar;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17
 {
@@ -97,6 +85,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
         ElementRegistry.Instance,
         ComponentRegistry.Instance,
         TextRegistry.Instance,
+        BinaryRegistry.Instance,
         ConceptRegistry.Instance,
         ImageRegistry.Instance,
         TemplateRegistry.Instance,

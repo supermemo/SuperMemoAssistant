@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:13
-// Modified On:  2018/11/26 10:33
+// Modified On:  2018/12/07 15:02
 // Modified By:  Alexis
 
 #endregion
@@ -37,6 +37,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using Anotar.Serilog;
 using Process.NET.Types;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
@@ -170,15 +172,30 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     {
       return TargetFiles.Select(f => Collection.GetRegistryFilePath(f));
     }
-    
+
     IEnumerator IEnumerable.GetEnumerator()
     {
       return GetEnumerator();
     }
-    
+
     public IEnumerator<IMember> GetEnumerator()
     {
       return Members.Values.ToList().GetEnumerator();
+    }
+    
+    public IEnumerable<IMember> FindByName(Regex regex)
+    {
+      return Members.Values.Where(m => m.Empty == false && regex.IsMatch(m.Name)).ToList();
+    }
+
+    public IMember FirstOrDefaultByName(string exactName)
+    {
+      return Members.Values.FirstOrDefault(m => m.Empty == false && m.Name == exactName);
+    }
+
+    public IMember FirstOrDefaultByName(Regex regex)
+    {
+      return Members.Values.FirstOrDefault(m => m.Empty == false && regex.IsMatch(m.Name));
     }
 
     #endregion
@@ -196,8 +213,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
                              new DelphiUString(textOrPath),
                              SMA.Instance.SMProcess.ThreadFactory.MainThread);
       }
-      catch
+      catch (Exception ex)
       {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
         return -1;
       }
     }
@@ -214,17 +233,15 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
                               new DelphiUString(registryName),
                               SMA.Instance.SMProcess.ThreadFactory.MainThread);
       }
-      catch
+      catch (Exception ex)
       {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
         return -1;
       }
       finally
       {
-        try
-        {
-          SMA.Instance.IgnoreUserConfirmation = false;
-        }
-        catch { }
+        SMA.Instance.IgnoreUserConfirmation = false;
       }
     }
 
@@ -236,6 +253,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
       AddMemberFunc  = funcScanner.GetNativeFunc<int, IntPtr, DelphiUString>(SMNatives.TRegistry.AddMember);
       ImportFileFunc = funcScanner.GetNativeFunc<int, IntPtr, DelphiUString, DelphiUString>(SMNatives.TRegistry.ImportFile);
+
+      funcScanner.Cleanup();
     }
 
     private void OnSMStoppedEvent(object        sender,
@@ -289,7 +308,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
       if (IsOptional && (File.Exists(memFilePath) == false || File.Exists(rtxFilePath) == false))
         return;
-
+    
       using (Stream memStream = File.OpenRead(memFilePath))
       using (Stream rtxStream = File.OpenRead(rtxFilePath))
         //using (Stream rtfStream = File.OpenRead(rtfFilePath))

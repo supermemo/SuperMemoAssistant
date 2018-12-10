@@ -54,8 +54,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components
 
     #region Constructors
 
-    public ComponentGroup(int offset,
-                          int compCount)
+    public ComponentGroup(int offset)
     {
       Offset = offset;
     }

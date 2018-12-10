@@ -48,6 +48,7 @@ using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.ElementData;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.MainBar;
 using SuperMemoAssistant.Sys;
+// ReSharper disable RedundantTypeArgumentsOfMethod
 
 namespace SuperMemoAssistant.Plugins
 {
@@ -118,6 +119,7 @@ namespace SuperMemoAssistant.Plugins
       Runner.Export<IElementRegistry>(ElementRegistry.Instance);
       Runner.Export<IComponentRegistry>(ComponentRegistry.Instance);
       Runner.Export<ITextRegistry>(TextRegistry.Instance);
+      Runner.Export<IBinaryRegistry>(BinaryRegistry.Instance);
       Runner.Export<IConceptRegistry>(ConceptRegistry.Instance);
       Runner.Export<IImageRegistry>(ImageRegistry.Instance);
       Runner.Export<ITemplateRegistry>(TemplateRegistry.Instance);

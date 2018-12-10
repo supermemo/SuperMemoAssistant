@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/24 13:11
-// Modified On:  2018/11/24 18:42
+// Modified On:  2018/12/09 16:00
 // Modified By:  Alexis
 
 #endregion
@@ -33,12 +33,15 @@
 using System;
 using Anotar.Serilog;
 using Process.NET.Memory;
+using Process.NET.Types;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Interop.SuperMemo.UI.Element;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
 using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
@@ -56,58 +59,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
 
 
     #region Properties & Fields - Non-Public
-
-    //protected void OnStructureChanged(AutomationElement   _,
-    //                                  StructureChangeType changeType,
-    //                                  int[]               values)
-    //{
-    //  if (values.Length != 2)
-    //    return;
-
-    //  switch (changeType)
-    //  {
-    //    case StructureChangeType.ChildAdded:
-    //      if (RequiresRefresh == false)
-    //        _htmlDocuments.Clear();
-
-    //      RequiresRefresh = true;
-
-    //      var component = UIAuto.FromHandle(new IntPtr(values[1]));
-    //      ProcessComponent(component);
-    //      break;
-    //  }
-    //}
-
-    //protected IEnumerable<IHTMLDocument2> RefreshComponents()
-    //{
-    //  if (SMProcess.Native.HasExited)
-    //    return new List<IHTMLDocument2>();
-
-    //  foreach (var comp in ContentPane.FindAllChildren())
-    //    ProcessComponent(comp);
-
-    //  RequiresRefresh = false;
-
-    //  return _htmlDocuments;
-    //}
-
-    //protected void ProcessComponent(AutomationElement comp)
-    //{
-    //  switch (comp.ClassName)
-    //  {
-    //    case "Shell Embedding": // IE
-    //      var            ieServer   = comp.FindFirstDescendant(c => c.ByClassName("Internet Explorer_Server"));
-    //      var            ieHwnd     = ieServer.FrameworkAutomationElement.NativeWindowHandle.Value;
-    //      IHTMLDocument2 ieDocument = IEComHelper.GetDocumentFromHwnd(ieHwnd);
-
-    //      _htmlDocuments.Add(ieDocument);
-    //      break;
-
-    //    case "TRichEdit": // RTF
-    //      break;
-    //  }
-    //}
-
+    
     protected ControlGroup _controlGroup = null;
 
     protected int LastElementId { get; set; }
@@ -118,23 +70,21 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     protected IPointer CurrentRootIdPtr    { get; set; }
     protected IPointer CurrentHookIdPtr    { get; set; }
 
-    //protected AutomationElement ContentPane { get; set; }
+    protected NativeFunc<bool, IntPtr>               PasteArticleFunc       { get; set; }
+    protected NativeFunc<bool, IntPtr>               PasteElementFunc       { get; set; }
+    protected NativeFunc<int, IntPtr, byte, byte>    AppendElementFunc      { get; set; }
+    protected NativeFunc<int, IntPtr, DelphiUString> AddElementFromTextFunc { get; set; }
 
-    protected NativeFunc<bool, IntPtr>  PasteArticleFunc        { get; set; }
-    protected NativeFunc<bool, IntPtr>  PasteElementFunc        { get; set; }
     protected NativeAction<IntPtr, int> SetDefaultConceptMethod { get; set; }
     protected NativeAction<IntPtr, int> GoToMethod              { get; set; }
     protected NativeAction<IntPtr>      DeleteMethod            { get; set; }
     protected NativeAction<IntPtr>      DoneMethod              { get; set; }
 
+    protected NativeAction<IntPtr, int, DelphiUString> GetTextMethod { get; set; }
+    protected NativeAction<IntPtr, int, DelphiUString> SetTextMethod { get; set; }
 
-
-
-    #region Properties & Fields
-
-    protected bool RequiresRefresh { get; set; } = false;
-
-    #endregion
+    protected NativeAction<IntPtr, bool, DelphiUString> EnterUpdateLockMethod { get; set; }
+    protected NativeAction<IntPtr, bool>                QuitUpdateLockMethod  { get; set; }
 
     #endregion
 
@@ -155,30 +105,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
 
 
     #region Methods Impl
-
-    //protected override void OnWindowOpened(AutomationElement elem,
-    //                                       EventId           eventId)
-    //{
-    //  base.OnWindowOpened(elem,
-    //                      eventId);
-
-    //  ContentPane = Window.FindFirstChild(c => c.ByClassName("TScrollBox"));
-
-    //  //contentPane.RegisterStructureChangedEvent(
-    //  //  TreeScope.Children,
-    //  //  OnStructureChanged
-    //  //);
-
-    //  RefreshComponents();
-    //}
-
-    //protected override void OnWindowClosed(AutomationElement elem,
-    //                                       EventId           eventId)
-    //{
-    //  base.OnWindowClosed(elem,
-    //                      eventId);
-    //}
-
+    
     public bool FocusWindow()
     {
       try
@@ -187,8 +114,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
 
         return true;
       }
-      catch
+      catch (Exception ex)
       {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -202,14 +131,16 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
 
       throw new NotImplementedException(); // SetDefaultConcept is actually a TSMMain method
 
-      return SetDefaultConceptMethod(
-        ElementWdwPtr.Read<IntPtr>(),
-        conceptId,
-        SMProcess.ThreadFactory.MainThread);
+      //return SetDefaultConceptMethod(
+      //  ElementWdwPtr.Read<IntPtr>(),
+      //  conceptId,
+      //  SMProcess.ThreadFactory.MainThread);
     }
 
     public bool GoToElement(int elementId)
     {
+      bool ret = false;
+
       try
       {
         var elem = SMA.Instance.Registry.Element[elementId];
@@ -217,13 +148,17 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
         if (elem == null || elem.Deleted)
           return false;
 
-        return GoToMethod(ElementWdwPtr.Read<IntPtr>(),
-                          elementId,
-                          SMProcess.ThreadFactory.MainThread);
+        ret = GoToMethod(ElementWdwPtr.Read<IntPtr>(),
+                         elementId,
+                         SMProcess.ThreadFactory.MainThread);
+
+        return ret;
       }
-      catch
+      catch (Exception ex)
       {
-        return false;
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
+        return ret;
       }
     }
 
@@ -234,8 +169,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
         return PasteArticleFunc(ElementWdwPtr.Read<IntPtr>(),
                                 SMProcess.ThreadFactory.MainThread);
       }
-      catch
+      catch (Exception ex)
       {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -247,8 +184,43 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
         return PasteElementFunc(ElementWdwPtr.Read<IntPtr>(),
                                 SMProcess.ThreadFactory.MainThread);
       }
-      catch
+      catch (Exception ex)
       {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
+    public int AppendElement(ElementType elementType)
+    {
+      try
+      {
+        return AppendElementFunc(ElementWdwPtr.Read<IntPtr>(),
+                                 (byte)elementType,
+                                 0, // ??
+                                 SMProcess.ThreadFactory.MainThread);
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
+        return -1;
+      }
+    }
+
+    public bool AddElementFromText(string elementDesc)
+    {
+      try
+      {
+        return AddElementFromTextFunc(ElementWdwPtr.Read<IntPtr>(),
+                                      new DelphiUString(elementDesc),
+                                      SMProcess.ThreadFactory.MainThread) > 0;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -260,8 +232,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
         return DeleteMethod(ElementWdwPtr.Read<IntPtr>(),
                             SMProcess.ThreadFactory.MainThread);
       }
-      catch
+      catch (Exception ex)
       {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -273,8 +247,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
         return DoneMethod(ElementWdwPtr.Read<IntPtr>(),
                           SMProcess.ThreadFactory.MainThread);
       }
-      catch
+      catch (Exception ex)
       {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -286,6 +262,91 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
 
     #region Methods
 
+    public bool SetText(IControl control,
+                        string   text)
+    {
+      try
+      {
+        SetTextMethod(ElementWdwPtr.Read<IntPtr>(),
+                      control.Id + 1,
+                      new DelphiUString(text));
+
+        return true;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
+    public string GetText(IControl control)
+    {
+      return null;
+
+      // TODO: Add out parameters to Process.NET
+      //try
+      //{
+      //  var ret = new DelphiUString(8000);
+
+      //  GetTextMethod(ElementWdwPtr.Read<IntPtr>(),
+      //                control.Id + 1,
+      //                ret);
+
+      //  return ret.Text;
+      //}
+      //catch (Exception ex)
+      //{
+      //  return null;
+      //}
+    }
+
+    public bool EnterSMUpdateLock()
+    {
+      try
+      {
+        EnterUpdateLockMethod(ElementWdwPtr.Read<IntPtr>(),
+                              true,
+                              new DelphiUString(1));
+
+        return true;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
+    public bool QuitSMUpdateLock()
+    {
+      try
+      {
+        QuitUpdateLockMethod(ElementWdwPtr.Read<IntPtr>(),
+                             true);
+
+        return true;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
+    public bool EnterSMAUpdateLock()
+    {
+      return ElementIdPtr.SuspendTimer();
+    }
+
+    public bool QuitSMAUpdateLock(bool updateValue = false)
+    {
+      return ElementIdPtr.RestartTimer(updateValue);
+    }
+
     private void OnSMStartedEvent(object        sender,
                                   SMProcessArgs e)
     {
@@ -293,7 +354,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
       ElementWdwPtr.RegisterValueChangedEventHandler<int>(OnWindowCreated);
     }
 
-    private bool OnWindowCreated()
+    private bool OnWindowCreated(byte[] newVal)
     {
       if (ElementWdwPtr.Read<int>() == 0)
         return false;
@@ -306,18 +367,31 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
       CurrentRootIdPtr    = SMProcess[SMNatives.Globals.CurrentRootIdPtr];
       CurrentHookIdPtr    = SMProcess[SMNatives.Globals.CurrentHookIdPtr];
 
-      PasteArticleFunc = funcScanner.GetNativeFunc<bool, IntPtr>(SMNatives.TElWind.PasteArticleSig);
-      PasteElementFunc = funcScanner.GetNativeFunc<bool, IntPtr>(SMNatives.TElWind.PasteElementCallSig);
-      GoToMethod       = funcScanner.GetNativeAction<IntPtr, int>(SMNatives.TElWind.GoToElementCallSig);
-      DeleteMethod     = funcScanner.GetNativeAction<IntPtr>(SMNatives.TElWind.DeleteCurrentElementCallSig);
-      DoneMethod       = funcScanner.GetNativeAction<IntPtr>(SMNatives.TElWind.DoneSig);
+      PasteArticleFunc       = funcScanner.GetNativeFunc<bool, IntPtr>(SMNatives.TElWind.PasteArticleSig);
+      PasteElementFunc       = funcScanner.GetNativeFunc<bool, IntPtr>(SMNatives.TElWind.PasteElementCallSig);
+      AppendElementFunc      = funcScanner.GetNativeFunc<int, IntPtr, byte, byte>(SMNatives.TElWind.AppendElementCallSig);
+      AddElementFromTextFunc = funcScanner.GetNativeFunc<int, IntPtr, DelphiUString>(SMNatives.TElWind.AddElementFromTextCallSig);
+
+      GoToMethod   = funcScanner.GetNativeAction<IntPtr, int>(SMNatives.TElWind.GoToElementCallSig);
+      DeleteMethod = funcScanner.GetNativeAction<IntPtr>(SMNatives.TElWind.DeleteCurrentElementCallSig);
+      DoneMethod   = funcScanner.GetNativeAction<IntPtr>(SMNatives.TElWind.DoneSig);
+
+      GetTextMethod = funcScanner.GetNativeAction<IntPtr, int, DelphiUString>(SMNatives.TElWind.GetTextCallSig);
+      SetTextMethod = funcScanner.GetNativeAction<IntPtr, int, DelphiUString>(SMNatives.TElWind.SetTextCallSig);
+
+      EnterUpdateLockMethod = funcScanner.GetNativeAction<IntPtr, bool, DelphiUString>(SMNatives.TElWind.EnterUpdateLockCallSig);
+      QuitUpdateLockMethod  = funcScanner.GetNativeAction<IntPtr, bool>(SMNatives.TElWind.QuitUpdateLockCallSig);
 
       ElementIdPtr.RegisterValueChangedEventHandler<int>(OnElementChangedInternal);
 
       LastElementId = CurrentElementId;
-      OnElementChanged(new SMDisplayedElementChangedArgs(SMA.Instance,
-                                                         CurrentElement,
-                                                         null));
+
+      // TODO: ??? This somehow gets delayed and causes all sorts of troubles
+      //OnElementChanged?.Invoke(new SMDisplayedElementChangedArgs(SMA.Instance,
+      //                                                   CurrentElement,
+      //                                                   null));
+
+      funcScanner.Cleanup();
 
       return true;
     }
@@ -339,21 +413,53 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
       DoneMethod       = null;
     }
 
-    protected bool OnElementChangedInternal()
+    protected bool OnElementChangedInternal(byte[] newVal)
     {
-      _controlGroup?.Dispose();
-      _controlGroup = null;
-
-      RequiresRefresh = true;
+      int newElementId;
 
       try
       {
-        var lastElement = SMA.Instance.Registry.Element[LastElementId];
-        LastElementId = CurrentElementId;
+        newElementId = BitConverter.ToInt32(newVal,
+                                            0);
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex,
+                    "Failed to convert bytes to int 32.");
+        return false;
+      }
+      
+      return OnElementChangedInternal(newElementId);
+    }
+
+    protected bool OnElementChangedInternal(int newElementId)
+    {
+      if (newElementId <= 0)
+        return false;
+
+      try
+      {
+        _controlGroup?.Dispose();
+        _controlGroup = null;
+
+        DateTime startTime   = DateTime.Now;
+        IElement lastElement = null, currentElement = null;
+
+        do
+        {
+          if (LastElementId > 0 && lastElement == null)
+            lastElement = SMA.Instance.Registry.Element[LastElementId];
+
+          if (currentElement == null)
+            currentElement = ElementRegistry.Instance[newElementId];
+        } while ((DateTime.Now - startTime).TotalMilliseconds < 800
+          && (LastElementId > 0 && lastElement == null || currentElement == null));
+
+        LastElementId = newElementId;
 
         OnElementChanged?.Invoke(
           new SMDisplayedElementChangedArgs(SMA.Instance,
-                                            CurrentElement,
+                                            currentElement,
                                             lastElement)
         );
       }

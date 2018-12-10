@@ -103,6 +103,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
     public int SlotLengthOrConceptGroupId { get; set; }
 
     public bool Empty { get; set; }
+    
+    public string Name => RtxValue?.TrimEnd('\0');
 
     #endregion
 
@@ -193,6 +195,15 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 
     public string GetFilePath(string fileExt)
     {
+      SMCollection collection = SMA.Instance.Collection;
+
+      return GetFilePathForSlotId(
+        collection,
+        SlotIdOrOffset,
+        fileExt
+      );
+
+      /*
       switch (LinkType)
       {
         case RegistryLinkType.File:
@@ -207,7 +218,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 
         default:
           return null;
-      }
+      }*/
     }
 
     protected static string GetFilePathForSlotId(

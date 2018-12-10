@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 22:40
-// Modified On:  2018/06/01 22:40
+// Modified On:  2018/12/07 14:14
 // Modified By:  Alexis
 
 #endregion
@@ -30,15 +30,14 @@
 
 
 
-using System;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Elements;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
-using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Components;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types;
+using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo
 {
@@ -65,6 +64,7 @@ namespace SuperMemoAssistant.SuperMemo
     #region Properties Impl - Public
 
     public IElementRegistry   Element   => ElementRegistry.Instance;
+    public IBinaryRegistry    Binary    => BinaryRegistry.Instance;
     public IComponentRegistry Component => ComponentRegistry.Instance;
     public IConceptRegistry   Concept   => ConceptRegistry.Instance;
     public ITextRegistry      Text      => TextRegistry.Instance;

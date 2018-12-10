@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/24 13:13
-// Modified On:  2018/05/30 23:52
+// Modified On:  2018/12/10 13:24
 // Modified By:  Alexis
 
 #endregion
@@ -30,15 +30,10 @@
 
 
 
-using System;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using FlaUI.Core.AutomationElements;
-using FlaUI.Core.Definitions;
 using FlaUI.Core.Identifiers;
 using SuperMemoAssistant.Interop;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Interop.SuperMemo.UI.ElementData;
 using SuperMemoAssistant.Sys;
 
@@ -49,7 +44,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.ElementData
   {
     #region Constants & Statics
 
-    protected static Regex RE_TitleElementId { get; } = new Regex("[^ ]+ #([\\d]+):.*", RegexOptions.Compiled);
+    protected static Regex RE_TitleElementId { get; } = new Regex("[^ ]+ #([\\d]+):.*",
+                                                                  RegexOptions.Compiled);
 
     public static ElementDataWdw Instance { get; } = new ElementDataWdw();
 
@@ -60,10 +56,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.ElementData
 
     #region Constructors
 
-    protected ElementDataWdw()
-    {
-      CurrentElementId = -1;
-    }
+    protected ElementDataWdw() { }
 
     #endregion
 
@@ -74,9 +67,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.ElementData
 
     public override string WindowClass => SMConst.UI.ElementDataWindowClassName;
 
-    public int      CurrentElementId { get; set; }
-    public IElement CurrentElement   => SMA.Instance.Registry.Element?[CurrentElementId];
-
     #endregion
 
 
@@ -84,62 +74,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.ElementData
 
     #region Methods Impl
 
-    protected override void OnWindowOpened(AutomationElement elem, EventId eventId)
+    protected override void OnWindowOpened(AutomationElement elem,
+                                           EventId           eventId)
     {
-      base.OnWindowOpened(elem, eventId);
-
-      Window.RegisterPropertyChangedEvent(
-        TreeScope.Element,
-        (ae, p, v) => OnWindowPropertyChanged(ae, null),
-        UIAuto.PropertyLibrary.Element.Name
-      );
+      base.OnWindowOpened(elem,
+                          eventId);
     }
-
-    #endregion
-
-
-
-
-    #region Methods
-
-    protected void OnWindowPropertyChanged(AutomationElement ae, EventId _)
-    {
-#if DEBUG
-      Debug.WriteLine("[ElDataWdw] title: {0}", new object[] { ae?.Name });
-#endif
-
-      string title = ae?.Name;
-
-      if (title == null)
-        return;
-
-      var match = RE_TitleElementId.Match(title);
-
-      if (match.Success == false)
-        return;
-
-      CurrentElementId = int.Parse(match.Groups[1].Value);
-
-      try
-      {
-        OnElementChanged?.Invoke(new SMElementArgs(SMA.Instance, CurrentElement));
-      }
-      catch (Exception ex) { }
-
-#if DEBUG
-      Debug.WriteLine("[ElDataWdw] element: {0}", new object[] { CurrentElement?.Title });
-#endif
-    }
-
-    #endregion
-
-
-
-
-    #region Events
-
-    /// <inheritdoc />
-    public event Action<SMElementArgs> OnElementChanged;
 
     #endregion
   }

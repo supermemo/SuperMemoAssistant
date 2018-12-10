@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/08 02:16
-// Modified On:  2018/06/02 14:36
+// Modified On:  2018/12/10 12:52
 // Modified By:  Alexis
 
 #endregion
@@ -33,6 +33,7 @@
 using System;
 using System.Runtime.InteropServices;
 using mshtml;
+// ReSharper disable InconsistentNaming
 
 namespace SuperMemoAssistant.COM.InternetExplorer
 {
@@ -47,10 +48,19 @@ namespace SuperMemoAssistant.COM.InternetExplorer
 
       if (lngMsg != 0)
       {
-        SendMessageTimeout(hWnd, lngMsg, 0, 0, SMTO_ABORTIFHUNG, 1000, out int lRes);
+        SendMessageTimeout(hWnd,
+                           lngMsg,
+                           0,
+                           0,
+                           SMTO_ABORTIFHUNG,
+                           1000,
+                           out int lRes);
 
-        if (!(bool)(lRes == 0))
-          ObjectFromLresult(lRes, ref GUID_IHTMLDocument, 0, ref document);
+        if (lRes != 0)
+          ObjectFromLresult(lRes,
+                            ref GUID_IHTMLDocument,
+                            0,
+                            ref document);
       }
 
       return document;
@@ -63,16 +73,25 @@ namespace SuperMemoAssistant.COM.InternetExplorer
 
     #region API CALLS
 
-    [DllImport("user32.dll", EntryPoint = "RegisterWindowMessageA")]
+    [DllImport("user32.dll",
+      EntryPoint = "RegisterWindowMessageA")]
     public static extern int RegisterWindowMessage(string lpString);
 
-    [DllImport("user32.dll", EntryPoint = "SendMessageTimeoutA")]
-    public static extern int SendMessageTimeout(IntPtr  hwnd, int msg, int wParam, int lParam, int fuFlags,
+    [DllImport("user32.dll",
+      EntryPoint = "SendMessageTimeoutA")]
+    public static extern int SendMessageTimeout(IntPtr  hwnd,
+                                                int     msg,
+                                                int     wParam,
+                                                int     lParam,
+                                                int     fuFlags,
                                                 int     uTimeout,
                                                 out int lpdwResult);
 
     [DllImport("OLEACC.dll")]
-    public static extern int ObjectFromLresult(int lResult, ref Guid riid, int wParam, ref IHTMLDocument2 ppvObject);
+    public static extern int ObjectFromLresult(int                lResult,
+                                               ref Guid           riid,
+                                               int                wParam,
+                                               ref IHTMLDocument2 ppvObject);
 
 
     public const  int  SMTO_ABORTIFHUNG   = 0x2;

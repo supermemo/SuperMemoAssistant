@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/08 22:27
-// Modified On:  2018/05/30 23:35
+// Created On:   2018/06/02 12:18
+// Modified On:  2018/12/10 12:49
 // Modified By:  Alexis
 
 #endregion
@@ -45,7 +45,6 @@ using FlaUI.UIA3.EventHandlers;
 using Nito.AsyncEx;
 using Process.NET;
 using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.Services;
 using EventList =
   System.Collections.Generic.List<(FlaUI.Core.AutomationElements.AutomationElement parent,
@@ -56,7 +55,8 @@ using WaitersDictionary =
 
 namespace SuperMemoAssistant.Sys.UIAutomation
 {
-  [SuppressMessage("ReSharper", "BitwiseOperatorOnEnumWithoutFlags")]
+  [SuppressMessage("ReSharper",
+    "BitwiseOperatorOnEnumWithoutFlags")]
   public abstract class UIAutomationBase : SMMarshalByRefObject, IDisposable
   {
     #region Properties & Fields
@@ -64,7 +64,7 @@ namespace SuperMemoAssistant.Sys.UIAutomation
     //
     // UI Automation - Event registration
 
-    protected readonly EventList      RegisteredEvents = new EventList();
+    protected readonly EventList      _registeredEvents = new EventList();
     protected          UIA3Automation UIAuto => Svc.UIAutomation;
 
     private WaitersDictionary                WindowOpenedWaiters            { get; } = new WaitersDictionary();
@@ -133,10 +133,12 @@ namespace SuperMemoAssistant.Sys.UIAutomation
         AwaiterParent.FrameworkAutomationElement.UnregisterStructureChangedEventHandler(AwaiterStructureChangedHandler);
 
       if (AwaiterWindowOpenedHandler != null)
-        UnregisterAutomationEvent(AwaiterParent, AwaiterWindowOpenedHandler);
+        UnregisterAutomationEvent(AwaiterParent,
+                                  AwaiterWindowOpenedHandler);
 
       if (AwaiterWindowClosedHandler != null)
-        UnregisterAutomationEvent(AwaiterParent, AwaiterWindowClosedHandler);
+        UnregisterAutomationEvent(AwaiterParent,
+                                  AwaiterWindowClosedHandler);
 
       AwaiterParent                  = null;
       AwaiterStructureChangedHandler = null;
@@ -157,56 +159,72 @@ namespace SuperMemoAssistant.Sys.UIAutomation
       Func<AutomationElement, bool> filter,
       int                           timeOut = Timeout.Infinite)
     {
-      return Awaiter_WaitAsync(WindowOpenedWaiters, filter, timeOut);
+      return Awaiter_WaitAsync(WindowOpenedWaiters,
+                               filter,
+                               timeOut);
     }
 
     public Task<(bool success, AutomationElement elem)> WaitWdwClosedAsync(
       Func<AutomationElement, bool> filter,
       int                           timeOut = Timeout.Infinite)
     {
-      return Awaiter_WaitAsync(WindowClosedWaiters, filter, timeOut);
+      return Awaiter_WaitAsync(WindowClosedWaiters,
+                               filter,
+                               timeOut);
     }
 
     public Task<(bool success, AutomationElement elem)> WaitElementAddedAsync(
       Func<AutomationElement, bool> filter,
       int                           timeOut = Timeout.Infinite)
     {
-      return Awaiter_WaitAsync(ElementAddedWaiters, filter, timeOut);
+      return Awaiter_WaitAsync(ElementAddedWaiters,
+                               filter,
+                               timeOut);
     }
 
     public Task<(bool success, AutomationElement elem)> WaitElementRemovedAsync(
       Func<AutomationElement, bool> filter,
       int                           timeOut = Timeout.Infinite)
     {
-      return Awaiter_WaitAsync(ElementRemovedWaiters, filter, timeOut);
+      return Awaiter_WaitAsync(ElementRemovedWaiters,
+                               filter,
+                               timeOut);
     }
 
 
     //
     // UI Events
 
-    private void Awaiter_OnWindowOpened(AutomationElement ae, EventId _)
+    private void Awaiter_OnWindowOpened(AutomationElement ae,
+                                        EventId           _)
     {
-      Awaiter_DoFilter(ae, WindowOpenedWaiters);
+      Awaiter_DoFilter(ae,
+                       WindowOpenedWaiters);
     }
 
-    private void Awaiter_OnWindowClosed(AutomationElement ae, EventId _)
+    private void Awaiter_OnWindowClosed(AutomationElement ae,
+                                        EventId           _)
     {
-      Awaiter_DoFilter(ae, WindowClosedWaiters);
+      Awaiter_DoFilter(ae,
+                       WindowClosedWaiters);
     }
 
-    private void OnStructureChanged(AutomationElement ae, StructureChangeType changeType, int[] values)
+    private void OnStructureChanged(AutomationElement   ae,
+                                    StructureChangeType changeType,
+                                    int[]               values)
     {
       switch (changeType)
       {
         case StructureChangeType.ChildAdded:
         case StructureChangeType.ChildrenBulkAdded:
-          Awaiter_DoFilter(ae, ElementAddedWaiters);
+          Awaiter_DoFilter(ae,
+                           ElementAddedWaiters);
           break;
 
         case StructureChangeType.ChildRemoved:
         case StructureChangeType.ChildrenBulkRemoved:
-          Awaiter_DoFilter(ae, ElementRemovedWaiters);
+          Awaiter_DoFilter(ae,
+                           ElementRemovedWaiters);
           break;
       }
     }
@@ -248,7 +266,8 @@ namespace SuperMemoAssistant.Sys.UIAutomation
 
       cts.Dispose();
 
-      waiters.TryRemove(filter, out awaiterData);
+      waiters.TryRemove(filter,
+                        out awaiterData);
 
       if (task.IsCanceled)
         return (false, null);
@@ -262,7 +281,8 @@ namespace SuperMemoAssistant.Sys.UIAutomation
     //
     // UI Automation - Filters
 
-    protected bool IsSMProcess(AutomationElement automationElement, EventId _)
+    protected bool IsSMProcess(AutomationElement automationElement,
+                               EventId           _)
     {
       try
       {
@@ -280,11 +300,13 @@ namespace SuperMemoAssistant.Sys.UIAutomation
 
     protected Func<AutomationElement, EventId, bool> IsSMWindow(string windowClass)
     {
-      bool MatchClassName(AutomationElement ae, EventId _)
+      bool MatchClassName(AutomationElement ae,
+                          EventId           _)
       {
         try
         {
-          return Equals(ae.ClassName, windowClass);
+          return Equals(ae.ClassName,
+                        windowClass);
         }
         catch (System.Runtime.InteropServices.COMException)
         {
@@ -327,7 +349,12 @@ namespace SuperMemoAssistant.Sys.UIAutomation
       Func<AutomationElement, EventId, bool>      withFilter = null,
       params Action<AutomationElement, EventId>[] actions)
     {
-      return RegisterAutomationEventInternal(element, eventId, treeScope, true, withFilter, actions);
+      return RegisterAutomationEventInternal(element,
+                                             eventId,
+                                             treeScope,
+                                             true,
+                                             withFilter,
+                                             actions);
     }
 
     /// <summary>Request a Manual-Release notifification about <paramref name="eventId" /></summary>
@@ -346,7 +373,12 @@ namespace SuperMemoAssistant.Sys.UIAutomation
       Func<AutomationElement, EventId, bool>      withFilter = null,
       params Action<AutomationElement, EventId>[] actions)
     {
-      return RegisterAutomationEventInternal(element, eventId, treeScope, false, withFilter, actions);
+      return RegisterAutomationEventInternal(element,
+                                             eventId,
+                                             treeScope,
+                                             false,
+                                             withFilter,
+                                             actions);
     }
 
     /// <summary>Request notififications about <paramref name="eventId" /></summary>
@@ -367,14 +399,20 @@ namespace SuperMemoAssistant.Sys.UIAutomation
       Func<AutomationElement, EventId, bool>      withFilter = null,
       params Action<AutomationElement, EventId>[] actions)
     {
-      void ActionWrapper(AutomationElement ae, EventId e)
+      void ActionWrapper(AutomationElement ae,
+                         EventId           e)
       {
-        if (withFilter == null || withFilter(ae, e))
+        if (withFilter == null || withFilter(ae,
+                                             e))
           foreach (var action in actions)
-            action(ae, e);
+            action(ae,
+                   e);
       }
 
-      return RegisterAutomationEventInternal(element, eventId, treeScope, autoRelease,
+      return RegisterAutomationEventInternal(element,
+                                             eventId,
+                                             treeScope,
+                                             autoRelease,
                                              (Action<AutomationElement, EventId>)ActionWrapper);
     }
 
@@ -394,7 +432,9 @@ namespace SuperMemoAssistant.Sys.UIAutomation
     {
       var automationElement = element ?? UIAuto.GetDesktop();
       var desktopEl         = (UIA3FrameworkAutomationElement)automationElement.FrameworkAutomationElement;
-      var eventHandler      = new UIA3AutomationEventHandler(desktopEl, eventId, action);
+      var eventHandler = new UIA3AutomationEventHandler(desktopEl,
+                                                        eventId,
+                                                        action);
 
       UIAuto.NativeAutomation.AddAutomationEventHandler(
         eventId.Id,
@@ -406,7 +446,7 @@ namespace SuperMemoAssistant.Sys.UIAutomation
 
       if (autoRelease)
       {
-        RegisteredEvents.Add((automationElement, eventHandler));
+        _registeredEvents.Add((automationElement, eventHandler));
         return null;
       }
 
@@ -419,7 +459,8 @@ namespace SuperMemoAssistant.Sys.UIAutomation
     ///   Event handler to unregister given event handler, usually obtained
     ///   with RegisterAutomationEvent
     /// </param>
-    public void UnregisterAutomationEvent(AutomationElement parent, ElementEventHandlerBase eventHandler)
+    public void UnregisterAutomationEvent(AutomationElement       parent,
+                                          ElementEventHandlerBase eventHandler)
     {
       var frameworkEventHandler = (UIA3AutomationEventHandler)eventHandler;
 
@@ -438,10 +479,11 @@ namespace SuperMemoAssistant.Sys.UIAutomation
     /// </summary>
     private void UnregisterUIAutomationEvents()
     {
-      foreach (var handlerData in RegisteredEvents)
-        UnregisterAutomationEvent(handlerData.parent, handlerData.handler);
+      foreach (var handlerData in _registeredEvents)
+        UnregisterAutomationEvent(handlerData.parent,
+                                  handlerData.handler);
 
-      RegisteredEvents.Clear();
+      _registeredEvents.Clear();
     }
 
     #endregion

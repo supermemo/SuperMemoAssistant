@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/18 18:28
-// Modified On:  2018/11/19 16:43
+// Modified On:  2018/12/07 14:20
 // Modified By:  Alexis
 
 #endregion
@@ -57,8 +57,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 
 
     #region Properties Impl - Public
-
-    public string Name => RtxValue;
 
     public string Value
     {

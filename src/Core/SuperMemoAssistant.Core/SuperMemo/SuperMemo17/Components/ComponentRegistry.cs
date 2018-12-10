@@ -245,8 +245,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components
           // Skip unknown data
           binStream.ReadChars(offset);
 
-          ComponentGroup cGroup = new ComponentGroup((int)position - 4,
-                                                     compCount);
+          ComponentGroup cGroup = new ComponentGroup((int)position - 4);
           ComponentBase comp;
 
           while (compCount-- > 0 && (comp = ParseCompStream(binStream)) != null)

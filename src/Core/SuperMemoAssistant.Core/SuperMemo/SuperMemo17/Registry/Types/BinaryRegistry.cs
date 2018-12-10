@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/01 14:13
-// Modified On:  2018/11/26 00:14
+// Created On:   2018/12/07 13:56
+// Modified On:  2018/12/10 13:12
 // Modified By:  Alexis
 
 #endregion
@@ -31,24 +31,21 @@
 
 
 using System;
-using System.IO;
-using System.Threading.Tasks;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members;
 using SuperMemoAssistant.Sys;
-using SuperMemoAssistant.Sys.Drawing;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 {
   [InitOnLoad]
-  public class ImageRegistry : RegistryBase<Image, IImage>, IImageRegistry
+  public class BinaryRegistry : RegistryBase<Binary, IBinary>, IBinaryRegistry
   {
     #region Constants & Statics
 
-    public static ImageRegistry Instance { get; } = new ImageRegistry();
+    public static BinaryRegistry Instance { get; } = new BinaryRegistry();
 
     #endregion
 
@@ -57,10 +54,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
     #region Properties & Fields - Non-Public
 
-    protected override string MemFileName => SMConst.Files.ImageMemFileName;
-    protected override string RtxFileName => SMConst.Files.ImageRtxFileName;
+    protected override bool IsOptional => true;
+
+    protected override string MemFileName => SMConst.Files.BinaryMemFileName;
+    protected override string RtxFileName => SMConst.Files.BinaryRtxFileName;
     protected override string RtfFileName => null;
-    protected override IntPtr RegistryPtr => new IntPtr(SMNatives.TRegistry.ImageRegistryInstance.Read<int>(SMA.Instance.SMProcess.Memory));
+    protected override IntPtr RegistryPtr =>
+      new IntPtr(SMNatives.TRegistry.BinaryRegistryInstance.Read<int>(SMA.Instance.SMProcess.Memory));
 
     #endregion
 
@@ -69,7 +69,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
     #region Constructors
 
-    protected ImageRegistry() { }
+    protected BinaryRegistry() { }
 
     #endregion
 
@@ -78,40 +78,20 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
     #region Methods Impl
 
-    protected override Image Create(int        id,
-                                    RegMemElem mem,
-                                    RegRtElem  rtxOrRtf)
+    protected override Binary Create(int        id,
+                                     RegMemElem mem,
+                                     RegRtElem  rtxOrRtf)
     {
-      return new Image(id,
-                       mem,
-                       rtxOrRtf);
+      return new Binary(id,
+                        mem,
+                        rtxOrRtf);
     }
 
-    public Task<IImage> AddAsync(string imageName,
-                                 string imagePath)
+    public int AddMember(string filePath,
+                         string registryName)
     {
-      throw new NotImplementedException();
-    }
-
-    public int AddMember(ImageWrapper imageWrapper,
-                         string       registryName)
-    {
-      try
-      {
-        var      filePath = Path.GetTempFileName() + ".png";
-        FileInfo fi       = imageWrapper.ToFile(filePath);
-
-        var ret = ImportFile(filePath,
-                             registryName);
-
-        fi.Delete();
-
-        return ret;
-      }
-      catch
-      {
-        return -1;
-      }
+      return ImportFile(filePath,
+                        registryName);
     }
 
     #endregion

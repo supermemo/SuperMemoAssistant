@@ -50,10 +50,11 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
   {
     #region Constants & Statics
 
-    private static volatile MessageWindow    _wnd;
-    private static volatile IntPtr           _hwnd;
-    private static readonly ManualResetEvent _windowReadyEvent = new ManualResetEvent(false);
-    private static          int              _id               = 0;
+    private static volatile MessageWindow          _wnd;
+    private static volatile IntPtr                 _hwnd;
+    private static          SynchronizationContext _syncContext;
+    private static readonly ManualResetEvent       _windowReadyEvent = new ManualResetEvent(false);
+    private static          int                    _id               = 0;
     
     public static KeyboardHotKeyService Instance { get; } = new KeyboardHotKeyService();
 
@@ -93,6 +94,9 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
     {
       foreach (var hotKey in RegisteredHotKeys.Keys.ToList())
         UnregisterHotKey(hotKey);
+
+      _syncContext.Send(delegate { _wnd.Close(); },
+                        null);
     }
 
     #endregion
@@ -172,6 +176,8 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
         _wnd  = this;
         _hwnd = Handle;
         _windowReadyEvent.Set();
+
+        _syncContext = WindowsFormsSynchronizationContext.Current;
       }
 
       #endregion

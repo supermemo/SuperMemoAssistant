@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:12
-// Modified On:  2018/11/26 12:32
+// Modified On:  2018/12/09 15:59
 // Modified By:  Alexis
 
 #endregion
@@ -36,6 +36,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using Anotar.Serilog;
 using SuperMemoAssistant.Extensions;
@@ -44,12 +46,13 @@ using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
-using SuperMemoAssistant.Services;
 using SuperMemoAssistant.SuperMemo.Hooks;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
 using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.Sys.Collections;
+using SuperMemoAssistant.Sys.UIAutomation;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 {
@@ -77,6 +80,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 
     protected SparseClusteredArray<byte> ElementsSCA { get; set; } = new SparseClusteredArray<byte>();
     protected SparseClusteredArray<byte> ContentsSCA { get; set; } = new SparseClusteredArray<byte>();
+
+    private Mutex AddMutex { get; } = new Mutex();
 
     #endregion
 
@@ -182,101 +187,227 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
       }
     }
     //
-    // UI
+    // 
 
     public bool Add(ElementBuilder builder)
     {
-      List<IDisposable> toDispose = new List<IDisposable>();
+      bool              success             = false;
+      bool              inSMUpdateLockMode  = false;
+      bool              inSMAUpdateLockMode = false;
+      List<IDisposable> toDispose           = new List<IDisposable>();
 
       try
       {
+        int lastElementId = -1;
+
+        //
+        // Enter critical section
+
+        AddMutex.WaitOne();
+
+        //
+        // Suspend element changed monitoring
+
+        inSMAUpdateLockMode = ElementWdw.Instance.EnterSMAUpdateLock();
+
+        //
+        // Freeze element window if we want to insert the element without displaying it immediatly
+
+        if (builder.ShouldDisplay == false)
+        {
+          inSMUpdateLockMode = ElementWdw.Instance.EnterSMUpdateLock(); // TODO: Pass in EnterUpdateLock
+
+          lastElementId = ElementWdw.Instance.CurrentElementId;
+        }
+
+        //
+        // Has a parent been specified for the new element ?
+
         if (builder.Parent != null)
         {
           toDispose.Add(new HookSnapshot());
-          Svc.SMA.UI.ElementWindow.CurrentHookId = builder.Parent.Id;
+          ElementWdw.Instance.CurrentHookId = builder.Parent.Id;
         }
+
+        //
+        // Has a concept been specified for the new element ?
 
         if (builder.Concept != null)
         {
           toDispose.Add(new ConceptSnapshot());
-          Svc.SMA.UI.ElementWindow.SetCurrentConcept(builder.Concept.Id);
+          ElementWdw.Instance.SetCurrentConcept(builder.Concept.Id);
         }
 
-        toDispose.Add(new ClipboardSnapshot());
+        //
+        // Focus
+
+        toDispose.Add(new FocusSnapshot()); // TODO: Only if inserting 1 element
+
+        //
+        // Select appropriate insertion method, depending on element type and content
 
         ElementCreationMethod creationMethod;
 
-        if (builder.ShouldDisplay)
+        switch (builder.ContentType)
         {
-          switch (builder.ContentType)
-          {
-            case ElementBuilder.ContentTypeEnum.RawText:
-              creationMethod = ElementCreationMethod.ClipboardContent;
+#if false
+        case ElementBuilder.ContentTypeEnum.RawText:
+          creationMethod = ElementCreationMethod.ClipboardContent;
 
-              if (!(builder.Contents[0] is ElementBuilder.TextContent rawTextContent))
-                throw new InvalidCastException("ContentTypeEnum.RawText contained a non-text IContent");
+          if (!(builder.Contents[0] is ElementBuilder.TextContent rawTextContent))
+            throw new InvalidCastException("ContentTypeEnum.RawText contained a non-text IContent");
 
-              Clipboard.SetText(rawTextContent.Text);
-              break;
+          Clipboard.SetText(rawTextContent.Text,
+                            rawTextContent.Encoding.EncodingName == Encoding.Unicode.EncodingName
+                              ? TextDataFormat.UnicodeText
+                              : TextDataFormat.Text);
+          break;
 
-            case ElementBuilder.ContentTypeEnum.Html:
-              creationMethod = ElementCreationMethod.ClipboardContent;
+        case ElementBuilder.ContentTypeEnum.Html:
+          creationMethod = ElementCreationMethod.ClipboardContent;
 
-              if (!(builder.Contents[0] is ElementBuilder.TextContent htmlTextContent))
-                throw new InvalidCastException("ContentTypeEnum.RawText contained a non-text IContent");
+          if (!(builder.Contents[0] is ElementBuilder.TextContent htmlTextContent))
+            throw new InvalidCastException("ContentTypeEnum.RawText contained a non-text IContent");
 
-              ClipboardHelper.CopyToClipboard(htmlTextContent.Text,
-                                              htmlTextContent.Text);
-              break;
+          ClipboardHelper.CopyToClipboard(htmlTextContent.Text,
+                                          htmlTextContent.Text);
+          break;
+#endif
+          // TODO: Handle multiple content
 
-            case ElementBuilder.ContentTypeEnum.Image:
-              creationMethod = ElementCreationMethod.ClipboardElement;
+          case ElementBuilder.ContentTypeEnum.RawText:
+          case ElementBuilder.ContentTypeEnum.Html:
+            creationMethod = ElementCreationMethod.AddElement;
 
-              Clipboard.SetText(ElementClipboardBuilder.FromElementBuilder(builder));
-              break;
-
-            default:
-              throw new NotImplementedException();
-          }
-        }
-
-        else
-        {
-          throw new NotImplementedException();
-
-          creationMethod = ElementCreationMethod.ClipboardElement;
-          Clipboard.SetText(ElementClipboardBuilder.FromElementBuilder(builder));
-        }
-
-        switch (builder.Type)
-        {
-          case ElementType.Topic:
-            if (creationMethod == ElementCreationMethod.ClipboardContent)
-              Svc.SMA.UI.ElementWindow.PasteArticle();
-
-            else if (creationMethod == ElementCreationMethod.ClipboardElement)
-              Svc.SMA.UI.ElementWindow.PasteElement();
+            if (!(builder.Contents[0] is ElementBuilder.TextContent))
+              throw new InvalidCastException("ContentTypeEnum.RawText contained a non-text IContent");
 
             break;
 
-          case ElementType.Item:
-          case ElementType.ConceptGroup:
-          case ElementType.Task:
-          case ElementType.Unknown3:
+
+          case ElementBuilder.ContentTypeEnum.Image:
+            creationMethod = ElementCreationMethod.ClipboardElement;
+
+            toDispose.Add(new ClipboardSnapshot());
+            Clipboard.SetText(ElementClipboardBuilder.FromElementBuilder(builder));
+            break;
+
 
           default:
             throw new NotImplementedException();
         }
 
-        return true;
+        //
+        // Insert the element
+
+        switch (creationMethod)
+        {
+          case ElementCreationMethod.ClipboardContent:
+            if (builder.Type != ElementType.Topic)
+              throw new InvalidOperationException("ElementCreationMethod.ClipboardContent can only create Topics.");
+
+            success = ElementWdw.Instance.PasteArticle();
+
+            break;
+
+          case ElementCreationMethod.ClipboardElement:
+            success = ElementWdw.Instance.PasteElement();
+
+            break;
+
+          case ElementCreationMethod.AddElement:
+            //if (builder.Parent != null && ElementWdw.Instance.CurrentElementId != builder.Parent.Id)
+            //{
+            //  ElementWdw.Instance.IgnoreElementChange += 1;
+
+            //  ElementWdw.Instance.GoToElement(builder.Parent.Id);
+            //}
+
+            string elementDesc = ElementClipboardBuilder.FromElementBuilder(builder);
+
+            success =  ElementWdw.Instance.AppendElement(builder.Type) > 0;
+            success &= ElementWdw.Instance.AddElementFromText(elementDesc);
+
+            break;
+        }
+
+        //
+        // Display original element, and unfreeze window -- or simply resume element changed monitoring
+
+        if (builder.ShouldDisplay == false)
+        {
+          inSMUpdateLockMode = ElementWdw.Instance.QuitSMUpdateLock() == false;
+
+          if (success)
+            ElementWdw.Instance.GoToElement(lastElementId);
+
+          inSMAUpdateLockMode = ElementWdw.Instance.QuitSMAUpdateLock(true);
+        }
+
+        else
+        {
+          inSMAUpdateLockMode = ElementWdw.Instance.QuitSMAUpdateLock();
+        }
+
+        return success;
       }
       catch (Exception ex)
       {
+        LogTo.Error(ex,
+                    "An exception was thrown while creating a new element in SM.");
         return false;
       }
       finally
       {
-        toDispose.ForEach(d => d.Dispose());
+        //
+        // Unlock SM if necessary
+
+        if (inSMUpdateLockMode)
+          try
+          {
+            ElementWdw.Instance.QuitSMUpdateLock();
+          }
+          catch (Exception ex)
+          {
+            LogTo.Error(ex,
+                        "Failed to exit SM Update Lock.");
+            MessageBox.Show($@"Failed to exit SuperMemo update lock.
+You might have to restart SuperMemo.
+
+Exception: {ex}",
+                            "Critical error");
+          }
+
+        //
+        // Restore initial context
+
+        toDispose.ForEach(d =>
+        {
+          try
+          {
+            d.Dispose();
+          }
+          catch (Exception ex)
+          {
+            LogTo.Error(ex,
+                        "Failed to restore context after creating a new SM element.");
+            MessageBox.Show($@"Failed to restore initial context.
+
+Exception: {ex}",
+                            "Warning");
+          }
+        });
+
+        //
+        // Unlock element changed monitoring if necessary
+
+        if (inSMAUpdateLockMode)
+          ElementWdw.Instance.QuitSMAUpdateLock();
+
+        //
+        // Exit Critical section
+
+        AddMutex.ReleaseMutex();
       }
     }
 
@@ -299,6 +430,21 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
     public IEnumerator<IElement> GetEnumerator()
     {
       return Elements.Values.Select(e => (IElement)e).GetEnumerator();
+    }
+
+    public IEnumerable<IElement> FindByName(Regex regex)
+    {
+      return Elements.Values.Where(e => regex.IsMatch(e.Title)).Select(e => (IElement)e).ToList();
+    }
+
+    public IElement FirstOrDefaultByName(Regex regex)
+    {
+      return (IElement)Elements.Values.FirstOrDefault(e => regex.IsMatch(e.Title));
+    }
+
+    public IElement FirstOrDefaultByName(string exactName)
+    {
+      return (IElement)Elements.Values.FirstOrDefault(e => e.Title == exactName);
     }
 
     #endregion
@@ -421,6 +567,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
       }
     }
 
+    protected void DelayedFocus(ref List<IDisposable> toDispose) { }
+
     #endregion
 
 
@@ -443,6 +591,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
     {
       ClipboardContent,
       ClipboardElement,
+      AddElement,
     }
 
     #endregion

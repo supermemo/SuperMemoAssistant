@@ -89,6 +89,7 @@ namespace SuperMemoAssistant.PluginsHost
       try
       {
         SystemDb.Instance.Dispose();
+        KeyboardHotKeyService.Instance.Dispose();
 
         foreach (var plugin in Plugins)
           try

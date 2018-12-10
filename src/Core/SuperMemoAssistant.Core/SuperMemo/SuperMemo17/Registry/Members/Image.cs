@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/19 19:42
-// Modified On:  2018/11/26 13:18
+// Modified On:  2018/12/07 14:19
 // Modified By:  Alexis
 
 #endregion
@@ -50,15 +50,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
       : base(id,
              mem,
              rt) { }
-
-    #endregion
-
-
-
-
-    #region Properties Impl - Public
-
-    public string Name => RtxValue.TrimEnd('\0');
 
     #endregion
 

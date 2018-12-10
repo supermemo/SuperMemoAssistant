@@ -24,6 +24,7 @@ namespace SuperMemoAssistant
     {
       Exception ex = state as Exception;
 
+      // ReSharper disable once PossibleNullReferenceException
       throw ex;
     }
 #endif

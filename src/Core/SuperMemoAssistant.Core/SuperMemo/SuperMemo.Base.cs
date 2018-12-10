@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/12 18:26
-// Modified On:  2018/11/26 00:08
+// Modified On:  2018/12/10 12:58
 // Modified By:  Alexis
 
 #endregion
@@ -32,7 +32,7 @@
 
 using System;
 using System.Collections.Generic;
-using FlaUI.Core;
+using Anotar.Serilog;
 using Process.NET;
 using Process.NET.Memory;
 using SuperMemoAssistant.Hooks;
@@ -51,9 +51,6 @@ namespace SuperMemoAssistant.SuperMemo
       ISMHookSystem
   {
     #region Properties & Fields - Non-Public
-
-    protected Application SMApp { get; private set; }
-
 
     private IPointer IgnoreUserConfirmationPtr { get; set; }
 
@@ -94,7 +91,11 @@ namespace SuperMemoAssistant.SuperMemo
       {
         SMHookEngine.Instance.CleanupHooks();
       }
-      catch (Exception) { }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex,
+                    "Failed to cleanup SMHookEngine");
+      }
 
       try
       {
@@ -104,7 +105,8 @@ namespace SuperMemoAssistant.SuperMemo
       }
       catch (Exception ex)
       {
-        // TODO: Log
+        LogTo.Error(ex,
+                    "An exception occured in one of OnSMStoppedEvent handlers");
       }
 
       base.Dispose();

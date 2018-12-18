@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/11/22 15:10
-// Modified On:  2018/12/10 12:51
+// Modified On:  2018/12/17 11:49
 // Modified By:  Alexis
 
 #endregion
@@ -35,6 +35,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
@@ -51,6 +52,8 @@ namespace SuperMemoAssistant
       InitializeComponent();
 
       LoadCollections();
+
+      Loaded += CollectionSelectionWindow_Loaded;
     }
 
     #endregion
@@ -69,6 +72,13 @@ namespace SuperMemoAssistant
 
 
     #region Methods
+
+    private void CollectionSelectionWindow_Loaded(object          sender,
+                                                  RoutedEventArgs e)
+    {
+      if (lbCollections.HasItems)
+        ((ListBoxItem)lbCollections.ItemContainerGenerator.ContainerFromItem(lbCollections.SelectedItem)).Focus();
+    }
 
     private void LoadCollections()
     {

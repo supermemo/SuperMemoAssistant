@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/01 14:10
-// Modified On:  2018/06/07 00:50
+// Created On:   2018/07/27 12:55
+// Modified On:  2018/12/13 13:08
 // Modified By:  Alexis
 
 #endregion
@@ -31,7 +31,6 @@
 
 
 using System;
-using System.Threading.Tasks;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;

@@ -1,21 +1,58 @@
-﻿using System;
+﻿#region License & Metadata
+
+// The MIT License (MIT)
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the 
+// Software is furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+// 
+// 
+// Created On:   2018/05/15 23:24
+// Modified On:  2018/12/13 12:53
+// Modified By:  Alexis
+
+#endregion
+
+
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using SuperMemoAssistant.Extensions;
 
 namespace SuperMemoAssistant.Sys.Collections
 {
-  /// <summary>
-  /// 
-  /// </summary>
+  /// <summary></summary>
   /// <typeparam name="T"></typeparam>
   public partial class SparseClusteredArray<T>
   {
-    internal ReaderWriterLockSlim Lock { get; } = new ReaderWriterLockSlim();
-    internal List<Segment> Segments { get; set; } = new List<Segment>();
+    #region Properties & Fields - Non-Public
+
+    internal ReaderWriterLockSlim Lock     { get; }      = new ReaderWriterLockSlim();
+    internal List<Segment>        Segments { get; set; } = new List<Segment>();
+
+    #endregion
+
+
+
+
+    #region Methods
 
     public void Clear()
     {
@@ -33,13 +70,13 @@ namespace SuperMemoAssistant.Sys.Collections
 
     // TODO: Remove(Bounds bounds)
 
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <summary></summary>
     /// <param name="data"></param>
     /// <param name="position"></param>
     /// <param name="dataSegment"></param>
-    public void Write(T[] data, int position, Bounds dataSegment)
+    public void Write(T[]    data,
+                      int    position,
+                      Bounds dataSegment)
     {
       if (dataSegment.Lower < 0)
         throw new ArgumentException("Lower bound cannot be less than 0");
@@ -54,33 +91,43 @@ namespace SuperMemoAssistant.Sys.Collections
         throw new ArgumentException("Lower bound cannot be greater or equal to data's length");
 
       if (dataSegment.Length() == data.Length)
-        Write(data, position);
+      {
+        Write(data,
+              position);
+      }
 
       else
       {
         T[] newData = new T[dataSegment.Length()];
-        Array.Copy(data, dataSegment.Lower, newData, 0, newData.Length);
+        Array.Copy(data,
+                   dataSegment.Lower,
+                   newData,
+                   0,
+                   newData.Length);
 
-        Write(newData, position);
+        Write(newData,
+              position);
       }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <summary></summary>
     /// <param name="data"></param>
     /// <param name="position"></param>
-    public void Write(T[] data, int position)
+    public void Write(T[] data,
+                      int position)
     {
-      Bounds bounds = new Bounds(position, position + data.Length - 1);
-      var newSegment = new Segment(data, position);
+      Bounds bounds = new Bounds(position,
+                                 position + data.Length - 1);
+      var newSegment = new Segment(data,
+                                   position);
       List<(int idx, Segment segment)> oSegs;
 
       Lock.EnterUpgradeableReadLock();
 
       try
       {
-        oSegs = FindOverlappingAndContiguousSegments(Segments, bounds);
+        oSegs = FindOverlappingAndContiguousSegments(Segments,
+                                                     bounds);
 
         if (oSegs[0].idx < 0)
         {
@@ -90,7 +137,8 @@ namespace SuperMemoAssistant.Sys.Collections
 
           try
           {
-            Segments.Insert(complement, newSegment);
+            Segments.Insert(complement,
+                            newSegment);
           }
           finally
           {
@@ -115,7 +163,8 @@ namespace SuperMemoAssistant.Sys.Collections
             Segments[oSegs[0].idx] = newSegment;
 
             if (oSegs.Count > 1)
-              Segments.RemoveRange(oSegs[1].idx, oSegs.Count - 1);
+              Segments.RemoveRange(oSegs[1].idx,
+                                   oSegs.Count - 1);
           }
           finally
           {
@@ -186,17 +235,20 @@ namespace SuperMemoAssistant.Sys.Collections
       } while (true);
     }
 
-    internal static (int idx, Segment segment) FindSegment(List<Segment> localSegs, int position)
+    internal static (int idx, Segment segment) FindSegment(List<Segment> localSegs,
+                                                           int           position)
     {
       int idx = localSegs.BinarySearch(
-        new Segment(null, position),
+        new Segment(null,
+                    position),
         new PositionalBoundsComparer()
       );
 
       return (idx, idx >= 0 ? localSegs[idx] : null);
     }
 
-    internal static List<(int idx, Segment segment)> FindOverlappingAndContiguousSegments(List<Segment> localSegs, IBounds bounds)
+    internal static List<(int idx, Segment segment)> FindOverlappingAndContiguousSegments(List<Segment> localSegs,
+                                                                                          IBounds       bounds)
     {
       RelativePosition[] inBoundsPositions = new[]
       {
@@ -206,7 +258,9 @@ namespace SuperMemoAssistant.Sys.Collections
         RelativePosition.AfterContiguous
       };
       List<(int, Segment)> oSegs = new List<(int, Segment)>();
-      (int firstIdx, Segment segment) = FindSegment(localSegs, Math.Max(0, bounds.Lower - 1));
+      (int firstIdx, Segment segment) = FindSegment(localSegs,
+                                                    Math.Max(0,
+                                                             bounds.Lower - 1));
 
       int itIdx = firstIdx;
 
@@ -232,9 +286,11 @@ namespace SuperMemoAssistant.Sys.Collections
       return oSegs;
     }
 
-    internal static (int idx, Segment segment) FindSuperSegment(List<Segment> localSegs, IBounds bounds)
+    internal static (int idx, Segment segment) FindSuperSegment(List<Segment> localSegs,
+                                                                IBounds       bounds)
     {
-      (int idx, Segment segment) = FindSegment(localSegs, bounds.Lower);
+      (int idx, Segment segment) = FindSegment(localSegs,
+                                               bounds.Lower);
 
       if (idx < 0)
         return (-1, null);
@@ -260,8 +316,11 @@ namespace SuperMemoAssistant.Sys.Collections
         case RelativePosition.AfterOverlap:
         case RelativePosition.Within:
         default:
-          throw new InvalidOperationException(String.Format("Invalid RelativePosition {0}, this shouldn't happen", relPos));
+          throw new InvalidOperationException(String.Format("Invalid RelativePosition {0}, this shouldn't happen",
+                                                            relPos));
       }
     }
+
+    #endregion
   }
 }

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/21 12:26
-// Modified On:  2018/11/29 19:23
+// Modified On:  2018/12/16 13:25
 // Modified By:  Alexis
 
 #endregion
@@ -36,6 +36,7 @@ using Anotar.Serilog;
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Exceptions;
 using mshtml;
+using Process.NET.Extensions;
 using SuperMemoAssistant.COM.InternetExplorer;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
@@ -48,8 +49,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
   {
     #region Properties & Fields - Non-Public
 
-    private readonly int            _nativeControlAddr;
-    private          IHTMLDocument2 _document;
+    private IHTMLDocument2 _document;
+
+    private int NativeControlAddr =>
+      _group._smProcess.Memory.Read<int>(SMNatives.TElWind.ObjectsPtr,
+                                         4 * Id);
 
     #endregion
 
@@ -60,14 +64,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
     /// <inheritdoc />
     public ControlHtml(int          id,
-                       ControlGroup @group,
-                       int          nativeControlAddr)
+                       ControlGroup @group)
       : base(id,
              ComponentType.Html,
-             @group)
-    {
-      _nativeControlAddr = nativeControlAddr;
-    }
+             @group) { }
 
     #endregion
 
@@ -81,7 +81,17 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
     public override string Text
     {
-      get => Document.body.innerHTML;
+      get
+      {
+        try
+        {
+          return Document?.body.innerHTML;
+        }
+        catch
+        {
+          return null;
+        }
+      }
       set
       {
         Document.body.innerHTML = value;
@@ -106,7 +116,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
         try
         {
           IntPtr shellEmbedHwnd = _group._smProcess.Memory.Read<IntPtr>(
-            new IntPtr(_nativeControlAddr + SMNatives.TControl.HandleOffset)
+            new IntPtr(NativeControlAddr + SMNatives.TControl.HandleOffset)
           );
 
           ieSrvFrame = Svc.UIAutomation.FromHandle(shellEmbedHwnd).FindFirstDescendant(c => c.ByClassName("Internet Explorer_Server"));

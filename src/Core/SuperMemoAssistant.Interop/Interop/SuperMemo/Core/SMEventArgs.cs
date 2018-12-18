@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/01 14:11
-// Modified On:  2018/06/02 12:24
+// Created On:   2018/07/27 12:55
+// Modified On:  2018/12/13 13:07
 // Modified By:  Alexis
 
 #endregion
@@ -31,7 +31,6 @@
 
 
 using System;
-using System.Diagnostics;
 using Process.NET;
 using SuperMemoAssistant.Interop.SuperMemo.Components;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
@@ -73,7 +72,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
   {
     #region Constructors
 
-    public SMProcessArgs(ISuperMemo smMgmt, IProcess process)
+    public SMProcessArgs(ISuperMemo smMgmt,
+                         IProcess   process)
       : base(smMgmt)
     {
       Process = process;
@@ -97,7 +97,9 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
   {
     #region Constructors
 
-    public SMDisplayedElementChangedArgs(ISuperMemo smMgmt, IElement newElement, IElement oldElement)
+    public SMDisplayedElementChangedArgs(ISuperMemo smMgmt,
+                                         IElement   newElement,
+                                         IElement   oldElement)
       : base(smMgmt)
     {
       NewElement = newElement;
@@ -110,7 +112,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
 
 
     #region Properties & Fields - Public
-    
+
     public IElement NewElement { get; }
     public IElement OldElement { get; }
 
@@ -123,7 +125,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
   {
     #region Constructors
 
-    public SMElementArgs(ISuperMemo smMgmt, IElement element)
+    public SMElementArgs(ISuperMemo smMgmt,
+                         IElement   element)
       : base(smMgmt)
     {
       Element = element;
@@ -147,7 +150,9 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
   {
     #region Constructors
 
-    public SMElementChangedArgs(ISuperMemo smMgmt, IElement element, ElementFieldFlags changedFields)
+    public SMElementChangedArgs(ISuperMemo        smMgmt,
+                                IElement          element,
+                                ElementFieldFlags changedFields)
       : base(smMgmt)
     {
       Element       = element;
@@ -174,7 +179,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
   {
     #region Constructors
 
-    public SMRegistryArgs(ISuperMemo smMgmt, T member)
+    public SMRegistryArgs(ISuperMemo smMgmt,
+                          T          member)
       : base(smMgmt)
     {
       Member = member;
@@ -198,7 +204,9 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
   {
     #region Constructors
 
-    public SMComponentChangedArgs(ISuperMemo smMgmt, IComponent component, ComponentFieldFlags changedFields)
+    public SMComponentChangedArgs(ISuperMemo          smMgmt,
+                                  IComponent          component,
+                                  ComponentFieldFlags changedFields)
       : base(smMgmt)
     {
       Component     = component;
@@ -224,7 +232,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
   {
     #region Constructors
 
-    public SMComponentGroupArgs(ISuperMemo smMgmt, IComponentGroup componentGroup)
+    public SMComponentGroupArgs(ISuperMemo      smMgmt,
+                                IComponentGroup componentGroup)
       : base(smMgmt)
     {
       ComponentGroup = componentGroup;
@@ -248,7 +257,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
   {
     #region Constructors
 
-    public SMUIAutomationArgs(ISuperMemo smMgmt, AutomationElementRef aeRef)
+    public SMUIAutomationArgs(ISuperMemo           smMgmt,
+                              AutomationElementRef aeRef)
       : base(smMgmt)
     {
       AutomationElement = aeRef;
@@ -272,7 +282,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
   {
     #region Constructors
 
-    public SMUIAvailabilityArgs(ISuperMemo smMgmt, AvailabilityType availability)
+    public SMUIAvailabilityArgs(ISuperMemo       smMgmt,
+                                AvailabilityType availability)
       : base(smMgmt)
     {
       Availability = availability;

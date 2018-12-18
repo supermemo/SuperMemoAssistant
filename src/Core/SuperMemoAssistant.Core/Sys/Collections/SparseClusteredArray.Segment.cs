@@ -1,56 +1,109 @@
-﻿using System;
-using System.Collections;
+﻿#region License & Metadata
+
+// The MIT License (MIT)
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the 
+// Software is furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+// 
+// 
+// Created On:   2018/05/15 23:24
+// Modified On:  2018/12/13 12:53
+// Modified By:  Alexis
+
+#endregion
+
+
+
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SuperMemoAssistant.Sys.Collections
 {
   partial class SparseClusteredArray<T>
   {
-
     public class SubSegment : IBounds
     {
-      public SubSegment(T[] array, int position)
+      #region Constructors
+
+      public SubSegment(T[] array,
+                        int position)
       {
-        Array = array;
+        Array    = array;
         Position = position;
       }
+
+      #endregion
+
+
+
+
+      #region Properties & Fields - Public
 
       public T[] Array { get; private set; }
 
       public int Position { get; private set; }
-      public int Length => Array.Length;
+      public int Length   => Array.Length;
+
+      #endregion
+
+
+
+
+      #region Properties Impl - Public
 
       public int Lower => Position;
       public int Upper => Position + Length - 1;
+
+      #endregion
     }
 
     public class Segment
       : IBounds
     {
-      internal Segment(T[] array, int position)
+      internal Segment(T[] array,
+                       int position)
       {
-        Segments = new List<SubSegment>(new[] { new SubSegment(array, position) });
+        Segments = new List<SubSegment>(new[]
+        {
+          new SubSegment(array,
+                         position)
+        });
         Position = position;
-        Length = array?.Length ?? -1;
+        Length   = array?.Length ?? -1;
       }
 
-      public ReaderWriterLockSlim Lock { get; } = new ReaderWriterLockSlim();
-      public bool Inconsistent { get; private set; } = false;
+      public ReaderWriterLockSlim Lock         { get; }              = new ReaderWriterLockSlim();
+      public bool                 Inconsistent { get; private set; } = false;
 
       public List<SubSegment> Segments { get; private set; }
 
       public int Position { get; private set; }
-      public int Length { get; private set; }
-      public int Lower => Position;
-      public int Upper => Position + Length - 1;
+      public int Length   { get; private set; }
+      public int Lower    => Position;
+      public int Upper    => Position + Length - 1;
 
-      public IEnumerator<T> Get1DEnumerator(int fromIdx, int toIdx)
+      public IEnumerator<T> Get1DEnumerator(int fromIdx,
+                                            int toIdx)
       {
-        var arrEnum = Get2DEnumerator(fromIdx, toIdx);
+        var arrEnum = Get2DEnumerator(fromIdx,
+                                      toIdx);
         T[] arr;
 
         while (arrEnum.MoveNext())
@@ -62,7 +115,8 @@ namespace SuperMemoAssistant.Sys.Collections
         }
       }
 
-      public IEnumerator<(T[] _arr, int _fromIdx, int _toIdx, int _itIdx, int _absIdx)> Get2DEnumerator(int fromIdx, int toIdx)
+      public IEnumerator<(T[] _arr, int _fromIdx, int _toIdx, int _itIdx, int _absIdx)> Get2DEnumerator(int fromIdx,
+                                                                                                        int toIdx)
       {
         if (toIdx < fromIdx)
           throw new ArgumentException("To cannot be lower or equal to From");
@@ -81,11 +135,10 @@ namespace SuperMemoAssistant.Sys.Collections
 
         int remaining = toIdx - fromIdx + 1;
 
-        int arrIdx = 0;
-
         // Fast-forward to first matching array
-        arrIdx = Segments.BinarySearch(
-          new SubSegment(null, fromIdx),
+        int arrIdx = Segments.BinarySearch(
+          new SubSegment(null,
+                         fromIdx),
           new PositionalBoundsComparer()
         );
 
@@ -94,8 +147,9 @@ namespace SuperMemoAssistant.Sys.Collections
         do
         {
           SubSegment sSeg = Segments[arrIdx];
-          T[] arr = sSeg.Array;
-          toIdx = Math.Min(arr.Length, remaining + fromIdx) - 1;
+          T[]        arr  = sSeg.Array;
+          toIdx = Math.Min(arr.Length,
+                           remaining + fromIdx) - 1;
 
           yield return (arr, fromIdx, toIdx, sSeg.Lower - Lower + fromIdx, sSeg.Lower + fromIdx);
 
@@ -108,13 +162,13 @@ namespace SuperMemoAssistant.Sys.Collections
       }
 
 #if false
-      /// <summary>
-      /// Execute given <paramref name="action"/> on every element between
-      /// <paramref name="from"/> and <paramref name="to"/>
-      /// </summary>
-      /// <param name="from">Absolute Lower bound</param>
-      /// <param name="to">Absolute Upper bound</param>
-      /// <param name="action">Action to execute on each element</param>
+/// <summary>
+/// Execute given <paramref name="action"/> on every element between
+/// <paramref name="from"/> and <paramref name="to"/>
+/// </summary>
+/// <param name="from">Absolute Lower bound</param>
+/// <param name="to">Absolute Upper bound</param>
+/// <param name="action">Action to execute on each element</param>
       internal void Do(int from, int to, Action<int, ref T> action)
       {
         if (to <= from)
@@ -154,12 +208,10 @@ namespace SuperMemoAssistant.Sys.Collections
 #endif
 
       /// <summary>
-      /// Coalesce both segments.
-      /// If there is an overlap, the content of the current one will be preserved.
-      /// 
-      /// Always operate on a new segment so it can mark the overlapping ones as inconsistent.
-      /// This is required to avoid a rare thread sync issue where a read-access method is
-      /// pre-empted in-between obtaining a consistent segment and read-locking it.
+      ///   Coalesce both segments. If there is an overlap, the content of the current one will
+      ///   be preserved. Always operate on a new segment so it can mark the overlapping ones as
+      ///   inconsistent. This is required to avoid a rare thread sync issue where a read-access method
+      ///   is pre-empted in-between obtaining a consistent segment and read-locking it.
       /// </summary>
       /// <param name="segment"></param>
       internal void Coalesce(Segment segment)
@@ -200,9 +252,10 @@ namespace SuperMemoAssistant.Sys.Collections
 
       private void CoalesceLeft(Segment segment)
       {
-        Segments.InsertRange(0, segment.Segments);
-        Position = segment.Position;
-        Length += segment.Length;
+        Segments.InsertRange(0,
+                             segment.Segments);
+        Position =  segment.Position;
+        Length   += segment.Length;
       }
 
       private void CoalesceRight(Segment segment)
@@ -213,9 +266,9 @@ namespace SuperMemoAssistant.Sys.Collections
 
       private void CoalesceLeftOverlap(Segment segment)
       {
-        List<SubSegment> toAdd = new List<SubSegment>();
-        int idxArr = 0;
-        SubSegment sSeg = segment.Segments[0];
+        List<SubSegment> toAdd  = new List<SubSegment>();
+        int              idxArr = 0;
+        SubSegment       sSeg   = segment.Segments[0];
 
         while (sSeg.Upper < Lower)
         {
@@ -225,7 +278,8 @@ namespace SuperMemoAssistant.Sys.Collections
 
         if (sSeg.Upper == Lower - 1)
         {
-          Segments.InsertRange(0, toAdd);
+          Segments.InsertRange(0,
+                               toAdd);
           return;
         }
 
@@ -233,19 +287,22 @@ namespace SuperMemoAssistant.Sys.Collections
         int newLength = Lower - sSeg.Lower;
 
         T[] arr = sSeg.Array;
-        Array.Resize(ref arr, newLength); // This is actually a copy
-        
-        toAdd.Add(new SubSegment(arr, sSeg.Lower));
-        Segments.InsertRange(0, toAdd);
+        Array.Resize(ref arr,
+                     newLength); // This is actually a copy
 
-        Length += Lower - segment.Lower;
-        Position = segment.Position;
+        toAdd.Add(new SubSegment(arr,
+                                 sSeg.Lower));
+        Segments.InsertRange(0,
+                             toAdd);
+
+        Length   += Lower - segment.Lower;
+        Position =  segment.Position;
       }
 
       private void CoalesceRightOverlap(Segment segment)
       {
-        int idxArr = 0;
-        SubSegment sSeg = segment.Segments[0];
+        int        idxArr = 0;
+        SubSegment sSeg   = segment.Segments[0];
 
         while (sSeg.Upper < Upper)
           sSeg = segment.Segments[++idxArr];
@@ -254,12 +311,17 @@ namespace SuperMemoAssistant.Sys.Collections
         if (sSeg.Upper != Upper)
         {
           int newLength = sSeg.Upper - Upper;
-          int offset = Upper - sSeg.Lower + 1;
+          int offset    = Upper - sSeg.Lower + 1;
 
           T[] newArr = new T[newLength];
 
-          Array.Copy(sSeg.Array, offset, newArr, 0, newLength);
-          Segments.Add(new SubSegment(newArr, Upper + 1));
+          Array.Copy(sSeg.Array,
+                     offset,
+                     newArr,
+                     0,
+                     newLength);
+          Segments.Add(new SubSegment(newArr,
+                                      Upper + 1));
         }
 
         while (++idxArr < segment.Segments.Count)
@@ -270,8 +332,10 @@ namespace SuperMemoAssistant.Sys.Collections
 
       private void CoalesceSuper(Segment segment)
       {
-        var thisEnum = Get1DEnumerator(Lower, Upper);
-        var arrEnum = segment.Get2DEnumerator(Lower, Upper);
+        var thisEnum = Get1DEnumerator(Lower,
+                                       Upper);
+        var arrEnum = segment.Get2DEnumerator(Lower,
+                                              Upper);
         T[] arr;
         int fromIdx;
         int toIdx;
@@ -289,7 +353,7 @@ namespace SuperMemoAssistant.Sys.Collections
 
         Segments = segment.Segments;
         Position = segment.Position;
-        Length = segment.Length;
+        Length   = segment.Length;
       }
     }
   }

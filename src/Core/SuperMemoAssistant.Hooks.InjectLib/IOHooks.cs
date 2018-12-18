@@ -1,38 +1,74 @@
-﻿using EasyHook;
+﻿#region License & Metadata
+
+// The MIT License (MIT)
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the 
+// Software is furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+// 
+// 
+// Created On:   2018/05/12 01:42
+// Modified On:  2018/12/13 12:58
+// Modified By:  Alexis
+
+#endregion
+
+
+
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using EasyHook;
 
 namespace SuperMemoAssistant.Hooks.InjectLib
 {
   public static class IOHooks
   {
+    #region Methods
+
     //
     // Setup
 
     internal static IEnumerable<LocalHook> InstallHooks()
     {
-      return new[] {
+      return new[]
+      {
         LocalHook.Create(
-          LocalHook.GetProcAddress("kernel32.dll", "CreateFileW"),
+          LocalHook.GetProcAddress("kernel32.dll",
+                                   "CreateFileW"),
           new CreateFileWDlg(CreateFile_Hooked),
           SMInject.Instance
         ),
         LocalHook.Create(
-          LocalHook.GetProcAddress("kernel32.dll", "SetFilePointer"),
+          LocalHook.GetProcAddress("kernel32.dll",
+                                   "SetFilePointer"),
           new SetFilePointerDlg(SetFilePointer_Hooked),
           SMInject.Instance
         ),
         LocalHook.Create(
-          LocalHook.GetProcAddress("kernel32.dll", "WriteFile"),
+          LocalHook.GetProcAddress("kernel32.dll",
+                                   "WriteFile"),
           new WriteFileDlg(WriteFile_Hooked),
           SMInject.Instance
         ),
         LocalHook.Create(
-          LocalHook.GetProcAddress("kernel32.dll", "CloseHandle"),
+          LocalHook.GetProcAddress("kernel32.dll",
+                                   "CloseHandle"),
           new CloseHandleDlg(CloseHandle_Hooked),
           SMInject.Instance
         )
@@ -40,183 +76,219 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     }
 
 
-
     //
     // Hooked methods
 
-    static IntPtr CreateFile_Hooked(
-      String InFileName,
-      UInt32 InDesiredAccess,
-      UInt32 InShareMode,
-      IntPtr InSecurityAttributes,
-      UInt32 InCreationDisposition,
-      UInt32 InFlagsAndAttributes,
-      IntPtr InTemplateFile)
+    private static IntPtr CreateFile_Hooked(
+      String inFileName,
+      UInt32 inDesiredAccess,
+      UInt32 inShareMode,
+      IntPtr inSecurityAttributes,
+      UInt32 inCreationDisposition,
+      UInt32 inFlagsAndAttributes,
+      IntPtr inTemplateFile)
     {
       IntPtr result = CreateFileW(
-        InFileName,
-        InDesiredAccess,
-        InShareMode,
-        InSecurityAttributes,
-        InCreationDisposition,
-        InFlagsAndAttributes,
-        InTemplateFile
+        inFileName,
+        inDesiredAccess,
+        inShareMode,
+        inSecurityAttributes,
+        inCreationDisposition,
+        inFlagsAndAttributes,
+        inTemplateFile
       );
 
       try
       {
-        if (SMInject.Instance.TargetFilePaths.Contains(InFileName.ToLowerInvariant()))
+        if (SMInject.Instance.TargetFilePaths.Contains(inFileName.ToLowerInvariant()))
         {
           SMInject.Instance.TargetHandles.Add(result);
-          SMInject.Instance.Enqueue("CreateFile", InFileName, result);
+          SMInject.Instance.Enqueue("CreateFile",
+                                    inFileName,
+                                    result);
         }
       }
-      catch
+      catch (Exception ex)
       {
+        SMInject.Instance.OnException(ex);
       }
 
       return result;
     }
 
-    static UInt32 SetFilePointer_Hooked(
-          IntPtr InFileHandle,
-          Int32  InDistanceToMove,
-          ref IntPtr InOutDistanceToMoveHigh,
-          UInt32 InMoveMethod)
+    private static UInt32 SetFilePointer_Hooked(
+      IntPtr     inFileHandle,
+      Int32      inDistanceToMove,
+      ref IntPtr inOutDistanceToMoveHigh,
+      UInt32     inMoveMethod)
     {
       UInt32 position = SetFilePointer(
-        InFileHandle,
-        InDistanceToMove,
-        ref InOutDistanceToMoveHigh,
-        InMoveMethod
+        inFileHandle,
+        inDistanceToMove,
+        ref inOutDistanceToMoveHigh,
+        inMoveMethod
       );
 
       try
       {
-        if (SMInject.Instance.TargetHandles.Contains(InFileHandle))
-          SMInject.Instance.Enqueue("SetFilePointer", InFileHandle, position);
+        if (SMInject.Instance.TargetHandles.Contains(inFileHandle))
+          SMInject.Instance.Enqueue("SetFilePointer",
+                                    inFileHandle,
+                                    position);
       }
-      catch
+      catch (Exception ex)
       {
+        SMInject.Instance.OnException(ex);
       }
 
       return position;
     }
 
-    static Boolean WriteFile_Hooked(
-          IntPtr InFileHandle,
-          IntPtr InBuffer,
-          UInt32 InNumberOfBytesToWrite,
-          out IntPtr OutNumberOfBytesWritten,
-          IntPtr InOutOverlapped)
+    private static Boolean WriteFile_Hooked(
+      IntPtr     inFileHandle,
+      IntPtr     inBuffer,
+      UInt32     inNumberOfBytesToWrite,
+      out IntPtr outNumberOfBytesWritten,
+      IntPtr     inOutOverlapped)
     {
       try
       {
-        if (SMInject.Instance.TargetHandles.Contains(InFileHandle))
+        if (SMInject.Instance.TargetHandles.Contains(inFileHandle))
         {
-          byte[] buffer = new byte[InNumberOfBytesToWrite];
-          Marshal.Copy(InBuffer, buffer, 0, (int)InNumberOfBytesToWrite);
+          byte[] buffer = new byte[inNumberOfBytesToWrite];
+          Marshal.Copy(inBuffer,
+                       buffer,
+                       0,
+                       (int)inNumberOfBytesToWrite);
 
-          SMInject.Instance.Enqueue("WriteFile", InFileHandle, buffer, InNumberOfBytesToWrite);
+          SMInject.Instance.Enqueue("WriteFile",
+                                    inFileHandle,
+                                    buffer,
+                                    inNumberOfBytesToWrite);
         }
       }
-      catch
+      catch (Exception ex)
       {
+        SMInject.Instance.OnException(ex);
       }
 
       return WriteFile(
-        InFileHandle,
-        InBuffer,
-        InNumberOfBytesToWrite,
-        out OutNumberOfBytesWritten,
-        InOutOverlapped
+        inFileHandle,
+        inBuffer,
+        inNumberOfBytesToWrite,
+        out outNumberOfBytesWritten,
+        inOutOverlapped
       );
     }
 
-    static Boolean CloseHandle_Hooked(
-          IntPtr InFileHandle)
+    private static Boolean CloseHandle_Hooked(
+      IntPtr inFileHandle)
     {
       try
       {
-        if (SMInject.Instance.TargetHandles.Contains(InFileHandle))
+        if (SMInject.Instance.TargetHandles.Contains(inFileHandle))
         {
-          SMInject.Instance.TargetHandles.Remove(InFileHandle);
-          SMInject.Instance.Enqueue("CloseHandle", InFileHandle);
+          SMInject.Instance.TargetHandles.Remove(inFileHandle);
+          SMInject.Instance.Enqueue("CloseHandle",
+                                    inFileHandle);
         }
       }
-      catch
+      catch (Exception ex)
       {
+        SMInject.Instance.OnException(ex);
       }
 
-      return CloseHandle(InFileHandle);
+      return CloseHandle(inFileHandle);
     }
+
+
+    //
+    // Native APIs
+
+    [DllImport("kernel32.dll",
+      CallingConvention = CallingConvention.StdCall,
+      CharSet           = CharSet.Unicode,
+      SetLastError      = true)]
+    private static extern IntPtr CreateFileW(
+      String inFileName,
+      UInt32 inDesiredAccess,
+      UInt32 inShareMode,
+      IntPtr inSecurityAttributes,
+      UInt32 inCreationDisposition,
+      UInt32 inFlagsAndAttributes,
+      IntPtr inTemplateFile);
+
+    [DllImport("kernel32.dll",
+      CallingConvention = CallingConvention.StdCall,
+      CharSet           = CharSet.Unicode,
+      SetLastError      = true)]
+    private static extern UInt32 SetFilePointer(
+      IntPtr     inFileHandle,
+      Int32      inDistanceToMove,
+      ref IntPtr inOutDistanceToMoveHigh,
+      UInt32     inMoveMethod);
+
+    [DllImport("kernel32.dll",
+      CallingConvention = CallingConvention.StdCall,
+      CharSet           = CharSet.Unicode,
+      SetLastError      = true)]
+    private static extern Boolean WriteFile(
+      IntPtr     inFileHandle,
+      IntPtr     inBuffer,
+      UInt32     inNumberOfBytesToWrite,
+      out IntPtr outNumberOfBytesWritten,
+      IntPtr     inOutOverlapped);
+
+    [DllImport("kernel32.dll",
+      CallingConvention = CallingConvention.StdCall,
+      CharSet           = CharSet.Unicode,
+      SetLastError      = true)]
+    private static extern Boolean CloseHandle(
+      IntPtr inFileHandle);
+
+    #endregion
+
 
 
 
     //
     // Delegates
 
-    [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
-    delegate IntPtr CreateFileWDlg(
-        String InFileName,
-        UInt32 InDesiredAccess,
-        UInt32 InShareMode,
-        IntPtr InSecurityAttributes,
-        UInt32 InCreationDisposition,
-        UInt32 InFlagsAndAttributes,
-        IntPtr InTemplateFile);
+    [UnmanagedFunctionPointer(CallingConvention.StdCall,
+      CharSet      = CharSet.Unicode,
+      SetLastError = true)]
+    private delegate IntPtr CreateFileWDlg(
+      String inFileName,
+      UInt32 inDesiredAccess,
+      UInt32 inShareMode,
+      IntPtr inSecurityAttributes,
+      UInt32 inCreationDisposition,
+      UInt32 inFlagsAndAttributes,
+      IntPtr inTemplateFile);
 
-    [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
-    delegate UInt32 SetFilePointerDlg(
-          IntPtr InFileHandle,
-          Int32  InDistanceToMove,
-          ref IntPtr InOutDistanceToMoveHigh,
-          UInt32 InMoveMethod);
+    [UnmanagedFunctionPointer(CallingConvention.StdCall,
+      CharSet      = CharSet.Unicode,
+      SetLastError = true)]
+    private delegate UInt32 SetFilePointerDlg(
+      IntPtr     inFileHandle,
+      Int32      inDistanceToMove,
+      ref IntPtr inOutDistanceToMoveHigh,
+      UInt32     inMoveMethod);
 
-    [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
-    delegate Boolean WriteFileDlg(
-          IntPtr InFileHandle,
-          IntPtr InBuffer,
-          UInt32 InNumberOfBytesToWrite,
-          out IntPtr OutNumberOfBytesWritten,
-          IntPtr InOutOverlapped);
+    [UnmanagedFunctionPointer(CallingConvention.StdCall,
+      CharSet      = CharSet.Unicode,
+      SetLastError = true)]
+    private delegate Boolean WriteFileDlg(
+      IntPtr     inFileHandle,
+      IntPtr     inBuffer,
+      UInt32     inNumberOfBytesToWrite,
+      out IntPtr outNumberOfBytesWritten,
+      IntPtr     inOutOverlapped);
 
-    [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
-    delegate Boolean CloseHandleDlg(
-          IntPtr InFileHandle);
-
-
-
-    //
-    // Native APIs
-
-    [DllImport("kernel32.dll", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
-    static extern IntPtr CreateFileW(
-        String InFileName,
-        UInt32 InDesiredAccess,
-        UInt32 InShareMode,
-        IntPtr InSecurityAttributes,
-        UInt32 InCreationDisposition,
-        UInt32 InFlagsAndAttributes,
-        IntPtr InTemplateFile);
-
-    [DllImport("kernel32.dll", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
-    static extern UInt32 SetFilePointer(
-          IntPtr InFileHandle,
-          Int32  InDistanceToMove,
-          ref IntPtr InOutDistanceToMoveHigh,
-          UInt32 InMoveMethod);
-
-    [DllImport("kernel32.dll", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
-    static extern Boolean WriteFile(
-          IntPtr InFileHandle,
-          IntPtr InBuffer,
-          UInt32 InNumberOfBytesToWrite,
-          out IntPtr OutNumberOfBytesWritten,
-          IntPtr InOutOverlapped);
-
-    [DllImport("kernel32.dll", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
-    static extern Boolean CloseHandle(
-          IntPtr InFileHandle);
+    [UnmanagedFunctionPointer(CallingConvention.StdCall,
+      CharSet      = CharSet.Unicode,
+      SetLastError = true)]
+    private delegate Boolean CloseHandleDlg(
+      IntPtr inFileHandle);
   }
 }

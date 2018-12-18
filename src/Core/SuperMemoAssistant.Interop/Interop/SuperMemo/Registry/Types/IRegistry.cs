@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/12/07 18:25
+// Modified On:  2018/12/13 13:09
 // Modified By:  Alexis
 
 #endregion
@@ -39,7 +39,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Registry.Types
   {
     int Count { get; }
 
-    /// <summary>Retrieve registry element from memory at given <paramref name="index" /></summary>
+    /// <summary>Retrieve registry element from memory at given <paramref name="id" /></summary>
     /// <param name="id"></param>
     /// <returns>Element or null if invalid index (deleted, out of bound, ...)</returns>
     IType this[int id] { get; }

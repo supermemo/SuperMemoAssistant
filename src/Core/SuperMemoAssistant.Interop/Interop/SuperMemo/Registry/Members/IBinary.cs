@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/07 00:49
-// Modified On:  2018/12/13 13:02
+// Created On:   2018/12/07 13:57
+// Modified On:  2018/12/13 13:09
 // Modified By:  Alexis
 
 #endregion
@@ -30,43 +30,10 @@
 
 
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace SuperMemoAssistant.Extensions
+namespace SuperMemoAssistant.Interop.SuperMemo.Registry.Members
 {
-  public static class EventHandlerEx
+  public interface IBinary : IRegistryMember
   {
-    #region Methods
-
-    public static Task<(bool success, object sender, TArgs args)> WaitEventAsync<TArgs>(this EventHandler<TArgs> eventHandler,
-                                                                                        int                      timeOut = Timeout.Infinite)
-    {
-      TArgs          args   = default(TArgs);
-      object         sender = null;
-      AutoResetEvent ev     = new AutoResetEvent(false);
-
-      void Callback(object innerSender,
-                    TArgs  innerArgs)
-      {
-        args   = innerArgs;
-        sender = innerSender;
-      }
-
-      eventHandler += Callback;
-
-      return Task.Run(() =>
-        {
-          var ret = (ev.WaitOne(timeOut), sender, args);
-          // ReSharper disable once DelegateSubtraction
-          eventHandler -= Callback;
-
-          return ret;
-        }
-      );
-    }
-
-    #endregion
+    string GetFilePath(string extension);
   }
 }

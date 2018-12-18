@@ -50,9 +50,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
       Id = id;
 
 #if DEBUG
-      System.Diagnostics.Debug.WriteLine("[{0} {1}] Creating",
-                                         GetType().Name,
-                                         Id);
+      //System.Diagnostics.Debug.WriteLine("[{0} {1}] Creating",
+      //                                   GetType().Name,
+      //                                   Id);
 #endif
 
       UseCount = SetDbg(mem.useCount,
@@ -167,13 +167,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
                           string name)
     {
 #if DEBUG
-      if (Equals(oldValue,
-                 value) == false)
-        System.Diagnostics.Debug.WriteLine("[{0} {1}] {2}: {3}",
-                                           GetType().Name,
-                                           Id,
-                                           name,
-                                           value);
+      //if (Equals(oldValue,
+      //           value) == false)
+        //System.Diagnostics.Debug.WriteLine("[{0} {1}] {2}: {3}",
+        //                                   GetType().Name,
+        //                                   Id,
+        //                                   name,
+        //                                   value);
 #endif
 
       return value;
@@ -183,11 +183,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
                           string name)
     {
 #if DEBUG
-      System.Diagnostics.Debug.WriteLine("[{0} {1}] {2}: {3}",
-                                         GetType().Name,
-                                         Id,
-                                         name,
-                                         value);
+      //System.Diagnostics.Debug.WriteLine("[{0} {1}] {2}: {3}",
+      //                                   GetType().Name,
+      //                                   Id,
+      //                                   name,
+      //                                   value);
 #endif
 
       return value;

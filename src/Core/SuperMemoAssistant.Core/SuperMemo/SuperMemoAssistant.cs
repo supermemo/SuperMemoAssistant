@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/08 13:06
-// Modified On:  2018/11/26 00:11
+// Modified On:  2018/12/13 12:51
 // Modified By:  Alexis
 
 #endregion
@@ -34,6 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Anotar.Serilog;
 using Process.NET;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
@@ -158,6 +159,9 @@ namespace SuperMemoAssistant.SuperMemo
       }
       catch (Exception ex)
       {
+        LogTo.Error(ex,
+                    "Failed to load SM17.");
+
         SMMgmt = null;
 
         try
@@ -166,7 +170,11 @@ namespace SuperMemoAssistant.SuperMemo
                                    new SMProcessArgs(this,
                                                      null));
         }
-        catch (Exception pluginEx) { }
+        catch (Exception pluginEx)
+        {
+          LogTo.Error(pluginEx,
+                      "Exception while notifying plugins OnSMStoppedEvent.");
+        }
 
         // TODO: Handle exception
 
@@ -192,12 +200,14 @@ namespace SuperMemoAssistant.SuperMemo
         OnSMStartingEvent?.Invoke(this,
                                   new SMEventArgs(this));
       }
-      catch (Exception ex) { }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex,
+                    "Error while notifying plugins OnSMStartingEvent");
+      }
     }
 
     /// <summary>Called from this very class when a new matching SM Instance is found</summary>
-    /// <param name="sender"></param>
-    /// <param name="args"></param>
     public void OnSMStartedImpl()
     {
       SMMgmt.OnSMStoppedEvent += OnSMStoppedImpl;
@@ -210,7 +220,8 @@ namespace SuperMemoAssistant.SuperMemo
       }
       catch (Exception ex)
       {
-        // TODO: Log
+        LogTo.Error(ex,
+                    "Error while notifying plugins OnSMStartedEvent");
       }
     }
 
@@ -226,7 +237,8 @@ namespace SuperMemoAssistant.SuperMemo
       }
       catch (Exception ex)
       {
-        // TODO: Log
+        LogTo.Error(ex,
+                    "Error while notifying plugins OnSMStoppedEvent");
       }
     }
 
@@ -243,7 +255,8 @@ namespace SuperMemoAssistant.SuperMemo
         }
         catch (Exception ex)
         {
-          // TODO: Log
+          LogTo.Error(ex,
+                      "Error while invoking proxified event");
         }
       }
 
@@ -391,11 +404,8 @@ namespace SuperMemoAssistant.SuperMemo
     //
     // ISuperMemo Events
 
-    /// <inheritdoc />
     public virtual event EventHandler<SMProcessArgs> OnSMStartedEvent;
-    /// <inheritdoc />
-    public virtual event EventHandler<SMEventArgs> OnSMStartingEvent;
-    /// <inheritdoc />
+    public virtual event EventHandler<SMEventArgs>   OnSMStartingEvent;
     public virtual event EventHandler<SMProcessArgs> OnSMStoppedEvent;
 
     #endregion

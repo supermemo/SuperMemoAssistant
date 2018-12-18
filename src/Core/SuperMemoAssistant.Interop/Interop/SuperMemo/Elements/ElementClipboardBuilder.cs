@@ -31,6 +31,7 @@
 
 
 using System;
+using System.Globalization;
 using System.IO;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Services;
@@ -74,7 +75,7 @@ ReadPointLength=0
 ReadPointScrollTop=0
 {6}
 Begin RepHist #1
-ElNo=1 Rep=1 Date={4} Hour={7:#.###} Int=0 Grade=10 Laps=0 Priority=0
+ElNo=1 Rep=1 Date={7} Hour={8:0.000} Int=0 Grade=10 Laps=0 Priority=0
 End RepHist #1
 End Element #1";
     private const string ComponentsArticleText = @"ComponentNo=1
@@ -142,8 +143,9 @@ End Component #2";
       int      parentId       = elemBuilder.Parent?.Id ?? 1;
       string title = elemBuilder.Title ?? string.Empty; /*elemBuilder.Content.Substring(0,
                                                                         10);*/
-      string lastRep     = DateTime.Today.ToString("dd.MM.yy");
-      double lastRepTime = Math.Floor((now.Minute * 60 + now.Second) * 1000 / 3600.0);
+      string lastRepDate1 = DateTime.Today.ToString("dd.MM.yy", CultureInfo.InvariantCulture);
+      string lastRepDate2 = DateTime.Today.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture);
+      double lastRepTime  = now.Hour + (now.Minute * 60 + now.Second) / 3600.0;
       string type;
 
       switch (elemBuilder.Type)
@@ -163,14 +165,16 @@ End Component #2";
           throw new NotImplementedException();
       }
 
-      return string.Format(ElementClipboardFormat,
+      return string.Format(CultureInfo.InvariantCulture,
+                           ElementClipboardFormat,
                            collectionPath,
                            parentId,
                            title,
                            type,
-                           lastRep,
+                           lastRepDate1,
                            elemBuilder.Reference?.ToString() ?? string.Empty,
                            GenerateComponentsStr(elemBuilder),
+                           lastRepDate2,
                            lastRepTime);
     }
 

@@ -276,9 +276,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
         case 0x0D:
           return new ControlHtml(idx,
-                                 this,
-                                 _smProcess.Memory.Read<int>(SMNatives.TElWind.ObjectsPtr,
-                                                             4 * idx));
+                                 this);
 
         case 0x0E:
           return new ComponentControlBase(idx,

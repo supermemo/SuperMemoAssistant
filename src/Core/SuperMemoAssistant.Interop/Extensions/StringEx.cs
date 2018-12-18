@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/03 03:18
-// Modified On:  2018/10/26 21:45
+// Modified On:  2018/12/13 13:04
 // Modified By:  Alexis
 
 #endregion
@@ -42,7 +42,8 @@ namespace SuperMemoAssistant.Extensions
                                       string      search,
                                       string      replace)
     {
-      int pos = text.IndexOf(search);
+      int pos = text.IndexOf(search,
+                             StringComparison.Ordinal);
 
       return pos < 0
         ? text

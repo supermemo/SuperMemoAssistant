@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 22:39
-// Modified On:  2018/06/01 22:40
+// Modified On:  2018/12/13 12:52
 // Modified By:  Alexis
 
 #endregion
@@ -30,15 +30,14 @@
 
 
 
-using System;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.UI.Element;
 using SuperMemoAssistant.Interop.SuperMemo.UI.ElementData;
 using SuperMemoAssistant.Interop.SuperMemo.UI.MainBar;
-using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.ElementData;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.MainBar;
+using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo
 {

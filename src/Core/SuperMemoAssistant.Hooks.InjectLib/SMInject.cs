@@ -1,40 +1,83 @@
-﻿using EasyHook;
+﻿#region License & Metadata
+
+// The MIT License (MIT)
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the 
+// Software is furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+// 
+// 
+// Created On:   2018/05/12 01:26
+// Modified On:  2018/12/13 12:56
+// Modified By:  Alexis
+
+#endregion
+
+
+
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.Remoting;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using EasyHook;
 
 namespace SuperMemoAssistant.Hooks.InjectLib
 {
   public class SMInject : IEntryPoint
   {
-    protected List<LocalHook> LocalHooks { get; } = new List<LocalHook>();
-
-    protected SMHookCallback Callback { get; set; }
-    protected bool Exited { get; set; } = false;
-
-    protected AutoResetEvent DataAvailableEvent { get; set; }
-    protected ReaderWriterLockSlim RWLock { get; } = new ReaderWriterLockSlim();
-
-    protected ConcurrentQueue<(string, object[])> DataQueue { get; set; } = new ConcurrentQueue<(string, object[])>();
-
-    public HashSet<string> TargetFilePaths { get; set; }
-    public HashSet<IntPtr> TargetHandles { get; set; } = new HashSet<IntPtr>();
-
-
+    #region Constants & Statics
 
     //
     // Instance
 
     public static SMInject Instance { get; private set; }
-    public SMInject(RemoteHooking.IContext InContext)
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Non-Public
+
+    protected List<LocalHook> LocalHooks { get; } = new List<LocalHook>();
+
+    protected SMHookCallback Callback { get; set; }
+    protected bool           Exited   { get; set; } = false;
+
+    protected AutoResetEvent       DataAvailableEvent { get; set; }
+    protected ReaderWriterLockSlim RWLock             { get; } = new ReaderWriterLockSlim();
+
+    protected ConcurrentQueue<(string, object[])> DataQueue { get; set; } = new ConcurrentQueue<(string, object[])>();
+
+    #endregion
+
+
+
+
+    #region Constructors
+
+    // ReSharper disable once UnusedParameter.Local
+    public SMInject(RemoteHooking.IContext _)
     {
-      Instance = this;
+      Instance           = this;
       DataAvailableEvent = new AutoResetEvent(false);
 
       // TODO: Switch to WCF DuplexClientBase
@@ -44,23 +87,41 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
     }
 
-    private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public HashSet<string> TargetFilePaths { get; set; }
+    public HashSet<IntPtr> TargetHandles   { get; set; } = new HashSet<IntPtr>();
+
+    #endregion
+
+
+
+
+    #region Methods
+
+    private void CurrentDomain_UnhandledException(object                      sender,
+                                                  UnhandledExceptionEventArgs e)
     {
       try
       {
         Callback.OnException((Exception)e.ExceptionObject);
       }
-      catch (Exception)
+      catch
       {
+        // ignored
       }
     }
-
 
 
     //
     // Core
 
-    public void Run(RemoteHooking.IContext InContext)
+    public void Run(RemoteHooking.IContext inContext)
     {
       try
       {
@@ -76,7 +137,8 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         }
         catch (Exception ex)
         {
-          Callback.OnHookInstalled(false, ex);
+          Callback.OnHookInstalled(false,
+                                   ex);
           return;
         }
 
@@ -106,7 +168,8 @@ namespace SuperMemoAssistant.Hooks.InjectLib
           for (int i = 0; i < count; i++)
           {
             var data = localQueue.Dequeue();
-            ProcessData(data.Item1, data.Item2);
+            ProcessData(data.Item1,
+                        data.Item2);
           }
         }
       }
@@ -123,6 +186,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         }
         catch
         {
+          // ignored
         }
       }
       finally
@@ -136,9 +200,15 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
           LocalHook.Release();
         }
-        catch
-        {
-        }
+        catch (Exception ex) {
+          try
+          {
+            Callback?.OnException(ex);
+          }
+          catch
+          {
+            // ignored
+          } }
       }
     }
 
@@ -147,23 +217,28 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       LocalHooks.AddRange(IOHooks.InstallHooks());
 
       foreach (LocalHook lc in LocalHooks)
-        lc.ThreadACL.SetExclusiveACL(new Int32[1] { 0 });
+        lc.ThreadACL.SetExclusiveACL(new[] { 0 });
     }
 
-    protected void ProcessData(string funcName, object[] datas)
+    protected void ProcessData(string   funcName,
+                               object[] datas)
     {
       switch (funcName)
       {
         case "CreateFile":
-          Callback.OnFileCreate((string)datas[0], (IntPtr)datas[1]);
+          Callback.OnFileCreate((string)datas[0],
+                                (IntPtr)datas[1]);
           break;
 
         case "SetFilePointer":
-          Callback.OnFileSeek((IntPtr)datas[0], (UInt32)datas[1]);
+          Callback.OnFileSeek((IntPtr)datas[0],
+                              (UInt32)datas[1]);
           break;
 
         case "WriteFile":
-          Callback.OnFileWrite((IntPtr)datas[0], (Byte[])datas[1], (UInt32)datas[2]);
+          Callback.OnFileWrite((IntPtr)datas[0],
+                               (Byte[])datas[1],
+                               (UInt32)datas[2]);
           break;
 
         case "CloseHandle":
@@ -186,15 +261,25 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       }
       catch (Exception)
       {
+        // ignored
       }
     }
 
-    public void Debug(string str, params object[] args)
+    public void Debug(string          str,
+                      params object[] args)
     {
-      Callback.Debug(str, args);
+      Callback.Debug(str,
+                     args);
     }
 
-    public void Enqueue(string funcName, params object[] datas)
+    public void OnException<T>(T ex)
+      where T : Exception
+    {
+      Callback.OnException(ex);
+    }
+
+    public void Enqueue(string          funcName,
+                        params object[] datas)
     {
       RWLock.EnterReadLock();
 
@@ -208,5 +293,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         RWLock.ExitReadLock();
       }
     }
+
+    #endregion
   }
 }

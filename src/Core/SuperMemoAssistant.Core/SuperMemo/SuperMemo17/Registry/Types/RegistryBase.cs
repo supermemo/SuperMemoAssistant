@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:13
-// Modified On:  2018/12/07 15:02
+// Modified On:  2018/12/15 00:32
 // Modified By:  Alexis
 
 #endregion
@@ -38,7 +38,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Anotar.Serilog;
+using Process.NET.Assembly;
 using Process.NET.Types;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
@@ -89,6 +91,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected          NativeFunc<int, IntPtr, DelphiUString, DelphiUString> ImportFileFunc { get; set; }
     protected abstract IntPtr                                                RegistryPtr    { get; }
 
+    protected ManualResetEvent ImportElementAddedEvent { get; set; } = new ManualResetEvent(true);
+    protected int              ImportElementId         { get; set; } = -1;
+
     #endregion
 
 
@@ -133,9 +138,15 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
         foreach (var memElem in memElems.OrderBy(kv => kv.Value.rtxOffset))
         {
+          var lower = memElem.Value.rtxOffset - 1;
+          var upper = memElem.Value.rtxOffset + memElem.Value.rtxLength - 2;
+
+          if (upper < lower || upper < 0)
+            continue;
+
           SparseClusteredArray<byte>.Bounds rtxBounds = new SparseClusteredArray<byte>.Bounds(
-            memElem.Value.rtxOffset - 1,
-            memElem.Value.rtxOffset + memElem.Value.rtxLength - 2
+            lower,
+            upper
           );
 
           using (SegmentStream rtStream = RtxSCA.GetSubsetStream(rtxBounds))
@@ -182,7 +193,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     {
       return Members.Values.ToList().GetEnumerator();
     }
-    
+
     public IEnumerable<IMember> FindByName(Regex regex)
     {
       return Members.Values.Where(m => m.Empty == false && regex.IsMatch(m.Name)).ToList();
@@ -226,12 +237,24 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     {
       try
       {
+        ImportElementAddedEvent.Reset();
+
         SMA.Instance.IgnoreUserConfirmation = true;
 
-        return ImportFileFunc(RegistryPtr,
-                              new DelphiUString(textOrPath),
-                              new DelphiUString(registryName),
-                              SMA.Instance.SMProcess.ThreadFactory.MainThread);
+        int ret = ImportFileFunc(RegistryPtr,
+                                 new DelphiUString(textOrPath),
+                                 new DelphiUString(registryName),
+                                 SMA.Instance.SMProcess.ThreadFactory.MainThread);
+
+        if (ret > 0)
+        {
+          ImportElementId = ret;
+
+          if (Members.ContainsKey(ret) == false)
+            ImportElementAddedEvent.WaitOne(AssemblyFactory.ExecutionTimeout);
+        }
+
+        return ret;
       }
       catch (Exception ex)
       {
@@ -242,6 +265,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
       finally
       {
         SMA.Instance.IgnoreUserConfirmation = false;
+        ImportElementId                     = -1;
       }
     }
 
@@ -308,7 +332,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
       if (IsOptional && (File.Exists(memFilePath) == false || File.Exists(rtxFilePath) == false))
         return;
-    
+
       using (Stream memStream = File.OpenRead(memFilePath))
       using (Stream rtxStream = File.OpenRead(rtxFilePath))
         //using (Stream rtfStream = File.OpenRead(rtfFilePath))
@@ -337,16 +361,29 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
       // TODO: Rtf
       var member = Members.SafeGet(id);
 
-      if (member == null)
+      try
       {
-        Members[id] = Create(id,
-                             mem,
-                             rtxOrRtf);
-        return;
-      }
+        if (member == null)
+        {
+          Members[id] = member = Create(id,
+                                        mem,
+                                        rtxOrRtf);
+          return;
+        }
 
-      member.Update(mem,
-                    rtxOrRtf);
+        member.Update(mem,
+                      rtxOrRtf);
+      }
+      finally
+      {
+        OnMemberAddedOrUpdated(member);
+      }
+    }
+
+    protected virtual void OnMemberAddedOrUpdated(TMember member)
+    {
+      if (member?.Id == ImportElementId)
+        ImportElementAddedEvent.Set();
     }
 
     #endregion

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:13
-// Modified On:  2018/12/10 13:01
+// Modified On:  2018/12/15 10:17
 // Modified By:  Alexis
 
 #endregion
@@ -39,12 +39,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
 {
   public abstract class ComponentBase : MarshalByRefObject
   {
-    #region Properties & Fields - Non-Public
+    #region Constants & Statics
 
     //
     // Internal helpers
 
-    protected Dictionary<string, ComponentFieldFlags> FieldFlagMapping { get; } = new Dictionary<string, ComponentFieldFlags>()
+    protected static IReadOnlyDictionary<string, ComponentFieldFlags> FieldFlagMapping { get; } = new Dictionary<string, ComponentFieldFlags>()
     {
       { "Left", ComponentFieldFlags.Left },
       { "Top", ComponentFieldFlags.Top },
@@ -165,10 +165,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
                                 value);
 
 #if DEBUG
-        System.Diagnostics.Debug.WriteLine("[{0}] {1}: {2}",
-                                           GetType().Name,
-                                           name,
-                                           value);
+        //System.Diagnostics.Debug.WriteLine("[{0}] {1}: {2}",
+        //                                   GetType().Name,
+        //                                   name,
+        //                                   value);
 #endif
       }
 
@@ -179,10 +179,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
                             string name)
     {
 #if DEBUG
-      System.Diagnostics.Debug.WriteLine("[{0}] {1}: {2}",
-                                         GetType().Name,
-                                         name,
-                                         value);
+      //System.Diagnostics.Debug.WriteLine("[{0}] {1}: {2}",
+      //                                   GetType().Name,
+      //                                   name,
+      //                                   value);
 #endif
 
       return value;

@@ -116,6 +116,8 @@ namespace SuperMemoAssistant.Interop
                                                                       -1);
       public static readonly SMAppVersion v17_3 = new SMAppVersion(17,
                                                                    3);
+      public static readonly SMAppVersion v17_4 = new SMAppVersion(17,
+                                                                   4);
 
       #endregion
     }

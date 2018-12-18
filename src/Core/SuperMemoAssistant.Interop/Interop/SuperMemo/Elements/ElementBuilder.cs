@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/12/09 02:37
+// Modified On:  2018/12/13 13:09
 // Modified By:  Alexis
 
 #endregion
@@ -47,8 +47,10 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
   {
     #region Properties & Fields - Non-Public
 
-    private List<IComponent> ComponentsInternal     { get; }
-    private List<IConcept>   LinkedConceptsInternal { get; }
+    // ReSharper disable once CollectionNeverUpdated.Local
+    private List<IComponent> ComponentsInternal { get; }
+    // ReSharper disable once CollectionNeverUpdated.Local
+    private List<IConcept> LinkedConceptsInternal { get; }
 
     #endregion
 
@@ -105,7 +107,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
     public string                  Title          { get; private set; }
     public ElemReference           Reference      { get; private set; }
     public bool                    ShouldDisplay  { get; private set; }
-    public int                     Id             { get; private set; }
+    public int                     Id             { get; private set; } = -1;
     public IElement                Parent         { get; private set; }
     public IConcept                Concept        { get; private set; }
     public IEnumerable<IConcept>   LinkedConcepts => LinkedConceptsInternal;
@@ -122,8 +124,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
     {
       throw new NotImplementedException();
 
-      Id = id;
-      return this;
+      //Id = id;
+      //return this;
     }
 
     public ElementBuilder WithTitle(string title)
@@ -166,40 +168,40 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
     {
       throw new NotImplementedException();
 
-      LinkedConceptsInternal.AddRange(concepts);
-      return this;
+      //LinkedConceptsInternal.AddRange(concepts);
+      //return this;
     }
 
     public ElementBuilder AddLinkedConcept(IConcept concept)
     {
       throw new NotImplementedException();
 
-      LinkedConceptsInternal.Add(concept);
-      return this;
+      //LinkedConceptsInternal.Add(concept);
+      //return this;
     }
 
     public ElementBuilder AddComponentGroup(IComponentGroup componentGroup)
     {
       throw new NotImplementedException();
 
-      ComponentsInternal.AddRange(componentGroup.Components);
-      return this;
+      //ComponentsInternal.AddRange(componentGroup.Components);
+      //return this;
     }
 
     public ElementBuilder AddComponents(IEnumerable<IComponent> components)
     {
       throw new NotImplementedException();
 
-      ComponentsInternal.AddRange(components);
-      return this;
+      //ComponentsInternal.AddRange(components);
+      //return this;
     }
 
     public ElementBuilder AddComponent(IComponent component)
     {
       throw new NotImplementedException();
 
-      ComponentsInternal.Add(component);
-      return this;
+      //ComponentsInternal.Add(component);
+      //return this;
     }
 
     #endregion
@@ -225,19 +227,19 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 
 
 
-    
+
     [Serializable]
     public class ElemReference
     {
       #region Properties & Fields - Public
 
-      public string                   Author  { get; set; }
-      public string                   Title   { get; set; }
+      public string                    Author  { get; set; }
+      public string                    Title   { get; set; }
       public List<(string, DateTime?)> Dates   { get; } = new List<(string, DateTime?)>();
-      public string                   Source  { get; set; }
-      public string                   Link    { get; set; }
-      public string                   Email   { get; set; }
-      public string                   Comment { get; set; }
+      public string                    Source  { get; set; }
+      public string                    Link    { get; set; }
+      public string                    Email   { get; set; }
+      public string                    Comment { get; set; }
 
       #endregion
 
@@ -335,7 +337,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 
       public ElemReference AddDate(string date)
       {
-        Dates.Add((date, null));
+        if (date != null)
+          Dates.Add((date, null));
 
         return this;
       }

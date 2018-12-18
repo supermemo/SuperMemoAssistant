@@ -35,7 +35,7 @@ namespace SuperMemoAssistant.Sys.Collections
         }
       );
 
-      return (idx < 0)
+      return idx < 0
         ? null
         : new SegmentStream(localSegs[0], false);
     }

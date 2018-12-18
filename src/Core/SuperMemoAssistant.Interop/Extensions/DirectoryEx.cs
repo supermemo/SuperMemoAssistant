@@ -30,6 +30,7 @@
 
 using System;
 using System.IO;
+using Anotar.Serilog;
 
 namespace SuperMemoAssistant.Extensions
 {
@@ -46,6 +47,8 @@ namespace SuperMemoAssistant.Extensions
       }
       catch (Exception ex)
       {
+        LogTo.Error(ex,
+                    "Exception while ensuring path exists");
         return true;
       }
     }

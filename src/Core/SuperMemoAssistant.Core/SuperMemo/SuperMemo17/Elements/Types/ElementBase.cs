@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:12
-// Modified On:  2018/12/10 13:08
+// Modified On:  2018/12/15 10:24
 // Modified By:  Alexis
 
 #endregion
@@ -47,12 +47,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 {
   public abstract class ElementBase : MarshalByRefObject, IDisposable
   {
-    #region Properties & Fields - Non-Public
+    #region Constants & Statics
 
     //
     // Internal helpers
 
-    protected Dictionary<string, ElementFieldFlags> FieldFlagMapping { get; } = new Dictionary<string, ElementFieldFlags>()
+    protected static IReadOnlyDictionary<string, ElementFieldFlags> FieldFlagMapping { get; } = new Dictionary<string, ElementFieldFlags>()
     {
       { "TextId", ElementFieldFlags.Name },
       { "Deleted", ElementFieldFlags.Deleted },
@@ -83,9 +83,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
       Id = id;
 
 #if DEBUG
-      System.Diagnostics.Debug.WriteLine("[{0} {1}] Creating",
-                                         GetType().Name,
-                                         Id);
+      //System.Diagnostics.Debug.WriteLine("[{0} {1}] Creating",
+      //                                   GetType().Name,
+      //                                   Id);
 #endif
 
       TitleTextId = SetValue(elElem.titleTextId,
@@ -181,9 +181,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
                                     InfElementsElem? elElem)
     {
 #if DEBUG
-      System.Diagnostics.Debug.WriteLine("[{0} {1}] Updating",
-                                         GetType().Name,
-                                         Id);
+      //System.Diagnostics.Debug.WriteLine("[{0} {1}] Updating",
+      //                                   GetType().Name,
+      //                                   Id);
 #endif
 
       // TODO: Set/Clear events handlers on component change
@@ -423,11 +423,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
                                 value);
 
 #if DEBUG
-        System.Diagnostics.Debug.WriteLine("[{0} {1}] {2}: {3}",
-                                           GetType().Name,
-                                           Id,
-                                           name,
-                                           value);
+        //System.Diagnostics.Debug.WriteLine("[{0} {1}] {2}: {3}",
+        //                                   GetType().Name,
+        //                                   Id,
+        //                                   name,
+        //                                   value);
 #endif
       }
 
@@ -438,11 +438,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
                             string name)
     {
 #if DEBUG
-      System.Diagnostics.Debug.WriteLine("[{0} {1}] {2}: {3}",
-                                         GetType().Name,
-                                         Id,
-                                         name,
-                                         value);
+      //System.Diagnostics.Debug.WriteLine("[{0} {1}] {2}: {3}",
+      //                                   GetType().Name,
+      //                                   Id,
+      //                                   name,
+      //                                   value);
 #endif
 
       return value;

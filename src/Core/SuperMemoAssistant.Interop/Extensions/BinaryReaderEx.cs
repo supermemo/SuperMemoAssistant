@@ -14,6 +14,9 @@ namespace SuperMemoAssistant.Extensions
       {
         while (seqPos != seqLength)
         {
+          if (r.BaseStream.Position >= r.BaseStream.Length)
+            return false;
+
           if (r.ReadByte() == seq[seqPos])
             seqPos++;
 

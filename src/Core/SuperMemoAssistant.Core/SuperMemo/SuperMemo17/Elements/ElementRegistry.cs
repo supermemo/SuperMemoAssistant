@@ -286,10 +286,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 
 
           case ElementBuilder.ContentTypeEnum.Image:
-            creationMethod = ElementCreationMethod.ClipboardElement;
+            creationMethod = ElementCreationMethod.AddElement;
+            
+            if (!(builder.Contents[0] is ElementBuilder.ImageContent))
+              throw new InvalidCastException("ContentTypeEnum.Image contained a non-image IContent");
 
-            toDispose.Add(new ClipboardSnapshot());
-            Clipboard.SetText(ElementClipboardBuilder.FromElementBuilder(builder));
             break;
 
 

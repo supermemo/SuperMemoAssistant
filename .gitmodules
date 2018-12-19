@@ -1,15 +1,21 @@
 [submodule "libs/Patagames.Pdf.Wpf"]
-path = libs/Patagames.Pdf.Wpf
-url = git://github.com/supermemo/Pdf.Wpf.git
-[submodule "src/Plugins/SuperMemoAssistant.Plugins.LateX"]
-	path = src/Plugins/SuperMemoAssistant.Plugins.LateX
-	url = git@github.com:supermemo/SuperMemoAssistant.Plugins.LateX.git
-[submodule "src/Plugins/SuperMemoAssistant.Plugins.PDF"]
-	path = src/Plugins/SuperMemoAssistant.Plugins.PDF
-	url = git@github.com:supermemo/SuperMemoAssistant.Plugins.PDF.git
+	path = libs/Patagames.Pdf.Wpf
+	url = https://github.com/supermemo/Pdf.Wpf.git
 [submodule "libs/Process.NET"]
 	path = libs/Process.NET
-	url = git@github.com:supermemo/Process.NET.git
+	url = https://github.com/supermemo/Process.NET.git
 [submodule "libs/pngcs"]
 	path = libs/pngcs
-	url = git@github.com:supermemo/pngcs.git
+	url = https://github.com/supermemo/pngcs.git
+[submodule "src/Plugins/SuperMemoAssistant.Plugins.LateX"]
+	path = src/Plugins/SuperMemoAssistant.Plugins.LateX
+	url = https://github.com/supermemo/SuperMemoAssistant.Plugins.LateX.git
+[submodule "src/Plugins/SuperMemoAssistant.Plugins.PDF"]
+	path = src/Plugins/SuperMemoAssistant.Plugins.PDF
+	url = https://github.com/supermemo/SuperMemoAssistant.Plugins.PDF.git
+[submodule "src/Plugins/SuperMemoAssistant.Plugins.ImageOcclusion"]
+	path = src/Plugins/SuperMemoAssistant.Plugins.ImageOcclusion
+	url = https://github.com/supermemo/SuperMemoAssistant.Plugins.ImageOcclusion.git
+[submodule "src/Plugins/SuperMemoAssistant.Plugins.MediaPlayer"]
+	path = src/Plugins/SuperMemoAssistant.Plugins.MediaPlayer
+	url = https://github.com/supermemo/SuperMemoAssistant.Plugins.MediaPlayer.git

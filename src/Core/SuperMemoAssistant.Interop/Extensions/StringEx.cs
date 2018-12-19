@@ -38,6 +38,11 @@ namespace SuperMemoAssistant.Extensions
   {
     #region Methods
 
+    public static string Quotify(this string text)
+    {
+      return "\"" + text + "\"";
+    }
+
     public static string ReplaceFirst(this string text,
                                       string      search,
                                       string      replace)

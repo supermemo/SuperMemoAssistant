@@ -40,6 +40,7 @@ using System.Threading;
 using Anotar.Serilog;
 using EasyHook;
 using Process.NET;
+using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Hooks;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
@@ -215,7 +216,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
         // and immediatly install hooks
         RemoteHooking.CreateAndInject(
           SMConst.BinPath,
-          collection.GetKnoFilePath(),
+          collection.GetKnoFilePath().Quotify(),
           0,
           InjectionOptions.Default,
           SMAConst.Assembly.GetInjectionLibFilePath(),

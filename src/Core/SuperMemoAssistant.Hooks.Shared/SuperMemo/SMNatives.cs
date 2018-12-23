@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/07 17:38
-// Modified On:  2018/12/10 13:17
+// Created On:   2018/12/23 05:01
+// Modified On:  2018/12/23 05:34
 // Modified By:  Alexis
 
 #endregion
@@ -30,14 +30,14 @@
 
 
 
+// ReSharper disable InconsistentNaming
+// ReSharper disable MemberHidesStaticFromOuterClass
+
 using System;
 using Process.NET.Memory;
 using Process.NET.Patterns;
 
-// ReSharper disable InconsistentNaming
-// ReSharper disable MemberHidesStaticFromOuterClass
-
-namespace SuperMemoAssistant.SuperMemo.SuperMemo17
+namespace SuperMemoAssistant.Hooks.SuperMemo
 {
   public static class SMNatives
   {
@@ -50,6 +50,19 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
       public static readonly IntPtr CurrentHookIdPtr    = new IntPtr(0x00BBCDD8);
 
       public static readonly IntPtr IgnoreUserConfirmationPtr = new IntPtr(0x00BC0007);
+
+      #endregion
+    }
+
+
+    public static class TApplication
+    {
+      #region Constants & Statics
+
+      public const           int    OnMessageOffset          = 0x110;
+      public static readonly IntPtr TApplicationInstanceAddr = new IntPtr(0x00ACF3D4);
+      public static readonly ObjPtr TApplicationOnMessagePtr = new ObjPtr(TApplicationInstanceAddr,
+                                                                          OnMessageOffset);
 
       #endregion
     }
@@ -207,7 +220,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
     {
       #region Constants & Statics
 
-      public static IntPtr InstancePtr = new IntPtr(0x00BBFE80); // TODO: Update to 17.4
+      public static IntPtr InstancePtr = new IntPtr(0x00BBFE80);
 
       // TSMMain.SelectDefaultConcept
       public static readonly IMemoryPattern SelectDefaultConceptCallSig = new DwordCallPattern(
@@ -258,5 +271,33 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
 
       #endregion
     }
+  }
+
+  public enum NativeMethod
+  {
+    ElWdwGoToElement,
+    ElWdwPasteElement,
+    ElWdwAppendElement,
+    ElWdwAddElementFromText,
+    ElWdwDeleteCurrentElement,
+    ElWdwGetText,
+    ElWdwEnterUpdateLock,
+    ElWdwQuitUpdateLock,
+    ElWdwDone,
+    ElWdwPasteArticle,
+    ElWdwSetText,
+    TCompDataGetType,
+    TCompDataGetText,
+    TCompDataSetText,
+    TCompDataGetTextRegMember,
+    TCompDataSetTextRegMember,
+    TCompDataGetImageRegMember,
+    TCompDataSetImageRegMember,
+    TSMMainSelectDefaultConcept,
+    TRegistryAddMember,
+    TRegistryImportFile,
+
+    // Special handling
+    AppendAndAddElementFromText,
   }
 }

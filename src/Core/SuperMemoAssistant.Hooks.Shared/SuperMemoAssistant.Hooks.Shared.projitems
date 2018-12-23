@@ -13,5 +13,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ISMHook.IO.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ISMHook.System.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SMHook.Callback.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SuperMemo\SMNatives.cs" />
   </ItemGroup>
 </Project>

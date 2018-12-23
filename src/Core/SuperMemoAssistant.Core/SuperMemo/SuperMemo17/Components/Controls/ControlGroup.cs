@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/20 19:39
-// Modified On:  2018/11/29 12:59
+// Modified On:  2018/12/23 05:02
 // Modified By:  Alexis
 
 #endregion
@@ -35,9 +35,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Process.NET;
-using Process.NET.Extensions;
 using Process.NET.Memory;
 using Process.NET.Types;
+using SuperMemoAssistant.Hooks.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
 using SuperMemoAssistant.Sys;
@@ -294,7 +294,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
     {
       if (IsDisposed)
         throw new InvalidOperationException(DisposedException);
-
+      
+      // TODO: Move to SMInject
       return GetTextFunc(new IntPtr(_componentDataAddr),
                          control.Id + 1,
                          _smProcess.ThreadFactory.MainThread);
@@ -305,11 +306,16 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
     {
       if (IsDisposed)
         throw new InvalidOperationException(DisposedException);
+      
+      //return SetTextMethod(new IntPtr(_componentDataAddr),
+      //                     control.Id + 1,
+      //                     new DelphiUString(text),
+      //                     _smProcess.ThreadFactory.MainThread);
 
-      return SetTextMethod(new IntPtr(_componentDataAddr),
-                           control.Id + 1,
-                           new DelphiUString(text),
-                           _smProcess.ThreadFactory.MainThread);
+      return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.TCompDataSetText,
+                                                     new IntPtr(_componentDataAddr),
+                                                     control.Id + 1,
+                                                     new DelphiUString(text)) == 1;
     }
 
     public int GetTextRegMember(IControl control)
@@ -317,9 +323,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
       if (IsDisposed)
         throw new InvalidOperationException(DisposedException);
 
-      return GetTextRegMemberFunc(new IntPtr(_componentDataAddr),
-                                  control.Id + 1,
-                                  _smProcess.ThreadFactory.MainThread);
+      //return GetTextRegMemberFunc(new IntPtr(_componentDataAddr),
+      //                            control.Id + 1,
+      //                            _smProcess.ThreadFactory.MainThread);
+
+      return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.TCompDataGetTextRegMember,
+                                                     new IntPtr(_componentDataAddr),
+                                                     control.Id + 1);
     }
 
     public bool SetTextRegMember(IControl control,
@@ -331,10 +341,15 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
       if (SMA.Instance.Registry.Text[member] == null)
         return false;
 
-      return SetTextRegMemberMethod(new IntPtr(_componentDataAddr),
-                                    control.Id + 1,
-                                    member,
-                                    _smProcess.ThreadFactory.MainThread);
+      //return SetTextRegMemberMethod(new IntPtr(_componentDataAddr),
+      //                              control.Id + 1,
+      //                              member,
+      //                              _smProcess.ThreadFactory.MainThread);
+
+      return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.TCompDataSetTextRegMember,
+                                                     new IntPtr(_componentDataAddr),
+                                                     control.Id + 1,
+                                                     member) == 1;
     }
 
     public int GetImageRegMember(IControl control)
@@ -342,9 +357,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
       if (IsDisposed)
         throw new InvalidOperationException(DisposedException);
 
-      return GetImageRegMemberFunc(new IntPtr(_componentDataAddr),
-                                   control.Id + 1,
-                                   _smProcess.ThreadFactory.MainThread);
+      //return GetImageRegMemberFunc(new IntPtr(_componentDataAddr),
+      //                             control.Id + 1,
+      //                             _smProcess.ThreadFactory.MainThread);
+      
+
+      return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.TCompDataGetImageRegMember,
+                                                     new IntPtr(_componentDataAddr),
+                                                     control.Id + 1);
     }
 
     public bool SetImageRegMember(IControl control,
@@ -356,10 +376,15 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
       if (SMA.Instance.Registry.Image[member] == null)
         return false;
 
-      return SetImageRegMemberMethod(new IntPtr(_componentDataAddr),
-                                     control.Id + 1,
-                                     member,
-                                     _smProcess.ThreadFactory.MainThread);
+      //return SetImageRegMemberMethod(new IntPtr(_componentDataAddr),
+      //                               control.Id + 1,
+      //                               member,
+      //                               _smProcess.ThreadFactory.MainThread);
+
+      return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.TCompDataSetImageRegMember,
+                                                     new IntPtr(_componentDataAddr),
+                                                     control.Id + 1,
+                                                     member) == 1;
     }
 
     private void SetupNatives(IProcess smProcess)

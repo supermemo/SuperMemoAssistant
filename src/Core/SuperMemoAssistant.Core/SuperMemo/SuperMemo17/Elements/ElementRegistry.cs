@@ -326,8 +326,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 
             string elementDesc = ElementClipboardBuilder.FromElementBuilder(builder);
 
-            success =  ElementWdw.Instance.AppendElement(builder.Type) > 0;
-            success &= ElementWdw.Instance.AddElementFromText(elementDesc);
+            success = ElementWdw.Instance.AppendAndAddElementFromText(builder.Type, elementDesc) > 0;
 
             break;
         }

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/12 18:26
-// Modified On:  2018/12/10 12:58
+// Modified On:  2018/12/23 07:03
 // Modified By:  Alexis
 
 #endregion
@@ -32,14 +32,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Anotar.Serilog;
 using Process.NET;
+using Process.NET.Assembly;
 using Process.NET.Memory;
+using Process.NET.Native.Types;
 using SuperMemoAssistant.Hooks;
+using SuperMemoAssistant.Hooks.SuperMemo;
+using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SuperMemo.Hooks;
-using SuperMemoAssistant.SuperMemo.SuperMemo17;
 using SuperMemoAssistant.Sys.UIAutomation;
 
 namespace SuperMemoAssistant.SuperMemo
@@ -53,6 +57,9 @@ namespace SuperMemoAssistant.SuperMemo
     #region Properties & Fields - Non-Public
 
     private IPointer IgnoreUserConfirmationPtr { get; set; }
+
+
+    protected ExecutionContext ExecCtxt { get; } = new ExecutionContext();
 
     #endregion
 
@@ -117,6 +124,15 @@ namespace SuperMemoAssistant.SuperMemo
 
 
 
+    #region Properties & Fields - Public
+
+    public ManualResetEvent MainThreadReady { get; } = new ManualResetEvent(false);
+
+    #endregion
+
+
+
+
     #region Properties Impl - Public
 
     public          SMCollection Collection { get; }
@@ -142,8 +158,37 @@ namespace SuperMemoAssistant.SuperMemo
 
     public virtual void OnException(Exception ex)
     {
-      // TODO: Log ?
-      throw new NotImplementedException();
+      // TODO: Notify ?
+      LogTo.Error(ex,
+                  "Exception caught in InjectLib.");
+    }
+
+    /// <param name="wParam"></param>
+    /// <inheritdoc />
+    public bool OnUserMessage(int wParam)
+    {
+      switch ((InjectLibMessages)wParam)
+      {
+        case InjectLibMessages.ExecuteOnMainThread:
+          //MainThreadReady.Set();
+
+          return true;
+      }
+
+      return false;
+    }
+
+    public void GetExecutionParameters(out int       method,
+                                       out dynamic[] parameters)
+    {
+      method     = (int)ExecCtxt.ExecutionMethod;
+      parameters = ExecCtxt.ExecutionParameters;
+    }
+
+    public void SetExecutionResult(int result)
+    {
+      ExecCtxt.ExecutionResult = result;
+      MainThreadReady.Set();
     }
 
     #endregion
@@ -152,6 +197,26 @@ namespace SuperMemoAssistant.SuperMemo
 
 
     #region Methods
+
+    // TODO: Not thread safe & ugly overall...
+    public int ExecuteOnMainThread(NativeMethod     method,
+                                   params dynamic[] parameters)
+    {
+      MainThreadReady.Reset();
+
+      ExecCtxt.ExecutionMethod     = method;
+      ExecCtxt.ExecutionParameters = parameters;
+      
+      SMProcess.WindowFactory.MainWindow.PostMessage(WindowsMessages.User,
+                                                     new IntPtr((int)InjectLibMessages.ExecuteOnMainThread),
+                                                     new IntPtr(0));
+
+      SMA.Instance.SMMgmt.MainThreadReady.WaitOne(AssemblyFactory.ExecutionTimeout);
+
+      ExecCtxt.ExecutionParameters = null;
+
+      return ExecCtxt.ExecutionResult;
+    }
 
     //
     // SM-App Lifecycle
@@ -277,5 +342,35 @@ namespace SuperMemoAssistant.SuperMemo
     public event EventHandler<SMProcessArgs> OnSMStoppedEvent;
 
     #endregion
+
+
+
+
+    protected class ExecutionContext
+    {
+      #region Properties & Fields - Public
+
+      public NativeMethod ExecutionMethod     { get; set; }
+      public dynamic[]    ExecutionParameters { get; set; }
+      public int          ExecutionResult     { get; set; }
+
+      #endregion
+    }
+
+
+    //protected ConcurrentDictionary<int, (IntPtr, dynamic[])> MainThreadRequests { get; } =
+    //  new ConcurrentDictionary<int, (IntPtr, dynamic[])>();
+    //protected int MainThreadRequestIdx {get; set;} = 0;
+    //public TRet RunOnMainThread<TRet>(IntPtr           baseAddr,
+    //                                  params dynamic[] args)
+    //{
+    //  MainThreadRequests[MainThreadRequestIdx++] = (baseAddr, args);
+    //  MainThreadReady.Reset();
+    //  MainThreadReleased.Reset();
+
+    //  SMProcess.WindowFactory.MainWindow.PostMessage(WindowsMessages.User,
+    //                                                 new IntPtr(123456),
+    //                                                 new IntPtr(0));
+    //}
   }
 }

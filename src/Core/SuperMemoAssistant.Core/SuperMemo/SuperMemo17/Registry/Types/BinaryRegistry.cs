@@ -31,6 +31,7 @@
 
 
 using System;
+using SuperMemoAssistant.Hooks.SuperMemo;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:11
-// Modified On:  2018/12/10 12:53
+// Modified On:  2018/12/23 07:02
 // Modified By:  Alexis
 
 #endregion
@@ -102,6 +102,13 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     public override bool OnHookInstalled(bool      success,
                                          Exception hookEx = null)
     {
+      if (hookEx != null)
+        LogTo.Error(hookEx,
+                    "InjectionLib threw an error during initialization.");
+
+      if (HookInitEvent == null)
+        return false;
+
       try
       {
         HookSuccess   = success;
@@ -132,6 +139,23 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
       SystemCallback.OnException(ex);
 
       StopIPCServer();
+    }
+
+    public override bool OnUserMessage(int wParam)
+    {
+      return SystemCallback.OnUserMessage(wParam);
+    }
+
+    public override void GetExecutionParameters(out int       method,
+                                                out dynamic[] parameters)
+    {
+      SystemCallback.GetExecutionParameters(out method,
+                                            out parameters);
+    }
+
+    public override void SetExecutionResult(int result)
+    {
+      SystemCallback.SetExecutionResult(result);
     }
 
 

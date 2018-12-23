@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 13:51
-// Modified On:  2018/06/06 03:44
+// Modified On:  2018/12/23 07:02
 // Modified By:  Alexis
 
 #endregion
@@ -63,7 +63,15 @@ namespace SuperMemoAssistant.Hooks
     public abstract void KeepAlive();
 
 
-    public abstract void                OnException(Exception ex);
+    public abstract void OnException(Exception ex);
+
+    public abstract bool OnUserMessage(int wParam);
+
+    public abstract void GetExecutionParameters(out int       method,
+                                                out dynamic[] parameters);
+
+    public abstract void SetExecutionResult(int result);
+
     public abstract IEnumerable<string> GetTargetFilePaths();
 
 

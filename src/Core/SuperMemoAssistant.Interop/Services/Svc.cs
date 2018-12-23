@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 15:25
-// Modified On:  2018/11/16 21:55
+// Modified On:  2018/12/21 02:21
 // Modified By:  Alexis
 
 #endregion
@@ -36,6 +36,8 @@ using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.Devices;
 using SuperMemoAssistant.Services.IO.FS;
+// ReSharper disable StaticMemberInGenericType
+// ReSharper disable UnusedTypeParameter
 
 namespace SuperMemoAssistant.Services
 {
@@ -54,9 +56,10 @@ namespace SuperMemoAssistant.Services
   {
     #region Constants & Statics
 
-    public static IKeyboardHotKeyService    KeyboardHotKey { get; set; }
-    public static PluginCollectionFSService CollectionFS   { get; set; }
-    public static ConfigurationService      Configuration  { get; set; }
+    public static IKeyboardHotKeyService    KeyboardHotKeyLegacy { get; set; }
+    public static IKeyboardHookService      KeyboardHotKey       { get; set; }
+    public static PluginCollectionFSService CollectionFS         { get; set; }
+    public static ConfigurationService      Configuration        { get; set; }
 
     public static ISMAPlugin PluginContext { get; set; }
 

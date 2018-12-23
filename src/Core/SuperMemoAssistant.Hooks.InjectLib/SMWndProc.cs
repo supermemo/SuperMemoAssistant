@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/08 16:29
-// Modified On:  2018/12/10 12:51
+// Created On:   2018/12/20 02:47
+// Modified On:  2018/12/20 02:50
 // Modified By:  Alexis
 
 #endregion
@@ -30,20 +30,39 @@
 
 
 
-using SuperMemoAssistant.Services.IO;
-using SuperMemoAssistant.Sys;
+using System;
+using Process.NET.Native.Types;
+using Process.NET.Windows;
 
-namespace SuperMemoAssistant
+namespace SuperMemoAssistant.Hooks.InjectLib
 {
-  public static class ModuleInitializer
+  public class SMWndProc : WindowProcHook
   {
-    #region Methods
+    #region Constructors
 
-    public static void Initialize()
+    /// <inheritdoc />
+    public SMWndProc()
+      : base(System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle) { }
+
+    protected override IntPtr OnWndProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam)
     {
-      InitOnLoad.Initialize();
 
-      Logger.Instance.Initialize();
+      try
+      {
+        if (msg == (int)WindowsMessages.User && HandleUserMessage(wParam.ToInt32()))
+          return IntPtr.Zero;
+
+        return base.OnWndProc(hWnd, msg, wParam, lParam);
+      }
+      catch (Exception)
+      {
+        return IntPtr.Zero;
+      }
+    }
+
+    private bool HandleUserMessage(int wParam)
+    {
+      return SMInject.Instance.OnUserMessage(wParam);
     }
 
     #endregion

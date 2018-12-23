@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:54
-// Modified On:  2018/12/09 02:07
+// Modified On:  2018/12/20 12:24
 // Modified By:  Alexis
 
 #endregion
@@ -41,6 +41,8 @@ namespace SuperMemoAssistant.Interop
     #region Constants & Statics
 
     public const string BinPath = "C:\\SuperMemo\\sm17.exe";
+
+    public const string AppName = "SuperMemoAssistant";
 
     #endregion
 

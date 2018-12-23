@@ -1,5 +1,4 @@
 ﻿#region License & Metadata
-
 // The MIT License (MIT)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -21,31 +20,16 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/08 16:29
-// Modified On:  2018/12/10 12:51
+// Created On:   2018/12/21 15:18
+// Modified On:  2018/12/21 15:18
 // Modified By:  Alexis
-
 #endregion
 
-
-
-
-using SuperMemoAssistant.Services.IO;
-using SuperMemoAssistant.Sys;
-
-namespace SuperMemoAssistant
+namespace SuperMemoAssistant.Interop
 {
-  public static class ModuleInitializer
+  public enum InjectLibMessages
   {
-    #region Methods
-
-    public static void Initialize()
-    {
-      InitOnLoad.Initialize();
-
-      Logger.Instance.Initialize();
-    }
-
-    #endregion
+    ExecuteOnMainThread = 9100101,
+    AttachDebugger = 9100199,
   }
 }

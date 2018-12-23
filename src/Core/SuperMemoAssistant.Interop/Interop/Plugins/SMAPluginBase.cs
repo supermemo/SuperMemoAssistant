@@ -103,7 +103,7 @@ namespace SuperMemoAssistant.Interop.Plugins
 
     #region Methods
 
-    [Conditional("DEBUG")]
+    [Conditional("DEBUG"), Conditional("DEBUG_IN_PROD")]
     private void AttachDebugger()
     {
       Debugger.Launch();
@@ -116,7 +116,8 @@ namespace SuperMemoAssistant.Interop.Plugins
       Svc<TPlugin>.CollectionFS = new PluginCollectionFSService(this,
                                                                 Container.GetExportedValue<ICollectionFSService>());
       Svc<TPlugin>.Configuration  = new ConfigurationService(this);
-      Svc<TPlugin>.KeyboardHotKey = Container.GetExportedValue<IKeyboardHotKeyService>();
+      Svc<TPlugin>.KeyboardHotKeyLegacy = Container.GetExportedValue<IKeyboardHotKeyService>();
+      Svc<TPlugin>.KeyboardHotKey = Container.GetExportedValue<IKeyboardHookService>();
 
       OnInit();
     }

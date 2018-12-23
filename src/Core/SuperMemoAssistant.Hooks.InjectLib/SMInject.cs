@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/12 01:26
-// Modified On:  2018/12/13 12:56
+// Modified On:  2018/12/23 06:26
 // Modified By:  Alexis
 
 #endregion
@@ -33,11 +33,14 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Remoting;
 using System.Threading;
 using System.Threading.Tasks;
 using EasyHook;
+
+// ReSharper disable ClassNeverInstantiated.Global
 
 namespace SuperMemoAssistant.Hooks.InjectLib
 {
@@ -59,8 +62,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
     protected List<LocalHook> LocalHooks { get; } = new List<LocalHook>();
 
-    protected SMHookCallback Callback { get; set; }
-    protected bool           Exited   { get; set; } = false;
+    protected bool Exited { get; set; } = false;
 
     protected AutoResetEvent       DataAvailableEvent { get; set; }
     protected ReaderWriterLockSlim RWLock             { get; } = new ReaderWriterLockSlim();
@@ -80,6 +82,8 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       Instance           = this;
       DataAvailableEvent = new AutoResetEvent(false);
 
+      //Debugger.Launch();
+
       // TODO: Switch to WCF DuplexClientBase
       Callback = (SMHookCallback)RemoteHooking.IpcConnectClient<MarshalByRefObject>(HookConst.ChannelName);
       Task.Run((Action)KeepAlive);
@@ -94,8 +98,10 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
     #region Properties & Fields - Public
 
-    public HashSet<string> TargetFilePaths { get; set; }
-    public HashSet<IntPtr> TargetHandles   { get; set; } = new HashSet<IntPtr>();
+    public SMHookCallback Callback { get; set; }
+
+    public HashSet<string> TargetFilePaths { get; set; } = new HashSet<string>();
+    public HashSet<IntPtr> TargetHandles   { get; }      = new HashSet<IntPtr>();
 
     #endregion
 
@@ -127,13 +133,16 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       {
         try
         {
-          //System.Diagnostics.Debugger.Launch();
           InstallHooks();
 
           Callback.OnHookInstalled(true);
           TargetFilePaths = new HashSet<string>(Callback.GetTargetFilePaths().Select(s => s.ToLowerInvariant()));
 
+          var smHooks = new SMHooks();
+
           RemoteHooking.WakeUpProcess();
+
+          smHooks.InstallWndProcHook();
         }
         catch (Exception ex)
         {
@@ -195,12 +204,12 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
         try
         {
-          foreach (var lh in LocalHooks)
-            lh?.Dispose();
-
-          LocalHook.Release();
+          // TODO: Dispose SMHooks
+          /*SMWndProc.Disable();
+          SMWndProc.Dispose();*/
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
           try
           {
             Callback?.OnException(ex);
@@ -208,7 +217,27 @@ namespace SuperMemoAssistant.Hooks.InjectLib
           catch
           {
             // ignored
-          } }
+          }
+        }
+
+        try
+        {
+          foreach (var lh in LocalHooks)
+            lh?.Dispose();
+
+          LocalHook.Release();
+        }
+        catch (Exception ex)
+        {
+          try
+          {
+            Callback?.OnException(ex);
+          }
+          catch
+          {
+            // ignored
+          }
+        }
       }
     }
 
@@ -276,6 +305,25 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       where T : Exception
     {
       Callback.OnException(ex);
+    }
+
+    public bool OnUserMessage(int wParam)
+    {
+      switch (wParam)
+      {
+        case 9100199:
+          if (Debugger.IsAttached == false)
+            Debugger.Launch();
+
+          else
+            Debugger.Break();
+
+          return true;
+
+        default:
+          //return Callback.OnUserMessage(wParam);
+          return false;
+      }
     }
 
     public void Enqueue(string          funcName,

@@ -34,6 +34,7 @@ using System;
 using Anotar.Serilog;
 using Process.NET.Memory;
 using Process.NET.Types;
+using SuperMemoAssistant.Hooks.SuperMemo;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
@@ -148,9 +149,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
         if (elem == null || elem.Deleted)
           return false;
 
-        ret = GoToMethod(ElementWdwPtr.Read<IntPtr>(),
+        /*ret = GoToMethod(ElementWdwPtr.Read<IntPtr>(),
                          elementId,
-                         SMProcess.ThreadFactory.MainThread);
+                         SMProcess.ThreadFactory.MainThread);*/
+
+        ret = SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwGoToElement,
+                                                ElementWdwPtr.Read<IntPtr>(),
+                                                elementId) == 1;
 
         return ret;
       }
@@ -166,8 +171,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     {
       try
       {
-        return PasteArticleFunc(ElementWdwPtr.Read<IntPtr>(),
-                                SMProcess.ThreadFactory.MainThread);
+        //return PasteArticleFunc(ElementWdwPtr.Read<IntPtr>(),
+        //                        SMProcess.ThreadFactory.MainThread);
+
+        return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwPasteArticle,
+                                                      ElementWdwPtr.Read<IntPtr>()) == 1;
       }
       catch (Exception ex)
       {
@@ -181,8 +189,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     {
       try
       {
-        return PasteElementFunc(ElementWdwPtr.Read<IntPtr>(),
-                                SMProcess.ThreadFactory.MainThread);
+        //return PasteElementFunc(ElementWdwPtr.Read<IntPtr>(),
+        //                        SMProcess.ThreadFactory.MainThread);
+        
+        return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwPasteElement,
+                                                      ElementWdwPtr.Read<IntPtr>()) == 1;
       }
       catch (Exception ex)
       {
@@ -196,10 +207,15 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     {
       try
       {
-        return AppendElementFunc(ElementWdwPtr.Read<IntPtr>(),
-                                 (byte)elementType,
-                                 0, // ??
-                                 SMProcess.ThreadFactory.MainThread);
+        //return AppendElementFunc(ElementWdwPtr.Read<IntPtr>(),
+        //                         (byte)elementType,
+        //                         0, // ??
+        //                         SMProcess.ThreadFactory.MainThread);
+        
+        return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwAppendElement,
+                                                      ElementWdwPtr.Read<IntPtr>(),
+                                                       (byte)elementType,
+                                                       0 /* ?? */);
       }
       catch (Exception ex)
       {
@@ -213,9 +229,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     {
       try
       {
-        return AddElementFromTextFunc(ElementWdwPtr.Read<IntPtr>(),
-                                      new DelphiUString(elementDesc),
-                                      SMProcess.ThreadFactory.MainThread) > 0;
+        //return AddElementFromTextFunc(ElementWdwPtr.Read<IntPtr>(),
+        //                              new DelphiUString(elementDesc),
+        //                              SMProcess.ThreadFactory.MainThread) > 0;
+
+        return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwAddElementFromText,
+                                                       ElementWdwPtr.Read<IntPtr>(),
+                                                       new DelphiUString(elementDesc)) > 0;
       }
       catch (Exception ex)
       {
@@ -225,12 +245,32 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
       }
     }
 
+    public int AppendAndAddElementFromText(ElementType elementType, string elementDesc)
+    {
+      try
+      {
+        return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.AppendAndAddElementFromText,
+                                                       ElementWdwPtr.Read<IntPtr>(),
+                                                       (byte)elementType,
+                                                       new DelphiUString(elementDesc));
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
+        return -1;
+      }
+    }
+
     public bool Delete()
     {
       try
       {
-        return DeleteMethod(ElementWdwPtr.Read<IntPtr>(),
-                            SMProcess.ThreadFactory.MainThread);
+        //return DeleteMethod(ElementWdwPtr.Read<IntPtr>(),
+        //                    SMProcess.ThreadFactory.MainThread);
+        
+        return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwDeleteCurrentElement,
+                                                       ElementWdwPtr.Read<IntPtr>()) == 1;
       }
       catch (Exception ex)
       {
@@ -244,8 +284,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     {
       try
       {
-        return DoneMethod(ElementWdwPtr.Read<IntPtr>(),
-                          SMProcess.ThreadFactory.MainThread);
+        //return DoneMethod(ElementWdwPtr.Read<IntPtr>(),
+        //                  SMProcess.ThreadFactory.MainThread);
+        
+        return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwDone,
+                                                       ElementWdwPtr.Read<IntPtr>()) == 1;
       }
       catch (Exception ex)
       {
@@ -267,9 +310,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     {
       try
       {
-        SetTextMethod(ElementWdwPtr.Read<IntPtr>(),
-                      control.Id + 1,
-                      new DelphiUString(text));
+        //SetTextMethod(ElementWdwPtr.Read<IntPtr>(),
+        //              control.Id + 1,
+        //              new DelphiUString(text));
+
+        return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwSetText,
+                                                       ElementWdwPtr.Read<IntPtr>(),
+                                                       control.Id + 1,
+                                                       new DelphiUString(text)) == 1;
 
         return true;
       }

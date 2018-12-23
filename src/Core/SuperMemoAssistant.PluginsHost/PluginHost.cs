@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/31 13:44
-// Modified On:  2018/11/17 02:10
+// Modified On:  2018/12/21 15:25
 // Modified By:  Alexis
 
 #endregion
@@ -39,6 +39,9 @@ using System.IO;
 using System.Linq;
 using System.Security;
 using System.Security.Permissions;
+using System.Windows;
+using Anotar.Serilog;
+using Process.NET.Native.Types;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.Plugins;
@@ -46,6 +49,7 @@ using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.PluginsHost.Services.Devices;
 using SuperMemoAssistant.Services;
+using SuperMemoAssistant.Services.IO;
 using SuperMemoAssistant.Services.IO.Devices;
 using SuperMemoAssistant.Sys;
 
@@ -70,6 +74,8 @@ namespace SuperMemoAssistant.PluginsHost
 
     private   IEnumerable<ISMAPlugin>              _plugins;
     protected Dictionary<string, DirectoryCatalog> DirectoryCatalogs { get; set; }
+
+    private Application Application { get; set; }
 
     #endregion
 
@@ -98,15 +104,21 @@ namespace SuperMemoAssistant.PluginsHost
           }
           catch (Exception ex)
           {
-            // TODO: Log
+            LogTo.Error(ex,
+                        "Plugin threw an exception while disposing.");
           }
+
+        Application.Dispatcher.InvokeShutdown();
       }
       catch (Exception ex)
       {
-        // TODO: Log
+        LogTo.Error(ex,
+                    "Plugin host threw an exception while disposing.");
       }
 
       Container.Dispose();
+
+      Logger.Instance.Shutdown();
     }
 
     #endregion
@@ -148,6 +160,7 @@ namespace SuperMemoAssistant.PluginsHost
       Container = new CompositionContainer(catalog);
       Container.ComposeExportedValue<CompositionContainer>(Container);
       Container.ComposeExportedValue<IKeyboardHotKeyService>(KeyboardHotKeyService.Instance);
+      Container.ComposeExportedValue<IKeyboardHookService>(KeyboardHookService.Instance);
 
       SetupApplication();
     }
@@ -155,6 +168,19 @@ namespace SuperMemoAssistant.PluginsHost
     public void PostSetup()
     {
       SetupServices();
+      Logger.Instance.Initialize();
+
+#if DEBUG
+      KeyboardHookService.Instance.RegisterHotKey(
+        new Sys.IO.Devices.HotKey(true,
+                                  false,
+                                  true,
+                                  true,
+                                  System.Windows.Input.Key.D,
+                                  "Debug Inject Lib"),
+        DebugInjectLib
+      );
+#endif
     }
 
     private void SetupServices()
@@ -164,10 +190,21 @@ namespace SuperMemoAssistant.PluginsHost
 
     private void SetupApplication()
     {
-      new System.Windows.Application()
+      Application = new Application()
       {
-        ShutdownMode = System.Windows.ShutdownMode.OnExplicitShutdown
+        ShutdownMode = ShutdownMode.OnExplicitShutdown
       };
+    }
+
+    private bool DebugInjectLib()
+    {
+      Svc.SMA.SMProcess.WindowFactory.MainWindow.PostMessage(
+        WindowsMessages.User,
+        new IntPtr((int)InjectLibMessages.AttachDebugger),
+        new IntPtr(0)
+      );
+
+      return true;
     }
 
     public void Recompose()
@@ -300,7 +337,6 @@ namespace SuperMemoAssistant.PluginsHost
 
       return permissions;
     }
-
 
     #endregion
   }

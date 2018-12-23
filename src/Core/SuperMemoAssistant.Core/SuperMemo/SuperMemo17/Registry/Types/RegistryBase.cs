@@ -43,6 +43,7 @@ using Anotar.Serilog;
 using Process.NET.Assembly;
 using Process.NET.Types;
 using SuperMemoAssistant.Extensions;
+using SuperMemoAssistant.Hooks.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
@@ -221,8 +222,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
       try
       {
         return AddMemberFunc(RegistryPtr,
-                             new DelphiUString(textOrPath),
-                             SMA.Instance.SMProcess.ThreadFactory.MainThread);
+                             new DelphiUString(textOrPath));
       }
       catch (Exception ex)
       {
@@ -243,8 +243,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
         int ret = ImportFileFunc(RegistryPtr,
                                  new DelphiUString(textOrPath),
-                                 new DelphiUString(registryName),
-                                 SMA.Instance.SMProcess.ThreadFactory.MainThread);
+                                 new DelphiUString(registryName));
 
         if (ret > 0)
         {

@@ -33,6 +33,7 @@
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using SuperMemoAssistant.Services.IO;
 using SuperMemoAssistant.SuperMemo;
 
 namespace SuperMemoAssistant
@@ -80,6 +81,13 @@ namespace SuperMemoAssistant
       SyncContext.Send(
         delegate { Shutdown(); },
         null);
+    }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+      Logger.Instance.Shutdown();
+
+      base.OnExit(e);
     }
 
     #endregion

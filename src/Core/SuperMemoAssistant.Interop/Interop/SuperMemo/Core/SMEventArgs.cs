@@ -39,7 +39,6 @@ using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 using SuperMemoAssistant.Interop.SuperMemo.UI;
-using SuperMemoAssistant.Sys.UIAutomation;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Core
 {
@@ -251,6 +250,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
     #endregion
   }
 
+#if false
   /// <summary>UI Window-related events, contains the native handle to the the Window involved</summary>
   [Serializable]
   public class SMUIAutomationArgs : SMEventArgs
@@ -275,6 +275,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
 
     #endregion
   }
+#endif
 
   /// <summary>UI availability-related events</summary>
   [Serializable]

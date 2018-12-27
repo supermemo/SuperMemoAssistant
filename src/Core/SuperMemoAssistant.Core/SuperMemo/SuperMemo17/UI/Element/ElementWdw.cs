@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/24 13:11
-// Modified On:  2018/12/09 16:00
+// Modified On:  2018/12/27 21:29
 // Modified By:  Alexis
 
 #endregion
@@ -60,7 +60,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
 
 
     #region Properties & Fields - Non-Public
-    
+
     protected ControlGroup _controlGroup = null;
 
     protected int LastElementId { get; set; }
@@ -106,12 +106,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
 
 
     #region Methods Impl
-    
-    public bool FocusWindow()
+
+    public bool ActivateWindow()
     {
       try
       {
-        Window.Focus();
+        Window.Activate();
 
         return true;
       }
@@ -154,8 +154,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
                          SMProcess.ThreadFactory.MainThread);*/
 
         ret = SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwGoToElement,
-                                                ElementWdwPtr.Read<IntPtr>(),
-                                                elementId) == 1;
+                                                      ElementWdwPtr.Read<IntPtr>(),
+                                                      elementId) == 1;
 
         return ret;
       }
@@ -175,7 +175,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
         //                        SMProcess.ThreadFactory.MainThread);
 
         return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwPasteArticle,
-                                                      ElementWdwPtr.Read<IntPtr>()) == 1;
+                                                       ElementWdwPtr.Read<IntPtr>()) == 1;
       }
       catch (Exception ex)
       {
@@ -191,9 +191,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
       {
         //return PasteElementFunc(ElementWdwPtr.Read<IntPtr>(),
         //                        SMProcess.ThreadFactory.MainThread);
-        
+
         return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwPasteElement,
-                                                      ElementWdwPtr.Read<IntPtr>()) == 1;
+                                                       ElementWdwPtr.Read<IntPtr>()) == 1;
       }
       catch (Exception ex)
       {
@@ -211,9 +211,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
         //                         (byte)elementType,
         //                         0, // ??
         //                         SMProcess.ThreadFactory.MainThread);
-        
+
         return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwAppendElement,
-                                                      ElementWdwPtr.Read<IntPtr>(),
+                                                       ElementWdwPtr.Read<IntPtr>(),
                                                        (byte)elementType,
                                                        0 /* ?? */);
       }
@@ -245,30 +245,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
       }
     }
 
-    public int AppendAndAddElementFromText(ElementType elementType, string elementDesc)
-    {
-      try
-      {
-        return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.AppendAndAddElementFromText,
-                                                       ElementWdwPtr.Read<IntPtr>(),
-                                                       (byte)elementType,
-                                                       new DelphiUString(elementDesc));
-      }
-      catch (Exception ex)
-      {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
-        return -1;
-      }
-    }
-
     public bool Delete()
     {
       try
       {
         //return DeleteMethod(ElementWdwPtr.Read<IntPtr>(),
         //                    SMProcess.ThreadFactory.MainThread);
-        
+
         return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwDeleteCurrentElement,
                                                        ElementWdwPtr.Read<IntPtr>()) == 1;
       }
@@ -286,7 +269,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
       {
         //return DoneMethod(ElementWdwPtr.Read<IntPtr>(),
         //                  SMProcess.ThreadFactory.MainThread);
-        
+
         return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwDone,
                                                        ElementWdwPtr.Read<IntPtr>()) == 1;
       }
@@ -304,6 +287,24 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
 
 
     #region Methods
+
+    public int AppendAndAddElementFromText(ElementType elementType,
+                                           string      elementDesc)
+    {
+      try
+      {
+        return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.AppendAndAddElementFromText,
+                                                       ElementWdwPtr.Read<IntPtr>(),
+                                                       (byte)elementType,
+                                                       new DelphiUString(elementDesc));
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
+        return -1;
+      }
+    }
 
     public bool SetText(IControl control,
                         string   text)
@@ -476,7 +477,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
                     "Failed to convert bytes to int 32.");
         return false;
       }
-      
+
       return OnElementChangedInternal(newElementId);
     }
 
@@ -559,6 +560,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     //
     // IWdwBase Implt
 
+    /// <inheritdoc />
+    protected override IntPtr WindowHandle =>
+      SMProcess.Memory.Read<IntPtr>(new IntPtr(ElementWdwPtr.Read<int>() + SMNatives.TControl.HandleOffset));
     /// <inheritdoc />
     public override string WindowClass => SMConst.UI.ElementWindowClassName;
 

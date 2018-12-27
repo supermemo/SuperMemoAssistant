@@ -97,7 +97,7 @@ namespace SuperMemoAssistant.Services.IO
 
     public static string GetLogFilePath()
     {
-      string appData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+      string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
       return Path.Combine(appData,
                           SMConst.AppName,

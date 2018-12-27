@@ -96,20 +96,23 @@ namespace SuperMemoAssistantHooksNativeLib {
 	void __stdcall wndProcNativeWrapper()
 	{
 		int smMain;
-		int msg;
+		int msgAddr;
 		bool* handled;
 
 		_asm {
 			mov smMain, eax
-			mov msg, edx
+			mov msgAddr, edx
 			mov handled, ecx
 		}
 
-		int* msgStruct = (int*)msg;
+		int* msgStruct = (int*)msgAddr;
+		int msgId = *(msgStruct + 1);
+		int msgParam = *(msgStruct + 2);
 
 		// Calling .NET is costly, filter out messages
-		if (*(msgStruct + 1) == 0x0400 && *(msgStruct + 2) > 9000000)
-			callback(smMain, msg, handled);
+		if (/* WM_QUIT */ (msgId == 0x0012) ||
+			/* WM_USER */ (msgId == 0x0400 && msgParam > 9000000))
+			callback(smMain, msgAddr, handled);
 	}
 	/*
 	public class WndProcWrapper

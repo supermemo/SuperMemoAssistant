@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/24 13:17
-// Modified On:  2018/06/07 00:51
+// Created On:   2018/07/27 12:55
+// Modified On:  2018/12/27 20:00
 // Modified By:  Alexis
 
 #endregion
@@ -31,14 +31,15 @@
 
 
 using System;
+using Process.NET.Windows;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Sys.UIAutomation;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.UI
 {
   public interface IWdw
   {
-    AutomationElementRef AutomationElement { get; }
+    //AutomationElementRef AutomationElement { get; }
+    IWindow Window { get; }
 
     event Action<SMUIAvailabilityArgs> OnAvailable;
     event Action<SMUIAvailabilityArgs> OnUnavailable;

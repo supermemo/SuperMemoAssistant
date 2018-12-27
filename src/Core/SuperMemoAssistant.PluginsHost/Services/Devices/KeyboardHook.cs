@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:29
-// Modified On:  2018/12/21 02:24
+// Modified On:  2018/12/27 16:46
 // Modified By:  Alexis
 
 #endregion
@@ -33,8 +33,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Services.IO.Devices;
 using SuperMemoAssistant.Sys.IO.Devices;
@@ -63,9 +65,7 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
     #region Properties & Fields - Non-Public
 
     private HookProc _hookProc;
-    private IntPtr   _user32LibraryHandle;
-
-    private IntPtr _windowsHookHandle;
+    private IntPtr   _windowsHookHandle;
 
     #endregion
 
@@ -76,24 +76,17 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
 
     protected KeyboardHookService()
     {
-      _windowsHookHandle   = IntPtr.Zero;
-      _user32LibraryHandle = IntPtr.Zero;
+      _windowsHookHandle = IntPtr.Zero;
       _hookProc =
         LowLevelKeyboardProc; // we must keep alive _hookProc, because GC is not aware about SetWindowsHookEx behaviour.
 
-      _user32LibraryHandle = LoadLibrary("User32");
-      if (_user32LibraryHandle == IntPtr.Zero)
-      {
-        int errorCode = Marshal.GetLastWin32Error();
-        throw new Win32Exception(errorCode,
-                                 $"Failed to load library 'User32.dll'. Error {errorCode}: {new Win32Exception(Marshal.GetLastWin32Error()).Message}.");
-      }
+      using (System.Diagnostics.Process curProcess = System.Diagnostics.Process.GetCurrentProcess())
+      using (ProcessModule curModule = curProcess.MainModule)
+        _windowsHookHandle = SetWindowsHookEx(WH_KEYBOARD_LL,
+                                              _hookProc,
+                                              GetModuleHandle(curModule.ModuleName),
+                                              0);
 
-
-      _windowsHookHandle = SetWindowsHookEx(WH_KEYBOARD_LL,
-                                            _hookProc,
-                                            _user32LibraryHandle,
-                                            0);
       if (_windowsHookHandle == IntPtr.Zero)
       {
         int errorCode = Marshal.GetLastWin32Error();
@@ -165,26 +158,13 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
           // ReSharper disable once DelegateSubtraction
           _hookProc -= LowLevelKeyboardProc;
         }
-
-      if (_user32LibraryHandle != IntPtr.Zero)
-      {
-        if (!FreeLibrary(_user32LibraryHandle)) // reduces reference to library by 1.
-        {
-          int errorCode = Marshal.GetLastWin32Error();
-          throw new Win32Exception(errorCode,
-                                   $"Failed to unload library 'User32.dll'. Error {errorCode}: {new Win32Exception(Marshal.GetLastWin32Error()).Message}.");
-        }
-
-        _user32LibraryHandle = IntPtr.Zero;
-      }
     }
 
-    [DllImport("kernel32.dll")]
-    private static extern IntPtr LoadLibrary(string lpFileName);
 
     [DllImport("kernel32.dll",
-      CharSet = CharSet.Auto)]
-    private static extern bool FreeLibrary(IntPtr hModule);
+      CharSet      = CharSet.Auto,
+      SetLastError = true)]
+    public static extern IntPtr GetModuleHandle(string lpModuleName);
 
     /// <summary>
     ///   The SetWindowsHookEx function installs an application-defined hook procedure into a
@@ -197,7 +177,8 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
     /// <param name="hMod">handle to application instance</param>
     /// <param name="dwThreadId">thread identifier</param>
     /// <returns>If the function succeeds, the return value is the handle to the hook procedure.</returns>
-    [DllImport("USER32",
+    [DllImport("user32.dll",
+      CharSet      = CharSet.Auto,
       SetLastError = true)]
     private static extern IntPtr SetWindowsHookEx(int      idHook,
                                                   HookProc lpfn,
@@ -210,7 +191,8 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
     /// </summary>
     /// <param name="hHook">handle to hook procedure</param>
     /// <returns>If the function succeeds, the return value is true.</returns>
-    [DllImport("USER32",
+    [DllImport("user32.dll",
+      CharSet      = CharSet.Auto,
       SetLastError = true)]
     public static extern bool UnhookWindowsHookEx(IntPtr hHook);
 
@@ -224,14 +206,16 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
     /// <param name="wParam">value passed to hook procedure</param>
     /// <param name="lParam">value passed to hook procedure</param>
     /// <returns>If the function succeeds, the return value is true.</returns>
-    [DllImport("USER32",
+    [DllImport("user32.dll",
+      CharSet      = CharSet.Auto,
       SetLastError = true)]
     private static extern IntPtr CallNextHookEx(IntPtr hHook,
                                                 int    code,
                                                 IntPtr wParam,
                                                 IntPtr lParam);
 
-    [DllImport("user32.dll")]
+    [DllImport("user32.dll",
+      CharSet = CharSet.Auto)]
     private static extern short GetKeyState(System.Windows.Forms.Keys nVirtKey);
 
     private static bool GetCapslock()
@@ -289,7 +273,7 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
                                         IntPtr lParam)
     {
       if (nCode < 0)
-        return CallNextHookEx(IntPtr.Zero,
+        return CallNextHookEx(_windowsHookHandle,
                               nCode,
                               wParam,
                               lParam);
@@ -314,7 +298,7 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
 
         //EventHandler<KeyboardHookEventArgs> handler = KeyboardPressed;
         //handler?.Invoke(this,
-                        //eArgs);
+        //eArgs);
 
         fEatKeyStroke = eArgs.Handled;
 
@@ -330,7 +314,7 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
 
           if (func != null)
           {
-            new Thread(() => func.Invoke()).Start();
+            Task.Factory.StartNew(() => func.Invoke());
             fEatKeyStroke = true;
           }
         }
@@ -338,7 +322,7 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
 
       return fEatKeyStroke
         ? (IntPtr)1
-        : CallNextHookEx(IntPtr.Zero,
+        : CallNextHookEx(_windowsHookHandle,
                          nCode,
                          wParam,
                          lParam);

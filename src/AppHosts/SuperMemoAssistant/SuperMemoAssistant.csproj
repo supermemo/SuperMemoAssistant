@@ -84,16 +84,6 @@
     <Reference Include="Anotar.Serilog, Version=4.6.7.0, Culture=neutral, PublicKeyToken=9d5b24f0733c26f7, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Anotar.Serilog.Fody.4.6.7\lib\net452\Anotar.Serilog.dll</HintPath>
     </Reference>
-    <Reference Include="FlaUI.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FlaUI.Core.2.0.0-rc1\lib\net45\FlaUI.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="FlaUI.UIA3, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FlaUI.UIA3.2.0.0-rc1\lib\net45\FlaUI.UIA3.dll</HintPath>
-    </Reference>
-    <Reference Include="Interop.UIAutomationClient, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FlaUI.UIA3.2.0.0-rc1\lib\net45\Interop.UIAutomationClient.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
     <Reference Include="JetBrains.Annotations, Version=2018.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\JetBrains.Annotations.2018.2.1\lib\net20\JetBrains.Annotations.dll</HintPath>
     </Reference>
@@ -218,10 +208,6 @@
     <ProjectReference Include="..\..\Services\SuperMemoAssistant.Services.Medias.Images\SuperMemoAssistant.Services.Medias.Images.csproj">
       <Project>{677647e4-f052-41d0-915a-ad76da72463e}</Project>
       <Name>SuperMemoAssistant.Services.Medias.Images</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Services\SuperMemoAssistant.Services.UIAutomation\SuperMemoAssistant.Services.UIAutomation.csproj">
-      <Project>{7fcecaff-f232-4a04-98fe-8233eb1908c6}</Project>
-      <Name>SuperMemoAssistant.Services.UIAutomation</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Plugins\SuperMemoAssistant.Plugins.PDF\SuperMemoAssistant.Plugins.PDF.csproj">
       <Project>{faecf9bb-9fd5-4fb1-a3a8-9f7caa57a1fe}</Project>

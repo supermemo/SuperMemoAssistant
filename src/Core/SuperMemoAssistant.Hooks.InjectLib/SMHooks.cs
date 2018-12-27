@@ -134,13 +134,21 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     }
 
     protected unsafe void WndProc(int   _,
-                                  TMsg* msgAddr,
+                                  TMsg* msgPtr,
                                   bool* handled)
     {
-      if (msgAddr->msg != (int)WindowsMessages.User)
+      if (msgPtr->msg == (int)WindowsMessages.Quit)
+      {
+        SMNatives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
+                                                                   0);
+
+        return;
+      }
+
+      if (msgPtr->msg != (int)WindowsMessages.User || SMInject.Instance.Callback == null)
         return;
 
-      int wParam = msgAddr->wParam;
+      int wParam = msgPtr->wParam;
 
       switch (wParam)
       {
@@ -170,7 +178,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
           break;
 
         default:
-          *handled = SMInject.Instance.OnUserMessage(msgAddr->wParam);
+          *handled = SMInject.Instance.OnUserMessage(msgPtr->wParam);
           break;
       }
     }

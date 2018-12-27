@@ -190,7 +190,10 @@ namespace SuperMemoAssistant.PluginsHost
 
     private void SetupApplication()
     {
-      Application = new App();
+      Application = new App // TODO: Fix this -- app.xaml isn't loaded
+      {
+        ShutdownMode = ShutdownMode.OnExplicitShutdown
+      };
     }
 
     private bool DebugInjectLib()

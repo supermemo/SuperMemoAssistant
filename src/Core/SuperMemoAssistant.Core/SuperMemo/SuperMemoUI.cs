@@ -35,8 +35,6 @@ using SuperMemoAssistant.Interop.SuperMemo.UI.Element;
 using SuperMemoAssistant.Interop.SuperMemo.UI.ElementData;
 using SuperMemoAssistant.Interop.SuperMemo.UI.MainBar;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.ElementData;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.MainBar;
 using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo
@@ -62,10 +60,8 @@ namespace SuperMemoAssistant.SuperMemo
 
 
     #region Properties Impl - Public
-
-    public IMainBarWdw     MainBarWindow     => MainBarWdw.Instance;
+    
     public IElementWdw     ElementWindow     => ElementWdw.Instance;
-    public IElementDataWdw ElementDataWindow => ElementDataWdw.Instance;
 
     #endregion
   }

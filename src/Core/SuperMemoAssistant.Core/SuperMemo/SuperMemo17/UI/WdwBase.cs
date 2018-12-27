@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/24 13:30
-// Modified On:  2018/06/07 01:05
+// Modified On:  2018/12/27 21:49
 // Modified By:  Alexis
 
 #endregion
@@ -31,25 +31,31 @@
 
 
 using System;
-using System.Threading.Tasks;
-using Anotar.Serilog;
-using FlaUI.Core.AutomationElements;
-using FlaUI.Core.Definitions;
-using FlaUI.Core.Identifiers;
 using Process.NET;
+using Process.NET.Windows;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.UI;
-using SuperMemoAssistant.Sys.UIAutomation;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 {
-  public abstract class WdwBase : UIAutomationBase, IWdw
+  public abstract class WdwBase : /*UIAutomationBase,*/MarshalByRefObject, IDisposable, IWdw
   {
     #region Properties & Fields - Non-Public
 
-    internal AutomationElement Window { get; set; }
+    //internal AutomationElement Window { get; set; }
+    private IWindow _window = null;
+    public  IWindow Window => _window ?? (_window = GetWindow());
 
     #endregion
+
+
+
+
+    private IWindow GetWindow()
+    {
+      return new RemoteWindow(SMProcess,
+                              WindowHandle);
+    }
 
 
 
@@ -63,11 +69,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     }
 
     /// <inheritdoc />
-    public override void Dispose()
+    public virtual void Dispose()
     {
-      CleanupUI();
+      //CleanupUI();
 
-      base.Dispose();
+      //base.Dispose();
     }
 
     #endregion
@@ -77,11 +83,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
     #region Properties Impl - Public
 
-    /// <inheritdoc />
-    public override IProcess SMProcess { get; set; }
+    public IProcess SMProcess { get; set; }
 
-    /// <inheritdoc />
-    public AutomationElementRef AutomationElement => new AutomationElementRef(Window);
+    //public AutomationElementRef AutomationElement => new AutomationElementRef(Window);
 
     #endregion
 
@@ -94,23 +98,24 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
                              SMProcessArgs e)
     {
       SMProcess = e.Process;
-      SetupUI();
+      //SetupUI();
     }
 
     private void OnSMStopped(object        sender,
                              SMProcessArgs e)
     {
-      CleanupUI();
+      //CleanupUI();
 
-      if (Window != null)
-        OnWindowClosed(Window,
-                       UIAuto.EventLibrary.Window.WindowClosedEvent);
+      //if (Window != null)
+      //  OnWindowClosed(Window,
+      //                 UIAuto.EventLibrary.Window.WindowClosedEvent);
     }
 
     //
     // Helpers
 
-    // ReSharper disable once InconsistentNaming
+#if false
+// ReSharper disable once InconsistentNaming
     protected Task<bool> ExecuteMenuAction<TMenu, ITMenu>(TMenu          menu,
                                                           Action<ITMenu> action)
       where TMenu : MenuRoot, ITMenu
@@ -202,6 +207,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
                     "Error while signaling Window Unavailable event");
       }
     }
+#endif
 
     #endregion
 
@@ -214,6 +220,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     // Inheritance
 
     public abstract string WindowClass { get; }
+
+    protected abstract IntPtr WindowHandle { get; }
 
     #endregion
 

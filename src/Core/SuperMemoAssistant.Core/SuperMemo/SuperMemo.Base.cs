@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/12 18:26
-// Modified On:  2018/12/23 07:03
+// Modified On:  2018/12/27 20:04
 // Modified By:  Alexis
 
 #endregion
@@ -44,13 +44,12 @@ using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SuperMemo.Hooks;
-using SuperMemoAssistant.Sys.UIAutomation;
 
 namespace SuperMemoAssistant.SuperMemo
 {
   /// <summary>Convenience class that implements helpers</summary>
   public abstract class SuperMemoBase
-    : UIAutomationBase,
+    : IDisposable,
       ISuperMemo,
       ISMHookSystem
   {
@@ -88,7 +87,7 @@ namespace SuperMemoAssistant.SuperMemo
     }
 
     /// <inheritdoc />
-    public override void Dispose()
+    public virtual void Dispose()
     {
       IgnoreUserConfirmationPtr = null;
 
@@ -115,8 +114,6 @@ namespace SuperMemoAssistant.SuperMemo
         LogTo.Error(ex,
                     "An exception occured in one of OnSMStoppedEvent handlers");
       }
-
-      base.Dispose();
     }
 
     #endregion
@@ -135,8 +132,8 @@ namespace SuperMemoAssistant.SuperMemo
 
     #region Properties Impl - Public
 
-    public          SMCollection Collection { get; }
-    public override IProcess     SMProcess  { get; set; }
+    public SMCollection Collection { get; }
+    public IProcess     SMProcess  { get; }
     public bool IgnoreUserConfirmation
     {
       get => IgnoreUserConfirmationPtr.Read<bool>();
@@ -206,7 +203,7 @@ namespace SuperMemoAssistant.SuperMemo
 
       ExecCtxt.ExecutionMethod     = method;
       ExecCtxt.ExecutionParameters = parameters;
-      
+
       SMProcess.WindowFactory.MainWindow.PostMessage(WindowsMessages.User,
                                                      new IntPtr((int)InjectLibMessages.ExecuteOnMainThread),
                                                      new IntPtr(0));

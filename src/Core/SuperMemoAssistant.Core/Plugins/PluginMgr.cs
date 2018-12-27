@@ -37,16 +37,12 @@ using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
 using SuperMemoAssistant.Interop.SuperMemo.UI.Element;
-using SuperMemoAssistant.Interop.SuperMemo.UI.ElementData;
-using SuperMemoAssistant.Interop.SuperMemo.UI.MainBar;
 using SuperMemoAssistant.PluginsHost;
 using SuperMemoAssistant.SuperMemo;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Components;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.ElementData;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.MainBar;
 using SuperMemoAssistant.Sys;
 // ReSharper disable RedundantTypeArgumentsOfMethod
 
@@ -125,9 +121,7 @@ namespace SuperMemoAssistant.Plugins
       Runner.Export<ITemplateRegistry>(TemplateRegistry.Instance);
       Runner.Export<ISoundRegistry>(SoundRegistry.Instance);
       Runner.Export<IVideoRegistry>(VideoRegistry.Instance);
-
-      Runner.Export<IMainBarWdw>(MainBarWdw.Instance);
-      Runner.Export<IElementDataWdw>(ElementDataWdw.Instance);
+      
       Runner.Export<IElementWdw>(ElementWdw.Instance);
 
       Runner.PostSetup();

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 15:25
-// Modified On:  2018/12/21 02:21
+// Modified On:  2018/12/27 20:03
 // Modified By:  Alexis
 
 #endregion
@@ -36,6 +36,7 @@ using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.Devices;
 using SuperMemoAssistant.Services.IO.FS;
+
 // ReSharper disable StaticMemberInGenericType
 // ReSharper disable UnusedTypeParameter
 
@@ -45,9 +46,9 @@ namespace SuperMemoAssistant.Services
   {
     #region Constants & Statics
 
-    public static UIA3Automation UIAutomation { get; } = new UIA3Automation();
-
     public static ISuperMemoAssistant SMA { get; set; }
+
+    public static UIA3Automation UIAutomation { get; } = new UIA3Automation();
 
     #endregion
   }

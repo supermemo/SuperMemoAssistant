@@ -40,7 +40,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.UI.Element
 {
   public interface IElementWdw : IWdw
   {
-    bool FocusWindow();
+    bool ActivateWindow();
 
     IControlGroup ControlGroup { get; }
 

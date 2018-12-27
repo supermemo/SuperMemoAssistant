@@ -210,15 +210,7 @@
     <Compile Include="SuperMemo\SuperMemo17\Registry\Members\Text.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Registry\Types\ConceptRegistry.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Registry\Types\TextRegistry.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\UI\ElementData\ElementDataWdw.cs" />
     <Compile Include="SuperMemo\SuperMemo17\UI\Element\ElementWdw.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\UI\MainBar\MainBarWdw.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\UI\MainBar\Menu\EditMenu.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\UI\MainBar\Menu\EditMenusMenu.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\UI\MainBar\Menu\MainMenu.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\UI\MenuBase.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\UI\MenuNode.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\UI\MenuRoot.cs" />
     <Compile Include="SuperMemo\SuperMemo17\UI\WdwBase.cs" />
     <Compile Include="SuperMemo\Hooks\SMHookIOBase.cs" />
     <Compile Include="Sys\Collections\SparseClusteredArray.Bounds.cs" />
@@ -259,10 +251,6 @@
     <ProjectReference Include="..\..\..\src\Services\SuperMemoAssistant.Services.Medias.Images\SuperMemoAssistant.Services.Medias.Images.csproj">
       <Project>{677647e4-f052-41d0-915a-ad76da72463e}</Project>
       <Name>SuperMemoAssistant.Services.Medias.Images</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Services\SuperMemoAssistant.Services.UIAutomation\SuperMemoAssistant.Services.UIAutomation.csproj">
-      <Project>{7fcecaff-f232-4a04-98fe-8233eb1908c6}</Project>
-      <Name>SuperMemoAssistant.Services.UIAutomation</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\src\Core\SuperMemoAssistant.Interop\SuperMemoAssistant.Interop.csproj">
       <Project>{FD0E1BE8-BED3-4AB0-A9C8-022A2DBC8450}</Project>

@@ -85,14 +85,13 @@
       <HintPath>..\..\..\packages\Anotar.Serilog.Fody.4.6.7\lib\net452\Anotar.Serilog.dll</HintPath>
     </Reference>
     <Reference Include="FlaUI.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FlaUI.Core.2.0.0-alpha6\lib\net45\FlaUI.Core.dll</HintPath>
+      <HintPath>..\..\..\packages\FlaUI.Core.2.0.0-rc1\lib\net45\FlaUI.Core.dll</HintPath>
     </Reference>
     <Reference Include="FlaUI.UIA3, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FlaUI.UIA3.2.0.0-alpha6\lib\net45\FlaUI.UIA3.dll</HintPath>
+      <HintPath>..\..\..\packages\FlaUI.UIA3.2.0.0-rc1\lib\net45\FlaUI.UIA3.dll</HintPath>
     </Reference>
     <Reference Include="Interop.UIAutomationClient, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FlaUI.UIA3.2.0.0-alpha6\lib\net45\Interop.UIAutomationClient.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\..\packages\FlaUI.UIA3.2.0.0-rc1\lib\net45\Interop.UIAutomationClient.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="JetBrains.Annotations, Version=2018.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
@@ -208,6 +207,14 @@
       <Project>{d5086d5e-84a6-4c0d-b6f2-d1b82c5fb487}</Project>
       <Name>SuperMemoAssistant.Hooks.InjectLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\SuperMemoAssistant.PluginsHost\SuperMemoAssistant.PluginsHost.csproj">
+      <Project>{9799923c-3de6-48bf-b459-aa3029016727}</Project>
+      <Name>SuperMemoAssistant.PluginsHost</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Plugins\SuperMemoAssistant.Plugins.ImageOcclusion\SuperMemoAssistant.Plugins.ImageOcclusion.csproj">
+      <Project>{f8bb6993-25df-4173-bb3d-acee15c5a2b9}</Project>
+      <Name>SuperMemoAssistant.Plugins.ImageOcclusion</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Services\SuperMemoAssistant.Services.Medias.Images\SuperMemoAssistant.Services.Medias.Images.csproj">
       <Project>{677647e4-f052-41d0-915a-ad76da72463e}</Project>
       <Name>SuperMemoAssistant.Services.Medias.Images</Name>
@@ -233,8 +240,8 @@
     <Error Condition="!Exists('..\..\..\packages\ModuleInit.Fody.1.8.3\build\ModuleInit.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\ModuleInit.Fody.1.8.3\build\ModuleInit.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Visualize.Fody.1.1.2\build\Visualize.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Visualize.Fody.1.1.2\build\Visualize.Fody.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\Fody.3.3.3\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.3.3.3\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\Fody.3.3.4\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.3.3.4\build\Fody.targets'))" />
   </Target>
   <Import Project="..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
-  <Import Project="..\..\..\packages\Fody.3.3.3\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.3.3.3\build\Fody.targets')" />
+  <Import Project="..\..\..\packages\Fody.3.3.4\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.3.3.4\build\Fody.targets')" />
 </Project>

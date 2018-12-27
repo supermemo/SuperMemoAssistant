@@ -30,6 +30,7 @@
 
 
 
+using System.Drawing;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 
 // ReSharper disable InconsistentNaming
@@ -47,6 +48,14 @@ namespace SuperMemoAssistant.Interop
     #endregion
 
 
+
+
+    public static class Stylesheet
+    {
+      //public static readonly Color ExtractCloze = ColorTranslator.FromHtml("#");
+      public static readonly Color ExtractClozedColor = ColorTranslator.FromHtml("#E67300");
+      public static readonly Color ExtractColor = ColorTranslator.FromHtml("#44C2FF");
+    }
 
 
     public static class Elements

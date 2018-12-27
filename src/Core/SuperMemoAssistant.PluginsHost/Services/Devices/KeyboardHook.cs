@@ -138,7 +138,7 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
     public bool UnregisterHotKey(HotKey hotkey)
     {
       return HotKeys.TryRemove(hotkey,
-                               out var _);
+                               out _);
     }
 
     #endregion

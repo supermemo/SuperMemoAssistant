@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/07/27 12:55
-// Modified On:  2018/12/13 13:05
+// Created On:   2018/05/08 15:19
+// Modified On:  2018/11/22 18:37
 // Modified By:  Alexis
 
 #endregion
@@ -30,63 +30,30 @@
 
 
 
-using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
-// ReSharper disable UnusedMember.Global
-// ReSharper disable UnassignedGetOnlyAutoProperty
+using System.Threading;
+using System.Windows;
+using System.Windows.Threading;
+using SuperMemoAssistant.Services.IO;
 
-namespace SuperMemoAssistant.Interop.SuperMemo.Components
+namespace SuperMemoAssistant.PluginsHost
 {
-  public abstract class ComponentBuilder
+  /// <summary>Interaction logic for App.xaml</summary>
+  public partial class App : Application
   {
-    #region Constants & Statics
-
-    public static IComponentGroup DefaultArticle        { get; }
-    public static IComponentGroup DefaultArticlePicture { get; }
-    public static IComponentGroup DefaultItem           { get; }
-    public static IComponentGroup DefaultItemPicture    { get; }
-
-    #endregion
-
-
-
-
-    #region Constructors
-
-    public ComponentBuilder(ComponentType type)
-    {
-      Type = type;
-    }
-
-    #endregion
-
-
-
-
-    #region Properties & Fields - Public
-
-    public ComponentType Type { get; private set; }
-
-    #endregion
-
 
 
 
     #region Methods
 
-    public static IComponentGroup FromClipboard(string clipboardText)
+    private void Application_Startup(object           sender,
+                                     StartupEventArgs e)
     {
-      return null;
     }
 
-    #endregion
-  }
-
-  public class HTMLComponentBuilder : ComponentBuilder
-  {
-    #region Constructors
-
-    public HTMLComponentBuilder()
-      : base(ComponentType.Html) { }
+    protected override void OnExit(ExitEventArgs e)
+    {
+      base.OnExit(e);
+    }
 
     #endregion
   }

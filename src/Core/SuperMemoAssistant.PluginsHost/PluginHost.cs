@@ -75,7 +75,7 @@ namespace SuperMemoAssistant.PluginsHost
     private   IEnumerable<ISMAPlugin>              _plugins;
     protected Dictionary<string, DirectoryCatalog> DirectoryCatalogs { get; set; }
 
-    private Application Application { get; set; }
+    private App Application { get; set; }
 
     #endregion
 
@@ -190,10 +190,7 @@ namespace SuperMemoAssistant.PluginsHost
 
     private void SetupApplication()
     {
-      Application = new Application()
-      {
-        ShutdownMode = ShutdownMode.OnExplicitShutdown
-      };
+      Application = new App();
     }
 
     private bool DebugInjectLib()

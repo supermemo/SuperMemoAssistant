@@ -248,9 +248,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 
         ElementCreationMethod creationMethod;
 
+#if false
         switch (builder.ContentType)
         {
-#if false
         case ElementBuilder.ContentTypeEnum.RawText:
           creationMethod = ElementCreationMethod.ClipboardContent;
 
@@ -272,7 +272,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
           ClipboardHelper.CopyToClipboard(htmlTextContent.Text,
                                           htmlTextContent.Text);
           break;
-#endif
+        }
+
+        switch (builder.ContentType)
+        {
           // TODO: Handle multiple content
 
           case ElementBuilder.ContentTypeEnum.RawText:
@@ -297,6 +300,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
           default:
             throw new NotImplementedException();
         }
+#endif
+
+        creationMethod = ElementCreationMethod.AddElement;
 
         //
         // Insert the element

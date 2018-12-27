@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/11/17 01:26
-// Modified On:  2018/12/04 22:29
+// Modified On:  2018/12/23 18:55
 // Modified By:  Alexis
 
 #endregion
@@ -31,8 +31,14 @@
 
 
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using Anotar.Serilog;
+using SuperMemoAssistant.Interop.SuperMemo.Components.Builders;
+using SuperMemoAssistant.Interop.SuperMemo.Components.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Services;
 
@@ -41,8 +47,20 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
   public static class ElementClipboardBuilder
   {
     #region Constants & Statics
-
-    private const string ElementClipboardFormat = @"Begin Element #1
+    
+    private static readonly Rectangle CorsFull = new Rectangle(100,
+                                                               100,
+                                                               9780,
+                                                               9600);
+    private static readonly Rectangle CorsVSplitLeft = new Rectangle(100,
+                                                                     100,
+                                                                     4890,
+                                                                     9600);
+    private static readonly Rectangle CorsVSplitRight = new Rectangle(5000,
+                                                                      100,
+                                                                      4890,
+                                                                      9600);
+    private const string ElementFmt = @"Begin Element #1
 Source={0}
 Parent={1}
 ParentTitle=
@@ -78,6 +96,8 @@ Begin RepHist #1
 ElNo=1 Rep=1 Date={7} Hour={8:0.000} Int=0 Grade=10 Laps=0 Priority=0
 End RepHist #1
 End Element #1";
+    private const string ComponentsSkeleton = @"ComponentNo={0}
+{1}";
     private const string ComponentsArticleText = @"ComponentNo=1
 Begin Component #1
 Type=HTML
@@ -143,9 +163,11 @@ End Component #2";
       int      parentId       = elemBuilder.Parent?.Id ?? 1;
       string title = elemBuilder.Title ?? string.Empty; /*elemBuilder.Content.Substring(0,
                                                                         10);*/
-      string lastRepDate1 = DateTime.Today.ToString("dd.MM.yy", CultureInfo.InvariantCulture);
-      string lastRepDate2 = DateTime.Today.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture);
-      double lastRepTime  = now.Hour + (now.Minute * 60 + now.Second) / 3600.0;
+      string lastRepDate1 = DateTime.Today.ToString("dd.MM.yy",
+                                                    CultureInfo.InvariantCulture);
+      string lastRepDate2 = DateTime.Today.ToString("dd.MM.yyyy",
+                                                    CultureInfo.InvariantCulture);
+      double lastRepTime = now.Hour + (now.Minute * 60 + now.Second) / 3600.0;
       string type;
 
       switch (elemBuilder.Type)
@@ -166,7 +188,7 @@ End Component #2";
       }
 
       return string.Format(CultureInfo.InvariantCulture,
-                           ElementClipboardFormat,
+                           ElementFmt,
                            collectionPath,
                            parentId,
                            title,
@@ -180,61 +202,236 @@ End Component #2";
 
     private static string GenerateComponentsStr(ElementBuilder elemBuilder)
     {
+      var components = new List<IComponent>();
+      
+      var txtContents = GetTextContents(elemBuilder);
+      var imgContents = GetImageContents(elemBuilder);
+
       switch (elemBuilder.ContentType)
       {
         case ElementBuilder.ContentTypeEnum.Html:
         case ElementBuilder.ContentTypeEnum.RawText:
-          var txtContent = (ElementBuilder.TextContent)elemBuilder.Contents[0];
+          if (imgContents.Any())
+            throw new InvalidCastException("ElementBuilder ContentTypeEnum.Text contains non-text IContent");
 
-          if (txtContent == null)
-            throw new InvalidCastException("ContentTypeEnum.Html or ContentTypeEnum.RawText contained a non-text IContent");
+          if (txtContents.Any() == false)
+            throw new InvalidCastException("ElementBuilder ContentTypeEnum.Text does not contain any text IContent");
 
-          return string.Format(
-            ComponentsArticleHTMFile,
-            WriteToFile(txtContent)
-          );
+          BuildTextComponents(0,
+                              txtContents.Count,
+                              CorsFull.Left,
+                              CorsFull.Top,
+                              CorsFull.Right,
+                              CorsFull.Bottom,
+                              txtContents,
+                              components);
+          break;
 
         case ElementBuilder.ContentTypeEnum.Image:
-          var imgContent = (ElementBuilder.ImageContent)elemBuilder.Contents[0];
+          if (txtContents.Any())
+            throw new InvalidCastException("ElementBuilder ContentTypeEnum.Image contains non-image IContent");
 
-          if (imgContent == null)
-            throw new InvalidCastException("ContentTypeEnum.Image contained a non-image IContent");
-
-          var imgMember = Svc.SMA.Registry.Image[imgContent.RegistryId];
-
-          if (imgMember == null) // || imgMember.Empty) // TODO: Why is Empty always true ?
-            throw new ArgumentException($"Image member {imgContent.RegistryId} doesn't exist or is deleted.");
-
-          var filePath = imgMember.GetFilePath();
-
-          if (File.Exists(filePath) == false)
-            throw new InvalidOperationException($"File path '{filePath}' doesn't exist for image member id {imgContent.RegistryId}");
-
-          return string.Format(
-            ComponentsArticlePicture,
-            imgMember.Name,
-            imgMember.Name,
-            filePath
-          );
+          if (imgContents.Any() == false)
+            throw new InvalidCastException("ElementBuilder ContentTypeEnum.Image does not contain any image IContent");
+          
+          BuildImageComponents(0,
+                               imgContents.Count,
+                               CorsFull.Left,
+                               CorsFull.Top,
+                               CorsFull.Right,
+                               CorsFull.Bottom,
+                               imgContents,
+                               components);
+          break;
 
         case ElementBuilder.ContentTypeEnum.ImageAndRawText:
         case ElementBuilder.ContentTypeEnum.ImageAndHtml:
-          throw new NotImplementedException();
+          if (txtContents.Any() == false)
+            throw new InvalidCastException("ElementBuilder ContentTypeEnum.ImageAndText does not contain any text IContent");
+
+          if (imgContents.Any() == false)
+            throw new InvalidCastException("ElementBuilder ContentTypeEnum.ImageAndText does not contain any image IContent");
+          
+          BuildTextComponents(0,
+                              txtContents.Count,
+                              CorsVSplitLeft.Left,
+                              CorsVSplitLeft.Top,
+                              CorsVSplitLeft.Right,
+                              CorsVSplitLeft.Bottom,
+                              txtContents,
+                              components);
+          
+          BuildImageComponents(components.Count,
+                               imgContents.Count,
+                               CorsVSplitRight.Left,
+                               CorsVSplitRight.Top,
+                               CorsVSplitRight.Right,
+                               CorsVSplitRight.Bottom,
+                               imgContents,
+                               components);
+          break;
 
         default:
           throw new NotImplementedException();
       }
+
+      var compsText = components.Select(c => c.ToString())
+                                .ToList();
+
+      return string.Format(ComponentsSkeleton,
+                           compsText.Count,
+                           string.Join("\n", compsText));
     }
 
-    private static string WriteToFile(ElementBuilder.TextContent textContent)
+    private static void BuildTextComponents(int                                     startingIdx,
+                                            int                                     totalCompCount,
+                                            int                                     left,
+                                            int                                     top,
+                                            int                                     right,
+                                            int                                     bottom,
+                                            IEnumerable<ElementBuilder.TextContent> contents,
+                                            List<IComponent>                        outComps)
     {
-      var filePath = Path.Combine(Path.GetTempPath(),
-                                  "sm_element.htm");
+      int idx = 0;
 
-      File.WriteAllText(filePath,
-                        textContent.Text + "\r\n<span />");
+      foreach (var content in contents)
+      {
+        GetCors(idx,
+                totalCompCount,
+                left,
+                top,
+                right,
+                bottom,
+                out int compLeft,
+                out int compTop,
+                out int compRight,
+                out int compBottom);
 
-      return filePath;
+        var comp = new ComponentHtmlBuilder(startingIdx + idx++,
+                                            content.Text,
+                                            compLeft,
+                                            compTop,
+                                            compRight,
+                                            compBottom);
+        outComps.Add(comp);
+      }
+    }
+
+    private static void BuildImageComponents(int                                      startingIdx,
+                                             int                                      totalCompCount,
+                                             int                                      left,
+                                             int                                      top,
+                                             int                                      right,
+                                             int                                      bottom,
+                                             IEnumerable<ElementBuilder.ImageContent> contents,
+                                             List<IComponent>                         outComps)
+    {
+      int idx = 0;
+
+      foreach (var content in contents)
+      {
+        var img = Svc.SMA.Registry.Image[content.RegistryId];
+
+        if (img == null) // || imgMember.Empty) // TODO: Why is Empty always true ?
+        {
+          LogTo.Error($"Error while building ImageComponent: IImage {content.RegistryId} is null. Skipping");
+          continue;
+        }
+
+        var filePath = img.GetFilePath();
+
+        if (File.Exists(filePath) == false)
+        {
+          LogTo.Error("Error while building ImageComponent: IImage {0} file {1} does not exist. Skipping",
+                      img,
+                      filePath);
+          continue;
+        }
+
+        GetCors(idx,
+                totalCompCount,
+                left,
+                top,
+                right,
+                bottom,
+                out int compLeft,
+                out int compTop,
+                out int compRight,
+                out int compBottom);
+
+        var comp = new ComponentImageBuilder(startingIdx + idx++,
+                                             img,
+                                             compLeft,
+                                             compTop,
+                                             compRight,
+                                             compBottom);
+        outComps.Add(comp);
+      }
+    }
+
+    private static List<ElementBuilder.ImageContent> GetImageContents(ElementBuilder elemBuilder)
+    {
+      return elemBuilder.Contents
+                        .Where(c => c.ContentType == ElementBuilder.ContentTypeEnum.Image)
+                        .Cast<ElementBuilder.ImageContent>()
+                        .ToList();
+    }
+
+    private static List<ElementBuilder.TextContent> GetTextContents(ElementBuilder elemBuilder)
+    {
+      return elemBuilder.Contents
+                        .Where(c => (c.ContentType & ElementBuilder.ContentTypeEnum.Text) != ElementBuilder.ContentTypeEnum.None)
+                        .Cast<ElementBuilder.TextContent>()
+                        .ToList();
+    }
+
+    private static void GetCors(int     idxComp,
+                                int     totalCompCount,
+                                int     left,
+                                int     top,
+                                int     right,
+                                int     bottom,
+                                out int compLeft,
+                                out int compTop,
+                                out int compRight,
+                                out int compBottom)
+    {
+      int totalWidth  = right - left;
+
+      if (totalCompCount == 1)
+      {
+        compLeft   = left;
+        compTop    = top;
+        compRight  = totalWidth;
+        compBottom = bottom;
+        return;
+      }
+
+      int totalHeight = bottom - top;
+
+      if (totalCompCount == 2)
+      {
+        int comp2Height = (int)(totalHeight / 2.0);
+
+        compLeft   = left;
+        compTop    = top + (idxComp == 0 ? 0 : comp2Height);
+        compRight  = totalWidth;
+        compBottom = comp2Height;
+        return;
+      }
+
+      double nbRowAndCol = Math.Floor(Math.Log(totalCompCount,
+                                               2));
+      int compRow = (int)Math.Floor(idxComp / nbRowAndCol);
+      int compCol = idxComp % (int)nbRowAndCol;
+
+      int compWidth   = (int)(totalWidth / nbRowAndCol);
+      int compHeight  = (int)(totalHeight / nbRowAndCol);
+
+      compLeft   = left + compCol * compWidth;
+      compTop    = top + compRow * compHeight;
+      compRight  = compWidth;
+      compBottom = compHeight;
     }
 
     #endregion

@@ -75,9 +75,6 @@
     <Reference Include="EasyHook, Version=2.7.6789.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\EasyHook.2.7.6789\lib\net40\EasyHook.dll</HintPath>
     </Reference>
-    <Reference Include="Fasm.NET, Version=1.0.4939.27955, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\..\packages\Fasm.NET.1.70.03.2\lib\Fasm.NET.dll</HintPath>
-    </Reference>
     <Reference Include="JetBrains.Annotations, Version=2018.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\JetBrains.Annotations.2018.2.1\lib\net20\JetBrains.Annotations.dll</HintPath>
     </Reference>

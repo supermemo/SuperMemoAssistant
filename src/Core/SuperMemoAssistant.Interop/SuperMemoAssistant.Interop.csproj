@@ -84,17 +84,14 @@
     <Reference Include="Ben.Demystifier, Version=0.1.0.0, Culture=neutral, PublicKeyToken=a6d206e05440431a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Ben.Demystifier.0.1.3\lib\net45\Ben.Demystifier.dll</HintPath>
     </Reference>
-    <Reference Include="Fasm.NET, Version=1.0.4939.27955, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\..\packages\Fasm.NET.1.70.03.2\lib\Fasm.NET.dll</HintPath>
-    </Reference>
     <Reference Include="FlaUI.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FlaUI.Core.2.0.0-alpha6\lib\net45\FlaUI.Core.dll</HintPath>
+      <HintPath>..\..\..\packages\FlaUI.Core.2.0.0-rc1\lib\net45\FlaUI.Core.dll</HintPath>
     </Reference>
     <Reference Include="FlaUI.UIA3, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FlaUI.UIA3.2.0.0-alpha6\lib\net45\FlaUI.UIA3.dll</HintPath>
+      <HintPath>..\..\..\packages\FlaUI.UIA3.2.0.0-rc1\lib\net45\FlaUI.UIA3.dll</HintPath>
     </Reference>
     <Reference Include="Interop.UIAutomationClient, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FlaUI.UIA3.2.0.0-alpha6\lib\net45\Interop.UIAutomationClient.dll</HintPath>
+      <HintPath>..\..\..\packages\FlaUI.UIA3.2.0.0-rc1\lib\net45\Interop.UIAutomationClient.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="JetBrains.Annotations, Version=2018.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
@@ -175,6 +172,8 @@
     <Compile Include="Extensions\ProcessEx.cs" />
     <Compile Include="Extensions\StringEx.cs" />
     <Compile Include="Interop\InjectLibMessages.cs" />
+    <Compile Include="Interop\SuperMemo\Components\Builders\ComponentHtmlBuilder.cs" />
+    <Compile Include="Interop\SuperMemo\Components\Builders\ComponentImageBuilder.cs" />
     <Compile Include="Interop\SuperMemo\Elements\ConceptSnapshot.cs" />
     <Compile Include="Interop\SuperMemo\Elements\ElementClipboardBuilder.cs" />
     <Compile Include="Interop\SuperMemo\Elements\HookSnapshot.cs" />
@@ -210,7 +209,7 @@
     <Compile Include="Services\Svc.cs" />
     <Compile Include="Interop\SMAConst.cs" />
     <Compile Include="Interop\SMConst.cs" />
-    <Compile Include="Interop\SuperMemo\Components\ComponentBuilder.cs" />
+    <Compile Include="Interop\SuperMemo\Components\Builders\ComponentBuilder.cs" />
     <Compile Include="Interop\SuperMemo\Components\Models\ComponentFieldFlags.cs" />
     <Compile Include="Interop\SuperMemo\Components\Models\ComponentImageStretchType.cs" />
     <Compile Include="Interop\SuperMemo\Components\Models\ComponentType.cs" />
@@ -282,6 +281,7 @@
     <Compile Include="Sys\IO\FS\LiteDB\SMALiteDabase.cs" />
     <Compile Include="Sys\Security\Cryptography\Crc32.cs" />
     <Compile Include="Sys\SMMarshalByRefObject.cs" />
+    <Compile Include="Sys\Span.cs" />
     <Compile Include="Sys\UIAutomation\AutomationElementRef.cs" />
     <Compile Include="Sys\UIAutomation\FocusSnapshot.cs" />
   </ItemGroup>
@@ -303,13 +303,14 @@
       <Name>Process.NET</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\Fody.3.3.3\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.3.3.3\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\Fody.3.3.4\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.3.3.4\build\Fody.targets'))" />
   </Target>
-  <Import Project="..\..\..\packages\Fody.3.3.3\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.3.3.3\build\Fody.targets')" />
+  <Import Project="..\..\..\packages\Fody.3.3.4\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.3.3.4\build\Fody.targets')" />
 </Project>

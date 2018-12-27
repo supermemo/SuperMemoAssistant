@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/12/23 18:28
+// Modified On:  2018/12/13 13:05
 // Modified By:  Alexis
 
 #endregion
@@ -30,22 +30,65 @@
 
 
 
-using System;
+using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
 
-namespace SuperMemoAssistant.Interop.SuperMemo.Components.Models
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnassignedGetOnlyAutoProperty
+
+namespace SuperMemoAssistant.Interop.SuperMemo.Components.Builders
 {
-  [Flags]
-  public enum AtFlags
+  public abstract class ComponentBuilder
   {
-    // TODO: Set correct values
-    Unknown1     = 1,
-    Unknown2     = 2,
-    Browsing     = 4,
-    Editing      = 8,
-    Dragging     = 16,
-    Question     = 32,
-    Answer       = 64,
-    AfterGrading = 128,
-    All          = 255
+    #region Constants & Statics
+
+    public static IComponentGroup DefaultArticle        { get; }
+    public static IComponentGroup DefaultArticlePicture { get; }
+    public static IComponentGroup DefaultItem           { get; }
+    public static IComponentGroup DefaultItemPicture    { get; }
+
+    #endregion
+
+
+
+
+    #region Constructors
+
+    public ComponentBuilder(ComponentType type)
+    {
+      Type = type;
+    }
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public ComponentType Type { get; private set; }
+
+    #endregion
+
+
+
+
+    #region Methods
+
+    public static IComponentGroup FromClipboard(string clipboardText)
+    {
+      return null;
+    }
+
+    #endregion
+  }
+
+  public class HTMLComponentBuilder : ComponentBuilder
+  {
+    #region Constructors
+
+    public HTMLComponentBuilder()
+      : base(ComponentType.Html) { }
+
+    #endregion
   }
 }

@@ -314,12 +314,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
         //              control.Id + 1,
         //              new DelphiUString(text));
 
+        //return true;
+
         return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwSetText,
                                                        ElementWdwPtr.Read<IntPtr>(),
                                                        control.Id + 1,
                                                        new DelphiUString(text)) == 1;
-
-        return true;
       }
       catch (Exception ex)
       {

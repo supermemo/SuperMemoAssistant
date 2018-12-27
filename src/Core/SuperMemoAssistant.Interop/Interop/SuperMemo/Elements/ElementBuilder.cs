@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/12/13 13:09
+// Modified On:  2018/12/23 17:49
 // Modified By:  Alexis
 
 #endregion
@@ -218,6 +218,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
       RawText         = 1,
       Html            = 2,
       Image           = 4,
+      Text            = RawText | Html,
       ImageAndRawText = RawText | Image,
       ImageAndHtml    = Html | Image,
       ImageAndText    = RawText | Html | Image,

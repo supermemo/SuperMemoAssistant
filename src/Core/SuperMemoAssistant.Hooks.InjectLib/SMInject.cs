@@ -129,6 +129,8 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
     public void Run(RemoteHooking.IContext inContext)
     {
+      SMHooks smHooks = null;
+
       try
       {
         try
@@ -138,7 +140,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
           Callback.OnHookInstalled(true);
           TargetFilePaths = new HashSet<string>(Callback.GetTargetFilePaths().Select(s => s.ToLowerInvariant()));
 
-          var smHooks = new SMHooks();
+          smHooks = new SMHooks();
 
           RemoteHooking.WakeUpProcess();
 
@@ -204,7 +206,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
         try
         {
-          // TODO: Dispose SMHooks
+          smHooks?.Dispose();
           /*SMWndProc.Disable();
           SMWndProc.Dispose();*/
         }

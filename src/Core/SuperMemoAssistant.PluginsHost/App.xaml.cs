@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/08 15:19
-// Modified On:  2018/11/22 18:37
+// Created On:   2018/12/27 01:27
+// Modified On:  2018/12/30 02:04
 // Modified By:  Alexis
 
 #endregion
@@ -30,29 +30,52 @@
 
 
 
-using System.Threading;
+using System;
+using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Threading;
-using SuperMemoAssistant.Services.IO;
 
 namespace SuperMemoAssistant.PluginsHost
 {
   /// <summary>Interaction logic for App.xaml</summary>
   public partial class App : Application
   {
+    public App()
+    {
+      Startup += App_Startup;
+    }
+    #region Constants & Statics
+
+    public static readonly List<string> MahAppsResourceDictionaries = new List<string>
+    {
+    };
+    /*
+      "pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml",
+      "pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml",
+      "pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml",
+      "pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml",
+      "pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml",
+      "pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Indigo.xaml",
+      "pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Pink.xaml",
+      "pack://application:,,,/Forge.Forms;component/Themes/Material.xaml"
+      "pack://application:,,,/Forge.Forms;component/Themes/Metro.xaml"
+     */
+      //"pack://application:,,,/MahApps.Metro;component/Styles/Accents/BlueLight.xaml",
+
+    #endregion
 
 
 
     #region Methods
 
-    private void Application_Startup(object           sender,
+    private void App_Startup(object           sender,
                                      StartupEventArgs e)
     {
-    }
-
-    protected override void OnExit(ExitEventArgs e)
-    {
-      base.OnExit(e);
+      foreach (var resDictSrc in MahAppsResourceDictionaries)
+        Resources.MergedDictionaries.Add(new ResourceDictionary
+        {
+          Source = new Uri(resDictSrc,
+                           UriKind.RelativeOrAbsolute)
+        });
     }
 
     #endregion

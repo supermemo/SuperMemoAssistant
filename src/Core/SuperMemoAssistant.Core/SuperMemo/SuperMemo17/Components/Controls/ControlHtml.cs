@@ -31,6 +31,7 @@
 
 
 using System;
+using System.ComponentModel;
 using System.Threading;
 using Anotar.Serilog;
 using FlaUI.Core.AutomationElements;
@@ -122,11 +123,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
           ieSrvFrame = Svc.UIAutomation.FromHandle(shellEmbedHwnd).FindFirstDescendant(c => c.ByClassName("Internet Explorer_Server"));
         }
-        catch (ElementNotAvailableException)
-        {
-          Thread.Sleep(50);
-        }
-        catch (TimeoutException)
+        catch (Exception ex)
+          when (ex is ElementNotAvailableException
+            || ex is TimeoutException
+            || ex is Win32Exception)
         {
           Thread.Sleep(50);
         }
@@ -138,7 +138,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
         }
 
       if (ieSrvFrame == null)
+      {
+        LogTo.Error("IHTMLDocument2 ControlHtml.GetDocument() failed to get ieSrvFrame.");
+
         return null;
+      }
 
       IntPtr hwnd = ieSrvFrame.FrameworkAutomationElement.NativeWindowHandle.Value;
 

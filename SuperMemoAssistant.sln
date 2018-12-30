@@ -58,6 +58,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SuperMemoAssistant.Hooks.Na
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Process.NET", "libs\Process.NET\src\Process.NET\Process.NET.csproj", "{501257D3-F788-4A5D-B990-16C01FF71926}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Forms", "libs\Forge.Forms\Forge.Forms\src\Forge.Forms\Forge.Forms.csproj", "{4E0C323D-5AFC-4105-815F-587346AA5321}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		libs\pngcs\pngcs.projitems*{4f65145f-6f0c-49cd-830a-a51a2a9c5f75}*SharedItemsImports = 13
@@ -337,6 +339,24 @@ Global
 		{501257D3-F788-4A5D-B990-16C01FF71926}.Release|x64.Build.0 = Release|x64
 		{501257D3-F788-4A5D-B990-16C01FF71926}.Release|x86.ActiveCfg = Release|x86
 		{501257D3-F788-4A5D-B990-16C01FF71926}.Release|x86.Build.0 = Release|x86
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug|x64.Build.0 = Debug|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug|x86.Build.0 = Debug|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug-InProd|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug-InProd|Any CPU.Build.0 = Debug|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug-InProd|x64.ActiveCfg = Debug|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug-InProd|x64.Build.0 = Debug|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug-InProd|x86.ActiveCfg = Debug|x86
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug-InProd|x86.Build.0 = Debug|x86
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Release|x64.ActiveCfg = Release|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Release|x64.Build.0 = Release|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Release|x86.ActiveCfg = Release|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -359,6 +379,7 @@ Global
 		{F8BB6993-25DF-4173-BB3D-ACEE15C5A2B9} = {943958D2-1308-4317-940F-60CAD3C74AC3}
 		{FFFE85EF-4719-4F7F-AB5F-A63D2E184BD2} = {DF29F7E8-943F-4EC9-9EB5-5C4E27BA9AB2}
 		{501257D3-F788-4A5D-B990-16C01FF71926} = {052AFAF6-318D-4D7F-AAEC-3C8A5667FFBC}
+		{4E0C323D-5AFC-4105-815F-587346AA5321} = {052AFAF6-318D-4D7F-AAEC-3C8A5667FFBC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF31D6F5-6E93-461B-8C5F-348439D19C6D}

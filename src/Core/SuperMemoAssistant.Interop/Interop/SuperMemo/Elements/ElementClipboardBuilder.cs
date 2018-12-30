@@ -64,21 +64,21 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 Source={0}
 Parent={1}
 ParentTitle=
-Priority=0
+Priority={2}
 Begin ElementInfo #1
-Title={2}
-Type={3}
+Title={3}
+Type={4}
 Status=Memorized
 FirstGrade=8
 Ordinal=10004.000000
 Repetitions=1
 Lapses=0
 Interval=1
-LastRepetition={4}
+LastRepetition={5}
 AFactor=1.200
 UFactor=1.000
 ForgettingIndex=10
-Reference={5}
+Reference={6}
 SourceArticle=0
 End ElementInfo #1
 ElementColor=-16777211
@@ -91,9 +91,9 @@ ReadPointComponent=0
 ReadPointStart=0
 ReadPointLength=0
 ReadPointScrollTop=0
-{6}
+{7}
 Begin RepHist #1
-ElNo=1 Rep=1 Date={7} Hour={8:0.000} Int=0 Grade=10 Laps=0 Priority=0
+ElNo=1 Rep=1 Date={8} Hour={9:0.000} Int=0 Grade=10 Laps=0 Priority={2}
 End RepHist #1
 End Element #1";
     private const string ComponentsSkeleton = @"ComponentNo={0}
@@ -191,6 +191,7 @@ End Component #2";
                            ElementFmt,
                            collectionPath,
                            parentId,
+                           elemBuilder.Priority,
                            title,
                            type,
                            lastRepDate1,
@@ -364,7 +365,12 @@ End Component #2";
                                              compLeft,
                                              compTop,
                                              compRight,
-                                             compBottom);
+                                             compBottom)
+        {
+          Stretch = content.StretchType
+        };
+
+
         outComps.Add(comp);
       }
     }

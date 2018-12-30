@@ -99,6 +99,16 @@
     <Compile Include="SMWndProc.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\libs\Process.NET\src\Process.NET\Process.NET.csproj">
+      <Project>{501257d3-f788-4a5d-b990-16c01ff71926}</Project>
+      <Name>Process.NET</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SuperMemoAssistant.Hooks.NativeLib\SuperMemoAssistant.Hooks.NativeLib.vcxproj">
+      <Project>{fffe85ef-4719-4f7f-ab5f-a63d2e184bd2}</Project>
+      <Name>SuperMemoAssistant.Hooks.NativeLib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="EasyHook32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -120,16 +130,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\libs\Process.NET\src\Process.NET\Process.NET.csproj">
-      <Project>{501257d3-f788-4a5d-b990-16c01ff71926}</Project>
-      <Name>Process.NET</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SuperMemoAssistant.Hooks.NativeLib\SuperMemoAssistant.Hooks.NativeLib.vcxproj">
-      <Project>{fffe85ef-4719-4f7f-ab5f-a63d2e184bd2}</Project>
-      <Name>SuperMemoAssistant.Hooks.NativeLib</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="..\..\..\src\Core\SuperMemoAssistant.Hooks.Shared\SuperMemoAssistant.Hooks.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

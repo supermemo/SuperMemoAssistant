@@ -19,3 +19,6 @@
 [submodule "src/Plugins/SuperMemoAssistant.Plugins.MediaPlayer"]
 	path = src/Plugins/SuperMemoAssistant.Plugins.MediaPlayer
 	url = https://github.com/supermemo/SuperMemoAssistant.Plugins.MediaPlayer.git
+[submodule "libs/Forge.Forms"]
+	path = libs/Forge.Forms
+	url = https://github.com/WPF-Forge/Forge.Forms.git

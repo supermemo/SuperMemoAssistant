@@ -77,7 +77,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Components.Builders
     public short            Bottom    { get; set; }
     public AtFlags          DisplayAt { get; set; } = AtFlags.All;
     public IImage           Image     { get; set; }
-    public ImageStretchType Stretch   { get; set; } = ImageStretchType.Filled;
+    public ImageStretchType Stretch   { get; set; } = ImageStretchType.Proportional;
 
     #endregion
 

@@ -2,9 +2,8 @@
 {
   public enum ImageStretchType
   {
-    // TODO: Set correct values
-    Normal,
-    Proportional,
-    Filled,
+    Normal = 0,
+    Filled = 1,
+    Proportional = 2,
   }
 }

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/12/23 17:49
+// Modified On:  2018/12/29 23:22
 // Modified By:  Alexis
 
 #endregion
@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SuperMemoAssistant.Interop.SuperMemo.Components;
+using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
@@ -108,6 +109,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
     public ElemReference           Reference      { get; private set; }
     public bool                    ShouldDisplay  { get; private set; }
     public int                     Id             { get; private set; } = -1;
+    public double                  Priority       { get; private set; } = 0;
     public IElement                Parent         { get; private set; }
     public IConcept                Concept        { get; private set; }
     public IEnumerable<IConcept>   LinkedConcepts => LinkedConceptsInternal;
@@ -149,6 +151,12 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
     public ElementBuilder DoNotDisplay()
     {
       ShouldDisplay = false;
+      return this;
+    }
+
+    public ElementBuilder WithPriority(double priority)
+    {
+      Priority = priority;
       return this;
     }
 
@@ -424,9 +432,11 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
     {
       #region Constructors
 
-      public ImageContent(int registryId)
+      public ImageContent(int              registryId,
+                          ImageStretchType stretchType = ImageStretchType.Proportional)
       {
         RegistryId = registryId;
+        StretchType = stretchType;
       }
 
       #endregion
@@ -437,6 +447,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
       #region Properties & Fields - Public
 
       public int RegistryId { get; set; }
+
+      public ImageStretchType StretchType { get; set; }
 
       #endregion
 

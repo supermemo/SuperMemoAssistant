@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/12/21 17:12
-// Modified On:  2018/12/23 07:43
+// Modified On:  2018/12/30 03:08
 // Modified By:  Alexis
 
 #endregion
@@ -50,7 +50,7 @@ using SuperMemoAssistantHooksNativeLib;
 
 namespace SuperMemoAssistant.Hooks.InjectLib
 {
-  public class SMHooks
+  public class SMHooks : IDisposable
   {
     #region Properties & Fields - Non-Public
 
@@ -81,6 +81,13 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
       // Native calls
       SetupNativeMethods();
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+      SMNatives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
+                                                                 0);
     }
 
     #endregion
@@ -139,47 +146,53 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     {
       if (msgPtr->msg == (int)WindowsMessages.Quit)
       {
-        SMNatives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
-                                                                   0);
+        Dispose();
 
         return;
       }
 
-      if (msgPtr->msg != (int)WindowsMessages.User || SMInject.Instance.Callback == null)
+      if (msgPtr->msg != (int)WindowsMessages.User)
         return;
 
-      int wParam = msgPtr->wParam;
-
-      switch (wParam)
+      try
       {
-        case 9100101:
-          int res = int.MinValue;
-          SMInject.Instance.Debug("ExecuteOnMainThread");
-          try
-          {
-            SMInject.Instance.Callback.GetExecutionParameters(out var method,
-                                                              out var parameters);
+        int wParam = msgPtr->wParam;
 
-            SMInject.Instance.Debug($"Executing {method} with {parameters}");
-            res = CallNativeMethod((NativeMethod)method,
-                                   parameters);
-            SMInject.Instance.Debug($"Exec result = {res}");
-          }
-          catch (Exception ex)
-          {
-            SMInject.Instance.OnException(ex);
-          }
-          finally
-          {
-            SMInject.Instance.Callback.SetExecutionResult(res);
-          }
+        switch (wParam)
+        {
+          case 9100101:
+            int res = int.MinValue;
+            SMInject.Instance.Debug("ExecuteOnMainThread");
+            try
+            {
+              SMInject.Instance.Callback.GetExecutionParameters(out var method,
+                                                                out var parameters);
 
-          *handled = true;
-          break;
+              SMInject.Instance.Debug($"Executing {method} with {parameters}");
+              res = CallNativeMethod((NativeMethod)method,
+                                     parameters);
+              SMInject.Instance.Debug($"Exec result = {res}");
+            }
+            catch (Exception ex)
+            {
+              SMInject.Instance.OnException(ex);
+            }
+            finally
+            {
+              SMInject.Instance.Callback.SetExecutionResult(res);
+            }
 
-        default:
-          *handled = SMInject.Instance.OnUserMessage(msgPtr->wParam);
-          break;
+            *handled = true;
+            break;
+
+          default:
+            *handled = SMInject.Instance.OnUserMessage(msgPtr->wParam);
+            break;
+        }
+      }
+      catch (Exception ex)
+      {
+        throw;
       }
     }
 
@@ -234,7 +247,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         switch (method)
         {
           case NativeMethod.AppendAndAddElementFromText:
-            var elWdw = marshalledParameters[0].Reference.ToInt32();
+            var elWdw  = marshalledParameters[0].Reference.ToInt32();
             var elType = marshalledParameters[1].Reference.ToInt32();
             var elDesc = marshalledParameters[2].Reference.ToInt32();
 

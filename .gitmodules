@@ -22,3 +22,9 @@
 [submodule "libs/Forge.Forms"]
 	path = libs/Forge.Forms
 	url = https://github.com/WPF-Forge/Forge.Forms.git
+[submodule "src/Plugins/SuperMemoAssistant.Plugins.Dictionary"]
+	path = src/Plugins/SuperMemoAssistant.Plugins.Dictionary
+	url = https://github.com/supermemo/SuperMemoAssistant.Plugins.Dictionary.git
+[submodule "src/Plugins/SuperMemoAssistant.Plugins.Dictionary.Interop"]
+	path = src/Plugins/SuperMemoAssistant.Plugins.Dictionary.Interop
+	url = https://github.com/supermemo/SuperMemoAssistant.Plugins.Dictionary.Interop.git

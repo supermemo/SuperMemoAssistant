@@ -62,7 +62,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Forms", "libs\Forge.F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMemoAssistant.Plugins.Dictionary", "src\Plugins\SuperMemoAssistant.Plugins.Dictionary\SuperMemoAssistant.Plugins.Dictionary.csproj", "{C76CFA78-F820-4F05-9429-4A3A3C9C1414}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMemoAssistant.Plugins.Dictionary.Interop", "SuperMemoAssistant.Plugins.Dictionary.Interop\SuperMemoAssistant.Plugins.Dictionary.Interop.csproj", "{AA97C5AA-CA1A-4988-AE2E-E5A292B63C12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMemoAssistant.Plugins.Dictionary.Interop", "src\Plugins\SuperMemoAssistant.Plugins.Dictionary.Interop\SuperMemoAssistant.Plugins.Dictionary.Interop.csproj", "{AA97C5AA-CA1A-4988-AE2E-E5A292B63C12}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

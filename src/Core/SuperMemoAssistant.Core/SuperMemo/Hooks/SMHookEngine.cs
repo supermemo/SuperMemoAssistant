@@ -140,6 +140,11 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
       StopIPCServer();
     }
+    
+    public override void SetWndProcHookAddr(int addr)
+    {
+      SystemCallback.SetWndProcHookAddr(addr);
+    }
 
     public override bool OnUserMessage(int wParam)
     {

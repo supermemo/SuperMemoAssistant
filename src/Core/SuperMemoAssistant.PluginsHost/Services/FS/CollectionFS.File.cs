@@ -34,7 +34,7 @@ using System;
 
 namespace SuperMemoAssistant.PluginsHost.Services.FS
 {
-  public class CollectionFS_File
+  public class CollectionFSFile
   {
     #region Properties & Fields - Public
 

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/12/20 02:47
-// Modified On:  2018/12/20 02:50
+// Created On:   2018/12/30 14:34
+// Modified On:  2018/12/30 14:36
 // Modified By:  Alexis
 
 #endregion
@@ -31,38 +31,17 @@
 
 
 using System;
-using Process.NET.Native.Types;
-using Process.NET.Windows;
+using Sentry;
 
-namespace SuperMemoAssistant.Hooks.InjectLib
+namespace SuperMemoAssistant.Services
 {
-  public class SMWndProc : WindowProcHook
+  public static class Sentry
   {
-    #region Constructors
+    #region Methods
 
-    /// <inheritdoc />
-    public SMWndProc()
-      : base(System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle) { }
-
-    protected override IntPtr OnWndProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam)
+    public static IDisposable Initialize()
     {
-
-      try
-      {
-        if (msg == (int)WindowsMessages.User && HandleUserMessage(wParam.ToInt32()))
-          return IntPtr.Zero;
-
-        return base.OnWndProc(hWnd, msg, wParam, lParam);
-      }
-      catch (Exception)
-      {
-        return IntPtr.Zero;
-      }
-    }
-
-    private bool HandleUserMessage(int wParam)
-    {
-      return SMInject.Instance.OnUserMessage(wParam);
+      return SentrySdk.Init("https://a63c3dad9552434598dae869d2026696@sentry.io/1362046");
     }
 
     #endregion

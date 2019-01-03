@@ -139,7 +139,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
       if (ieSrvFrame == null)
       {
-        LogTo.Error("IHTMLDocument2 ControlHtml.GetDocument() failed to get ieSrvFrame.");
+        LogTo.Warning("IHTMLDocument2 ControlHtml.GetDocument() failed to get ieSrvFrame.");
 
         return null;
       }

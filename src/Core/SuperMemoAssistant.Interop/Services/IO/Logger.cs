@@ -77,7 +77,13 @@ namespace SuperMemoAssistant.Services.IO
 
     public void Initialize()
     {
-      LevelSwitch = new LoggingLevelSwitch(LogEventLevel.Debug); // ConfigMgr.AppConfig.LogMinLevel);
+#if DEBUG || DEBUG_IN_PROD
+      var logLevel = LogEventLevel.Debug;
+#else
+      var logLevel = LogEventLevel.Information;
+#endif
+
+      LevelSwitch = new LoggingLevelSwitch(logLevel);
 
       Log.Logger = new LoggerConfiguration()
                    .MinimumLevel.ControlledBy(LevelSwitch)
@@ -92,6 +98,7 @@ namespace SuperMemoAssistant.Services.IO
                                       shared: true,
                                       outputTemplate: OutputFormat
                                     ))
+                   .WriteTo.Sentry()
                    .CreateLogger();
     }
 

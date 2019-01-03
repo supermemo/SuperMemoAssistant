@@ -33,6 +33,7 @@
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using Sentry;
 using SuperMemoAssistant.Services.IO;
 using SuperMemoAssistant.SuperMemo;
 
@@ -86,6 +87,7 @@ namespace SuperMemoAssistant
     protected override void OnExit(ExitEventArgs e)
     {
       Logger.Instance.Shutdown();
+      ModuleInitializer.SentryInstance.Dispose();
 
       base.OnExit(e);
     }

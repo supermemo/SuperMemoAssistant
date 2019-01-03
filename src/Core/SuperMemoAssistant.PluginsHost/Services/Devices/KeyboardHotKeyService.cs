@@ -177,7 +177,7 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
         _hwnd = Handle;
         _windowReadyEvent.Set();
 
-        _syncContext = WindowsFormsSynchronizationContext.Current;
+        _syncContext = SynchronizationContext.Current;
       }
 
       #endregion

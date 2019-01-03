@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/31 13:44
-// Modified On:  2018/12/21 15:25
+// Modified On:  2018/12/30 14:39
 // Modified By:  Alexis
 
 #endregion
@@ -40,7 +40,9 @@ using System.Linq;
 using System.Security;
 using System.Security.Permissions;
 using System.Windows;
+using System.Windows.Threading;
 using Anotar.Serilog;
+using Forge.Forms.FormBuilding.Defaults;
 using Process.NET.Native.Types;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
@@ -48,10 +50,12 @@ using SuperMemoAssistant.Interop.Plugins;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.PluginsHost.Services.Devices;
+using SuperMemoAssistant.PluginsHost.UI;
 using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.IO;
 using SuperMemoAssistant.Services.IO.Devices;
 using SuperMemoAssistant.Sys;
+using SuperMemoAssistant.UI;
 
 // ReSharper disable PossibleMultipleEnumeration
 
@@ -119,6 +123,7 @@ namespace SuperMemoAssistant.PluginsHost
       Container.Dispose();
 
       Logger.Instance.Shutdown();
+      SentryInstance.Dispose();
     }
 
     #endregion
@@ -132,6 +137,8 @@ namespace SuperMemoAssistant.PluginsHost
 
     public IEnumerable<ISMAPlugin> Plugins => _plugins ?? (_plugins = BuildPlugins());
 
+    public IDisposable SentryInstance { get; private set; }
+
     #endregion
 
 
@@ -143,6 +150,9 @@ namespace SuperMemoAssistant.PluginsHost
 
     public void Setup()
     {
+      SentryInstance                             =  SuperMemoAssistant.Services.Sentry.Initialize();
+      AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
       var pluginRegBuilder = new RegistrationBuilder();
       pluginRegBuilder.ForTypesMatching(t => t.IsAbstract == false
                                           && typeof(ISMAPlugin).IsAssignableFrom(t)).Export<ISMAPlugin>();
@@ -170,6 +180,18 @@ namespace SuperMemoAssistant.PluginsHost
       SetupServices();
       Logger.Instance.Initialize();
 
+      ActionElement.InterceptorChain.Add(new ElementPickerInterceptor());
+
+      KeyboardHookService.Instance.RegisterHotKey(
+        new Sys.IO.Devices.HotKey(true,
+                                  true,
+                                  false,
+                                  false,
+                                  System.Windows.Input.Key.O,
+                                  "Global Settings"),
+        ShowGlobalSettings
+      );
+
 #if DEBUG
       KeyboardHookService.Instance.RegisterHotKey(
         new Sys.IO.Devices.HotKey(true,
@@ -186,6 +208,8 @@ namespace SuperMemoAssistant.PluginsHost
     private void SetupServices()
     {
       Svc.SMA = Get<ISuperMemoAssistant>();
+      Svc.KeyboardHotKey = KeyboardHookService.Instance;
+      Svc.KeyboardHotKeyLegacy = KeyboardHotKeyService.Instance;
     }
 
     private void SetupApplication()
@@ -194,17 +218,41 @@ namespace SuperMemoAssistant.PluginsHost
       {
         ShutdownMode = ShutdownMode.OnExplicitShutdown
       };
+      Application.DispatcherUnhandledException += Application_DispatcherUnhandledException;
     }
 
-    private bool DebugInjectLib()
+    private void CurrentDomain_UnhandledException(object                      sender,
+                                                  UnhandledExceptionEventArgs ev)
+    {
+      LogTo.Error((Exception)ev.ExceptionObject,
+                  $"Unhandled exception in PluginHost AppDomain. Terminating: {ev.IsTerminating}.");
+    }
+
+    private void Application_DispatcherUnhandledException(object                                sender,
+                                                          DispatcherUnhandledExceptionEventArgs ev)
+    {
+      LogTo.Error(ev.Exception,
+                  $"Unhandled exception in Application.");
+
+#if !DEBUG
+      ev.Handled = true;
+#endif
+    }
+
+    private void ShowGlobalSettings()
+    {
+      Application.Dispatcher.Invoke(
+        () => new GlobalSettingsWindow().Show()
+      );
+    }
+
+    private void DebugInjectLib()
     {
       Svc.SMA.SMProcess.WindowFactory.MainWindow.PostMessage(
-        WindowsMessages.User,
+        2345,
         new IntPtr((int)InjectLibMessages.AttachDebugger),
         new IntPtr(0)
       );
-
-      return true;
     }
 
     public void Recompose()

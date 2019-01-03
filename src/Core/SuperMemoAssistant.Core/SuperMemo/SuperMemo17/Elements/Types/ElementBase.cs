@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:12
-// Modified On:  2018/12/15 10:24
+// Modified On:  2019/01/01 18:11
 // Modified By:  Alexis
 
 #endregion
@@ -45,7 +45,7 @@ using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 {
-  public abstract class ElementBase : MarshalByRefObject, IDisposable
+  public abstract class ElementBase : MarshalByRefObject, IElement, IDisposable
   {
     #region Constants & Statics
 
@@ -74,6 +74,15 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
 
 
+    #region Properties & Fields - Non-Public
+
+    protected abstract string TypeName { get; }
+
+    #endregion
+
+
+
+
     #region Constructors
 
     protected ElementBase(int             id,
@@ -82,10 +91,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     {
       Id = id;
 
-#if DEBUG
-      //System.Diagnostics.Debug.WriteLine("[{0} {1}] Creating",
-      //                                   GetType().Name,
-      //                                   Id);
+#if DEBUG && !DEBUG_IN_PROD
+      System.Diagnostics.Debug.WriteLine("[{0} {1}] Creating",
+                                         GetType().Name,
+                                         Id);
 #endif
 
       TitleTextId = SetValue(elElem.titleTextId,
@@ -137,9 +146,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
     #region Properties & Fields - Public
 
-    public int  Id          { get; protected set; }
-    public int  TitleTextId { get; protected set; }
-    public bool Deleted     { get; protected set; }
+    public int TitleTextId { get; protected set; }
 
     public int TemplateId { get; protected set; }
     public int ConceptId  { get; protected set; }
@@ -152,6 +159,16 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     public int LastChildId   { get; protected set; }
     public int NextSiblingId { get; protected set; }
     public int PrevSiblingId { get; protected set; }
+
+    #endregion
+
+
+
+
+    #region Properties Impl - Public
+
+    public int  Id      { get; protected set; }
+    public bool Deleted { get; protected set; }
 
     public int DescendantCount { get; protected set; }
     public int ChildrenCount   { get; protected set; }
@@ -175,15 +192,47 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
 
 
+    #region Methods Impl
+
+    public override string ToString()
+    {
+      return $"({Id}|{TypeName[0]}) {Title}";
+    }
+
+    public Task<bool> Delete()
+    {
+      throw new NotImplementedException();
+    }
+
+    public Task<bool> Display()
+    {
+      throw new NotImplementedException();
+    }
+
+    public Task<bool> Done()
+    {
+      throw new NotImplementedException();
+    }
+
+    public Task<bool> MoveTo(IConceptGroup newParent)
+    {
+      throw new NotImplementedException();
+    }
+
+    #endregion
+
+
+
+
     #region Methods
 
     public ElementFieldFlags Update(InfContentsElem? cttElem,
                                     InfElementsElem? elElem)
     {
-#if DEBUG
-      //System.Diagnostics.Debug.WriteLine("[{0} {1}] Updating",
-      //                                   GetType().Name,
-      //                                   Id);
+#if DEBUG && !DEBUG_IN_PROD
+      System.Diagnostics.Debug.WriteLine("[{0} {1}] Updating",
+                                         GetType().Name,
+                                         Id);
 #endif
 
       // TODO: Set/Clear events handlers on component change
@@ -305,27 +354,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
       }
     }
 
-
-    public Task<bool> Delete()
-    {
-      throw new NotImplementedException();
-    }
-
-    public Task<bool> Display()
-    {
-      throw new NotImplementedException();
-    }
-
-    public Task<bool> Done()
-    {
-      throw new NotImplementedException();
-    }
-
-    public Task<bool> MoveTo(IConceptGroup newParent)
-    {
-      throw new NotImplementedException();
-    }
-
     public IEnumerable<IElement> EnumerateChildren()
     {
       List<IElement> ret = new List<IElement>();
@@ -339,7 +367,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
         do
         {
-          ret.Add(itEl);
+          if (itEl.Deleted == false)
+            ret.Add(itEl);
 
           itEl = itEl.NextSibling;
         } while (itEl != null);
@@ -422,12 +451,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
         onChangedAction?.Invoke(oldValue,
                                 value);
 
-#if DEBUG
-        //System.Diagnostics.Debug.WriteLine("[{0} {1}] {2}: {3}",
-        //                                   GetType().Name,
-        //                                   Id,
-        //                                   name,
-        //                                   value);
+#if DEBUG && !DEBUG_IN_PROD
+        System.Diagnostics.Debug.WriteLine("[{0} {1}] {2}: {3}",
+                                           GetType().Name,
+                                           Id,
+                                           name,
+                                           value);
 #endif
       }
 
@@ -437,12 +466,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     protected T SetValue<T>(T      value,
                             string name)
     {
-#if DEBUG
-      //System.Diagnostics.Debug.WriteLine("[{0} {1}] {2}: {3}",
-      //                                   GetType().Name,
-      //                                   Id,
-      //                                   name,
-      //                                   value);
+#if DEBUG && !DEBUG_IN_PROD
+      System.Diagnostics.Debug.WriteLine("[{0} {1}] {2}: {3}",
+                                         GetType().Name,
+                                         Id,
+                                         name,
+                                         value);
 #endif
 
       return value;
@@ -453,10 +482,16 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
 
 
-    #region Events
+    #region Methods Abs
+    
+    public abstract ElementType Type { get; }
 
-    //
-    // Events
+    #endregion
+
+
+
+
+    #region Events
 
     public event Action<SMElementChangedArgs> OnChanged;
 

@@ -36,27 +36,27 @@ namespace SuperMemoAssistant.Extensions
   {
     public static IControlHtml AsHtml(this IControl ctrl)
     {
-      return (IControlHtml)ctrl;
+      return ctrl as IControlHtml;
     }
     
     public static IControlRtf AsRtf(this IControl ctrl)
     {
-      return (IControlRtf)ctrl;
+      return ctrl as IControlRtf;
     }
     
     public static IControlText AsText(this IControl ctrl)
     {
-      return (IControlText)ctrl;
+      return ctrl as IControlText;
     }
     
     public static IControlTextBase AsTextBased(this IControl ctrl)
     {
-      return (IControlTextBase)ctrl;
+      return ctrl as IControlTextBase;
     }
     
     public static IControlImage AsImage(this IControl ctrl)
     {
-      return (IControlImage)ctrl;
+      return ctrl as IControlImage;
     }
   }
 }

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/30 13:47
-// Modified On:  2018/05/30 22:59
+// Created On:   2018/07/27 12:55
+// Modified On:  2019/01/01 14:31
 // Modified By:  Alexis
 
 #endregion
@@ -31,13 +31,17 @@
 
 
 using System;
+using System.Collections.Generic;
+using SuperMemoAssistant.Sys.ComponentModel;
 
 namespace SuperMemoAssistant.Interop.Plugins
 {
   public interface ISMAPlugin : IDisposable
   {
-    Guid   Id      { get; }
-    string Name    { get; }
-    string Version { get; }
+    Guid                           Id             { get; }
+    string                         Name           { get; }
+    string                         Version        { get; }
+    List<INotifyPropertyChangedEx> SettingsModels { get; }
+    void SettingsSaved(object cfgObject);
   }
 }

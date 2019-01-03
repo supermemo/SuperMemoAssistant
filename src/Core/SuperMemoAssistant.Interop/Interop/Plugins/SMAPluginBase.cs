@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/11/16 21:55
+// Modified On:  2018/12/30 19:28
 // Modified By:  Alexis
 
 #endregion
@@ -31,15 +31,16 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.Configuration;
-using SuperMemoAssistant.Services.IO.Devices;
 using SuperMemoAssistant.Services.IO.FS;
 using SuperMemoAssistant.Sys;
+using SuperMemoAssistant.Sys.ComponentModel;
 
 namespace SuperMemoAssistant.Interop.Plugins
 {
@@ -95,6 +96,19 @@ namespace SuperMemoAssistant.Interop.Plugins
     public Guid Id => AssemblyEx.GetAssemblyGuid();
     /// <inheritdoc />
     public string Version => AssemblyEx.GetAssemblyVersion();
+    /// <inheritdoc />
+    public virtual List<INotifyPropertyChangedEx> SettingsModels { get; protected set; }
+
+    #endregion
+
+
+
+
+    #region Methods Impl
+
+    /// <param name="cfgObject"></param>
+    /// <inheritdoc />
+    public virtual void SettingsSaved(object cfgObject) { }
 
     #endregion
 
@@ -103,7 +117,8 @@ namespace SuperMemoAssistant.Interop.Plugins
 
     #region Methods
 
-    [Conditional("DEBUG"), Conditional("DEBUG_IN_PROD")]
+    [Conditional("DEBUG")]
+    [Conditional("DEBUG_IN_PROD")]
     private void AttachDebugger()
     {
       Debugger.Launch();
@@ -111,13 +126,11 @@ namespace SuperMemoAssistant.Interop.Plugins
 
     private void Init()
     {
-      Svc<TPlugin>.PluginContext = this;
+      Svc<TPlugin>.Plugin = (TPlugin)this;
 
       Svc<TPlugin>.CollectionFS = new PluginCollectionFSService(this,
                                                                 Container.GetExportedValue<ICollectionFSService>());
-      Svc<TPlugin>.Configuration  = new ConfigurationService(this);
-      Svc<TPlugin>.KeyboardHotKeyLegacy = Container.GetExportedValue<IKeyboardHotKeyService>();
-      Svc<TPlugin>.KeyboardHotKey = Container.GetExportedValue<IKeyboardHookService>();
+      Svc<TPlugin>.Configuration = new ConfigurationService(this);
 
       OnInit();
     }

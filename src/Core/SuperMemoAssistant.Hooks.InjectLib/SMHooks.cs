@@ -56,8 +56,6 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
     protected ProcessSharp SMProcess { get; }
 
-    protected IPointer TApplicationInstancePtr { get; }
-
     protected ManagedWndProc WndProcDelegate { get; }
 
     protected Dictionary<NativeMethod, int> CallTable { get; } = new Dictionary<NativeMethod, int>();
@@ -73,7 +71,6 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     {
       SMProcess = new ProcessSharp(System.Diagnostics.Process.GetCurrentProcess(),
                                    MemoryType.Local);
-      TApplicationInstancePtr = SMProcess[SMNatives.TApplication.TApplicationInstanceAddr];
 
       // WndProc
       WndProcDelegate = new ManagedWndProc(WndProc);
@@ -100,6 +97,12 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     //
     // WndProc
 
+    public int GetWndProcNativeWrapperAddr()
+    {
+      return WndProcWrapper.GetWndProcNativeWrapperAddr();
+    }
+
+#if false
     public bool InstallWndProcHook()
     {
       bool                       resumeThreads = false;
@@ -139,6 +142,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
             remoteThread.Resume();
       }
     }
+#endif
 
     protected unsafe void WndProc(int   _,
                                   TMsg* msgPtr,
@@ -151,7 +155,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         return;
       }
 
-      if (msgPtr->msg != (int)WindowsMessages.User)
+      if (msgPtr->msg != 2345)
         return;
 
       try
@@ -190,9 +194,9 @@ namespace SuperMemoAssistant.Hooks.InjectLib
             break;
         }
       }
-      catch (Exception ex)
+      catch (Exception)
       {
-        throw;
+        // Ignored
       }
     }
 

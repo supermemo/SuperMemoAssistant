@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 15:25
-// Modified On:  2018/12/27 20:03
+// Modified On:  2018/12/30 15:48
 // Modified By:  Alexis
 
 #endregion
@@ -49,20 +49,22 @@ namespace SuperMemoAssistant.Services
     public static ISuperMemoAssistant SMA { get; set; }
 
     public static UIA3Automation UIAutomation { get; } = new UIA3Automation();
+    
+    public static IKeyboardHotKeyService KeyboardHotKeyLegacy { get; set; }
+    public static IKeyboardHookService   KeyboardHotKey       { get; set; }
 
     #endregion
   }
 
   public static class Svc<T>
+    where T : ISMAPlugin
   {
     #region Constants & Statics
 
-    public static IKeyboardHotKeyService    KeyboardHotKeyLegacy { get; set; }
-    public static IKeyboardHookService      KeyboardHotKey       { get; set; }
-    public static PluginCollectionFSService CollectionFS         { get; set; }
-    public static ConfigurationService      Configuration        { get; set; }
+    public static PluginCollectionFSService CollectionFS  { get; set; }
+    public static ConfigurationService      Configuration { get; set; }
 
-    public static ISMAPlugin PluginContext { get; set; }
+    public static T Plugin { get; set; }
 
     #endregion
   }

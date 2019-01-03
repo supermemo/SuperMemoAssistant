@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/12 01:26
-// Modified On:  2018/12/23 06:26
+// Modified On:  2018/12/30 14:39
 // Modified By:  Alexis
 
 #endregion
@@ -39,6 +39,7 @@ using System.Runtime.Remoting;
 using System.Threading;
 using System.Threading.Tasks;
 using EasyHook;
+using Sentry;
 
 // ReSharper disable ClassNeverInstantiated.Global
 
@@ -67,7 +68,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     protected AutoResetEvent       DataAvailableEvent { get; set; }
     protected ReaderWriterLockSlim RWLock             { get; } = new ReaderWriterLockSlim();
 
-    protected ConcurrentQueue<(string, object[])> DataQueue { get; set; } = new ConcurrentQueue<(string, object[])>();
+    protected ConcurrentQueue<(HookedFunction, object[])> DataQueue { get; set; } = new ConcurrentQueue<(HookedFunction, object[])>();
 
     #endregion
 
@@ -82,7 +83,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       Instance           = this;
       DataAvailableEvent = new AutoResetEvent(false);
 
-      //Debugger.Launch();
+      SentryInstance = SentrySdk.Init("https://a63c3dad9552434598dae869d2026696@sentry.io/1362046");
 
       // TODO: Switch to WCF DuplexClientBase
       Callback = (SMHookCallback)RemoteHooking.IpcConnectClient<MarshalByRefObject>(HookConst.ChannelName);
@@ -97,6 +98,8 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
 
     #region Properties & Fields - Public
+
+    public IDisposable SentryInstance { get; }
 
     public SMHookCallback Callback { get; set; }
 
@@ -144,7 +147,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
           RemoteHooking.WakeUpProcess();
 
-          smHooks.InstallWndProcHook();
+          Callback.SetWndProcHookAddr(smHooks.GetWndProcNativeWrapperAddr());
         }
         catch (Exception ex)
         {
@@ -157,12 +160,12 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         {
           DataAvailableEvent.WaitOne();
 
-          Queue<(string, object[])> localQueue;
+          Queue<(HookedFunction, object[])> localQueue;
           RWLock.EnterWriteLock();
 
           try
           {
-            localQueue = new Queue<(string, object[])>(DataQueue.Count);
+            localQueue = new Queue<(HookedFunction, object[])>(DataQueue.Count);
 
             while (DataQueue.TryDequeue(out var data))
               localQueue.Enqueue(data);
@@ -207,8 +210,6 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         try
         {
           smHooks?.Dispose();
-          /*SMWndProc.Disable();
-          SMWndProc.Dispose();*/
         }
         catch (Exception ex)
         {
@@ -240,6 +241,15 @@ namespace SuperMemoAssistant.Hooks.InjectLib
             // ignored
           }
         }
+
+        try
+        {
+          SentryInstance.Dispose();
+        }
+        catch
+        {
+          // ignored
+        }
       }
     }
 
@@ -247,32 +257,32 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     {
       LocalHooks.AddRange(IOHooks.InstallHooks());
 
-      foreach (LocalHook lc in LocalHooks)
-        lc.ThreadACL.SetExclusiveACL(new[] { 0 });
+      foreach (LocalHook lh in LocalHooks)
+        lh.ThreadACL.SetExclusiveACL(new[] { 0 });
     }
 
-    protected void ProcessData(string   funcName,
-                               object[] datas)
+    protected void ProcessData(HookedFunction func,
+                               object[]       datas)
     {
-      switch (funcName)
+      switch (func)
       {
-        case "CreateFile":
+        case HookedFunction.CreateFile:
           Callback.OnFileCreate((string)datas[0],
                                 (IntPtr)datas[1]);
           break;
 
-        case "SetFilePointer":
+        case HookedFunction.SetFilePointer:
           Callback.OnFileSeek((IntPtr)datas[0],
                               (UInt32)datas[1]);
           break;
 
-        case "WriteFile":
+        case HookedFunction.WriteFile:
           Callback.OnFileWrite((IntPtr)datas[0],
                                (Byte[])datas[1],
                                (UInt32)datas[2]);
           break;
 
-        case "CloseHandle":
+        case HookedFunction.CloseHandle:
           Callback.OnFileClose((IntPtr)datas[0]);
           break;
       }
@@ -328,14 +338,15 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       }
     }
 
-    public void Enqueue(string          funcName,
+
+    public void Enqueue(HookedFunction  func,
                         params object[] datas)
     {
       RWLock.EnterReadLock();
 
       try
       {
-        DataQueue.Enqueue((funcName, datas));
+        DataQueue.Enqueue((func, datas));
         DataAvailableEvent.Set();
       }
       finally
@@ -345,5 +356,13 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     }
 
     #endregion
+  }
+
+  public enum HookedFunction
+  {
+    CreateFile,
+    CloseHandle,
+    SetFilePointer,
+    WriteFile
   }
 }

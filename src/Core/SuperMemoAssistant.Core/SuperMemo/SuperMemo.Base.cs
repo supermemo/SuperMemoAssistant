@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/12 18:26
-// Modified On:  2018/12/27 20:04
+// Modified On:  2019/01/01 22:47
 // Modified By:  Alexis
 
 #endregion
@@ -37,7 +37,7 @@ using Anotar.Serilog;
 using Process.NET;
 using Process.NET.Assembly;
 using Process.NET.Memory;
-using Process.NET.Native.Types;
+using Process.NET.Utilities;
 using SuperMemoAssistant.Hooks;
 using SuperMemoAssistant.Hooks.SuperMemo;
 using SuperMemoAssistant.Interop;
@@ -85,8 +85,7 @@ namespace SuperMemoAssistant.SuperMemo
 
       SMHookEngine.Instance.SignalWakeUp();
     }
-
-    /// <inheritdoc />
+    
     public virtual void Dispose()
     {
       IgnoreUserConfirmationPtr = null;
@@ -160,6 +159,14 @@ namespace SuperMemoAssistant.SuperMemo
                   "Exception caught in InjectLib.");
     }
 
+    /// <inheritdoc />
+    public void SetWndProcHookAddr(int addr)
+    {
+      WndProcHookAddr = addr;
+    }
+
+    private int WndProcHookAddr { get; set; }
+
     /// <param name="wParam"></param>
     /// <inheritdoc />
     public bool OnUserMessage(int wParam)
@@ -201,14 +208,26 @@ namespace SuperMemoAssistant.SuperMemo
     {
       MainThreadReady.Reset();
 
+      ExecCtxt.ExecutionResult     = 0;
       ExecCtxt.ExecutionMethod     = method;
       ExecCtxt.ExecutionParameters = parameters;
 
-      SMProcess.WindowFactory.MainWindow.PostMessage(WindowsMessages.User,
-                                                     new IntPtr((int)InjectLibMessages.ExecuteOnMainThread),
-                                                     new IntPtr(0));
+      var smMain = SMProcess.Memory.Read<int>(SMNatives.TSMMain.InstancePtr);
+      var handle = SMProcess.Memory.Read<IntPtr>(new IntPtr(smMain + SMNatives.TControl.HandleOffset));
+
+      var restoreWndProcAddr = SMNatives.TApplication.TApplicationOnMessagePtr.Read<int>(SMProcess.Memory);
+      SMNatives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
+                                                                 WndProcHookAddr);
+
+      WindowHelper.PostMessage(handle,
+                               2345,
+                               new IntPtr((int)InjectLibMessages.ExecuteOnMainThread),
+                               new IntPtr(0));
 
       SMA.Instance.SMMgmt.MainThreadReady.WaitOne(AssemblyFactory.ExecutionTimeout);
+      
+      SMNatives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
+                                                                 restoreWndProcAddr);
 
       ExecCtxt.ExecutionParameters = null;
 
@@ -353,21 +372,5 @@ namespace SuperMemoAssistant.SuperMemo
 
       #endregion
     }
-
-
-    //protected ConcurrentDictionary<int, (IntPtr, dynamic[])> MainThreadRequests { get; } =
-    //  new ConcurrentDictionary<int, (IntPtr, dynamic[])>();
-    //protected int MainThreadRequestIdx {get; set;} = 0;
-    //public TRet RunOnMainThread<TRet>(IntPtr           baseAddr,
-    //                                  params dynamic[] args)
-    //{
-    //  MainThreadRequests[MainThreadRequestIdx++] = (baseAddr, args);
-    //  MainThreadReady.Reset();
-    //  MainThreadReleased.Reset();
-
-    //  SMProcess.WindowFactory.MainWindow.PostMessage(WindowsMessages.User,
-    //                                                 new IntPtr(123456),
-    //                                                 new IntPtr(0));
-    //}
   }
 }

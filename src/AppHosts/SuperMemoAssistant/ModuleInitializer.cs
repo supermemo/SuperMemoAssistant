@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/08 16:29
-// Modified On:  2018/12/10 12:51
+// Modified On:  2018/12/30 14:32
 // Modified By:  Alexis
 
 #endregion
@@ -30,6 +30,7 @@
 
 
 
+using System;
 using SuperMemoAssistant.Services.IO;
 using SuperMemoAssistant.Sys;
 
@@ -37,12 +38,22 @@ namespace SuperMemoAssistant
 {
   public static class ModuleInitializer
   {
+    #region Constants & Statics
+
+    public static IDisposable SentryInstance { get; private set; }
+
+    #endregion
+
+
+
+
     #region Methods
 
     public static void Initialize()
     {
       InitOnLoad.Initialize();
 
+      SentryInstance = Services.Sentry.Initialize();
       Logger.Instance.Initialize();
     }
 

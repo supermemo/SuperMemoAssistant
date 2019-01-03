@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/30 22:06
-// Modified On:  2018/12/10 12:52
+// Created On:   2019/01/01 16:47
+// Modified On:  2019/01/01 17:35
 // Modified By:  Alexis
 
 #endregion
@@ -30,13 +30,35 @@
 
 
 
-namespace SuperMemoAssistant
-{
-  public static class ModuleInitializer
-  {
-    #region Methods
+using Forge.Forms;
+using SuperMemoAssistant.UI;
 
-    public static void Initialize() { }
+namespace SuperMemoAssistant.PluginsHost.UI
+{
+  internal class ElementPickerInterceptor : IActionInterceptor
+  {
+    #region Methods Impl
+
+    /// <inheritdoc />
+    public IActionContext InterceptAction(IActionContext ctxt)
+    {
+      if (ctxt.Action is ElementPicker.ElementPickerAction == false
+        || ctxt.Model is IElementPickerCallback == false)
+        return null;
+
+      var m = (IElementPickerCallback)ctxt.Model;
+
+      var elemPicker = new ElementPicker();
+
+      if (elemPicker.ShowDialog() ?? false)
+      {
+        m.SetElement(elemPicker.SelectedElement);
+
+        return ctxt;
+      }
+
+      return null;
+    }
 
     #endregion
   }

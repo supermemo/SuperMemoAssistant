@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:29
-// Modified On:  2018/12/27 16:46
+// Modified On:  2018/12/30 12:57
 // Modified By:  Alexis
 
 #endregion
@@ -35,7 +35,6 @@ using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Services.IO.Devices;
@@ -108,7 +107,7 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
 
     #region Properties & Fields - Public
 
-    public ConcurrentDictionary<HotKey, Func<bool>> HotKeys { get; } = new ConcurrentDictionary<HotKey, Func<bool>>();
+    public ConcurrentDictionary<HotKey, Action> HotKeys { get; } = new ConcurrentDictionary<HotKey, Action>();
 
     #endregion
 
@@ -122,8 +121,8 @@ namespace SuperMemoAssistant.PluginsHost.Services.Devices
       Dispose(false);
     }
 
-    public void RegisterHotKey(HotKey     hotkey,
-                               Func<bool> callback)
+    public void RegisterHotKey(HotKey hotkey,
+                               Action callback)
     {
       HotKeys[hotkey] = callback;
     }

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/10/28 15:36
+// Modified On:  2019/01/01 18:09
 // Modified By:  Alexis
 
 #endregion
@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperMemoAssistant.Interop.SuperMemo.Components;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Elements.Types
@@ -44,6 +45,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements.Types
     int    Id      { get; }
     string Title   { get; }
     bool   Deleted { get; }
+
+    ElementType Type { get; }
 
     IComponentGroup ComponentGroup { get; }
     IElement        Template       { get; }

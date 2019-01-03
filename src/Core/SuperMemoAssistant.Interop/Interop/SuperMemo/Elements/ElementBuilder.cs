@@ -393,7 +393,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
                          string text)
         : this(html,
                text,
-               Encoding.UTF8) { }
+               Encoding.Unicode) { }
 
       public TextContent(bool     html,
                          string   text,

@@ -111,7 +111,7 @@ namespace SuperMemoAssistantHooksNativeLib {
 
 		// Calling .NET is costly, filter out messages
 		if (/* WM_QUIT */ (msgId == 0x0012) ||
-			/* WM_USER */ (msgId == 0x0400 && msgParam > 9000000))
+			/* WM_USER */ (msgId == 2345 && msgParam > 9000000))
 			callback(smMain, msgAddr, handled);
 	}
 	/*

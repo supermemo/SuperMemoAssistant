@@ -65,6 +65,8 @@ namespace SuperMemoAssistant.Hooks
 
     public abstract void OnException(Exception ex);
 
+    public abstract void SetWndProcHookAddr(int addr);
+
     public abstract bool OnUserMessage(int wParam);
 
     public abstract void GetExecutionParameters(out int       method,

@@ -103,7 +103,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         if (SMInject.Instance.TargetFilePaths.Contains(inFileName.ToLowerInvariant()))
         {
           SMInject.Instance.TargetHandles.Add(result);
-          SMInject.Instance.Enqueue("CreateFile",
+          SMInject.Instance.Enqueue(HookedFunction.CreateFile,
                                     inFileName,
                                     result);
         }
@@ -132,7 +132,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       try
       {
         if (SMInject.Instance.TargetHandles.Contains(inFileHandle))
-          SMInject.Instance.Enqueue("SetFilePointer",
+          SMInject.Instance.Enqueue(HookedFunction.SetFilePointer,
                                     inFileHandle,
                                     position);
       }
@@ -161,7 +161,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
                        0,
                        (int)inNumberOfBytesToWrite);
 
-          SMInject.Instance.Enqueue("WriteFile",
+          SMInject.Instance.Enqueue(HookedFunction.WriteFile,
                                     inFileHandle,
                                     buffer,
                                     inNumberOfBytesToWrite);
@@ -189,7 +189,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         if (SMInject.Instance.TargetHandles.Contains(inFileHandle))
         {
           SMInject.Instance.TargetHandles.Remove(inFileHandle);
-          SMInject.Instance.Enqueue("CloseHandle",
+          SMInject.Instance.Enqueue(HookedFunction.CloseHandle,
                                     inFileHandle);
         }
       }

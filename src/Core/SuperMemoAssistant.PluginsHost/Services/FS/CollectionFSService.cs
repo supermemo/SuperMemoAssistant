@@ -44,6 +44,7 @@ using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Services.IO.FS;
 using SuperMemoAssistant.Sys.IO.FS;
+// ReSharper disable PossibleMultipleEnumeration
 
 namespace SuperMemoAssistant.PluginsHost.Services.FS
 {
@@ -54,7 +55,7 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
 
     protected ISuperMemoAssistant SMA { get; set; }
 
-    protected LiteCollection<CollectionFS_File> DbFiles { get; set; }
+    protected LiteCollection<CollectionFSFile> DbFiles { get; set; }
 
     #endregion
 
@@ -117,13 +118,13 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
       if (elementId <= 0)
         return null;
 
-      CollectionFS_File dbFile = null;
+      CollectionFSFile dbFile = null;
 
       try
       {
         extension = extension?.TrimStart('.');
 
-        dbFile = new CollectionFS_File
+        dbFile = new CollectionFSFile
         {
           ElementId = elementId,
           Extension = extension ?? string.Empty,
@@ -153,7 +154,8 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
       }
       catch (Exception ex)
       {
-        // TODO: Log
+        LogTo.Error(ex,
+                    "CollectionFS: Create threw an exception.");
 
         try
         {
@@ -162,10 +164,11 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
         }
         catch (Exception dbEx)
         {
-          // TODO: Log
+          LogTo.Error(dbEx,
+                      "CollectionFS: Create threw an exception. Exception's DB cleanup code threw an exception");
         }
 
-        throw ex;
+        throw;
       }
     }
 
@@ -174,7 +177,7 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
     {
       try
       {
-        CollectionFS_File dbFile = DbFiles.FindById(id);
+        CollectionFSFile dbFile = DbFiles.FindById(id);
 
         if (dbFile == null)
           return false;
@@ -187,7 +190,8 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
       }
       catch (Exception ex)
       {
-        // TODO: Log
+        LogTo.Error(ex,
+                    "CollectionFS: DeleteById threw an exception.");
         return false;
       }
     }
@@ -219,8 +223,7 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
 
 
     #region Methods
-
-    /// <inheritdoc />
+    
     public void Dispose()
     {
       DbFiles = null;
@@ -254,9 +257,9 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
       return count;
     }
 
-    private int Delete(IEnumerable<CollectionFS_File> dbFiles)
+    private int Delete(IEnumerable<CollectionFSFile> dbFiles)
     {
-      var toDelete = new List<CollectionFS_File>(dbFiles.Count());
+      var toDelete = new List<CollectionFSFile>(dbFiles.Count());
 
       foreach (var file in dbFiles)
         try
@@ -276,7 +279,7 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
                                      toDelete.Select(f => new BsonValue(f.Id))));
     }
 
-    private CollectionFile FromDbFile(CollectionFS_File dbFile)
+    private CollectionFile FromDbFile(CollectionFSFile dbFile)
     {
       string filePath = GetFilePath(dbFile);
 
@@ -290,11 +293,11 @@ namespace SuperMemoAssistant.PluginsHost.Services.FS
 
     private void LoadDb()
     {
-      DbFiles = SystemDb.Instance.GetCollection<CollectionFS_File>();
+      DbFiles = SystemDb.Instance.GetCollection<CollectionFSFile>();
       DbFiles.EnsureIndex(f => f.ElementId);
     }
 
-    private string GetFilePath(CollectionFS_File dbFile)
+    private string GetFilePath(CollectionFSFile dbFile)
     {
       return SMA.Collection.GetSMAElementsFilePath(dbFile.ElementId,
                                                    $"{dbFile.Id}{GetFileExtension(dbFile.Extension)}");

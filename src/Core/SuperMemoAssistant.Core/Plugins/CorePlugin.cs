@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/01 15:25
-// Modified On:  2019/01/04 21:21
+// Created On:   2019/01/05 03:57
+// Modified On:  2019/01/05 03:58
 // Modified By:  Alexis
 
 #endregion
@@ -30,43 +30,27 @@
 
 
 
-using FlaUI.UIA3;
-using Process.NET;
 using SuperMemoAssistant.Interop.Plugins;
-using SuperMemoAssistant.Interop.SuperMemo;
-using SuperMemoAssistant.Services.Configuration;
-using SuperMemoAssistant.Services.IO.Devices;
-using SuperMemoAssistant.Services.IO.FS;
 
-// ReSharper disable StaticMemberInGenericType
-// ReSharper disable UnusedTypeParameter
-
-namespace SuperMemoAssistant.Services
+namespace SuperMemoAssistant.Plugins
 {
-  public static class Svc
+  /// <summary>Dummy plugin</summary>
+  public class CorePlugin : SMAPluginBase<CorePlugin>
   {
-    #region Constants & Statics
+    #region Properties Impl - Public
 
-    public static ISuperMemoAssistant SMA { get; set; }
-    public static IProcess            SM => SMA.SMProcess;
-
-    public static UIA3Automation UIAutomation { get; } = new UIA3Automation();
-
-    public static IKeyboardHotKeyService KeyboardHotKeyLegacy { get; set; }
-    public static IKeyboardHookService   KeyboardHotKey       { get; set; }
+    /// <inheritdoc />
+    public override string Name => "Core";
 
     #endregion
-  }
 
-  public static class Svc<T>
-    where T : ISMAPlugin
-  {
-    #region Constants & Statics
 
-    public static PluginCollectionFSService CollectionFS  { get; set; }
-    public static ConfigurationService      Configuration { get; set; }
 
-    public static T Plugin { get; set; }
+
+    #region Methods Impl
+
+    /// <inheritdoc />
+    protected override void OnInit() { }
 
     #endregion
   }

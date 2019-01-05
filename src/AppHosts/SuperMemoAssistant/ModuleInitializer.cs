@@ -31,7 +31,15 @@
 
 
 using System;
+using SuperMemoAssistant.Plugins;
+using SuperMemoAssistant.Services;
+using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO;
+using SuperMemoAssistant.SuperMemo;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.Components;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
 using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant
@@ -51,7 +59,26 @@ namespace SuperMemoAssistant
 
     public static void Initialize()
     {
-      InitOnLoad.Initialize();
+      //InitOnLoad.Initialize();
+
+      Svc<CorePlugin>.Plugin        = new CorePlugin();
+      Svc<CorePlugin>.Configuration = new ConfigurationService(Svc<CorePlugin>.Plugin);
+
+      // ReSharper disable once NotAccessedVariable
+      // ReSharper disable once JoinDeclarationAndInitializer
+      object tmp;
+      tmp = ComponentRegistry.Instance;
+      tmp = ElementRegistry.Instance;
+      tmp = BinaryRegistry.Instance;
+      tmp = ConceptRegistry.Instance;
+      tmp = ImageRegistry.Instance;
+      tmp = SoundRegistry.Instance;
+      tmp = TemplateRegistry.Instance;
+      tmp = TextRegistry.Instance;
+      tmp = VideoRegistry.Instance;
+      tmp = ElementWdw.Instance;
+      tmp = PluginMgr.Instance;
+      tmp = SMA.Instance;
 
       SentryInstance = Services.Sentry.Initialize();
       Logger.Instance.Initialize();

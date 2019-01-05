@@ -31,6 +31,7 @@
 
 
 using System;
+using System.Collections.Generic;
 
 namespace SuperMemoAssistant.Hooks
 {
@@ -48,5 +49,8 @@ namespace SuperMemoAssistant.Hooks
                                 out dynamic[] parameters);
 
     void SetExecutionResult(int result);
+    
+    Dictionary<string, int> GetPatternsHintAddresses();
+    void SetPatternsHintAddresses(Dictionary<string, int> hintAddrs);
   }
 }

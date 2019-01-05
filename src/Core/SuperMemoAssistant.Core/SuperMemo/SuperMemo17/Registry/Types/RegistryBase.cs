@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:13
-// Modified On:  2018/12/15 00:32
+// Modified On:  2019/01/04 21:26
 // Modified By:  Alexis
 
 #endregion
@@ -43,14 +43,12 @@ using Anotar.Serilog;
 using Process.NET.Assembly;
 using Process.NET.Types;
 using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Hooks.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
 using SuperMemoAssistant.SuperMemo.Hooks;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members;
-using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.Sys.Collections;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
@@ -87,10 +85,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected abstract string RtxFileName { get; }
     protected abstract string RtfFileName { get; }
 
-
-    protected          NativeFunc<int, IntPtr, DelphiUString>                AddMemberFunc  { get; set; }
-    protected          NativeFunc<int, IntPtr, DelphiUString, DelphiUString> ImportFileFunc { get; set; }
-    protected abstract IntPtr                                                RegistryPtr    { get; }
+    protected abstract IntPtr RegistryPtr { get; }
 
     protected ManualResetEvent ImportElementAddedEvent { get; set; } = new ManualResetEvent(true);
     protected int              ImportElementId         { get; set; } = -1;
@@ -116,9 +111,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override void Initialize()
     {
       CommitFromFiles();
-
-      SMA.Instance.OnSMStartedEvent += OnSMStartedEvent;
-      SMA.Instance.OnSMStoppedEvent += OnSMStoppedEvent;
     }
 
     protected override void Cleanup()
@@ -221,8 +213,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     {
       try
       {
-        return AddMemberFunc(RegistryPtr,
-                             new DelphiUString(textOrPath));
+        return SM17Natives.Instance.Registry.AddMember.Invoke(
+          RegistryPtr,
+          new DelphiUString(textOrPath));
       }
       catch (Exception ex)
       {
@@ -241,9 +234,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
         SMA.Instance.IgnoreUserConfirmation = true;
 
-        int ret = ImportFileFunc(RegistryPtr,
-                                 new DelphiUString(textOrPath),
-                                 new DelphiUString(registryName));
+        int ret = SM17Natives.Instance.Registry.ImportFile.Invoke(
+          RegistryPtr,
+          new DelphiUString(textOrPath),
+          new DelphiUString(registryName));
 
         if (ret > 0)
         {
@@ -266,25 +260,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
         SMA.Instance.IgnoreUserConfirmation = false;
         ImportElementId                     = -1;
       }
-    }
-
-    private void OnSMStartedEvent(object        sender,
-                                  SMProcessArgs e)
-    {
-      var funcScanner = new NativeFuncScanner(SMA.Instance.SMProcess,
-                                              Process.NET.Native.Types.CallingConventions.Register);
-
-      AddMemberFunc  = funcScanner.GetNativeFunc<int, IntPtr, DelphiUString>(SMNatives.TRegistry.AddMember);
-      ImportFileFunc = funcScanner.GetNativeFunc<int, IntPtr, DelphiUString, DelphiUString>(SMNatives.TRegistry.ImportFile);
-
-      funcScanner.Cleanup();
-    }
-
-    private void OnSMStoppedEvent(object        sender,
-                                  SMProcessArgs e)
-    {
-      AddMemberFunc  = null;
-      ImportFileFunc = null;
     }
 
 

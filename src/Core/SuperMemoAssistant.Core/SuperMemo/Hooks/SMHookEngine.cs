@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:11
-// Modified On:  2018/12/23 07:02
+// Modified On:  2019/01/04 22:51
 // Modified By:  Alexis
 
 #endregion
@@ -44,6 +44,7 @@ using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Hooks;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.SuperMemo.SuperMemo17;
 using SuperMemoAssistant.Sys.Exceptions;
 
 namespace SuperMemoAssistant.SuperMemo.Hooks
@@ -140,7 +141,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
       StopIPCServer();
     }
-    
+
     public override void SetWndProcHookAddr(int addr)
     {
       SystemCallback.SetWndProcHookAddr(addr);
@@ -161,6 +162,17 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     public override void SetExecutionResult(int result)
     {
       SystemCallback.SetExecutionResult(result);
+    }
+
+    public override Dictionary<string, int> GetPatternsHintAddresses()
+    {
+      return SMA.Instance.Config.PatternsHintAddresses;
+    }
+
+    public override void SetPatternsHintAddresses(Dictionary<string, int> hintAddrs)
+    {
+      SMA.Instance.Config.PatternsHintAddresses = hintAddrs;
+      SMA.Instance.SaveConfig(false);
     }
 
 
@@ -260,15 +272,18 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
         {
           StopIPCServer();
 
-          var ex = new HookException("Hook setup failed",
+          var ex = new HookException("Hook setup failed: " + HookException?.Message,
                                      HookException);
           HookException = null;
 
           throw ex;
         }
 
-        return new ProcessSharp(pId,
-                                Process.NET.Memory.MemoryType.Remote);
+        return new ProcessSharp<SM17Natives>(
+          pId,
+          Process.NET.Memory.MemoryType.Remote,
+          true,
+          SMA.Instance.Config.PatternsHintAddresses);
       }
       finally
       {

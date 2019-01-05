@@ -31,6 +31,7 @@
 
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using EasyHook;
@@ -151,11 +152,14 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       out IntPtr outNumberOfBytesWritten,
       IntPtr     inOutOverlapped)
     {
+      byte[] buffer = null;
+
       try
       {
         if (SMInject.Instance.TargetHandles.Contains(inFileHandle))
         {
-          byte[] buffer = new byte[inNumberOfBytesToWrite];
+          buffer = ArrayPool<byte>.Shared.Rent((int)inNumberOfBytesToWrite);
+
           Marshal.Copy(inBuffer,
                        buffer,
                        0,
@@ -170,6 +174,9 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       catch (Exception ex)
       {
         SMInject.Instance.OnException(ex);
+
+        if (buffer != null)
+          ArrayPool<byte>.Shared.Return(buffer);
       }
 
       return WriteFile(

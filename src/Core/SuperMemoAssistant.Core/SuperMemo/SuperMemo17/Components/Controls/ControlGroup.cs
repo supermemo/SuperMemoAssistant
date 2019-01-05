@@ -37,7 +37,6 @@ using System.Linq;
 using Process.NET;
 using Process.NET.Memory;
 using Process.NET.Types;
-using SuperMemoAssistant.Hooks.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
 using SuperMemoAssistant.Sys;
@@ -49,16 +48,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
     #region Constants & Statics
 
     private const string DisposedException = "ControlGroup is Disposed";
-
-
-    //private static NativeFunc<int, IntPtr, int>      GetTypeFunc             { get; set; }
-    private static NativeFunc<string, IntPtr, int>          GetTextFunc             { get; set; }
-    private static NativeAction<IntPtr, int, DelphiUString> SetTextMethod           { get; set; }
-    private static NativeFunc<int, IntPtr, int>             GetTextRegMemberFunc    { get; set; }
-    private static NativeAction<IntPtr, int, int>           SetTextRegMemberMethod  { get; set; }
-    private static NativeFunc<int, IntPtr, int>             GetImageRegMemberFunc   { get; set; }
-    private static NativeAction<IntPtr, int, int>           SetImageRegMemberMethod { get; set; }
-
+    
     #endregion
 
 
@@ -90,9 +80,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
       CountPtr            = smProcess[SMNatives.TElWind.TComponentData.ComponentCountPtr];
       FocusedControlNoPtr = smProcess[SMNatives.TElWind.FocusedComponentPtr];
       IsModifiedPtr       = smProcess[SMNatives.TElWind.TComponentData.IsModifiedPtr];
-
-      if (GetTextFunc == null)
-        SetupNatives(smProcess);
     }
 
 
@@ -296,9 +283,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
         throw new InvalidOperationException(DisposedException);
       
       // TODO: Move to SMInject
-      return GetTextFunc(new IntPtr(_componentDataAddr),
-                         control.Id + 1,
-                         _smProcess.ThreadFactory.MainThread);
+      //return GetTextFunc(new IntPtr(_componentDataAddr),
+      //                   control.Id + 1,
+      //                   _smProcess.ThreadFactory.MainThread);
+
+      throw new NotImplementedException();
     }
 
     public bool SetText(IControl control,
@@ -385,22 +374,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
                                                      new IntPtr(_componentDataAddr),
                                                      control.Id + 1,
                                                      member) == 1;
-    }
-
-    private void SetupNatives(IProcess smProcess)
-    {
-      var funcScanner = new NativeFuncScanner(smProcess,
-                                              Process.NET.Native.Types.CallingConventions.Register);
-
-      //GetTypeFunc             = funcScanner.GetNativeFunc<IntPtr, int, int>(SMNatives.TElWind.TComponentData.GetTypeCallSig);
-      GetTextFunc             = funcScanner.GetNativeFunc<string, IntPtr, int>(SMNatives.TElWind.TComponentData.GetTextCallSig);
-      SetTextMethod           = funcScanner.GetNativeAction<IntPtr, int, DelphiUString>(SMNatives.TElWind.TComponentData.SetTextCallSig);
-      GetTextRegMemberFunc    = funcScanner.GetNativeFunc<int, IntPtr, int>(SMNatives.TElWind.TComponentData.GetTextRegMemberCallSig);
-      SetTextRegMemberMethod  = funcScanner.GetNativeAction<IntPtr, int, int>(SMNatives.TElWind.TComponentData.SetTextRegMemberCallSig);
-      GetImageRegMemberFunc   = funcScanner.GetNativeFunc<int, IntPtr, int>(SMNatives.TElWind.TComponentData.GetImageRegMemberCallSig);
-      SetImageRegMemberMethod = funcScanner.GetNativeAction<IntPtr, int, int>(SMNatives.TElWind.TComponentData.SetImageRegMemberCallSig);
-
-      funcScanner.Cleanup();
     }
 
     #endregion

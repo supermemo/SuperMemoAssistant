@@ -109,8 +109,8 @@ namespace SuperMemoAssistant.Sys
       if (scanRes.Found == false)
         return null;
 
-      return (t) => new Action(() => Execute(scanRes.BaseAddress,
-                                             t)).ExceptionToDefault();
+      return t => new Action(() => Execute(scanRes.BaseAddress,
+                                           t)).ExceptionToDefault();
     }
 
     public NativeAction<T1> GetNativeAction<T1>(IMemoryPattern pattern)

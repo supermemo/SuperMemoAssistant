@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/12/07 14:13
+// Modified On:  2019/01/04 21:21
 // Modified By:  Alexis
 
 #endregion
@@ -67,7 +67,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo
   public interface ISuperMemoUI
   {
     //IMainBarWdw     MainBarWindow     { get; }
-    IElementWdw     ElementWindow     { get; }
+    IElementWdw ElementWindow { get; }
     //IElementDataWdw ElementDataWindow { get; }
   }
 }

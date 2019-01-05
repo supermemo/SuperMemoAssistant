@@ -73,6 +73,10 @@ namespace SuperMemoAssistant.Hooks
                                                 out dynamic[] parameters);
 
     public abstract void SetExecutionResult(int result);
+    
+    public abstract Dictionary<string, int> GetPatternsHintAddresses();
+
+    public abstract void SetPatternsHintAddresses(Dictionary<string, int> hintAddrs);
 
     public abstract IEnumerable<string> GetTargetFilePaths();
 

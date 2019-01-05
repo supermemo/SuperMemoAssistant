@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/12 18:26
-// Modified On:  2019/01/01 22:47
+// Modified On:  2019/01/05 04:07
 // Modified By:  Alexis
 
 #endregion
@@ -39,7 +39,6 @@ using Process.NET.Assembly;
 using Process.NET.Memory;
 using Process.NET.Utilities;
 using SuperMemoAssistant.Hooks;
-using SuperMemoAssistant.Hooks.SuperMemo;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
@@ -59,6 +58,8 @@ namespace SuperMemoAssistant.SuperMemo
 
 
     protected ExecutionContext ExecCtxt { get; } = new ExecutionContext();
+
+    private int WndProcHookAddr { get; set; }
 
     #endregion
 
@@ -85,7 +86,7 @@ namespace SuperMemoAssistant.SuperMemo
 
       SMHookEngine.Instance.SignalWakeUp();
     }
-    
+
     public virtual void Dispose()
     {
       IgnoreUserConfirmationPtr = null;
@@ -165,10 +166,7 @@ namespace SuperMemoAssistant.SuperMemo
       WndProcHookAddr = addr;
     }
 
-    private int WndProcHookAddr { get; set; }
-
     /// <param name="wParam"></param>
-    /// <inheritdoc />
     public bool OnUserMessage(int wParam)
     {
       switch ((InjectLibMessages)wParam)
@@ -193,6 +191,16 @@ namespace SuperMemoAssistant.SuperMemo
     {
       ExecCtxt.ExecutionResult = result;
       MainThreadReady.Set();
+    }
+
+    public Dictionary<string, int> GetPatternsHintAddresses()
+    {
+      throw new NotImplementedException();
+    }
+
+    public void SetPatternsHintAddresses(Dictionary<string, int> hintAddrs)
+    {
+      throw new NotImplementedException();
     }
 
     #endregion
@@ -225,7 +233,7 @@ namespace SuperMemoAssistant.SuperMemo
                                new IntPtr(0));
 
       SMA.Instance.SMMgmt.MainThreadReady.WaitOne(AssemblyFactory.ExecutionTimeout);
-      
+
       SMNatives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
                                                                  restoreWndProcAddr);
 

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/08 13:06
-// Modified On:  2018/12/13 12:51
+// Modified On:  2019/01/05 04:06
 // Modified By:  Alexis
 
 #endregion
@@ -40,6 +40,7 @@ using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.Plugins;
 using SuperMemoAssistant.Services;
 using SuperMemoAssistant.SuperMemo.SuperMemo17;
 using SuperMemoAssistant.Sys;
@@ -95,6 +96,8 @@ namespace SuperMemoAssistant.SuperMemo
     protected SMA()
     {
       Svc.SMA = this;
+
+      Config = LoadConfig();
       //StartMonitoring();
     }
 
@@ -105,6 +108,15 @@ namespace SuperMemoAssistant.SuperMemo
 
       SMMgmt?.Dispose();
     }
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public CoreCfg Config { get; set; }
 
     #endregion
 
@@ -191,6 +203,19 @@ namespace SuperMemoAssistant.SuperMemo
 
     #region Methods
 
+    public CoreCfg LoadConfig()
+    {
+      return Svc<CorePlugin>.Configuration.Load<CoreCfg>().Result ?? new CoreCfg();
+    }
+
+    public void SaveConfig(bool sync)
+    {
+      var task = Svc<CorePlugin>.Configuration.Save<CoreCfg>(Config);
+
+      if (sync)
+        task.Wait();
+    }
+
     public void OnSMStartingImpl(SuperMemoBase smMgmt)
     {
       SMMgmt = smMgmt;
@@ -211,6 +236,8 @@ namespace SuperMemoAssistant.SuperMemo
     public void OnSMStartedImpl()
     {
       SMMgmt.OnSMStoppedEvent += OnSMStoppedImpl;
+
+      SaveConfig(false);
 
       try
       {

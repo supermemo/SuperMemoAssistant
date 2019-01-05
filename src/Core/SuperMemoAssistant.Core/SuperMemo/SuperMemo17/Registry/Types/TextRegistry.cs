@@ -32,10 +32,10 @@
 
 using System;
 using System.Threading.Tasks;
-using SuperMemoAssistant.Hooks.SuperMemo;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
+using SuperMemoAssistant.Services;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members;
 using SuperMemoAssistant.Sys;
@@ -59,7 +59,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override string MemFileName => SMConst.Files.TextMemFileName;
     protected override string RtxFileName => SMConst.Files.TextRtxFileName;
     protected override string RtfFileName => SMConst.Files.TextRtfFileName;
-    protected override IntPtr RegistryPtr => new IntPtr(SMNatives.TRegistry.TextRegistryInstance.Read<int>(SMA.Instance.SMProcess.Memory));
+    protected override IntPtr RegistryPtr => new IntPtr(SMNatives.TRegistry.TextRegistryInstance.Read<int>(Svc.SM.Memory));
 
     #endregion
 

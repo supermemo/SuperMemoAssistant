@@ -34,7 +34,6 @@ using System;
 using Anotar.Serilog;
 using Process.NET.Memory;
 using Process.NET.Types;
-using SuperMemoAssistant.Hooks.SuperMemo;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
@@ -70,22 +69,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     protected IPointer CurrentConceptIdPtr { get; set; }
     protected IPointer CurrentRootIdPtr    { get; set; }
     protected IPointer CurrentHookIdPtr    { get; set; }
-
-    protected NativeFunc<bool, IntPtr>               PasteArticleFunc       { get; set; }
-    protected NativeFunc<bool, IntPtr>               PasteElementFunc       { get; set; }
-    protected NativeFunc<int, IntPtr, byte, byte>    AppendElementFunc      { get; set; }
-    protected NativeFunc<int, IntPtr, DelphiUString> AddElementFromTextFunc { get; set; }
-
-    protected NativeAction<IntPtr, int> SetDefaultConceptMethod { get; set; }
-    protected NativeAction<IntPtr, int> GoToMethod              { get; set; }
-    protected NativeAction<IntPtr>      DeleteMethod            { get; set; }
-    protected NativeAction<IntPtr>      DoneMethod              { get; set; }
-
-    protected NativeAction<IntPtr, int, DelphiUString> GetTextMethod { get; set; }
-    protected NativeAction<IntPtr, int, DelphiUString> SetTextMethod { get; set; }
-
-    protected NativeAction<IntPtr, bool, DelphiUString> EnterUpdateLockMethod { get; set; }
-    protected NativeAction<IntPtr, bool>                QuitUpdateLockMethod  { get; set; }
 
     #endregion
 
@@ -355,7 +338,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     {
       try
       {
-        EnterUpdateLockMethod(ElementWdwPtr.Read<IntPtr>(),
+        SM17Natives.Instance.ElWind.EnterUpdateLock.Invoke(
+          ElementWdwPtr.Read<IntPtr>(),
                               true,
                               new DelphiUString(1));
 
@@ -373,8 +357,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     {
       try
       {
-        QuitUpdateLockMethod(ElementWdwPtr.Read<IntPtr>(),
-                             true);
+        SM17Natives.Instance.ElWind.QuitUpdateLock.Invoke(
+          ElementWdwPtr.Read<IntPtr>(),
+          true
+          );
 
         return true;
       }
@@ -407,29 +393,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     {
       if (ElementWdwPtr.Read<int>() == 0)
         return false;
-
-      var funcScanner = new NativeFuncScanner(SMProcess,
-                                              Process.NET.Native.Types.CallingConventions.Register);
-
+      
       ElementIdPtr        = SMProcess[SMNatives.TElWind.ElementIdPtr];
       CurrentConceptIdPtr = SMProcess[SMNatives.Globals.CurrentConceptIdPtr];
       CurrentRootIdPtr    = SMProcess[SMNatives.Globals.CurrentRootIdPtr];
       CurrentHookIdPtr    = SMProcess[SMNatives.Globals.CurrentHookIdPtr];
-
-      PasteArticleFunc       = funcScanner.GetNativeFunc<bool, IntPtr>(SMNatives.TElWind.PasteArticleSig);
-      PasteElementFunc       = funcScanner.GetNativeFunc<bool, IntPtr>(SMNatives.TElWind.PasteElementCallSig);
-      AppendElementFunc      = funcScanner.GetNativeFunc<int, IntPtr, byte, byte>(SMNatives.TElWind.AppendElementCallSig);
-      AddElementFromTextFunc = funcScanner.GetNativeFunc<int, IntPtr, DelphiUString>(SMNatives.TElWind.AddElementFromTextCallSig);
-
-      GoToMethod   = funcScanner.GetNativeAction<IntPtr, int>(SMNatives.TElWind.GoToElementCallSig);
-      DeleteMethod = funcScanner.GetNativeAction<IntPtr>(SMNatives.TElWind.DeleteCurrentElementCallSig);
-      DoneMethod   = funcScanner.GetNativeAction<IntPtr>(SMNatives.TElWind.DoneSig);
-
-      GetTextMethod = funcScanner.GetNativeAction<IntPtr, int, DelphiUString>(SMNatives.TElWind.GetTextCallSig);
-      SetTextMethod = funcScanner.GetNativeAction<IntPtr, int, DelphiUString>(SMNatives.TElWind.SetTextCallSig);
-
-      EnterUpdateLockMethod = funcScanner.GetNativeAction<IntPtr, bool, DelphiUString>(SMNatives.TElWind.EnterUpdateLockCallSig);
-      QuitUpdateLockMethod  = funcScanner.GetNativeAction<IntPtr, bool>(SMNatives.TElWind.QuitUpdateLockCallSig);
 
       ElementIdPtr.RegisterValueChangedEventHandler<int>(OnElementChangedInternal);
 
@@ -439,8 +407,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
       //OnElementChanged?.Invoke(new SMDisplayedElementChangedArgs(SMA.Instance,
       //                                                   CurrentElement,
       //                                                   null));
-
-      funcScanner.Cleanup();
 
       return true;
     }
@@ -455,11 +421,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
       CurrentConceptIdPtr = null;
       CurrentRootIdPtr    = null;
       CurrentHookIdPtr    = null;
-
-      PasteArticleFunc = null;
-      PasteElementFunc = null;
-      GoToMethod       = null;
-      DoneMethod       = null;
     }
 
     protected bool OnElementChangedInternal(byte[] newVal)

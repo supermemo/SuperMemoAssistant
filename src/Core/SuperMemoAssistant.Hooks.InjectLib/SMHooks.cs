@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/12/21 17:12
-// Modified On:  2018/12/30 03:08
+// Modified On:  2019/01/05 04:18
 // Modified By:  Alexis
 
 #endregion
@@ -34,14 +34,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using Process.NET;
 using Process.NET.Marshaling;
 using Process.NET.Memory;
 using Process.NET.Native.Types;
 using Process.NET.Patterns;
-using Process.NET.Threads;
-using SuperMemoAssistant.Hooks.SuperMemo;
+using SuperMemoAssistant.SuperMemo;
 using SuperMemoAssistantHooksNativeLib;
 
 // ReSharper disable RedundantDelegateCreation
@@ -106,7 +104,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     public bool InstallWndProcHook()
     {
       bool                       resumeThreads = false;
-      IEnumerable<IRemoteThread> threads       = null;
+      IEnumerable<IRemoteThread> threads = null;
 
       try
       {
@@ -205,37 +203,54 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
     protected void SetupNativeMethods()
     {
-      var scanner = new PatternScanner(SMProcess.ModuleFactory.MainModule);
+      var scanner   = new PatternScanner(SMProcess.ModuleFactory.MainModule);
+      var hintAddrs = SMInject.Instance.Callback.GetPatternsHintAddresses();
 
-      CallTable[NativeMethod.TSMMainSelectDefaultConcept] =
-        scanner.Find(SMNatives.TSMMain.SelectDefaultConceptCallSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.TRegistryAddMember]        = scanner.Find(SMNatives.TRegistry.AddMember).BaseAddress.ToInt32();
-      CallTable[NativeMethod.TRegistryImportFile]       = scanner.Find(SMNatives.TRegistry.ImportFile).BaseAddress.ToInt32();
-      CallTable[NativeMethod.ElWdwGoToElement]          = scanner.Find(SMNatives.TElWind.GoToElementCallSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.ElWdwPasteElement]         = scanner.Find(SMNatives.TElWind.PasteElementCallSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.ElWdwAppendElement]        = scanner.Find(SMNatives.TElWind.AppendElementCallSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.ElWdwAddElementFromText]   = scanner.Find(SMNatives.TElWind.AddElementFromTextCallSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.ElWdwDeleteCurrentElement] = scanner.Find(SMNatives.TElWind.DeleteCurrentElementCallSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.ElWdwGetText]              = scanner.Find(SMNatives.TElWind.GetTextCallSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.ElWdwEnterUpdateLock]      = scanner.Find(SMNatives.TElWind.EnterUpdateLockCallSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.ElWdwQuitUpdateLock]       = scanner.Find(SMNatives.TElWind.QuitUpdateLockCallSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.ElWdwDone]                 = scanner.Find(SMNatives.TElWind.DoneSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.ElWdwPasteArticle]         = scanner.Find(SMNatives.TElWind.PasteArticleSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.ElWdwSetText]              = scanner.Find(SMNatives.TElWind.SetTextCallSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.TCompDataGetType] =
-        scanner.Find(SMNatives.TElWind.TComponentData.GetTypeCallSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.TCompDataGetText] =
-        scanner.Find(SMNatives.TElWind.TComponentData.GetTextCallSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.TCompDataSetText] =
-        scanner.Find(SMNatives.TElWind.TComponentData.SetTextCallSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.TCompDataGetTextRegMember] =
-        scanner.Find(SMNatives.TElWind.TComponentData.GetTextRegMemberCallSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.TCompDataSetTextRegMember] =
-        scanner.Find(SMNatives.TElWind.TComponentData.SetTextRegMemberCallSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.TCompDataGetImageRegMember] =
-        scanner.Find(SMNatives.TElWind.TComponentData.GetImageRegMemberCallSig).BaseAddress.ToInt32();
-      CallTable[NativeMethod.TCompDataSetImageRegMember] =
-        scanner.Find(SMNatives.TElWind.TComponentData.SetImageRegMemberCallSig).BaseAddress.ToInt32();
+      foreach (var methodPattern in SMNatives.MethodsPatterns)
+      {
+        int hintAddr = 0;
+
+        if (hintAddrs.ContainsKey(methodPattern.Value.PatternText))
+          hintAddr = hintAddrs[methodPattern.Value.PatternText];
+
+        var scanRes = scanner.Find(methodPattern.Value,
+                                   hintAddr);
+        var procAddr = scanRes.BaseAddress.ToInt32();
+
+        hintAddrs[methodPattern.Value.PatternText] = scanRes.Offset;
+        CallTable[methodPattern.Key]               = procAddr;
+      }
+
+      SMInject.Instance.Callback.SetPatternsHintAddresses(hintAddrs);
+      //CallTable[NativeMethod.TSMMainSelectDefaultConcept] =
+      //  scanner.Find(SMNatives.TSMMain.SelectDefaultConceptCallSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.TRegistryAddMember]        = scanner.Find(SMNatives.TRegistry.AddMember).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.TRegistryImportFile]       = scanner.Find(SMNatives.TRegistry.ImportFile).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.ElWdwGoToElement]          = scanner.Find(SMNatives.TElWind.GoToElementCallSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.ElWdwPasteElement]         = scanner.Find(SMNatives.TElWind.PasteElementCallSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.ElWdwAppendElement]        = scanner.Find(SMNatives.TElWind.AppendElementCallSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.ElWdwAddElementFromText]   = scanner.Find(SMNatives.TElWind.AddElementFromTextCallSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.ElWdwDeleteCurrentElement] = scanner.Find(SMNatives.TElWind.DeleteCurrentElementCallSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.ElWdwGetText]              = scanner.Find(SMNatives.TElWind.GetTextCallSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.ElWdwEnterUpdateLock]      = scanner.Find(SMNatives.TElWind.EnterUpdateLockCallSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.ElWdwQuitUpdateLock]       = scanner.Find(SMNatives.TElWind.QuitUpdateLockCallSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.ElWdwDone]                 = scanner.Find(SMNatives.TElWind.DoneSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.ElWdwPasteArticle]         = scanner.Find(SMNatives.TElWind.PasteArticleSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.ElWdwSetText]              = scanner.Find(SMNatives.TElWind.SetTextCallSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.TCompDataGetType] =
+      //  scanner.Find(SMNatives.TElWind.TComponentData.GetTypeCallSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.TCompDataGetText] =
+      //  scanner.Find(SMNatives.TElWind.TComponentData.GetTextCallSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.TCompDataSetText] =
+      //  scanner.Find(SMNatives.TElWind.TComponentData.SetTextCallSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.TCompDataGetTextRegMember] =
+      //  scanner.Find(SMNatives.TElWind.TComponentData.GetTextRegMemberCallSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.TCompDataSetTextRegMember] =
+      //  scanner.Find(SMNatives.TElWind.TComponentData.SetTextRegMemberCallSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.TCompDataGetImageRegMember] =
+      //  scanner.Find(SMNatives.TElWind.TComponentData.GetImageRegMemberCallSig).BaseAddress.ToInt32();
+      //CallTable[NativeMethod.TCompDataSetImageRegMember] =
+      //  scanner.Find(SMNatives.TElWind.TComponentData.SetImageRegMemberCallSig).BaseAddress.ToInt32();
     }
 
     protected int CallNativeMethod(NativeMethod method,

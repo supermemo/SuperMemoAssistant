@@ -39,7 +39,6 @@ using FlaUI.Core.Exceptions;
 using mshtml;
 using Process.NET.Extensions;
 using SuperMemoAssistant.COM.InternetExplorer;
-using SuperMemoAssistant.Hooks.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
 using SuperMemoAssistant.Services;

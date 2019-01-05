@@ -31,6 +31,7 @@
 
 
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -139,15 +140,14 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         try
         {
           InstallHooks();
-
-          Callback.OnHookInstalled(true);
           TargetFilePaths = new HashSet<string>(Callback.GetTargetFilePaths().Select(s => s.ToLowerInvariant()));
 
           smHooks = new SMHooks();
+          Callback.SetWndProcHookAddr(smHooks.GetWndProcNativeWrapperAddr());
+          
+          Callback.OnHookInstalled(true);
 
           RemoteHooking.WakeUpProcess();
-
-          Callback.SetWndProcHookAddr(smHooks.GetWndProcNativeWrapperAddr());
         }
         catch (Exception ex)
         {
@@ -156,17 +156,17 @@ namespace SuperMemoAssistant.Hooks.InjectLib
           return;
         }
 
+        var localQueue = new Queue<(HookedFunction, object[])>();
+
         while (true)
         {
+          localQueue.Clear();
           DataAvailableEvent.WaitOne();
 
-          Queue<(HookedFunction, object[])> localQueue;
           RWLock.EnterWriteLock();
 
           try
           {
-            localQueue = new Queue<(HookedFunction, object[])>(DataQueue.Count);
-
             while (DataQueue.TryDequeue(out var data))
               localQueue.Enqueue(data);
 
@@ -277,9 +277,13 @@ namespace SuperMemoAssistant.Hooks.InjectLib
           break;
 
         case HookedFunction.WriteFile:
+          var byteArr = (byte[])datas[1];
+
           Callback.OnFileWrite((IntPtr)datas[0],
-                               (Byte[])datas[1],
+                               byteArr,
                                (UInt32)datas[2]);
+
+          ArrayPool<byte>.Shared.Return(byteArr);
           break;
 
         case HookedFunction.CloseHandle:
@@ -342,7 +346,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     public void Enqueue(HookedFunction  func,
                         params object[] datas)
     {
-      RWLock.EnterReadLock();
+      RWLock.EnterWriteLock();
 
       try
       {
@@ -351,7 +355,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       }
       finally
       {
-        RWLock.ExitReadLock();
+        RWLock.ExitWriteLock();
       }
     }
 

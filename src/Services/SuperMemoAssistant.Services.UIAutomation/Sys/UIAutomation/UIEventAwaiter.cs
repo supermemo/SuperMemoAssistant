@@ -88,7 +88,7 @@ namespace SuperMemoAssistant.Sys.UIAutomation
     #region Properties Impl - Public
 
     /// <inheritdoc />
-    public override IProcess SMProcess { get => Svc.SMA.SMProcess; set => throw new InvalidOperationException(); }
+    public override IProcess SMProcess { get => Svc.SM; set => throw new InvalidOperationException(); }
 
     #endregion
 

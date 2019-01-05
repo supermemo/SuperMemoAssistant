@@ -248,7 +248,7 @@ namespace SuperMemoAssistant.PluginsHost
 
     private void DebugInjectLib()
     {
-      Svc.SMA.SMProcess.WindowFactory.MainWindow.PostMessage(
+      Svc.SM.WindowFactory.MainWindow.PostMessage(
         2345,
         new IntPtr((int)InjectLibMessages.AttachDebugger),
         new IntPtr(0)

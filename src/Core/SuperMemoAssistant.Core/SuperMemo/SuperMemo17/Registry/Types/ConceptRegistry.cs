@@ -59,7 +59,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override string MemFileName => SMConst.Files.ConceptMemFileName;
     protected override string RtxFileName => SMConst.Files.ConceptRtxFileName;
     protected override string RtfFileName => null;
-    protected override IntPtr RegistryPtr => new IntPtr(SMNatives.TRegistry.ConceptRegistryInstance.Read<int>(Svc.SM.Memory));
+    protected override IntPtr RegistryPtr => new IntPtr(SM17Natives.TRegistry.ConceptRegistryInstance.Read<int>(Svc.SM.Memory));
 
     #endregion
 

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/06 03:48
-// Modified On:  2019/01/14 18:38
+// Created On:   2019/01/12 19:00
+// Modified On:  2019/01/12 19:01
 // Modified By:  Alexis
 
 #endregion
@@ -30,14 +30,20 @@
 
 
 
-namespace SuperMemoAssistant.Hooks
+namespace SuperMemoAssistant.Interop.SuperMemo.Learning
 {
-  public class HookConst
+  public enum LearningMode
   {
-    #region Constants & Statics
-
-    public const string ChannelName = "SMA_IPC";
-
-    #endregion
+    None         = 0,
+    Standard     = 1,
+    Forced       = 2,
+    Neural       = 3,
+    Subset       = 4,
+    ForceSubset  = 5,
+    ForceTopics  = 6,
+    RandomTest   = 7,
+    DesignerTest = 8,
+    Pending      = 9,
+    Drill        = 10,
   }
 }

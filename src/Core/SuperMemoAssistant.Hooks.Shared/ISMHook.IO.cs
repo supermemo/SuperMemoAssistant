@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 13:51
-// Modified On:  2018/06/01 13:52
+// Modified On:  2019/01/14 18:38
 // Modified By:  Alexis
 
 #endregion
@@ -40,9 +40,17 @@ namespace SuperMemoAssistant.Hooks
     //
     // IO Hooks
     IEnumerable<string> GetTargetFilePaths();
-    void                OnFileCreate(String filePath,   IntPtr fileHandle);
-    void                OnFileSeek(IntPtr   fileHandle, UInt32 position);
-    void                OnFileWrite(IntPtr  fileHandle, Byte[] buffer, UInt32 count);
-    void                OnFileClose(IntPtr  fileHandle);
+
+    void OnFileCreate(String filePath,
+                      IntPtr fileHandle);
+
+    void OnFileSeek(IntPtr fileHandle,
+                    UInt32 position);
+
+    void OnFileWrite(IntPtr fileHandle,
+                     Byte[] buffer,
+                     UInt32 count);
+
+    void OnFileClose(IntPtr fileHandle);
   }
 }

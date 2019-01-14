@@ -31,11 +31,13 @@
 
 
 using System;
+using System.Collections.Generic;
 using Process.NET.Execution;
 using Process.NET.Memory;
 using Process.NET.Native.Types;
 using Process.NET.Patterns;
 using Process.NET.Types;
+// ReSharper disable InconsistentNaming
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17
 {
@@ -166,6 +168,18 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
       public static readonly IMemoryPattern QuitUpdateCallSig = new DwordCallPattern(
         "E8 ? ? ? ? C6 45 FA 01 EB 0C",
         1);
+      public static readonly IMemoryPattern ShowNextElementInLearningQueueCallSig = new DwordCallPattern(
+        "E8 ? ? ? ? 59 5D C3 33 D2 8B 45 FC E8 ? ? ? ? B2 02",
+        1);
+      public static readonly IMemoryPattern SetElementStateCallSig = new DwordCallPattern(
+        "E8 ? ? ? ? EB 7C B2 02",
+        1);
+      public static readonly IMemoryPattern ExecuteUncommitedRepetitionCallSig = new DwordCallPattern(
+        "E8 ? ? ? ? 8D 45 EB",
+        1);
+      public static readonly IMemoryPattern ScheduleInIntervalCallSig = new DwordCallPattern(
+        "E8 ? ? ? ? 80 BD ? ? ? ? ? 75 45 8D 45 8E",
+        1);
 
       // Static addresses
       public static readonly IMemoryPattern DoneCallSig = new DwordFunctionPattern(
@@ -174,6 +188,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
         "55 8B EC 51 89 45 FC 33 D2 8B 45 FC E8 ? ? ? ? 84 C0");
       public static readonly IMemoryPattern SetTextCallSig = new DwordFunctionPattern(
         "55 8B EC 83 C4 F4 89 4D F4 88 55 FB 89 45 FC 8B 45 F4 E8 ? ? ? ? 33 C0 55 68 ? ? ? ? 64 FF 30 64 89 20 8B 4D F4 8A 55 FB 8B 45 FC 8B 80 ? ? ? ? E8 ? ? ? ? 33 C0 5A");
+      public static readonly IMemoryPattern ForceRepetitionExtCallSig = new DwordFunctionPattern(
+        "55 8B EC 81 C4 ? ? ? ? 88 4D F7 89 55 F8 89 45 FC 8D 4D 81");
+      public static readonly IMemoryPattern RestoreLearningModeCallSig = new DwordFunctionPattern(
+        "55 8B EC 51 89 45 FC 8B 45 FC 80 B8 ? ? ? ? ? 75 1E");
 
       #endregion
 
@@ -436,5 +454,57 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
 
       #endregion
     }
+
+    public static Dictionary<NativeMethod, IMemoryPattern> MethodsPatterns { get; } = new Dictionary<NativeMethod, IMemoryPattern>
+    {
+      { NativeMethod.ElWdwGoToElement, TElWind.GoToElementCallSig },
+      { NativeMethod.ElWdwAppendElement, TElWind.AppendElementCallSig },
+      { NativeMethod.ElWdwAddElementFromText, TElWind.AddElementFromTextCallSig },
+      { NativeMethod.ElWdwDeleteCurrentElement, TElWind.DeleteCurrentElementCallSig },
+      { NativeMethod.ElWdwDone, TElWind.DoneCallSig },
+      { NativeMethod.ElWdwSetText, TElWind.SetTextCallSig },
+      { NativeMethod.ElWdwNextElementInLearningQueue, TElWind.ShowNextElementInLearningQueueCallSig },
+      { NativeMethod.ElWdwSetElementState, TElWind.SetElementStateCallSig },
+      { NativeMethod.ElWdwScheduleInInterval, TElWind.ScheduleInIntervalCallSig },
+      { NativeMethod.ElWdwExecuteUncommitedRepetition, TElWind.ExecuteUncommitedRepetitionCallSig },
+      { NativeMethod.ElWdwForceRepetitionExt, TElWind.ForceRepetitionExtCallSig },
+      { NativeMethod.ElWdwRestoreLearningMode, TElWind.RestoreLearningModeCallSig },
+    };
+  }
+
+  public enum NativeMethod
+  {
+    ElWdwGoToElement,
+    ElWdwPasteElement,
+    ElWdwAppendElement,
+    ElWdwAddElementFromText,
+    ElWdwDeleteCurrentElement,
+    ElWdwGetText,
+    ElWdwEnterUpdateLock,
+    ElWdwQuitUpdateLock,
+    ElWdwDone,
+    ElWdwPasteArticle,
+    ElWdwSetText,
+    ElWdwNextElementInLearningQueue,
+    ElWdwSetElementState,
+    ElWdwScheduleInInterval,
+    ElWdwExecuteUncommitedRepetition,
+    ElWdwForceRepetitionExt,
+    ElWdwRestoreLearningMode,
+    TCompDataGetType,
+    TCompDataGetText,
+    TCompDataSetText,
+    TCompDataGetTextRegMember,
+    TCompDataSetTextRegMember,
+    TCompDataGetImageRegMember,
+    TCompDataSetImageRegMember,
+    TSMMainSelectDefaultConcept,
+    TRegistryAddMember,
+    TRegistryImportFile,
+
+    // Special handling
+    AppendAndAddElementFromText,
+    PostponeRepetition,
+    ForceRepetitionAndResume,
   }
 }

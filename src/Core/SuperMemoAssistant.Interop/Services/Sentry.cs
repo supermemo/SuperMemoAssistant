@@ -31,17 +31,42 @@
 
 
 using System;
+using DeviceId;
 using Sentry;
+using Sentry.Protocol;
 
 namespace SuperMemoAssistant.Services
 {
   public static class Sentry
   {
+    public const string Id = "https://a63c3dad9552434598dae869d2026696@sentry.io/1362046";
     #region Methods
 
     public static IDisposable Initialize()
     {
-      return SentrySdk.Init("https://a63c3dad9552434598dae869d2026696@sentry.io/1362046");
+      var ret = SentrySdk.Init(Id);
+
+      SentrySdk.ConfigureScope(s =>
+        {
+          s.User = new User
+          {
+            Username = System.Security.Principal.WindowsIdentity.GetCurrent().Name,
+            Id       = GetSystemFingerprint()
+          };
+        }
+      );
+
+      return ret;
+    }
+
+    private static string GetSystemFingerprint()
+    {
+      return new DeviceIdBuilder()
+             .AddMachineName()
+             .AddMacAddress()
+             .AddProcessorId()
+             .AddMotherboardSerialNumber()
+             .ToString();
     }
 
     #endregion

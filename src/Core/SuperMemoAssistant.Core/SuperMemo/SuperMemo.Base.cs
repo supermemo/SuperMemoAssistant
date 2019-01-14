@@ -43,6 +43,7 @@ using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SuperMemo.Hooks;
+using SuperMemoAssistant.SuperMemo.SuperMemo17;
 
 namespace SuperMemoAssistant.SuperMemo
 {
@@ -220,11 +221,11 @@ namespace SuperMemoAssistant.SuperMemo
       ExecCtxt.ExecutionMethod     = method;
       ExecCtxt.ExecutionParameters = parameters;
 
-      var smMain = SMProcess.Memory.Read<int>(SMNatives.TSMMain.InstancePtr);
-      var handle = SMProcess.Memory.Read<IntPtr>(new IntPtr(smMain + SMNatives.TControl.HandleOffset));
+      var smMain = SMProcess.Memory.Read<int>(SM17Natives.TSMMain.InstancePtr);
+      var handle = SMProcess.Memory.Read<IntPtr>(new IntPtr(smMain + SM17Natives.TControl.HandleOffset));
 
-      var restoreWndProcAddr = SMNatives.TApplication.TApplicationOnMessagePtr.Read<int>(SMProcess.Memory);
-      SMNatives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
+      var restoreWndProcAddr = SM17Natives.TApplication.TApplicationOnMessagePtr.Read<int>(SMProcess.Memory);
+      SM17Natives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
                                                                  WndProcHookAddr);
 
       WindowHelper.PostMessage(handle,
@@ -234,7 +235,7 @@ namespace SuperMemoAssistant.SuperMemo
 
       SMA.Instance.SMMgmt.MainThreadReady.WaitOne(AssemblyFactory.ExecutionTimeout);
 
-      SMNatives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
+      SM17Natives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
                                                                  restoreWndProcAddr);
 
       ExecCtxt.ExecutionParameters = null;
@@ -260,7 +261,7 @@ namespace SuperMemoAssistant.SuperMemo
     {
       SMA.Instance.OnSMStartedImpl();
 
-      IgnoreUserConfirmationPtr = SMProcess[SMNatives.Globals.IgnoreUserConfirmationPtr];
+      IgnoreUserConfirmationPtr = SMProcess[SM17Natives.Globals.IgnoreUserConfirmationPtr];
     }
 
     #endregion

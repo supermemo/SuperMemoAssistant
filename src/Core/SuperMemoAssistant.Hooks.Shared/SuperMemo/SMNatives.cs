@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/12/23 05:01
-// Modified On:  2018/12/23 05:34
+// Modified On:  2019/01/14 18:38
 // Modified By:  Alexis
 
 #endregion
@@ -30,9 +30,9 @@
 
 
 
+#if false
 // ReSharper disable InconsistentNaming
 // ReSharper disable MemberHidesStaticFromOuterClass
-
 using System;
 using System.Collections.Generic;
 using Process.NET.Memory;
@@ -47,8 +47,8 @@ namespace SuperMemoAssistant.SuperMemo
       #region Constants & Statics
 
       public static readonly IntPtr CurrentConceptIdPtr = new IntPtr(0x00BBCDD0);
-      public static readonly IntPtr CurrentRootIdPtr    = new IntPtr(0x00BBCDD4);
-      public static readonly IntPtr CurrentHookIdPtr    = new IntPtr(0x00BBCDD8);
+      public static readonly IntPtr CurrentRootIdPtr = new IntPtr(0x00BBCDD4);
+      public static readonly IntPtr CurrentHookIdPtr = new IntPtr(0x00BBCDD8);
 
       public static readonly IntPtr IgnoreUserConfirmationPtr = new IntPtr(0x00BC0007);
 
@@ -60,7 +60,7 @@ namespace SuperMemoAssistant.SuperMemo
     {
       #region Constants & Statics
 
-      public const           int    OnMessageOffset          = 0x110;
+      public const           int    OnMessageOffset = 0x110;
       public static readonly IntPtr TApplicationInstanceAddr = new IntPtr(0x00ACF3D4);
       public static readonly ObjPtr TApplicationOnMessagePtr = new ObjPtr(TApplicationInstanceAddr,
                                                                           OnMessageOffset);
@@ -73,13 +73,13 @@ namespace SuperMemoAssistant.SuperMemo
     {
       #region Constants & Statics
 
-      public static int ParentOffset     = 0x0038;
+      public static int ParentOffset = 0x0038;
       public static int WindowProcOffset = 0x0040;
-      public static int HandleOffset     = 0x0270;
+      public static int HandleOffset = 0x0270;
 
-      public static int LeftOffset   = 0x0048;
-      public static int TopOffset    = 0x004C;
-      public static int WidthOffset  = 0x0050;
+      public static int LeftOffset = 0x0048;
+      public static int TopOffset = 0x004C;
+      public static int WidthOffset = 0x0050;
       public static int HeightOffset = 0x0054;
 
       #endregion
@@ -165,7 +165,7 @@ namespace SuperMemoAssistant.SuperMemo
       {
         #region Constants & Statics
 
-        public const int ComponentDataArrOffset     = 0x003F;
+        public const int ComponentDataArrOffset = 0x003F;
         public const int ComponentDataArrItemLength = 0x0D;
 
         public static readonly ObjPtr ComponentCountPtr = new ObjPtr(ComponentsDataPtr,
@@ -273,7 +273,7 @@ namespace SuperMemoAssistant.SuperMemo
       #endregion
     }
 
-    public static readonly Dictionary<NativeMethod, IMemoryPattern> MethodsPatterns = new Dictionary<NativeMethod, IMemoryPattern>
+    public static Dictionary<NativeMethod, IMemoryPattern> MethodsPatterns { get; } = new Dictionary<NativeMethod, IMemoryPattern>
     {
       { NativeMethod.ElWdwGoToElement, TElWind.GoToElementCallSig },
       { NativeMethod.ElWdwAppendElement, TElWind.AppendElementCallSig },
@@ -312,3 +312,4 @@ namespace SuperMemoAssistant.SuperMemo
     AppendAndAddElementFromText,
   }
 }
+#endif

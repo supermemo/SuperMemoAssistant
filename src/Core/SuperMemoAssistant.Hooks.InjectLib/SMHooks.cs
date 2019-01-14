@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/12/21 17:12
-// Modified On:  2019/01/05 04:18
+// Modified On:  2019/01/14 18:38
 // Modified By:  Alexis
 
 #endregion
@@ -39,7 +39,7 @@ using Process.NET.Marshaling;
 using Process.NET.Memory;
 using Process.NET.Native.Types;
 using Process.NET.Patterns;
-using SuperMemoAssistant.SuperMemo;
+using SuperMemoAssistant.SuperMemo.SuperMemo17;
 using SuperMemoAssistantHooksNativeLib;
 
 // ReSharper disable RedundantDelegateCreation
@@ -81,8 +81,8 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     /// <inheritdoc />
     public void Dispose()
     {
-      SMNatives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
-                                                                 0);
+      SM17Natives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
+                                                                   0);
     }
 
     #endregion
@@ -123,7 +123,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
         var wrapperAddr = WndProcWrapper.GetWndProcNativeWrapperAddr();
 
-        SMNatives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
+        SM17Natives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
                                                                    wrapperAddr);
 
         return true;
@@ -206,7 +206,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       var scanner   = new PatternScanner(SMProcess.ModuleFactory.MainModule);
       var hintAddrs = SMInject.Instance.Callback.GetPatternsHintAddresses();
 
-      foreach (var methodPattern in SMNatives.MethodsPatterns)
+      foreach (var methodPattern in SM17Natives.MethodsPatterns)
       {
         int hintAddr = 0;
 
@@ -222,35 +222,6 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       }
 
       SMInject.Instance.Callback.SetPatternsHintAddresses(hintAddrs);
-      //CallTable[NativeMethod.TSMMainSelectDefaultConcept] =
-      //  scanner.Find(SMNatives.TSMMain.SelectDefaultConceptCallSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.TRegistryAddMember]        = scanner.Find(SMNatives.TRegistry.AddMember).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.TRegistryImportFile]       = scanner.Find(SMNatives.TRegistry.ImportFile).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.ElWdwGoToElement]          = scanner.Find(SMNatives.TElWind.GoToElementCallSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.ElWdwPasteElement]         = scanner.Find(SMNatives.TElWind.PasteElementCallSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.ElWdwAppendElement]        = scanner.Find(SMNatives.TElWind.AppendElementCallSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.ElWdwAddElementFromText]   = scanner.Find(SMNatives.TElWind.AddElementFromTextCallSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.ElWdwDeleteCurrentElement] = scanner.Find(SMNatives.TElWind.DeleteCurrentElementCallSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.ElWdwGetText]              = scanner.Find(SMNatives.TElWind.GetTextCallSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.ElWdwEnterUpdateLock]      = scanner.Find(SMNatives.TElWind.EnterUpdateLockCallSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.ElWdwQuitUpdateLock]       = scanner.Find(SMNatives.TElWind.QuitUpdateLockCallSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.ElWdwDone]                 = scanner.Find(SMNatives.TElWind.DoneSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.ElWdwPasteArticle]         = scanner.Find(SMNatives.TElWind.PasteArticleSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.ElWdwSetText]              = scanner.Find(SMNatives.TElWind.SetTextCallSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.TCompDataGetType] =
-      //  scanner.Find(SMNatives.TElWind.TComponentData.GetTypeCallSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.TCompDataGetText] =
-      //  scanner.Find(SMNatives.TElWind.TComponentData.GetTextCallSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.TCompDataSetText] =
-      //  scanner.Find(SMNatives.TElWind.TComponentData.SetTextCallSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.TCompDataGetTextRegMember] =
-      //  scanner.Find(SMNatives.TElWind.TComponentData.GetTextRegMemberCallSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.TCompDataSetTextRegMember] =
-      //  scanner.Find(SMNatives.TElWind.TComponentData.SetTextRegMemberCallSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.TCompDataGetImageRegMember] =
-      //  scanner.Find(SMNatives.TElWind.TComponentData.GetImageRegMemberCallSig).BaseAddress.ToInt32();
-      //CallTable[NativeMethod.TCompDataSetImageRegMember] =
-      //  scanner.Find(SMNatives.TElWind.TComponentData.SetImageRegMemberCallSig).BaseAddress.ToInt32();
     }
 
     protected int CallNativeMethod(NativeMethod method,
@@ -270,6 +241,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
             var elType = marshalledParameters[1].Reference.ToInt32();
             var elDesc = marshalledParameters[2].Reference.ToInt32();
 
+            // elWdw.AppendElement(elType, automatic: false); 
             int elemId = registerCall3(CallTable[NativeMethod.ElWdwAppendElement],
                                        elWdw,
                                        elType,
@@ -278,11 +250,60 @@ namespace SuperMemoAssistant.Hooks.InjectLib
             if (elemId <= 0)
               return -1;
 
+            // elWdw.AddElementFromText(elDesc);
             int res = registerCall2(CallTable[NativeMethod.ElWdwAddElementFromText],
                                     elWdw,
                                     elDesc);
 
             return res > 0 ? elemId : -1;
+
+
+          case NativeMethod.PostponeRepetition:
+            elWdw = marshalledParameters[0].Reference.ToInt32();
+            var interval = marshalledParameters[1].Reference.ToInt32();
+
+            // elWdw.ExecuteUncommitedRepetition(inclTopics: true, forceDisplay: false);
+            registerCall3(CallTable[NativeMethod.ElWdwExecuteUncommitedRepetition],
+                          elWdw,
+                          1,
+                          0);
+
+            // elWdw.ScheduleInInterval(interval);
+            registerCall2(CallTable[NativeMethod.ElWdwScheduleInInterval],
+                          elWdw,
+                          interval);
+
+            // elWdw.SetElementState(DisplayState.Display);
+            //registerCall2(CallTable[NativeMethod.ElWdwSetElementState],
+            //              elWdw,
+            //              2);
+
+            // elWdw.NextElementInLearningQueue()
+            registerCall1(CallTable[NativeMethod.ElWdwNextElementInLearningQueue],
+                          elWdw);
+
+            return 1;
+
+          case NativeMethod.ForceRepetitionAndResume:
+            elWdw    = marshalledParameters[0].Reference.ToInt32();
+            interval = marshalledParameters[1].Reference.ToInt32();
+            var adjustPriority = marshalledParameters[2].Reference.ToInt32();
+
+            // elWdw.ForceRepetitionExt(interval, adjustPriority);
+            registerCall3(CallTable[NativeMethod.ElWdwForceRepetitionExt],
+                          elWdw,
+                          interval,
+                          adjustPriority);
+
+            // elWdw.NextElementInLearningQueue();
+            registerCall1(CallTable[NativeMethod.ElWdwNextElementInLearningQueue],
+                          elWdw);
+
+            // elWdw.RestoreLearningMode();
+            registerCall1(CallTable[NativeMethod.ElWdwRestoreLearningMode],
+                          elWdw);
+
+            return 1;
         }
 
         switch (parameters.Length)

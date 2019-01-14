@@ -61,7 +61,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override string RtxFileName => SMConst.Files.BinaryRtxFileName;
     protected override string RtfFileName => null;
     protected override IntPtr RegistryPtr =>
-      new IntPtr(SMNatives.TRegistry.BinaryRegistryInstance.Read<int>(Svc.SM.Memory));
+      new IntPtr(SM17Natives.TRegistry.BinaryRegistryInstance.Read<int>(Svc.SM.Memory));
 
     #endregion
 

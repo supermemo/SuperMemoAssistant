@@ -53,7 +53,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
     private IHTMLDocument2 _document;
 
     private int NativeControlAddr =>
-      _group._smProcess.Memory.Read<int>(SMNatives.TElWind.ObjectsPtr,
+      _group._smProcess.Memory.Read<int>(SM17Natives.TElWind.ObjectsPtr,
                                          4 * Id);
 
     #endregion
@@ -117,7 +117,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
         try
         {
           IntPtr shellEmbedHwnd = _group._smProcess.Memory.Read<IntPtr>(
-            new IntPtr(NativeControlAddr + SMNatives.TControl.HandleOffset)
+            new IntPtr(NativeControlAddr + SM17Natives.TControl.HandleOffset)
           );
 
           ieSrvFrame = Svc.UIAutomation.FromHandle(shellEmbedHwnd).FindFirstDescendant(c => c.ByClassName("Internet Explorer_Server"));

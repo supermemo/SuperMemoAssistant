@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 13:51
-// Modified On:  2018/12/23 07:02
+// Modified On:  2019/01/14 18:38
 // Modified By:  Alexis
 
 #endregion
@@ -49,8 +49,8 @@ namespace SuperMemoAssistant.Hooks
                                 out dynamic[] parameters);
 
     void SetExecutionResult(int result);
-    
+
     Dictionary<string, int> GetPatternsHintAddresses();
-    void SetPatternsHintAddresses(Dictionary<string, int> hintAddrs);
+    void                    SetPatternsHintAddresses(Dictionary<string, int> hintAddrs);
   }
 }

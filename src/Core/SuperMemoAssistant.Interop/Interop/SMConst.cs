@@ -30,9 +30,10 @@
 
 
 
-using System.Drawing;
+using System.Windows.Media;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 
+// ReSharper disable PossibleNullReferenceException
 // ReSharper disable InconsistentNaming
 
 namespace SuperMemoAssistant.Interop
@@ -52,9 +53,9 @@ namespace SuperMemoAssistant.Interop
 
     public static class Stylesheet
     {
-      //public static readonly Color ExtractCloze = ColorTranslator.FromHtml("#");
-      public static readonly Color ExtractClozedColor = ColorTranslator.FromHtml("#E67300");
-      public static readonly Color ExtractColor = ColorTranslator.FromHtml("#44C2FF");
+      public static readonly Color ExtractClozedColor = (Color)ColorConverter.ConvertFromString("#E67300"); // ColorTranslator.FromHtml("#E67300");
+      public static readonly Color ExtractColor = (Color)ColorConverter.ConvertFromString("#44C2FF"); // ColorTranslator.FromHtml("#44C2FF");
+      public static readonly Color IgnoreColor = (Color)ColorConverter.ConvertFromString("#DAB6B6"); // ColorTranslator.FromHtml("#");
     }
 
 

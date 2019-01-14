@@ -334,6 +334,99 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
       //}
     }
 
+    public bool NextElementInLearningQueue()
+    {
+      try
+      {
+        SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwNextElementInLearningQueue,
+                                                ElementWdwPtr.Read<IntPtr>());
+
+        return true;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
+    public bool SetElementState(int state)
+    {
+      try
+      {
+        SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwSetElementState,
+                                                ElementWdwPtr.Read<IntPtr>(),
+                                                state);
+
+        return true;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
+    public bool PostponeRepetition(int interval)
+    {
+      try
+      {
+        SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.PostponeRepetition,
+                                                ElementWdwPtr.Read<IntPtr>(),
+                                                interval);
+
+        return true;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
+    public bool ForceRepetition(int  interval,
+                                bool adjustPriority)
+    {
+      try
+      {
+        SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwForceRepetitionExt,
+                                                ElementWdwPtr.Read<IntPtr>(),
+                                                interval,
+                                                adjustPriority);
+
+        return true;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
+    public bool ForceRepetitionAndResume(int  interval,
+                                         bool adjustPriority)
+    {
+      try
+      {
+        SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ForceRepetitionAndResume,
+                                                ElementWdwPtr.Read<IntPtr>(),
+                                                interval,
+                                                adjustPriority);
+
+        return true;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex,
+                    "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
     public bool EnterSMUpdateLock()
     {
       try
@@ -385,7 +478,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     private void OnSMStartedEvent(object        sender,
                                   SMProcessArgs e)
     {
-      ElementWdwPtr = SMProcess[SMNatives.TElWind.InstancePtr];
+      ElementWdwPtr = SMProcess[SM17Natives.TElWind.InstancePtr];
       ElementWdwPtr.RegisterValueChangedEventHandler<int>(OnWindowCreated);
     }
 
@@ -394,10 +487,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
       if (ElementWdwPtr.Read<int>() == 0)
         return false;
       
-      ElementIdPtr        = SMProcess[SMNatives.TElWind.ElementIdPtr];
-      CurrentConceptIdPtr = SMProcess[SMNatives.Globals.CurrentConceptIdPtr];
-      CurrentRootIdPtr    = SMProcess[SMNatives.Globals.CurrentRootIdPtr];
-      CurrentHookIdPtr    = SMProcess[SMNatives.Globals.CurrentHookIdPtr];
+      ElementIdPtr        = SMProcess[SM17Natives.TElWind.ElementIdPtr];
+      CurrentConceptIdPtr = SMProcess[SM17Natives.Globals.CurrentConceptIdPtr];
+      CurrentRootIdPtr    = SMProcess[SM17Natives.Globals.CurrentRootIdPtr];
+      CurrentHookIdPtr    = SMProcess[SM17Natives.Globals.CurrentHookIdPtr];
 
       ElementIdPtr.RegisterValueChangedEventHandler<int>(OnElementChangedInternal);
 
@@ -523,7 +616,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
 
     /// <inheritdoc />
     protected override IntPtr WindowHandle =>
-      SMProcess.Memory.Read<IntPtr>(new IntPtr(ElementWdwPtr.Read<int>() + SMNatives.TControl.HandleOffset));
+      SMProcess.Memory.Read<IntPtr>(new IntPtr(ElementWdwPtr.Read<int>() + SM17Natives.TControl.HandleOffset));
     /// <inheritdoc />
     public override string WindowClass => SMConst.UI.ElementWindowClassName;
 

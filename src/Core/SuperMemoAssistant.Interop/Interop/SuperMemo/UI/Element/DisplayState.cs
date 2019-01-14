@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/06 03:48
-// Modified On:  2019/01/14 18:38
+// Created On:   2019/01/13 20:48
+// Modified On:  2019/01/13 20:48
 // Modified By:  Alexis
 
 #endregion
@@ -30,14 +30,17 @@
 
 
 
-namespace SuperMemoAssistant.Hooks
+namespace SuperMemoAssistant.Interop.SuperMemo.UI.Element
 {
-  public class HookConst
+  public enum DisplayState
   {
-    #region Constants & Statics
-
-    public const string ChannelName = "SMA_IPC";
-
-    #endregion
+    Edit           = 0,
+    Drag           = 1,
+    Display        = 2,
+    Unused1        = 3,
+    Unused2        = 4,
+    Question       = 5,
+    Grading        = 6,
+    NextRepetition = 7
   }
 }

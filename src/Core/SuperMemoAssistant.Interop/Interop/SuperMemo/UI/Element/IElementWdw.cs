@@ -63,5 +63,14 @@ namespace SuperMemoAssistant.Interop.SuperMemo.UI.Element
     bool Done();
 
     event Action<SMDisplayedElementChangedArgs> OnElementChanged;
+    bool NextElementInLearningQueue();
+    bool SetElementState(int state);
+    bool PostponeRepetition(int interval);
+
+    bool ForceRepetition(int  interval,
+                                         bool adjustPriority);
+
+    bool ForceRepetitionAndResume(int  interval,
+                                                  bool adjustPriority);
   }
 }

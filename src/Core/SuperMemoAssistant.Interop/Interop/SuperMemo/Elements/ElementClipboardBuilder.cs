@@ -182,7 +182,7 @@ End Component #2";
 
         case ElementType.ConceptGroup:
         case ElementType.Task:
-        case ElementType.Unknown3:
+        case ElementType.Template:
         default:
           throw new NotImplementedException();
       }

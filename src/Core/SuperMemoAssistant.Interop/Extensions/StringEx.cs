@@ -84,14 +84,14 @@ namespace SuperMemoAssistant.Extensions
       return pos;
     }
 
-    public static string Base64Encode(this string plainText)
+    public static string ToBase64(this string plainText)
     {
       var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
 
       return Convert.ToBase64String(plainTextBytes);
     }
 
-    public static string Base64Decode(this string base64EncodedData)
+    public static string FromBase64(this string base64EncodedData)
     {
       var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
 

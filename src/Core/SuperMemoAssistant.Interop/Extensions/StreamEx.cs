@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/06 03:48
-// Modified On:  2019/01/14 18:38
+// Created On:   2019/01/14 19:52
+// Modified On:  2019/01/14 19:57
 // Modified By:  Alexis
 
 #endregion
@@ -30,13 +30,29 @@
 
 
 
-namespace SuperMemoAssistant.Hooks
-{
-  public class HookConst
-  {
-    #region Constants & Statics
+using System;
+using System.IO;
 
-    public const string ChannelName = "SMA_IPC";
+namespace SuperMemoAssistant.Extensions
+{
+  public static class StreamEx
+  {
+    #region Methods
+
+    public static string ToBase64(this Stream stream,
+                                  long        seekOffset = 0,
+                                  SeekOrigin  seekOrigin = SeekOrigin.Begin)
+    {
+      using (var ms = new MemoryStream((int)stream.Length))
+      {
+        stream.CopyTo(ms);
+
+        ms.Seek(seekOffset,
+                seekOrigin);
+
+        return Convert.ToBase64String(ms.ToArray());
+      }
+    }
 
     #endregion
   }

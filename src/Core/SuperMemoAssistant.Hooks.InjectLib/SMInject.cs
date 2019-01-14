@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/12 01:26
-// Modified On:  2018/12/30 14:39
+// Modified On:  2019/01/14 18:38
 // Modified By:  Alexis
 
 #endregion
@@ -144,7 +144,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
           smHooks = new SMHooks();
           Callback.SetWndProcHookAddr(smHooks.GetWndProcNativeWrapperAddr());
-          
+
           Callback.OnHookInstalled(true);
 
           RemoteHooking.WakeUpProcess();

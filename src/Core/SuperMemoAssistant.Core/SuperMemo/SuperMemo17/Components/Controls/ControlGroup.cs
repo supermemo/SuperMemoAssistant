@@ -75,11 +75,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
     public ControlGroup(IProcess smProcess)
     {
       _smProcess         = smProcess;
-      _componentDataAddr = smProcess[SMNatives.TElWind.ComponentsDataPtr].Read<int>();
+      _componentDataAddr = smProcess[SM17Natives.TElWind.ComponentsDataPtr].Read<int>();
 
-      CountPtr            = smProcess[SMNatives.TElWind.TComponentData.ComponentCountPtr];
-      FocusedControlNoPtr = smProcess[SMNatives.TElWind.FocusedComponentPtr];
-      IsModifiedPtr       = smProcess[SMNatives.TElWind.TComponentData.IsModifiedPtr];
+      CountPtr            = smProcess[SM17Natives.TElWind.TComponentData.ComponentCountPtr];
+      FocusedControlNoPtr = smProcess[SM17Natives.TElWind.FocusedComponentPtr];
+      IsModifiedPtr       = smProcess[SM17Natives.TElWind.TComponentData.IsModifiedPtr];
     }
 
 
@@ -203,8 +203,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
       byte smCompType = _smProcess.Memory.Read<byte>(
         new IntPtr(_componentDataAddr
-                   + SMNatives.TElWind.TComponentData.ComponentDataArrOffset
-                   + SMNatives.TElWind.TComponentData.ComponentDataArrItemLength * idx)
+                   + SM17Natives.TElWind.TComponentData.ComponentDataArrOffset
+                   + SM17Natives.TElWind.TComponentData.ComponentDataArrItemLength * idx)
       );
 
       switch (smCompType)

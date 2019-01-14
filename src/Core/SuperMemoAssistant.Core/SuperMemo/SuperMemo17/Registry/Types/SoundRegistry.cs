@@ -59,7 +59,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override string MemFileName => SMConst.Files.SoundMemFileName;
     protected override string RtxFileName => SMConst.Files.SoundRtxFileName;
     protected override string RtfFileName => null;
-    protected override IntPtr RegistryPtr => new IntPtr(SMNatives.TRegistry.SoundRegistryInstance.Read<int>(Svc.SM.Memory));
+    protected override IntPtr RegistryPtr => new IntPtr(SM17Natives.TRegistry.SoundRegistryInstance.Read<int>(Svc.SM.Memory));
     protected override bool   IsOptional  => true;
 
     #endregion

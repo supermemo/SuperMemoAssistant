@@ -1,5 +1,5 @@
-﻿using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
-using SuperMemoAssistant.Interop.SuperMemo.Components.Types;
+﻿using SuperMemoAssistant.Interop.SuperMemo.Content.Components;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
@@ -7,7 +7,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
   public class ComponentShapeEllipse : ComponentBase, IComponentShapeEllipse
   {
     public ComponentShapeEllipse(InfComponentsShape comp)
-      : base(comp.left, comp.top, comp.right, comp.bottom, (AtFlags)comp.displayAt)
+      : base(comp.left, comp.top, comp.width, comp.height, (AtFlags)comp.displayAt)
     {
     }
 
@@ -15,7 +15,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
     {
       base.Update(
         comp.left, comp.top,
-        comp.right, comp.bottom,
+        comp.width, comp.height,
         (AtFlags)comp.displayAt,
         ComponentFieldFlags.None
       );
@@ -25,7 +25,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
   public class ComponentShapeRectangle : ComponentBase, IComponentShapeRectangle
   {
     public ComponentShapeRectangle(InfComponentsShape comp)
-      : base(comp.left, comp.top, comp.right, comp.bottom, (AtFlags)comp.displayAt)
+      : base(comp.left, comp.top, comp.width, comp.height, (AtFlags)comp.displayAt)
     {
     }
 
@@ -33,7 +33,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
     {
       base.Update(
         comp.left, comp.top,
-        comp.right, comp.bottom,
+        comp.width, comp.height,
         (AtFlags)comp.displayAt,
         ComponentFieldFlags.None
       );
@@ -43,16 +43,16 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
   public class ComponentShapeRoundedRectangle : ComponentBase, IComponentShapeRoundedRectangle
   {
     public ComponentShapeRoundedRectangle(InfComponentsShape comp)
-      : base(comp.left, comp.top, comp.right, comp.bottom, (AtFlags)comp.displayAt)
+      : base(comp.left, comp.top, comp.width, comp.height, (AtFlags)comp.displayAt)
     {
     }
 
-    public void Update(InfComponentsShape shape)
+    public void Update(InfComponentsShape comp)
     {
       base.Update(
-        shape.left, shape.top,
-        shape.right, shape.bottom,
-        (AtFlags)shape.displayAt,
+        comp.left, comp.top,
+        comp.width, comp.height,
+        (AtFlags)comp.displayAt,
         ComponentFieldFlags.None
       );
     }

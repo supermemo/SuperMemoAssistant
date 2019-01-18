@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/12/30 15:33
-// Modified On:  2019/01/01 17:36
+// Modified On:  2019/01/18 23:56
 // Modified By:  Alexis
 
 #endregion
@@ -42,15 +42,6 @@ namespace SuperMemoAssistant.PluginsHost.UI
   /// <summary>Interaction logic for GlobalSettingsWindow.xaml</summary>
   public partial class GlobalSettingsWindow : Window
   {
-    #region Constants & Statics
-
-    public const string Environment = "GlobalSettings";
-
-    #endregion
-
-
-
-
     #region Constructors
 
     public GlobalSettingsWindow()

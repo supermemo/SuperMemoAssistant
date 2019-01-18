@@ -33,7 +33,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SuperMemoAssistant.Interop.SuperMemo.Components;
+using SuperMemoAssistant.Interop.SuperMemo.Content;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;

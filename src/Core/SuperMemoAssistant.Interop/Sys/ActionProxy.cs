@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/06 18:23
-// Modified On:  2018/06/07 00:03
+// Created On:   2018/06/07 01:50
+// Modified On:  2019/01/18 20:48
 // Modified By:  Alexis
 
 #endregion
@@ -34,24 +34,23 @@ using System;
 
 namespace SuperMemoAssistant.Sys
 {
-
   public class ActionProxy<T> : SMMarshalByRefObject
   {
-    #region Constructors
+    #region Properties & Fields - Non-Public
 
-    public ActionProxy(Action<T> action)
-    {
-      Action = action;
-    }
+    private readonly Action<T> _action;
 
     #endregion
 
 
 
 
-    #region Properties & Fields - Public
+    #region Constructors
 
-    private Action<T> Action;
+    public ActionProxy(Action<T> action)
+    {
+      _action = action;
+    }
 
     #endregion
 
@@ -62,7 +61,7 @@ namespace SuperMemoAssistant.Sys
 
     public void Invoke(T args)
     {
-      Action(args);
+      _action(args);
     }
 
     public static implicit operator Action<T>(ActionProxy<T> aProxy)

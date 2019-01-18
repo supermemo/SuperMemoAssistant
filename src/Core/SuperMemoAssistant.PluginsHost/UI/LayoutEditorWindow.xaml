@@ -1,0 +1,55 @@
+﻿<Window x:Class="SuperMemoAssistant.PluginsHost.UI.LayoutEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="clr-namespace:SuperMemoAssistant.PluginsHost.UI"
+        xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        mc:Ignorable="d"
+        Title="Layout Editor" Height="450" Width="800"
+        KeyDown="Window_KeyDown"
+        d:DataContext="{d:DesignInstance ui:LayoutEditorWindow}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <TabControl x:Name="tcLayout"
+                    Grid.Row="0"
+                    SelectionChanged="TcLayout_SelectionChanged">
+            <TabItem Header="Editor">
+                <avalonedit:TextEditor x:Name="XamlEditor"
+                                       SyntaxHighlighting="XML"
+                                       ShowLineNumbers="True"
+                                       Text="{Binding Xaml}" />
+            </TabItem>
+            <TabItem Header="Preview">
+                <ContentPresenter x:Name="LayoutPresenter"
+                                  Content="{Binding Layout}" />
+            </TabItem>
+        </TabControl>
+
+        <Grid Grid.Row="1" Margin="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+
+            <Button Name="BtnCancel"
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Margin="6 0 6 0"
+                    Content="Cancel"
+                    Click="BtnCancel_Click"/>
+
+            <Button Name="BtnOk"
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    Content="Ok"
+                    Click="BtnOk_Click"/>
+
+        </Grid>
+    </Grid>
+</Window>

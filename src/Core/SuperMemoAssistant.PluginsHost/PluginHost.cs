@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/31 13:44
-// Modified On:  2018/12/30 14:39
+// Modified On:  2019/01/18 20:40
 // Modified By:  Alexis
 
 #endregion
@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Registration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security;
@@ -43,7 +44,6 @@ using System.Windows;
 using System.Windows.Threading;
 using Anotar.Serilog;
 using Forge.Forms.FormBuilding.Defaults;
-using Process.NET.Native.Types;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.Plugins;
@@ -52,10 +52,10 @@ using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.PluginsHost.Services.Devices;
 using SuperMemoAssistant.PluginsHost.UI;
 using SuperMemoAssistant.Services;
+using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO;
 using SuperMemoAssistant.Services.IO.Devices;
 using SuperMemoAssistant.Sys;
-using SuperMemoAssistant.UI;
 
 // ReSharper disable PossibleMultipleEnumeration
 
@@ -150,8 +150,15 @@ namespace SuperMemoAssistant.PluginsHost
 
     public void Setup()
     {
+#if DEBUG
+      Debugger.Launch();
+#endif
+
       SentryInstance                             =  SuperMemoAssistant.Services.Sentry.Initialize();
       AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+      Svc<MainPlugin>.Plugin = new MainPlugin();
+      Svc<MainPlugin>.Configuration = new ConfigurationService(Svc<MainPlugin>.Plugin);
 
       var pluginRegBuilder = new RegistrationBuilder();
       pluginRegBuilder.ForTypesMatching(t => t.IsAbstract == false
@@ -207,8 +214,8 @@ namespace SuperMemoAssistant.PluginsHost
 
     private void SetupServices()
     {
-      Svc.SMA = Get<ISuperMemoAssistant>();
-      Svc.KeyboardHotKey = KeyboardHookService.Instance;
+      Svc.SMA                  = Get<ISuperMemoAssistant>();
+      Svc.KeyboardHotKey       = KeyboardHookService.Instance;
       Svc.KeyboardHotKeyLegacy = KeyboardHotKeyService.Instance;
     }
 

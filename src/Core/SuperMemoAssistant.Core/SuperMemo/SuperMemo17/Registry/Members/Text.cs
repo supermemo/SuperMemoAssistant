@@ -109,9 +109,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 
     #region Methods Impl
 
-    public string GetFilePath()
+    public override string GetFilePath()
     {
-      return GetFilePath("htm");
+      return TryFilePathOrSearch("htm");
     }
 
     public Task<bool> DeleteAsync()

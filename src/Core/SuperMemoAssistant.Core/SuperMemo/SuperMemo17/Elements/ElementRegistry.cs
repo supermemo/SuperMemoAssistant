@@ -44,6 +44,7 @@ using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements;
+using SuperMemoAssistant.Interop.SuperMemo.Elements.Builders;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.SuperMemo.Hooks;
@@ -251,11 +252,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 #if false
         switch (builder.ContentType)
         {
-        case ElementBuilder.ContentTypeEnum.RawText:
+        case ElementBuilder.ContentTypeFlag.RawText:
           creationMethod = ElementCreationMethod.ClipboardContent;
 
           if (!(builder.Contents[0] is ElementBuilder.TextContent rawTextContent))
-            throw new InvalidCastException("ContentTypeEnum.RawText contained a non-text IContent");
+            throw new InvalidCastException("ContentTypeFlag.RawText contained a non-text IContent");
 
           Clipboard.SetText(rawTextContent.Text,
                             rawTextContent.Encoding.EncodingName == Encoding.Unicode.EncodingName
@@ -263,11 +264,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
                               : TextDataFormat.Text);
           break;
 
-        case ElementBuilder.ContentTypeEnum.Html:
+        case ElementBuilder.ContentTypeFlag.Html:
           creationMethod = ElementCreationMethod.ClipboardContent;
 
           if (!(builder.Contents[0] is ElementBuilder.TextContent htmlTextContent))
-            throw new InvalidCastException("ContentTypeEnum.RawText contained a non-text IContent");
+            throw new InvalidCastException("ContentTypeFlag.RawText contained a non-text IContent");
 
           ClipboardHelper.CopyToClipboard(htmlTextContent.Text,
                                           htmlTextContent.Text);
@@ -278,21 +279,21 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
         {
           // TODO: Handle multiple content
 
-          case ElementBuilder.ContentTypeEnum.RawText:
-          case ElementBuilder.ContentTypeEnum.Html:
+          case ElementBuilder.ContentTypeFlag.RawText:
+          case ElementBuilder.ContentTypeFlag.Html:
             creationMethod = ElementCreationMethod.AddElement;
 
             if (!(builder.Contents[0] is ElementBuilder.TextContent))
-              throw new InvalidCastException("ContentTypeEnum.RawText contained a non-text IContent");
+              throw new InvalidCastException("ContentTypeFlag.RawText contained a non-text IContent");
 
             break;
 
 
-          case ElementBuilder.ContentTypeEnum.Image:
+          case ElementBuilder.ContentTypeFlag.Image:
             creationMethod = ElementCreationMethod.AddElement;
             
             if (!(builder.Contents[0] is ElementBuilder.ImageContent))
-              throw new InvalidCastException("ContentTypeEnum.Image contained a non-image IContent");
+              throw new InvalidCastException("ContentTypeFlag.Image contained a non-image IContent");
 
             break;
 
@@ -323,14 +324,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
             break;
 
           case ElementCreationMethod.AddElement:
-            //if (builder.Parent != null && ElementWdw.Instance.CurrentElementId != builder.Parent.Id)
-            //{
-            //  ElementWdw.Instance.IgnoreElementChange += 1;
-
-            //  ElementWdw.Instance.GoToElement(builder.Parent.Id);
-            //}
-
-            string elementDesc = ElementClipboardBuilder.FromElementBuilder(builder);
+            string elementDesc = builder.ToString();
 
             success = ElementWdw.Instance.AppendAndAddElementFromText(builder.Type, elementDesc) > 0;
 

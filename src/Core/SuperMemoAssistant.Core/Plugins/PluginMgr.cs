@@ -31,8 +31,9 @@
 
 
 using System;
+using Anotar.Serilog;
 using SuperMemoAssistant.Interop.SuperMemo;
-using SuperMemoAssistant.Interop.SuperMemo.Components.Types;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Components;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
@@ -127,7 +128,7 @@ namespace SuperMemoAssistant.Plugins
       Runner.PostSetup();
 
       foreach (var plugin in Runner.Plugins)
-        System.Diagnostics.Debug.WriteLine($"[PluginMgr] Loaded plugin {plugin.Name} ({plugin.Version})");
+        LogTo.Debug($"[PluginMgr] Loaded plugin {plugin.Name} ({plugin.Version})");
     }
 
     protected void UnloadPlugins()

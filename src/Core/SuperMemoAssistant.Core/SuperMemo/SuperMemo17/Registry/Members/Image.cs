@@ -76,10 +76,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
       throw new NotImplementedException();
     }
 
-    public string GetFilePath()
+    public override string GetFilePath()
     {
       //TODO: switch () on filetype
-      return GetFilePath("png");
+      return TryFilePathOrSearch("png");
     }
 
     public Task<bool> DeleteAsync()

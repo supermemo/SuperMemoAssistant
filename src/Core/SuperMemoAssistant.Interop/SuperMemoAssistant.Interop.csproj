@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\..\packages\Resourcer.Fody.1.7.3\build\Resourcer.Fody.props" Condition="Exists('..\..\..\packages\Resourcer.Fody.1.7.3\build\Resourcer.Fody.props')" />
   <Import Project="..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props" Condition="Exists('..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props')" />
   <Import Project="..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props" Condition="Exists('..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -101,8 +102,8 @@
       <HintPath>..\..\..\packages\FlaUI.UIA3.2.0.0-rc1\lib\net45\Interop.UIAutomationClient.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="JetBrains.Annotations, Version=2018.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\JetBrains.Annotations.2018.2.1\lib\net20\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=2018.3.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\JetBrains.Annotations.2018.3.0\lib\net20\JetBrains.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="LiteDB, Version=4.1.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\LiteDB.4.1.4\lib\net40\LiteDB.dll</HintPath>
@@ -115,20 +116,23 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Sentry, Version=1.1.1.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Sentry.1.1.1\lib\net461\Sentry.dll</HintPath>
+    <Reference Include="Resourcer, Version=1.7.3.0, Culture=neutral, PublicKeyToken=409b3227471b0f0d, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Resourcer.Fody.1.7.3\lib\net452\Resourcer.dll</HintPath>
+    </Reference>
+    <Reference Include="Sentry, Version=1.1.2.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Sentry.1.1.2\lib\net461\Sentry.dll</HintPath>
     </Reference>
     <Reference Include="Sentry.PlatformAbstractions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Sentry.PlatformAbstractions.1.0.0\lib\net471\Sentry.PlatformAbstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Sentry.Protocol, Version=1.0.2.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Sentry.Protocol.1.0.2\lib\net46\Sentry.Protocol.dll</HintPath>
+    <Reference Include="Sentry.Protocol, Version=1.0.3.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Sentry.Protocol.1.0.3\lib\net46\Sentry.Protocol.dll</HintPath>
     </Reference>
-    <Reference Include="Sentry.Serilog, Version=1.1.1.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Sentry.Serilog.1.1.1\lib\net461\Sentry.Serilog.dll</HintPath>
+    <Reference Include="Sentry.Serilog, Version=1.1.2.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Sentry.Serilog.1.1.2\lib\net461\Sentry.Serilog.dll</HintPath>
     </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Serilog.2.7.1\lib\net46\Serilog.dll</HintPath>
+      <HintPath>..\..\..\packages\Serilog.2.8.0\lib\net46\Serilog.dll</HintPath>
     </Reference>
     <Reference Include="Serilog.Enrichers.Demystify, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Serilog.Enrichers.Demystify.0.1.0-dev-00016\lib\net45\Serilog.Enrichers.Demystify.dll</HintPath>
@@ -181,9 +185,40 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\DependencyObjectEx.cs" />
     <Compile Include="Extensions\ImageEx.cs" />
     <Compile Include="Extensions\StreamEx.cs" />
     <Compile Include="Extensions\TreeViewEx.cs" />
+    <Compile Include="Extensions\WindowEx.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Components\Base\ComponentSoundBase.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Components\Base\ComponentImageBase.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Components\Base\ComponentHtmlBase.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Components\Builders\ComponentSoundBuilder.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Layout\XamlControls\Container.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Layout\XamlControls\AutoGrid.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Layout\LayoutManager.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Components\Base\ComponentGroupBase.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Contents\ContentBase.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Contents\ContentTypeFlag.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Contents\ImageContent.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlBase.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlGroup.xaml.cs">
+      <DependentUpon>XamlControlGroup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlHtml.xaml.cs">
+      <DependentUpon>XamlControlHtml.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlImage.xaml.cs">
+      <DependentUpon>XamlControlImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlSound.xaml.cs">
+      <DependentUpon>XamlControlSound.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interop\SuperMemo\Content\Layout\XamlLayouts\XamlLayout.cs" />
+    <Compile Include="Interop\SuperMemo\Elements\Builders\References.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Contents\SoundContent.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Contents\TextContent.cs" />
+    <Compile Include="Interop\SuperMemo\Elements\Models\ElementStatus.cs" />
     <Compile Include="Interop\SuperMemo\Learning\LearningMode.cs" />
     <Compile Include="Interop\SuperMemo\UI\Element\DisplayState.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -191,6 +226,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Sys\Collections\BiDictionary.cs" />
+    <Compile Include="Sys\Collections\SparseClusteredArray.Bounds.cs" />
+    <Compile Include="Sys\Collections\SparseClusteredArray.cs" />
+    <Compile Include="Sys\Collections\SparseClusteredArray.Enumerables.cs" />
+    <Compile Include="Sys\Collections\SparseClusteredArray.Enumerators.cs" />
+    <Compile Include="Sys\Collections\SparseClusteredArray.Segment.cs" />
+    <Compile Include="Sys\Collections\SparseClusteredArray.Streams.cs" />
+    <Compile Include="Sys\Index2D.cs" />
     <Compile Include="Sys\Windows\KeyboardEx.cs" />
     <Compile Include="UI\Converters\ElementIconConverter.cs" />
     <Compile Include="UI\ElementPicker.xaml.cs">
@@ -211,23 +254,22 @@
     <Compile Include="Extensions\ProcessEx.cs" />
     <Compile Include="Extensions\StringEx.cs" />
     <Compile Include="Interop\InjectLibMessages.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Builders\ComponentHtmlBuilder.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Builders\ComponentImageBuilder.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Components\Builders\ComponentHtmlBuilder.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Components\Builders\ComponentImageBuilder.cs" />
     <Compile Include="Interop\SuperMemo\Elements\ConceptSnapshot.cs" />
-    <Compile Include="Interop\SuperMemo\Elements\ElementClipboardBuilder.cs" />
     <Compile Include="Interop\SuperMemo\Elements\HookSnapshot.cs" />
     <Compile Include="Interop\SuperMemo\Registry\Members\IBinary.cs" />
     <Compile Include="Interop\SuperMemo\Registry\Types\IBinaryRegistry.cs" />
     <Compile Include="Services\IO\Devices\KeyboardHookEventArgs.cs" />
     <Compile Include="Services\IO\Devices\IKeyboardHookService.cs" />
     <Compile Include="Services\IO\FS\PluginCollectionFSService.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Controls\IControl.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Controls\IControlGroup.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Controls\IControlImage.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Controls\IControlRtf.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Controls\IControlText.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Controls\IControlHtml.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Controls\IControlTextBase.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Controls\IControl.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Controls\IControlGroup.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Controls\IControlImage.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Controls\IControlRtf.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Controls\IControlText.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Controls\IControlHtml.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Controls\IControlTextBase.cs" />
     <Compile Include="Services\IO\Logger.cs" />
     <Compile Include="Services\Sentry.cs" />
     <Compile Include="Sys\ActionProxy.cs" />
@@ -250,25 +292,24 @@
     <Compile Include="Services\Svc.cs" />
     <Compile Include="Interop\SMAConst.cs" />
     <Compile Include="Interop\SMConst.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Builders\ComponentBuilder.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Models\ComponentFieldFlags.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Models\ComponentImageStretchType.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Models\ComponentType.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Models\AtFlags.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Types\IComponent.cs" />
-    <Compile Include="Interop\SuperMemo\Components\IComponentGroup.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Types\IComponentHtml.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Types\IComponentImage.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Types\IComponentRegistry.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Types\IComponentRtf.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Types\IComponentShapes.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Types\IComponentSound.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Types\IComponentSpelling.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Types\IComponentText.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Types\IComponentVideo.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Models\MediaPanelType.cs" />
-    <Compile Include="Interop\SuperMemo\Components\Models\TextAlignment.cs" />
-    <Compile Include="Interop\SuperMemo\Elements\ElementBuilder.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Models\ComponentFieldFlags.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Models\ImageStretchMode.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Models\ComponentType.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Models\AtFlags.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Components\IComponent.cs" />
+    <Compile Include="Interop\SuperMemo\Content\IComponentGroup.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Components\IComponentHtml.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Components\IComponentImage.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Components\IComponentRegistry.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Components\IComponentRtf.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Components\IComponentShapes.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Components\IComponentSound.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Components\IComponentSpelling.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Components\IComponentText.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Components\IComponentVideo.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Models\MediaPanelType.cs" />
+    <Compile Include="Interop\SuperMemo\Content\Models\TextAlignment.cs" />
+    <Compile Include="Interop\SuperMemo\Elements\Builders\ElementBuilder.cs" />
     <Compile Include="Interop\SuperMemo\Elements\Models\ElementFieldFlags.cs" />
     <Compile Include="Interop\SuperMemo\Elements\Models\ElementType.cs" />
     <Compile Include="Interop\SuperMemo\Elements\Types\IConceptGroup.cs" />
@@ -350,6 +391,26 @@
     <Resource Include="Resources\topic_icon.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlGroup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlHtml.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlSound.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <EmbeddedResource Include="Interop\SuperMemo\Content\Layout\XamlLayouts\GenericLayout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <Page Include="UI\ElementPicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -372,6 +433,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -380,6 +442,7 @@
     <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Fody.3.3.5\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.3.3.5\build\Fody.targets'))" />
     <Error Condition="!Exists('..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props'))" />
+    <Error Condition="!Exists('..\..\..\packages\Resourcer.Fody.1.7.3\build\Resourcer.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Resourcer.Fody.1.7.3\build\Resourcer.Fody.props'))" />
   </Target>
   <Import Project="..\..\..\packages\Fody.3.3.5\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.3.3.5\build\Fody.targets')" />
 </Project>

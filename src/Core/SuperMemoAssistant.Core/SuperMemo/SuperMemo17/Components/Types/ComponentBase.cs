@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:13
-// Modified On:  2018/12/15 10:17
+// Modified On:  2019/01/16 15:08
 // Modified By:  Alexis
 
 #endregion
@@ -32,8 +32,9 @@
 
 using System;
 using System.Collections.Generic;
+using Anotar.Serilog;
 using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
 {
@@ -44,25 +45,26 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
     //
     // Internal helpers
 
-    protected static IReadOnlyDictionary<string, ComponentFieldFlags> FieldFlagMapping { get; } = new Dictionary<string, ComponentFieldFlags>()
-    {
-      { "Left", ComponentFieldFlags.Left },
-      { "Top", ComponentFieldFlags.Top },
-      { "Right", ComponentFieldFlags.Right },
-      { "Bottom", ComponentFieldFlags.Bottom },
-      { "DisplayAt", ComponentFieldFlags.DisplayAt },
-      { "RegistryId", ComponentFieldFlags.RegistryId },
-      { "Color", ComponentFieldFlags.Color },
-      { "TextAlignment", ComponentFieldFlags.TextAlignment },
-      { "ExtractStart", ComponentFieldFlags.ExtractStart },
-      { "ExtractStop", ComponentFieldFlags.ExtractStop },
-      { "PanelType", ComponentFieldFlags.PanelType },
-      { "PlayAt", ComponentFieldFlags.PlayAt },
-      { "IsContinuous", ComponentFieldFlags.IsContinuous },
-      { "IsFullScreen", ComponentFieldFlags.IsFullScreen },
-      { "IsFullHtml", ComponentFieldFlags.IsFullHtml },
-      { "StretchType", ComponentFieldFlags.StretchType },
-    };
+    protected static IReadOnlyDictionary<string, ComponentFieldFlags> FieldFlagMapping { get; } =
+      new Dictionary<string, ComponentFieldFlags>()
+      {
+        { "Left", ComponentFieldFlags.Left },
+        { "Top", ComponentFieldFlags.Top },
+        { "Width", ComponentFieldFlags.Width },
+        { "Height", ComponentFieldFlags.Height },
+        { "DisplayAt", ComponentFieldFlags.DisplayAt },
+        { "RegistryId", ComponentFieldFlags.RegistryId },
+        { "Color", ComponentFieldFlags.Color },
+        { "TextAlignment", ComponentFieldFlags.TextAlignment },
+        { "ExtractStart", ComponentFieldFlags.ExtractStart },
+        { "ExtractStop", ComponentFieldFlags.ExtractStop },
+        { "PanelType", ComponentFieldFlags.PanelType },
+        { "PlayAt", ComponentFieldFlags.PlayAt },
+        { "IsContinuous", ComponentFieldFlags.IsContinuous },
+        { "IsFullScreen", ComponentFieldFlags.IsFullScreen },
+        { "IsFullHtml", ComponentFieldFlags.IsFullHtml },
+        { "StretchType", ComponentFieldFlags.StretchType },
+      };
 
     #endregion
 
@@ -73,22 +75,23 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
 
     protected ComponentBase(short   left,
                             short   top,
-                            short   right,
-                            short   bottom,
+                            short   width,
+                            short   height,
                             AtFlags displayAt)
     {
-#if DEBUG
-      //System.Diagnostics.Debug.WriteLine("[{0}] Creating component", new[] { this.GetType().Name });
+#if DEBUG && !DEBUG_IN_PROD
+      LogTo.Debug("[{0}] Creating component",
+                  GetType().Name);
 #endif
 
       Left = SetValue(left,
                       nameof(Left));
       Top = SetValue(top,
                      nameof(Top));
-      Right = SetValue(right,
-                       nameof(Right));
-      Bottom = SetValue(bottom,
-                        nameof(Bottom));
+      Width = SetValue(width,
+                       nameof(Width));
+      Height = SetValue(height,
+                        nameof(Height));
       DisplayAt = SetValue(displayAt,
                            nameof(DisplayAt));
     }
@@ -102,8 +105,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
 
     public short   Left      { get; set; }
     public short   Top       { get; set; }
-    public short   Right     { get; set; }
-    public short   Bottom    { get; set; }
+    public short   Width     { get; set; }
+    public short   Height    { get; set; }
     public AtFlags DisplayAt { get; set; }
 
     #endregion
@@ -115,13 +118,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
 
     protected void Update(short               left,
                           short               top,
-                          short               right,
-                          short               bottom,
+                          short               width,
+                          short               height,
                           AtFlags             displayAt,
                           ComponentFieldFlags flags)
     {
-#if DEBUG
-      //System.Diagnostics.Debug.WriteLine("[{0}] Updating component", new[] { this.GetType().Name });
+#if DEBUG && !DEBUG_IN_PROD
+      LogTo.Debug("[{0}] Updating component",
+                  GetType().Name);
 #endif
 
       Left = SetValue(Left,
@@ -132,13 +136,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
                      top,
                      nameof(Top),
                      ref flags);
-      Right = SetValue(Right,
-                       right,
-                       nameof(Right),
+      Width = SetValue(Width,
+                       width,
+                       nameof(Width),
                        ref flags);
-      Bottom = SetValue(Bottom,
-                        bottom,
-                        nameof(Bottom),
+      Height = SetValue(Height,
+                        height,
+                        nameof(Height),
                         ref flags);
       DisplayAt = SetValue(DisplayAt,
                            displayAt,
@@ -164,11 +168,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
         onChangedAction?.Invoke(oldValue,
                                 value);
 
-#if DEBUG
-        //System.Diagnostics.Debug.WriteLine("[{0}] {1}: {2}",
-        //                                   GetType().Name,
-        //                                   name,
-        //                                   value);
+#if DEBUG && !DEBUG_IN_PROD
+        LogTo.Debug("[{0}] {1}: {2}",
+                    GetType().Name,
+                    name,
+                    value);
 #endif
       }
 
@@ -178,11 +182,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
     protected T SetValue<T>(T      value,
                             string name)
     {
-#if DEBUG
-      //System.Diagnostics.Debug.WriteLine("[{0}] {1}: {2}",
-      //                                   GetType().Name,
-      //                                   name,
-      //                                   value);
+#if DEBUG && !DEBUG_IN_PROD
+      LogTo.Debug("[{0}] {1}: {2}",
+                  GetType().Name,
+                  name,
+                  value);
 #endif
 
       return value;

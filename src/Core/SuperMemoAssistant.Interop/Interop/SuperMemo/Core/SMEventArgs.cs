@@ -32,9 +32,9 @@
 
 using System;
 using Process.NET;
-using SuperMemoAssistant.Interop.SuperMemo.Components;
-using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
-using SuperMemoAssistant.Interop.SuperMemo.Components.Types;
+using SuperMemoAssistant.Interop.SuperMemo.Content;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Components;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;

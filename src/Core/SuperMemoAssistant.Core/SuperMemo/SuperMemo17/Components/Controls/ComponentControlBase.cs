@@ -31,8 +31,8 @@
 
 
 using System;
-using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
-using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 {

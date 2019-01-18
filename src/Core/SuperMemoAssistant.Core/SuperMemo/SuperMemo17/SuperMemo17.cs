@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/08 01:24
-// Modified On:  2018/12/04 14:59
+// Modified On:  2019/01/15 12:35
 // Modified By:  Alexis
 
 #endregion
@@ -56,8 +56,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
 
     /// <summary>SM17 Management interface</summary>
     /// <param name="collection">Target collection to open</param>
-    public SM17(SMCollection collection)
-      : base(collection) { }
+    /// <param name="binPath">SuperMemo bin path</param>
+    public SM17(SMCollection collection,
+                string       binPath)
+      : base(collection,
+             binPath) { }
 
     #endregion
 

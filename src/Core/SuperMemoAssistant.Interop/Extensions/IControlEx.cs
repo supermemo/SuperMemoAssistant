@@ -28,7 +28,7 @@
 
 
 
-using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
 
 namespace SuperMemoAssistant.Extensions
 {

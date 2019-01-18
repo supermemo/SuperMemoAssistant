@@ -6,7 +6,6 @@
       <xs:all>
         <xs:element name="Anotar.Serilog" minOccurs="0" maxOccurs="1" type="xs:anyType" />
         <xs:element name="LoadAssembliesOnStartup" minOccurs="0" maxOccurs="1" type="xs:anyType" />
-        <xs:element name="Visualize" minOccurs="0" maxOccurs="1" type="xs:anyType" />
         <xs:element name="PropertyChanged" minOccurs="0" maxOccurs="1">
           <xs:complexType>
             <xs:attribute name="InjectOnPropertyNameChanged" type="xs:boolean">
@@ -36,6 +35,7 @@
             </xs:attribute>
           </xs:complexType>
         </xs:element>
+        <xs:element name="Visualize" minOccurs="0" maxOccurs="1" type="xs:anyType" />
       </xs:all>
       <xs:attribute name="VerifyAssembly" type="xs:boolean">
         <xs:annotation>

@@ -30,7 +30,7 @@
 
 
 
-using SuperMemoAssistant.Interop.SuperMemo.Components;
+using SuperMemoAssistant.Interop.SuperMemo.Content;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Registry.Members
 {

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/19 20:43
-// Modified On:  2018/12/07 14:20
+// Modified On:  2019/01/15 01:43
 // Modified By:  Alexis
 
 #endregion
@@ -56,12 +56,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 
 
     #region Methods Impl
-
-    public string GetFilePath()
-    {
-      //switch ()
-      return null; // GetFilePath(".mp3");
-    }
 
     public Task<bool> DeleteAsync()
     {

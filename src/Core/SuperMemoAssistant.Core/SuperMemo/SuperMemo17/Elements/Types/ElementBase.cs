@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:12
-// Modified On:  2019/01/01 18:11
+// Modified On:  2019/01/16 15:05
 // Modified By:  Alexis
 
 #endregion
@@ -36,7 +36,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Anotar.Serilog;
 using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop.SuperMemo.Components;
+using SuperMemoAssistant.Interop.SuperMemo.Content;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
@@ -92,9 +92,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
       Id = id;
 
 #if DEBUG && !DEBUG_IN_PROD
-      System.Diagnostics.Debug.WriteLine("[{0} {1}] Creating",
-                                         GetType().Name,
-                                         Id);
+      LogTo.Debug("[{0} {1}] Creating",
+                  GetType().Name,
+                  Id);
 #endif
 
       TitleTextId = SetValue(elElem.titleTextId,
@@ -230,9 +230,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
                                     InfElementsElem? elElem)
     {
 #if DEBUG && !DEBUG_IN_PROD
-      System.Diagnostics.Debug.WriteLine("[{0} {1}] Updating",
-                                         GetType().Name,
-                                         Id);
+      LogTo.Debug("[{0} {1}] Updating",
+                  GetType().Name,
+                  Id);
 #endif
 
       // TODO: Set/Clear events handlers on component change
@@ -452,11 +452,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
                                 value);
 
 #if DEBUG && !DEBUG_IN_PROD
-        System.Diagnostics.Debug.WriteLine("[{0} {1}] {2}: {3}",
-                                           GetType().Name,
-                                           Id,
-                                           name,
-                                           value);
+        LogTo.Debug("[{0} {1}] {2}: {3}",
+                    GetType().Name,
+                    Id,
+                    name,
+                    value);
 #endif
       }
 
@@ -467,11 +467,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
                             string name)
     {
 #if DEBUG && !DEBUG_IN_PROD
-      System.Diagnostics.Debug.WriteLine("[{0} {1}] {2}: {3}",
-                                         GetType().Name,
-                                         Id,
-                                         name,
-                                         value);
+      LogTo.Debug("[{0} {1}] {2}: {3}",
+                  GetType().Name,
+                  Id,
+                  name,
+                  value);
 #endif
 
       return value;
@@ -483,7 +483,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
 
     #region Methods Abs
-    
+
     public abstract ElementType Type { get; }
 
     #endregion

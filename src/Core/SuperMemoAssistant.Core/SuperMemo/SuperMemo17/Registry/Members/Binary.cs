@@ -57,12 +57,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 
     #region Methods Impl
 
-    public string GetFilePath()
-    {
-      //TODO: switch () on filetype
-      return GetFilePath("unknown");
-    }
-
     public Task<bool> DeleteAsync()
     {
       throw new NotImplementedException();

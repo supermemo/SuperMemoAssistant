@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/21 17:15
-// Modified On:  2018/11/26 11:09
+// Modified On:  2019/01/15 17:54
 // Modified By:  Alexis
 
 #endregion
@@ -34,14 +34,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Anotar.Serilog;
-using SuperMemoAssistant.Interop.SuperMemo.Components;
-using SuperMemoAssistant.Interop.SuperMemo.Components.Types;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Components;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Components.Base;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components
 {
-  public class ComponentGroup : MarshalByRefObject, IComponentGroup
+  public class ComponentGroup : ComponentGroupBase
   {
     #region Properties & Fields - Non-Public
 
@@ -66,10 +66,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components
 
     #region Properties Impl - Public
 
-    public IComponent this[int idx] => (IComponent)ComponentsInternal.ElementAtOrDefault(idx);
-    public IEnumerable<IComponent> Components => ComponentsInternal.Select(c => (IComponent)c).ToList();
-    public int                     Count      => ComponentsInternal.Count;
-    public int                     Offset     { get; set; }
+    public override IComponent this[int idx] => (IComponent)ComponentsInternal.ElementAtOrDefault(idx);
+    public override IEnumerable<IComponent> Components => ComponentsInternal.Select(c => (IComponent)c).ToList();
+    public override int                     Count      => ComponentsInternal.Count;
+    public override int                     Offset     { get; }
 
     #endregion
 
@@ -78,54 +78,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components
 
     #region Methods Impl
 
-    public IComponentHtml GetFirstHtmlComponent()
+    protected override T GetFirstComponent<T>()
     {
-      return GetFirstComponent<IComponentHtml>();
-    }
+      if (ComponentsInternal == null || ComponentsInternal.Count == 0)
+        return null;
 
-    public IComponentImage GetFirstImageComponent()
-    {
-      return GetFirstComponent<IComponentImage>();
-    }
-
-    public IComponentRtf GetFirstRtfComponent()
-    {
-      return GetFirstComponent<IComponentRtf>();
-    }
-
-    public IComponentShapeRectangle GetFirstRectangleShapeComponent()
-    {
-      return GetFirstComponent<IComponentShapeRectangle>();
-    }
-
-    public IComponentShapeRoundedRectangle GetFirstRoundedRectangleShapeComponent()
-    {
-      return GetFirstComponent<IComponentShapeRoundedRectangle>();
-    }
-
-    public IComponentShapeEllipse GetFirstEllipseComponent()
-    {
-      return GetFirstComponent<IComponentShapeEllipse>();
-    }
-
-    public IComponentSound GetFirstSoundComponent()
-    {
-      return GetFirstComponent<IComponentSound>();
-    }
-
-    public IComponentSpelling GetFirstSpellingComponent()
-    {
-      return GetFirstComponent<IComponentSpelling>();
-    }
-
-    public IComponentText GetFirstTextComponent()
-    {
-      return GetFirstComponent<IComponentText>();
-    }
-
-    public IComponentVideo GetFirstVideoComponent()
-    {
-      return GetFirstComponent<IComponentVideo>();
+      return ComponentsInternal.FirstOrDefault(c => c is T) as T;
     }
 
     #endregion
@@ -134,15 +92,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components
 
 
     #region Methods
-
-    private T GetFirstComponent<T>()
-      where T : class, IComponent
-    {
-      if (ComponentsInternal == null || ComponentsInternal.Count == 0)
-        return null;
-
-      return ComponentsInternal.FirstOrDefault(c => c is T) as T;
-    }
 
     internal void AddComponent(ComponentBase component)
     {
@@ -174,7 +123,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components
 
     // Events
 
-    public event Action<SMComponentGroupArgs> OnChanged;
+    public override event Action<SMComponentGroupArgs> OnChanged;
 
     #endregion
   }

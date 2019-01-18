@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/12 18:26
-// Modified On:  2019/01/05 04:07
+// Modified On:  2019/01/15 12:35
 // Modified By:  Alexis
 
 #endregion
@@ -69,7 +69,8 @@ namespace SuperMemoAssistant.SuperMemo
 
     #region Constructors
 
-    protected SuperMemoBase(SMCollection collection)
+    protected SuperMemoBase(SMCollection collection,
+                            string       binPath)
     {
       Collection = collection;
 
@@ -77,6 +78,7 @@ namespace SuperMemoAssistant.SuperMemo
 
       SMProcess = SMHookEngine.Instance.CreateAndHook(
         collection,
+        binPath,
         this,
         GetIOCallbacks()
       );
@@ -226,7 +228,7 @@ namespace SuperMemoAssistant.SuperMemo
 
       var restoreWndProcAddr = SM17Natives.TApplication.TApplicationOnMessagePtr.Read<int>(SMProcess.Memory);
       SM17Natives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
-                                                                 WndProcHookAddr);
+                                                                   WndProcHookAddr);
 
       WindowHelper.PostMessage(handle,
                                2345,
@@ -236,7 +238,7 @@ namespace SuperMemoAssistant.SuperMemo
       SMA.Instance.SMMgmt.MainThreadReady.WaitOne(AssemblyFactory.ExecutionTimeout);
 
       SM17Natives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
-                                                                 restoreWndProcAddr);
+                                                                   restoreWndProcAddr);
 
       ExecCtxt.ExecutionParameters = null;
 

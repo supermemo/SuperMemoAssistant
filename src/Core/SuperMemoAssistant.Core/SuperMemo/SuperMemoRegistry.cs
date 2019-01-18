@@ -31,7 +31,7 @@
 
 
 using SuperMemoAssistant.Interop.SuperMemo;
-using SuperMemoAssistant.Interop.SuperMemo.Components.Types;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Components;
 using SuperMemoAssistant.Interop.SuperMemo.Elements;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Components;

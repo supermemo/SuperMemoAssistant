@@ -37,8 +37,8 @@ using System.Linq;
 using Process.NET;
 using Process.NET.Memory;
 using Process.NET.Types;
-using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
-using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
 using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
@@ -254,7 +254,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
         case 0x0B:
           return new ComponentControlBase(idx,
-                                          ComponentType.External,
+                                          ComponentType.Binary,
                                           this);
 
         case 0x0C:

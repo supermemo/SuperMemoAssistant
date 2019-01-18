@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/31 13:45
-// Modified On:  2018/12/13 13:01
+// Modified On:  2019/01/16 21:09
 // Modified By:  Alexis
 
 #endregion
@@ -51,7 +51,7 @@ namespace SuperMemoAssistant.Extensions
       return defaultRet;
     }
 
-    public static T SafeGet<TKey, T>(this Dictionary<TKey, T> dic,
+    public static T SafeGet<TKey, T>(this IDictionary<TKey, T> dic,
                                      TKey                      key,
                                      T                         defaultRet = default(T))
     {
@@ -61,9 +61,19 @@ namespace SuperMemoAssistant.Extensions
       return defaultRet;
     }
 
+    public static T SafeGet<TKey, T>(this Dictionary<TKey, T> dic,
+                                     TKey                     key,
+                                     T                        defaultRet = default(T))
+    {
+      if (dic.ContainsKey(key))
+        return dic[key];
+
+      return defaultRet;
+    }
+
     public static T SafeGet<TKey, T>(this ConcurrentDictionary<TKey, T> dic,
-                                     TKey key,
-                                     T defaultRet = default(T))
+                                     TKey                               key,
+                                     T                                  defaultRet = default(T))
     {
       if (dic.ContainsKey(key))
         return dic[key];

@@ -95,8 +95,8 @@
       <HintPath>..\..\..\packages\FlaUI.UIA3.2.0.0-rc1\lib\net45\Interop.UIAutomationClient.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="JetBrains.Annotations, Version=2018.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\JetBrains.Annotations.2018.2.1\lib\net20\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=2018.3.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\JetBrains.Annotations.2018.3.0\lib\net20\JetBrains.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
@@ -106,6 +106,9 @@
     </Reference>
     <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop, Version=1.0.168.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Nito.AsyncEx, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Nito.AsyncEx.4.0.1\lib\net45\Nito.AsyncEx.dll</HintPath>
@@ -122,7 +125,7 @@
       <HintPath>..\..\..\packages\PropertyChanged.Fody.2.6.0\lib\net452\PropertyChanged.dll</HintPath>
     </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Serilog.2.7.1\lib\net46\Serilog.dll</HintPath>
+      <HintPath>..\..\..\packages\Serilog.2.8.0\lib\net46\Serilog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -210,11 +213,6 @@
     <Compile Include="SuperMemo\SuperMemo17\UI\Element\ElementWdw.cs" />
     <Compile Include="SuperMemo\SuperMemo17\UI\WdwBase.cs" />
     <Compile Include="SuperMemo\Hooks\SMHookIOBase.cs" />
-    <Compile Include="Sys\Collections\SparseClusteredArray.Bounds.cs" />
-    <Compile Include="Sys\Collections\SparseClusteredArray.cs" />
-    <Compile Include="Sys\Collections\SparseClusteredArray.Enumerables.cs" />
-    <Compile Include="Sys\Collections\SparseClusteredArray.Enumerators.cs" />
-    <Compile Include="Sys\Collections\SparseClusteredArray.Segment.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Registry\Types\RegistryBase.cs" />
     <Compile Include="SuperMemo\Hooks\SMHookEngine.cs" />
     <Compile Include="SuperMemo\SuperMemoAssistant.cs" />
@@ -223,7 +221,6 @@
     <Compile Include="SuperMemo\SuperMemo17\Files\RegRtxElem.cs" />
     <Compile Include="SuperMemo\SuperMemo17\SuperMemo17.cs" />
     <Compile Include="SuperMemo\SuperMemo.Base.cs" />
-    <Compile Include="Sys\Collections\SparseClusteredArray.Streams.cs" />
     <Compile Include="Plugins\PluginMgr.cs" />
     <Compile Include="Sys\InitOnLoad.cs" />
     <Compile Include="Sys\NativeFuncScanner.cs" />
@@ -241,6 +238,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\libs\Forge.Forms\Forge.Forms\src\Forge.Forms\Forge.Forms.csproj">
+      <Project>{4e0c323d-5afc-4105-815f-587346aa5321}</Project>
+      <Name>Forge.Forms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\libs\Process.NET\src\Process.NET\Process.NET.csproj">
       <Project>{501257d3-f788-4a5d-b990-16c01ff71926}</Project>
       <Name>Process.NET</Name>

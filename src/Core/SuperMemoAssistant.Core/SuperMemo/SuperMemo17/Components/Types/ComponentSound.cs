@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
-using SuperMemoAssistant.Interop.SuperMemo.Components.Models;
-using SuperMemoAssistant.Interop.SuperMemo.Components.Types;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Components;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 
@@ -15,7 +15,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
     protected int ColorBlue { get; set; }
 
     public ComponentSound(InfComponentsSound comp)
-      : base(comp.left, comp.top, comp.right, comp.bottom, (AtFlags)comp.displayAt)
+      : base(comp.left, comp.top, comp.width, comp.height, (AtFlags)comp.displayAt)
     {
       SoundId = SetValue(comp.registryId, nameof(SoundId));
       ColorRed = SetValue(comp.colorRed, nameof(ColorRed));
@@ -46,7 +46,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
 
       base.Update(
         comp.left, comp.top,
-        comp.right, comp.bottom,
+        comp.width, comp.height,
         (AtFlags)comp.displayAt,
         flags
       );

@@ -35,7 +35,7 @@ using Anotar.Serilog;
 using Process.NET.Memory;
 using Process.NET.Types;
 using SuperMemoAssistant.Interop;
-using SuperMemoAssistant.Interop.SuperMemo.Components.Controls;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;

@@ -121,7 +121,8 @@ namespace SuperMemoAssistant.Interop.Plugins
     [Conditional("DEBUG_IN_PROD")]
     private void AttachDebugger()
     {
-      Debugger.Launch();
+      // Uncomment if plugins ever are isolated in their own process
+      //Debugger.Launch();
     }
 
     private void Init()

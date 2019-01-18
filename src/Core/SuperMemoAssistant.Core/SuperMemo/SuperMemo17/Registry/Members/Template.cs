@@ -33,7 +33,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SuperMemoAssistant.Interop.SuperMemo.Components;
+using SuperMemoAssistant.Interop.SuperMemo.Content;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
@@ -58,7 +58,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 
     #region Methods Impl
 
-    public string GetFilePath()
+    public override string GetFilePath()
     {
       return null;
     }

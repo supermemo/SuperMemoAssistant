@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/08 13:06
-// Modified On:  2019/01/05 04:06
+// Modified On:  2019/01/15 12:36
 // Modified By:  Alexis
 
 #endregion
@@ -59,14 +59,16 @@ namespace SuperMemoAssistant.SuperMemo
   {
     #region Constants & Statics
 
-    protected static readonly Dictionary<Regex, Func<SMCollection, SuperMemoBase>>
+    protected static readonly Dictionary<Regex, Func<SMCollection, string, SuperMemoBase>>
       SMTitleFactoryMap =
-        new Dictionary<Regex, Func<SMCollection, SuperMemoBase>>
+        new Dictionary<Regex, Func<SMCollection, string, SuperMemoBase>>
         {
           {
             new Regex(SM17.RE_WindowTitle,
                       RegexOptions.Compiled | RegexOptions.IgnoreCase),
-            c => new SM17(c)
+            (c,
+             b) => new SM17(c,
+                            b)
           }
         };
 
@@ -165,7 +167,8 @@ namespace SuperMemoAssistant.SuperMemo
       try
       {
         // TODO: Look at PE version and select Management Engine version
-        var dummy = new SM17(collection);
+        var dummy = new SM17(collection,
+                             Config.SMBinPath);
 
         // TODO: Ensure opened collection (windows title) matches parameter
       }

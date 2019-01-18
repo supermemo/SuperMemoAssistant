@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/18 19:25
-// Modified On:  2018/11/26 10:30
+// Modified On:  2019/01/16 15:06
 // Modified By:  Alexis
 
 #endregion
@@ -33,7 +33,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using Anotar.Serilog;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 
@@ -49,10 +51,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
     {
       Id = id;
 
-#if DEBUG
-      //System.Diagnostics.Debug.WriteLine("[{0} {1}] Creating",
-      //                                   GetType().Name,
-      //                                   Id);
+#if DEBUG && !DEBUG_IN_PROD
+      LogTo.Debug("[{0} {1}] Creating",
+                  GetType().Name,
+                  Id);
 #endif
 
       UseCount = SetDbg(mem.useCount,
@@ -88,7 +90,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 
     #region Properties & Fields - Public
 
-    public int Id { get; set; }
+    public int Id { get; }
 
     public int UseCount { get; set; }
 
@@ -103,7 +105,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
     public int SlotLengthOrConceptGroupId { get; set; }
 
     public bool Empty { get; set; }
-    
+
     public string Name => RtxValue?.TrimEnd('\0');
 
     #endregion
@@ -116,8 +118,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
     public void Update(RegMemElem mem,
                        RegRtElem  rt)
     {
-#if DEBUG
-      //System.Diagnostics.Debug.WriteLine("[{0} {1}] Updating", this.GetType().Name, Id);
+#if DEBUG && !DEBUG_IN_PROD
+      LogTo.Debug("[{0} {1}] Updating",
+                  GetType().Name,
+                  Id);
 #endif
 
       if (mem.rtxOffset == 0)
@@ -166,14 +170,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
                           T      value,
                           string name)
     {
-#if DEBUG
-      //if (Equals(oldValue,
-      //           value) == false)
-        //System.Diagnostics.Debug.WriteLine("[{0} {1}] {2}: {3}",
-        //                                   GetType().Name,
-        //                                   Id,
-        //                                   name,
-        //                                   value);
+#if DEBUG && !DEBUG_IN_PROD
+      if (Equals(oldValue,
+                 value) == false)
+        LogTo.Debug("[{0} {1}] {2}: {3}",
+                    GetType().Name,
+                    Id,
+                    name,
+                    value);
 #endif
 
       return value;
@@ -182,15 +186,46 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
     protected T SetDbg<T>(T      value,
                           string name)
     {
-#if DEBUG
-      //System.Diagnostics.Debug.WriteLine("[{0} {1}] {2}: {3}",
-      //                                   GetType().Name,
-      //                                   Id,
-      //                                   name,
-      //                                   value);
+#if DEBUG && !DEBUG_IN_PROD
+      LogTo.Debug("[{0} {1}] {2}: {3}",
+                  GetType().Name,
+                  Id,
+                  name,
+                  value);
 #endif
 
       return value;
+    }
+
+    public string TryFilePathOrSearch(string fileExt)
+    {
+      var filePath = GetFilePath(fileExt);
+
+      if (File.Exists(filePath))
+        return filePath;
+
+      return GetFilePath();
+    }
+
+    public virtual string GetFilePath()
+    {
+      try
+      {
+        var filePath = GetFilePath(".");
+        var fileName = Path.GetFileName(filePath);
+        var dirPath  = Path.GetDirectoryName(filePath);
+
+        // ReSharper disable once AssignNullToNotNullAttribute
+        var matchingFiles = Directory.GetFiles(dirPath,
+                                               fileName + "*");
+        return matchingFiles.FirstOrDefault();
+      }
+      catch (Exception ex)
+      {
+        LogTo.Warning(ex,
+                      $"Failed to get file path for {GetType().Name} {Id} \"{Name}\"");
+        return null;
+      }
     }
 
     public string GetFilePath(string fileExt)

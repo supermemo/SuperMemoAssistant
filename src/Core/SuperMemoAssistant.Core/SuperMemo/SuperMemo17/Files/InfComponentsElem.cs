@@ -8,8 +8,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
     public byte         unknown1;
     public short        left;
     public short        top;
-    public short        right;
-    public short        bottom;
+    public short        width;
+    public short        height;
     public byte         displayAt;
     public fixed byte   unknown2[5];
     public byte         isFullHtml;
@@ -24,8 +24,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
     public byte         unknown1;
     public short        left;
     public short        top;
-    public short        right;
-    public short        bottom;
+    public short        width;
+    public short        height;
     public byte         displayAt;
     public fixed byte   unknown2[8];
     public int          registryId;
@@ -42,8 +42,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
     public byte         unknown1;
     public short        left;
     public short        top;
-    public short        right;
-    public short        bottom;
+    public short        width;
+    public short        height;
     public byte         displayAt;
     public fixed byte   unknown2[8];
     public int          registryId;
@@ -60,8 +60,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
     public byte         unknown1;
     public short        left;
     public short        top;
-    public short        right;
-    public short        bottom;
+    public short        width;
+    public short        height;
     public byte         displayAt;
     public fixed byte   unknown2[8];
     public int          registryId;
@@ -78,8 +78,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
     public byte         unknown1;
     public short        left;
     public short        top;
-    public short        right;
-    public short        bottom;
+    public short        width;
+    public short        height;
     public byte         displayAt;
     public fixed byte   unknown2[8];
     public int          registryId;
@@ -93,8 +93,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
     public byte         unknown1;
     public short        left;
     public short        top;
-    public short        right;
-    public short        bottom;
+    public short        width;
+    public short        height;
     public byte         displayAt;
     public fixed byte   unknown2[8];
     public int          registryId;
@@ -119,8 +119,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
     public byte         unknown1;
     public short        left;
     public short        top;
-    public short        right;
-    public short        bottom;
+    public short        width;
+    public short        height;
     public byte         displayAt;
     public fixed byte   unknown2[4];
     public bool         isContinuous;
@@ -139,8 +139,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
     public byte         unknown1;
     public short        left;
     public short        top;
-    public short        right;
-    public short        bottom;
+    public short        width;
+    public short        height;
     public byte         displayAt;
     public fixed byte   unknown2[18];
   }

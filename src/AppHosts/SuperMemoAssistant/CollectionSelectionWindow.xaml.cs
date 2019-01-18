@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/11/22 15:10
-// Modified On:  2018/12/17 11:49
+// Modified On:  2019/01/15 12:40
 // Modified By:  Alexis
 
 #endregion
@@ -39,6 +39,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.Plugins;
+using SuperMemoAssistant.Services;
 
 namespace SuperMemoAssistant
 {
@@ -54,6 +56,8 @@ namespace SuperMemoAssistant
       LoadCollections();
 
       Loaded += CollectionSelectionWindow_Loaded;
+
+      Config = Svc<CorePlugin>.Configuration.Load<CoreCfg>().Result;
     }
 
     #endregion
@@ -65,6 +69,7 @@ namespace SuperMemoAssistant
 
     public SMCollection                       Collection       { get; set; }
     public ObservableCollection<SMCollection> SavedCollections { get; set; }
+    public CoreCfg                            Config           { get; }
 
     #endregion
 
@@ -93,6 +98,11 @@ namespace SuperMemoAssistant
 
       if (SavedCollections.Count > 0)
         lbCollections.SelectedIndex = 0;
+    }
+
+    private void SaveConfig()
+    {
+      Svc<CorePlugin>.Configuration.Save<CoreCfg>(Config).Wait();
     }
 
     private void btnBrowse_Click(object          sender,
@@ -126,6 +136,14 @@ namespace SuperMemoAssistant
       ReorderCollectionToFront(lbCollections.SelectedIndex);
 
       Close();
+    }
+
+    private void BtnOptions_Click(object          sender,
+                                  RoutedEventArgs e)
+    {
+      Forge.Forms.Show.Window().For<CoreCfg>(Config).Wait();
+
+      SaveConfig();
     }
 
     private void ReorderCollectionToFront(int index)

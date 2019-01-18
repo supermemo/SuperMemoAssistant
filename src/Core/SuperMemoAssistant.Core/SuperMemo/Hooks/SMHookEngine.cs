@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:11
-// Modified On:  2019/01/04 22:51
+// Modified On:  2019/01/16 15:03
 // Modified By:  Alexis
 
 #endregion
@@ -131,8 +131,8 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     public override void Debug(string          msg,
                                params object[] args)
     {
-      System.Diagnostics.Debug.WriteLine(msg,
-                                         args);
+      LogTo.Debug(msg,
+                  args);
     }
 
     public override void OnException(Exception ex)
@@ -233,6 +233,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     public IProcess CreateAndHook(
       SMCollection           collection,
+      string                 binPath,
       ISMHookSystem          systemCallback,
       IEnumerable<ISMHookIO> ioCallbacks)
     {
@@ -256,7 +257,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
         // Start SuperMemo application with given collection as parameter,
         // and immediatly install hooks
         RemoteHooking.CreateAndInject(
-          SMConst.BinPath,
+          binPath,
           collection.GetKnoFilePath().Quotify(),
           0,
           InjectionOptions.Default,

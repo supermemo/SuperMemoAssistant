@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/01/16 15:55
-// Modified On:  2019/01/17 00:44
+// Modified On:  2019/01/19 00:43
 // Modified By:  Alexis
 
 #endregion
@@ -33,7 +33,6 @@
 using System;
 using System.Text;
 using System.Windows;
-using SuperMemoAssistant.Interop.SuperMemo.Content.Components.Builders;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
 using Size = System.Drawing.Size;
 
@@ -93,7 +92,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Content.Contents
 
     #region Properties Impl - Public
 
-    public override Size MinCompSize => ComponentHtmlBuilder.MinSize;
+    public override Size MinCompSize => new Size(1200, 1200);
 
     public override ContentTypeFlag ContentType =>
       Html ? ContentTypeFlag.Html : ContentTypeFlag.RawText;

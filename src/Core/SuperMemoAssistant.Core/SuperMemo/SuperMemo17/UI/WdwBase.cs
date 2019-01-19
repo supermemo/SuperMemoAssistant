@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/24 13:30
-// Modified On:  2018/12/27 21:49
+// Modified On:  2019/01/19 00:40
 // Modified By:  Alexis
 
 #endregion
@@ -44,18 +44,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
     //internal AutomationElement Window { get; set; }
     private IWindow _window = null;
-    public  IWindow Window => _window ?? (_window = GetWindow());
+
+    protected abstract IntPtr WindowHandle { get; }
 
     #endregion
-
-
-
-
-    private IWindow GetWindow()
-    {
-      return new RemoteWindow(SMProcess,
-                              WindowHandle);
-    }
 
 
 
@@ -68,13 +60,16 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       SMA.Instance.OnSMStoppedEvent += OnSMStopped;
     }
 
-    /// <inheritdoc />
-    public virtual void Dispose()
-    {
-      //CleanupUI();
+    public virtual void Dispose() { }
 
-      //base.Dispose();
-    }
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public IProcess SMProcess { get; set; }
 
     #endregion
 
@@ -83,9 +78,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
     #region Properties Impl - Public
 
-    public IProcess SMProcess { get; set; }
-
-    //public AutomationElementRef AutomationElement => new AutomationElementRef(Window);
+    public IWindow Window => _window ?? (_window = GetWindow());
 
     #endregion
 
@@ -94,120 +87,20 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
     #region Methods
 
+    private IWindow GetWindow()
+    {
+      return new RemoteWindow(SMProcess,
+                              WindowHandle);
+    }
+
     private void OnSMStarted(object        sender,
                              SMProcessArgs e)
     {
       SMProcess = e.Process;
-      //SetupUI();
     }
 
     private void OnSMStopped(object        sender,
-                             SMProcessArgs e)
-    {
-      //CleanupUI();
-
-      //if (Window != null)
-      //  OnWindowClosed(Window,
-      //                 UIAuto.EventLibrary.Window.WindowClosedEvent);
-    }
-
-    //
-    // Helpers
-
-#if false
-// ReSharper disable once InconsistentNaming
-    protected Task<bool> ExecuteMenuAction<TMenu, ITMenu>(TMenu          menu,
-                                                          Action<ITMenu> action)
-      where TMenu : MenuRoot, ITMenu
-      where ITMenu : IMenu
-    {
-      Window.Focus();
-
-      action(menu);
-
-      return menu.Execute();
-    }
-
-
-    //
-    // UI Automation Core
-
-    protected virtual void SetupUI()
-    {
-      RegisterUIAutomationEvents();
-    }
-
-    protected virtual void CleanupUI() { }
-
-    private void RegisterUIAutomationEvents()
-    {
-      // WindowOpenedEvent
-      RegisterAutomationEvent(
-        null,
-        UIAuto.EventLibrary.Window.WindowOpenedEvent,
-        TreeScope.Children,
-        IsSMWindow(WindowClass),
-        OnWindowOpened);
-
-      // WindowClosedEvent
-      RegisterAutomationEvent(
-        null,
-        UIAuto.EventLibrary.Window.WindowClosedEvent,
-        TreeScope.Children,
-        IsSMWindow(WindowClass),
-        OnWindowClosed);
-
-      // TODO: Find how to detect minimized/restored
-    }
-
-
-    //
-    // UI Automation Events
-
-    /// <summary>Notification for window open event.</summary>
-    /// <param name="elem"></param>
-    /// <param name="eventId"></param>
-    protected virtual void OnWindowOpened(AutomationElement elem,
-                                          EventId           eventId)
-    {
-      Window = elem;
-
-      RegisterAwaitersEvents(Window);
-
-      try
-      {
-        OnAvailable?.Invoke(new SMUIAvailabilityArgs(SMA.Instance,
-                                                     AvailabilityType.Opened));
-      }
-      catch (Exception ex)
-      {
-        LogTo.Error(ex,
-                    "Error while signaling Window Available event");
-      }
-    }
-
-    /// <summary>Notification for window close event.</summary>
-    /// <param name="elem"></param>
-    /// <param name="eventId"></param>
-    protected virtual void OnWindowClosed(AutomationElement elem,
-                                          EventId           eventId)
-    {
-      Window = null;
-
-      UnregisterAwaitersEvents();
-
-      try
-      {
-        OnUnavailable?.Invoke(new SMUIAvailabilityArgs(SMA.Instance,
-                                                             AvailabilityType.Closed));
-      }
-      catch (Exception ex)
-      {
-        LogTo.Error(ex,
-                    "Error while signaling Window Unavailable event");
-      }
-    }
-#endif
+                             SMProcessArgs e) { }
 
     #endregion
 
@@ -220,23 +113,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     // Inheritance
 
     public abstract string WindowClass { get; }
-
-    protected abstract IntPtr WindowHandle { get; }
-
-    #endregion
-
-
-
-
-    #region Events
-
-    //
-    // IWdw Events
-
-    /// <inheritdoc />
-    public event Action<SMUIAvailabilityArgs> OnAvailable;
-    /// <inheritdoc />
-    public event Action<SMUIAvailabilityArgs> OnUnavailable;
 
     #endregion
   }

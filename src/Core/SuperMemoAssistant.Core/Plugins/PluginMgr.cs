@@ -108,22 +108,20 @@ namespace SuperMemoAssistant.Plugins
       Runner.Setup();
       
       Runner.Export<ISuperMemoAssistant>(SMA.Instance);
-      Runner.Export<ISuperMemoUI>(SMA.Instance.UI);
-      Runner.Export<ISuperMemoRegistry>(SMA.Instance.Registry);
+      //Runner.Export<ISuperMemoUI>(SMA.Instance.UI);
+      //Runner.Export<ISuperMemoRegistry>(SMA.Instance.Registry);
 
-      //Runner.Export<IKeyboardHotKeyMgr>(KeyboardHotKey.Instance);
-
-      Runner.Export<IElementRegistry>(ElementRegistry.Instance);
-      Runner.Export<IComponentRegistry>(ComponentRegistry.Instance);
-      Runner.Export<ITextRegistry>(TextRegistry.Instance);
-      Runner.Export<IBinaryRegistry>(BinaryRegistry.Instance);
-      Runner.Export<IConceptRegistry>(ConceptRegistry.Instance);
-      Runner.Export<IImageRegistry>(ImageRegistry.Instance);
-      Runner.Export<ITemplateRegistry>(TemplateRegistry.Instance);
-      Runner.Export<ISoundRegistry>(SoundRegistry.Instance);
-      Runner.Export<IVideoRegistry>(VideoRegistry.Instance);
+      //Runner.Export<IElementRegistry>(ElementRegistry.Instance);
+      //Runner.Export<IComponentRegistry>(ComponentRegistry.Instance);
+      //Runner.Export<ITextRegistry>(TextRegistry.Instance);
+      //Runner.Export<IBinaryRegistry>(BinaryRegistry.Instance);
+      //Runner.Export<IConceptRegistry>(ConceptRegistry.Instance);
+      //Runner.Export<IImageRegistry>(ImageRegistry.Instance);
+      //Runner.Export<ITemplateRegistry>(TemplateRegistry.Instance);
+      //Runner.Export<ISoundRegistry>(SoundRegistry.Instance);
+      //Runner.Export<IVideoRegistry>(VideoRegistry.Instance);
       
-      Runner.Export<IElementWdw>(ElementWdw.Instance);
+      //Runner.Export<IElementWdw>(ElementWdw.Instance);
 
       Runner.PostSetup();
 

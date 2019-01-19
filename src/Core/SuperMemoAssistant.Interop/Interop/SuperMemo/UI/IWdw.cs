@@ -38,10 +38,6 @@ namespace SuperMemoAssistant.Interop.SuperMemo.UI
 {
   public interface IWdw
   {
-    //AutomationElementRef AutomationElement { get; }
     IWindow Window { get; }
-
-    event Action<SMUIAvailabilityArgs> OnAvailable;
-    event Action<SMUIAvailabilityArgs> OnUnavailable;
   }
 }

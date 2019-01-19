@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/12/13 13:07
+// Modified On:  2019/01/19 01:23
 // Modified By:  Alexis
 
 #endregion
@@ -38,7 +38,6 @@ using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
-using SuperMemoAssistant.Interop.SuperMemo.UI;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Core
 {
@@ -246,58 +245,6 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
     #region Properties & Fields - Public
 
     public IComponentGroup ComponentGroup { get; }
-
-    #endregion
-  }
-
-#if false
-  /// <summary>UI Window-related events, contains the native handle to the the Window involved</summary>
-  [Serializable]
-  public class SMUIAutomationArgs : SMEventArgs
-  {
-    #region Constructors
-
-    public SMUIAutomationArgs(ISuperMemo           smMgmt,
-                              AutomationElementRef aeRef)
-      : base(smMgmt)
-    {
-      AutomationElement = aeRef;
-    }
-
-    #endregion
-
-
-
-
-    #region Properties & Fields - Public
-
-    public AutomationElementRef AutomationElement { get; }
-
-    #endregion
-  }
-#endif
-
-  /// <summary>UI availability-related events</summary>
-  [Serializable]
-  public class SMUIAvailabilityArgs : SMEventArgs
-  {
-    #region Constructors
-
-    public SMUIAvailabilityArgs(ISuperMemo       smMgmt,
-                                AvailabilityType availability)
-      : base(smMgmt)
-    {
-      Availability = availability;
-    }
-
-    #endregion
-
-
-
-
-    #region Properties & Fields - Public
-
-    public AvailabilityType Availability { get; }
 
     #endregion
   }

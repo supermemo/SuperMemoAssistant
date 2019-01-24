@@ -1,19 +1,13 @@
 ## SuperMemo Assistant
 
-*SuperMemo Assistant* is a companion app for [SuperMemo 17](https://super-memo.com/supermemo17.html). It is an interface to programmatically **interact with SuperMemo**, and extend its functionalities through the **development of plugins**.
+*SuperMemo Assistant* is a companion app for [SuperMemo 17](https://super-memo.com/supermemo17.html). Did you ever wish you could use **PDF** documents ? Or integrate **LaTeX** right into your SuperMemo ? *SMA* (short for *SuperMemo Assistant*) does all of this for you, and more !
 
 ### Table of Content
-- [How does it work ?](#how-does-it-work-)
 - [What can it do ?](#what-can-it-do-)
+- [How does it work ?](#how-does-it-work-)
 - [Downloads](#downloads)
 - [Installation and Usage](#installation-and-usage)
 - [Feature requests](#feature-requests)
-
-### How does it work ?
-
-*SMA* (short for *SuperMemo Assistant*) acts like a chip on the central nervous system of *SuperMemo*. It monitors its internal state, and taps into the program's powerful code base to expose its main capabilities.
-
-In turn, they are exposed through an API that developers can use to build plugins.
 
 ### What can it do ?
 
@@ -26,6 +20,12 @@ Almost anything that *SuperMemo* itself can do:
 - etc.
 
 Plugins use these functionalities to extend *SuperMemo* with new features (PDF incremental reading, LaTeX, dictionary, ...).
+
+### How does it work ?
+
+*SMA* acts like a chip on the central nervous system of *SuperMemo*. It monitors its internal state, and taps into the program's powerful code base to expose its main capabilities. They are then exposed through an API that developers can use to build plugins.
+
+In short, SMA is an interface to programmatically **interact with SuperMemo**.
 
 ### Downloads
 

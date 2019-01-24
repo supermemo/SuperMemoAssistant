@@ -1,7 +1,5 @@
 ## SuperMemo Assistant
 
-**Work In Progress**. You can use [the legacy AHK version](https://github.com/supermemo/SuperMemoScripts) until then.
-
 *SuperMemo Assistant* is a companion app for [SuperMemo 17](https://super-memo.com/supermemo17.html). It is an interface to programmatically **interact with SuperMemo**, and extend its functionalities through the **development of plugins**.
 
 ### Table of Content
@@ -31,7 +29,7 @@ Plugins use these functionalities to extend *SuperMemo* with new features (PDF i
 
 ### Downloads
 
-*SMA* will be announced soon.
+**Work In Progress**. You can use [the legacy AHK version](https://github.com/supermemo/SuperMemoScripts) until then.
 
 ### Installation and Usage
 

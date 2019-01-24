@@ -1,6 +1,6 @@
 ## SuperMemo Assistant
 
-*SuperMemo Assistant* is a companion app for [SuperMemo 17](https://super-memo.com/supermemo17.html). Did you ever wish you could use **PDF** documents ? Or integrate **LaTeX** right into your SuperMemo ? *SMA* (short for *SuperMemo Assistant*) does all of this for you, and more !
+*SuperMemo Assistant* is a companion app for [SuperMemo 17](https://super-memo.com/supermemo17.html). Did you ever wish you could use **PDF** documents ? Or integrate **LaTeX** right into your SuperMemo ? *SMA* does all of this for you, and more !
 
 ### Table of Content
 - [What can it do ?](#what-can-it-do-)

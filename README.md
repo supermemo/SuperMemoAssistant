@@ -9,6 +9,7 @@
 - [What can it do ?](#what-can-it-do-)
 - [Downloads](#downloads)
 - [Installation and Usage](#installation-and-usage)
+- [Feature requests](#feature-requests)
 
 ### How does it work ?
 
@@ -35,3 +36,9 @@ In turn, plugins can use these functionalities to extend *SuperMemo* with new fe
 ### Installation and Usage
 
 *SMA* will be announced soon.
+
+### Feature requests
+
+You can submit idea proposals at [our Feathub page](https://feathub.com/supermemo/SuperMemoAssistant).
+
+[![Feature Requests](http://feathub.com/supermemo/SuperMemoAssistant?format=svg)](http://feathub.com/supermemo/SuperMemoAssistant)

@@ -23,7 +23,7 @@ Almost anything that *SuperMemo* itself can do:
 - Change displayed content (html, images, ...)
 - Navigate to new elements,
 - Browse the Knowledge Tree,
-- Review, reschedule, dismiss, delete elements,
+- Review, reschedule, dismiss, or delete elements,
 - etc.
 
 In turn, plugins can use these functionalities to extend *SuperMemo* with new features (PDF incremental reading, LaTeX, dictionary, ...).

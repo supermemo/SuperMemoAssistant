@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/12 01:38
-// Modified On:  2018/06/06 03:48
+// Created On:   2018/07/27 12:54
+// Modified On:  2019/01/25 23:38
 // Modified By:  Alexis
 
 #endregion
@@ -30,7 +30,6 @@
 
 
 
-using System;
 using System.IO;
 using System.Windows.Forms;
 
@@ -46,51 +45,6 @@ namespace SuperMemoAssistant.Interop
 
 
 
-
-    public static class Paths
-    {
-      #region Constants & Statics
-
-      public const string CollectionSMAFolder      = "sma";
-      public const string CollectionElementsFolder = "elements";
-      public const string CollectionPluginsFolder  = "plugins";
-      public const string CollectionSystemFolder   = "system";
-
-      public static string AppDataPath =>
-        Path.Combine(
-          Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-          Name
-        );
-
-      public static string PluginPath =>
-        Path.Combine(
-          AppDataPath,
-          "Plugins"
-        );
-      public static string AppDomainCachePath =>
-        Path.Combine(
-          AppDataPath,
-          "AppDomainCache"
-        );
-
-      public static string ConfigPath =>
-        Path.Combine(
-          AppDataPath,
-          "Configs"
-        );
-
-      #endregion
-    }
-
-    public static class Files
-    {
-      #region Constants & Statics
-
-      public const string CollectionSystemDbFileName       = "sma_system.litedb";
-      public const string CollectionPluginDatabaseFileName = "plugin.litedb";
-
-      #endregion
-    }
 
     public static class Assembly
     {

@@ -37,7 +37,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
   [StructLayout(LayoutKind.Explicit,
     Pack = 1,
     Size = 37)]
-  public struct InfContentsElem
+  public class InfContentsElem
   {
     [FieldOffset(0)]
     /* 0x00 */ public byte deleted;

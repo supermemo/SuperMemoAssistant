@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 13:31
-// Modified On:  2018/06/01 13:33
+// Modified On:  2019/01/23 16:35
 // Modified By:  Alexis
 
 #endregion
@@ -33,6 +33,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Anotar.Serilog;
 using Newtonsoft.Json;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
@@ -67,37 +68,39 @@ namespace SuperMemoAssistant.Services.Configuration
 
     public Task<T> Load<T>(string fileName = null)
     {
-      // TODO: Implement fileName
-      return Load<T>(Plugin);
+      return Load<T>(Plugin, fileName ?? GetPluginDefaultConfigFilePath(Plugin));
     }
 
-    public Task<bool> Save<T>(T config, string fileName = null)
+    public Task<bool> Save<T>(T      config,
+                              string fileName = null)
     {
-      // TODO: Implement fileName
-      return Save<T>(Plugin, config);
+      return Save<T>(Plugin, config, fileName ?? GetPluginDefaultConfigFilePath(Plugin));
     }
 
-
-    private static async Task<T> Load<T>(ISMAPlugin requester)
+    private static async Task<T> Load<T>(ISMAPlugin requester,
+                                         string     fileName)
     {
       try
       {
-        using (var stream = EnsurePluginConf(requester, typeof(T), FileAccess.Read))
+        using (var stream = OpenConf(fileName, typeof(T), FileAccess.Read))
         using (var reader = new StreamReader(stream))
           return JsonConvert.DeserializeObject<T>(await reader.ReadToEndAsync().ConfigureAwait(false));
       }
       catch (Exception ex)
       {
-        // TODO: Log
-        return default(T);
+        LogTo.Warning(ex, $"Failed to load config {GetPluginDefaultConfigFilePath(requester)} for plugin {requester.Name}");
+
+        throw;
       }
     }
 
-    private static async Task<bool> Save<T>(ISMAPlugin requester, T config)
+    private static async Task<bool> Save<T>(ISMAPlugin requester,
+                                            T          config,
+                                            string     fileName)
     {
       try
       {
-        using (var stream = EnsurePluginConf(requester, typeof(T), FileAccess.Write))
+        using (var stream = OpenConf(fileName, typeof(T), FileAccess.Write))
         using (var writer = new StreamWriter(stream))
           await writer.WriteAsync(JsonConvert.SerializeObject(config, Formatting.Indented)).ConfigureAwait(false);
 
@@ -105,15 +108,16 @@ namespace SuperMemoAssistant.Services.Configuration
       }
       catch (Exception ex)
       {
-        // TODO: Log
-        return false;
+        LogTo.Warning(ex, $"Failed to save config {GetPluginDefaultConfigFilePath(requester)} for plugin {requester.Name}");
+
+        throw;
       }
     }
 
-    private static FileStream EnsurePluginConf(ISMAPlugin plugin, Type confType, FileAccess fileAccess)
+    private static FileStream OpenConf(string     filePath,
+                                       Type       confType,
+                                       FileAccess fileAccess)
     {
-      string filePath = Path.Combine(SMAConst.Paths.ConfigPath, plugin.Id.ToString("D"));
-
       if (!DirectoryEx.EnsureExists(filePath))
         return null;
 
@@ -121,6 +125,9 @@ namespace SuperMemoAssistant.Services.Configuration
 
       return File.Open(filePath, fileAccess == FileAccess.Read ? FileMode.OpenOrCreate : FileMode.Create, fileAccess);
     }
+
+    private static string GetPluginDefaultConfigFilePath(ISMAPlugin plugin) =>
+      Path.Combine(SMAFileSystem.ConfigPath, plugin.Id.ToString("D"));
 
     #endregion
   }

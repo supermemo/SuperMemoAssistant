@@ -30,13 +30,10 @@
 
 
 
-using FlaUI.UIA3;
-using Process.NET;
 using SuperMemoAssistant.Interop.Plugins;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.Devices;
-using SuperMemoAssistant.Services.IO.FS;
 
 // ReSharper disable StaticMemberInGenericType
 // ReSharper disable UnusedTypeParameter
@@ -48,9 +45,6 @@ namespace SuperMemoAssistant.Services
     #region Constants & Statics
 
     public static ISuperMemoAssistant SMA { get; set; }
-    public static IProcess            SM => SMA.SMProcess;
-
-    public static UIA3Automation UIAutomation { get; } = new UIA3Automation();
 
     public static IKeyboardHotKeyService KeyboardHotKeyLegacy { get; set; }
     public static IKeyboardHookService   KeyboardHotKey       { get; set; }
@@ -62,8 +56,7 @@ namespace SuperMemoAssistant.Services
     where T : ISMAPlugin
   {
     #region Constants & Statics
-
-    public static PluginCollectionFSService CollectionFS  { get; set; }
+    
     public static ConfigurationService      Configuration { get; set; }
 
     public static T Plugin { get; set; }

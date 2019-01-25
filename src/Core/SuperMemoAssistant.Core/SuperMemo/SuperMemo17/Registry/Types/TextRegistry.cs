@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/19 11:29
-// Modified On:  2018/05/30 23:26
+// Created On:   2018/06/01 14:13
+// Modified On:  2019/01/24 13:55
 // Modified By:  Alexis
 
 #endregion
@@ -35,7 +35,6 @@ using System.Threading.Tasks;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
-using SuperMemoAssistant.Services;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members;
 using SuperMemoAssistant.Sys;
@@ -59,7 +58,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override string MemFileName => SMConst.Files.TextMemFileName;
     protected override string RtxFileName => SMConst.Files.TextRtxFileName;
     protected override string RtfFileName => SMConst.Files.TextRtfFileName;
-    protected override IntPtr RegistryPtr => new IntPtr(SM17Natives.TRegistry.TextRegistryInstance.Read<int>(Svc.SM.Memory));
+    protected override IntPtr RegistryPtr =>
+      new IntPtr(SM17Natives.TRegistry.TextRegistryInstance.Read<int>(SMA.Instance.SMProcess.Memory));
 
     #endregion
 
@@ -77,7 +77,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
     #region Methods Impl
 
-    protected override Text Create(int id, RegMemElem mem, RegRtElem rtxOrRtf)
+    protected override Text Create(int        id,
+                                   RegMemElem mem,
+                                   RegRtElem  rtxOrRtf)
     {
       return new Text(id, mem, rtxOrRtf);
     }

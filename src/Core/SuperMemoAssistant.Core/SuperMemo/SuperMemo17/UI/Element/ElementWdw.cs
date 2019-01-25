@@ -507,7 +507,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     private void OnSMStoppedEvent(object        sender,
                                   SMProcessArgs e)
     {
-      ElementIdPtr.Dispose();
+      ElementIdPtr?.Dispose();
 
       ElementWdwPtr       = null;
       ElementIdPtr        = null;

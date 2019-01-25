@@ -1,13 +1,28 @@
 ﻿#region License & Metadata
 
-// Copyright (c) Damien Guard.  All rights reserved.
-// Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
-// You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-// Originally published at http://damieng.com/blog/2006/08/08/calculating_crc32_in_c_and_net
+// The MIT License (MIT)
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the 
+// Software is furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
 // 
 // 
 // Created On:   2018/06/03 03:33
-// Modified On:  2018/06/03 03:33
+// Modified On:  2019/01/20 08:32
 // Modified By:  Alexis
 
 #endregion
@@ -36,7 +51,7 @@ namespace SuperMemoAssistant.Sys.Security.Cryptography
     public const UInt32 DefaultPolynomial = 0xedb88320u;
     public const UInt32 DefaultSeed       = 0xffffffffu;
 
-    private static UInt32[] defaultTable;
+    private static UInt32[] _defaultTable;
 
     #endregion
 
@@ -45,9 +60,9 @@ namespace SuperMemoAssistant.Sys.Security.Cryptography
 
     #region Properties & Fields - Non-Public
 
-    private readonly UInt32   seed;
-    private readonly UInt32[] table;
-    private          UInt32   hash;
+    private readonly UInt32   _seed;
+    private readonly UInt32[] _table;
+    private          UInt32   _hash;
 
     #endregion
 
@@ -59,10 +74,11 @@ namespace SuperMemoAssistant.Sys.Security.Cryptography
     public Crc32()
       : this(DefaultPolynomial, DefaultSeed) { }
 
-    public Crc32(UInt32 polynomial, UInt32 seed)
+    public Crc32(UInt32 polynomial,
+                 UInt32 seed)
     {
-      table     = InitializeTable(polynomial);
-      this.seed = hash = seed;
+      _table = InitializeTable(polynomial);
+      _seed  = _hash = seed;
     }
 
     #endregion
@@ -83,17 +99,19 @@ namespace SuperMemoAssistant.Sys.Security.Cryptography
 
     public override void Initialize()
     {
-      hash = seed;
+      _hash = _seed;
     }
 
-    protected override void HashCore(byte[] array, int ibStart, int cbSize)
+    protected override void HashCore(byte[] array,
+                                     int    ibStart,
+                                     int    cbSize)
     {
-      hash = CalculateHash(table, hash, array, ibStart, cbSize);
+      _hash = CalculateHash(_table, _hash, array, ibStart, cbSize);
     }
 
     protected override byte[] HashFinal()
     {
-      var hashBuffer = UInt32ToBigEndianBytes(~hash);
+      var hashBuffer = UInt32ToBigEndianBytes(~_hash);
       HashValue = hashBuffer;
       return hashBuffer;
     }
@@ -110,20 +128,23 @@ namespace SuperMemoAssistant.Sys.Security.Cryptography
       return Compute(DefaultSeed, buffer);
     }
 
-    public static UInt32 Compute(UInt32 seed, byte[] buffer)
+    public static UInt32 Compute(UInt32 seed,
+                                 byte[] buffer)
     {
       return Compute(DefaultPolynomial, seed, buffer);
     }
 
-    public static UInt32 Compute(UInt32 polynomial, UInt32 seed, byte[] buffer)
+    public static UInt32 Compute(UInt32 polynomial,
+                                 UInt32 seed,
+                                 byte[] buffer)
     {
       return ~CalculateHash(InitializeTable(polynomial), seed, buffer, 0, buffer.Length);
     }
 
     private static UInt32[] InitializeTable(UInt32 polynomial)
     {
-      if (polynomial == DefaultPolynomial && defaultTable != null)
-        return defaultTable;
+      if (polynomial == DefaultPolynomial && _defaultTable != null)
+        return _defaultTable;
 
       var createTable = new UInt32[256];
       for (var i = 0; i < 256; i++)
@@ -138,12 +159,16 @@ namespace SuperMemoAssistant.Sys.Security.Cryptography
       }
 
       if (polynomial == DefaultPolynomial)
-        defaultTable = createTable;
+        _defaultTable = createTable;
 
       return createTable;
     }
 
-    private static UInt32 CalculateHash(UInt32[] table, UInt32 seed, IList<byte> buffer, int start, int size)
+    private static UInt32 CalculateHash(UInt32[]    table,
+                                        UInt32      seed,
+                                        IList<byte> buffer,
+                                        int         start,
+                                        int         size)
     {
       var hash = seed;
       for (var i = start; i < start + size; i++)

@@ -10,7 +10,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>SuperMemoAssistant</RootNamespace>
     <AssemblyName>SuperMemoAssistant</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -18,6 +18,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <AssemblyVersion>0.1.591</AssemblyVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,6 +48,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>C:\Users\Lila\AppData\Roaming\SuperMemoAssistant\</OutputPath>
@@ -57,6 +59,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-InProd|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -77,6 +80,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
@@ -200,10 +204,6 @@
       <Project>{7550628d-0630-4a42-b0b7-55d26f981365}</Project>
       <Name>SuperMemoAssistant.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\SuperMemoAssistant.Plugins.Dictionary.Interop\SuperMemoAssistant.Plugins.Dictionary.Interop.csproj">
-      <Project>{aa97c5aa-ca1a-4988-ae2e-e5a292b63c12}</Project>
-      <Name>SuperMemoAssistant.Plugins.Dictionary.Interop</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\SuperMemoAssistant.Interop\SuperMemoAssistant.Interop.csproj">
       <Project>{fd0e1be8-bed3-4ab0-a9c8-022a2dbc8450}</Project>
       <Name>SuperMemoAssistant.Interop</Name>
@@ -212,29 +212,13 @@
       <Project>{d5086d5e-84a6-4c0d-b6f2-d1b82c5fb487}</Project>
       <Name>SuperMemoAssistant.Hooks.InjectLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\SuperMemoAssistant.PluginsHost\SuperMemoAssistant.PluginsHost.csproj">
-      <Project>{9799923c-3de6-48bf-b459-aa3029016727}</Project>
-      <Name>SuperMemoAssistant.PluginsHost</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Plugins\SuperMemoAssistant.Plugins.Dictionary\SuperMemoAssistant.Plugins.Dictionary.csproj">
-      <Project>{c76cfa78-f820-4f05-9429-4a3a3c9c1414}</Project>
-      <Name>SuperMemoAssistant.Plugins.Dictionary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Plugins\SuperMemoAssistant.Plugins.ImageOcclusion\SuperMemoAssistant.Plugins.ImageOcclusion.csproj">
-      <Project>{f8bb6993-25df-4173-bb3d-acee15c5a2b9}</Project>
-      <Name>SuperMemoAssistant.Plugins.ImageOcclusion</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Plugins\SuperMemoAssistant.Plugins.LateX\SuperMemoAssistant.Plugins.LateX.csproj">
-      <Project>{cd2988da-b610-40ad-995a-aa5a28fbbbfe}</Project>
-      <Name>SuperMemoAssistant.Plugins.LateX</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Services\SuperMemoAssistant.Services.Medias.Images\SuperMemoAssistant.Services.Medias.Images.csproj">
       <Project>{677647e4-f052-41d0-915a-ad76da72463e}</Project>
       <Name>SuperMemoAssistant.Services.Medias.Images</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Plugins\SuperMemoAssistant.Plugins.PDF\SuperMemoAssistant.Plugins.PDF.csproj">
-      <Project>{faecf9bb-9fd5-4fb1-a3a8-9f7caa57a1fe}</Project>
-      <Name>SuperMemoAssistant.Plugins.PDF</Name>
+    <ProjectReference Include="..\..\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.csproj">
+      <Project>{29aa1d35-372f-4bd0-bcfa-514a2758d444}</Project>
+      <Name>SuperMemoAssistant.Services.Sentry</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

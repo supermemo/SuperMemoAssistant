@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/19 19:39
-// Modified On:  2018/05/30 23:26
+// Created On:   2018/06/01 14:13
+// Modified On:  2019/01/24 13:55
 // Modified By:  Alexis
 
 #endregion
@@ -35,7 +35,6 @@ using System.Threading.Tasks;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
-using SuperMemoAssistant.Services;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members;
 using SuperMemoAssistant.Sys;
@@ -59,7 +58,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override string MemFileName => SMConst.Files.TemplateMemFileName;
     protected override string RtxFileName => SMConst.Files.TemplateRtxFileName;
     protected override string RtfFileName => null;
-    protected override IntPtr RegistryPtr => new IntPtr(SM17Natives.TRegistry.TemplateRegistryInstance.Read<int>(Svc.SM.Memory));
+    protected override IntPtr RegistryPtr =>
+      new IntPtr(SM17Natives.TRegistry.TemplateRegistryInstance.Read<int>(SMA.Instance.SMProcess.Memory));
 
     #endregion
 
@@ -77,7 +77,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
     #region Methods Impl
 
-    protected override Template Create(int id, RegMemElem mem, RegRtElem rtxOrRtf)
+    protected override Template Create(int        id,
+                                       RegMemElem mem,
+                                       RegRtElem  rtxOrRtf)
     {
       return new Template(id, mem, rtxOrRtf);
     }

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/08 13:06
-// Modified On:  2019/01/15 12:36
+// Modified On:  2019/01/25 23:37
 // Modified By:  Alexis
 
 #endregion
@@ -51,7 +51,6 @@ namespace SuperMemoAssistant.SuperMemo
   ///   Wrapper around a SM management instance that handles SuperMemo App lifecycle events
   ///   (start, exit, ...) and provides a safe interface to interact with SuperMemo
   /// </summary>
-  [InitOnLoad]
   public class SMA
     : SMMarshalByRefObject,
       ISuperMemoAssistant, // Proxy for wrapped SMxx object
@@ -118,7 +117,10 @@ namespace SuperMemoAssistant.SuperMemo
 
     #region Properties & Fields - Public
 
-    public CoreCfg Config { get; set; }
+    public CoreCfg  Config    { get; set; }
+    public IProcess SMProcess => SMMgmt?.SMProcess;
+
+    public System.Diagnostics.Process NativeProcess => SMProcess.Native;
 
     #endregion
 
@@ -131,8 +133,6 @@ namespace SuperMemoAssistant.SuperMemo
     public SMCollection Collection { get => SMMgmt?.Collection; private set => throw new InvalidOperationException(); }
     /// <inheritdoc />
     public virtual SMAppVersion AppVersion => SMMgmt?.AppVersion ?? SMConst.Versions.vInvalid;
-    /// <inheritdoc />
-    public IProcess SMProcess => SMMgmt?.SMProcess;
     /// <inheritdoc />
     public bool IgnoreUserConfirmation
     {
@@ -246,7 +246,7 @@ namespace SuperMemoAssistant.SuperMemo
       {
         OnSMStartedEvent?.Invoke(this,
                                  new SMProcessArgs(this,
-                                                   SMProcess));
+                                                   SMProcess.Native));
       }
       catch (Exception ex)
       {

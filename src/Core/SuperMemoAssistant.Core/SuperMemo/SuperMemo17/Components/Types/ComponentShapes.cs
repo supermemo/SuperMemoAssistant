@@ -6,12 +6,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
 {
   public class ComponentShapeEllipse : ComponentBase, IComponentShapeEllipse
   {
-    public ComponentShapeEllipse(InfComponentsShape comp)
+    public ComponentShapeEllipse(ref InfComponentsShape comp)
       : base(comp.left, comp.top, comp.width, comp.height, (AtFlags)comp.displayAt)
     {
     }
 
-    public void Update(InfComponentsShape comp)
+    public void Update(ref InfComponentsShape comp)
     {
       base.Update(
         comp.left, comp.top,
@@ -24,12 +24,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
 
   public class ComponentShapeRectangle : ComponentBase, IComponentShapeRectangle
   {
-    public ComponentShapeRectangle(InfComponentsShape comp)
+    public ComponentShapeRectangle(ref InfComponentsShape comp)
       : base(comp.left, comp.top, comp.width, comp.height, (AtFlags)comp.displayAt)
     {
     }
 
-    public void Update(InfComponentsShape comp)
+    public void Update(ref InfComponentsShape comp)
     {
       base.Update(
         comp.left, comp.top,
@@ -42,12 +42,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
 
   public class ComponentShapeRoundedRectangle : ComponentBase, IComponentShapeRoundedRectangle
   {
-    public ComponentShapeRoundedRectangle(InfComponentsShape comp)
+    public ComponentShapeRoundedRectangle(ref InfComponentsShape comp)
       : base(comp.left, comp.top, comp.width, comp.height, (AtFlags)comp.displayAt)
     {
     }
 
-    public void Update(InfComponentsShape comp)
+    public void Update(ref InfComponentsShape comp)
     {
       base.Update(
         comp.left, comp.top,

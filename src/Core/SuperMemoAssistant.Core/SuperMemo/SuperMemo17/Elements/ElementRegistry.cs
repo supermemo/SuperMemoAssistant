@@ -51,13 +51,11 @@ using SuperMemoAssistant.SuperMemo.Hooks;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
-using SuperMemoAssistant.Sys;
-using SuperMemoAssistant.Sys.Collections;
+using SuperMemoAssistant.Sys.SparseClusteredArray;
 using SuperMemoAssistant.Sys.UIAutomation;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 {
-  [InitOnLoad]
   public class ElementRegistry : SMHookIOBase, IElementRegistry
   {
     #region Constants & Statics
@@ -137,19 +135,21 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
     protected override void CommitFromMemory()
     {
       Dictionary<int, InfContentsElem> cttElems = new Dictionary<int, InfContentsElem>();
-      Dictionary<int, InfElementsElem> elElems  = new Dictionary<int, InfElementsElem>();
+      Dictionary<int, InfElementsElemContainer> elElems  = new Dictionary<int, InfElementsElemContainer>();
 
       foreach (SegmentStream cttStream in ContentsSCA.GetStreams())
-        StreamToStruct(
+        StreamToStruct<InfContentsElem, InfContentsElem>(
           cttStream,
           InfContentsElem.SizeOfContentsElem,
+          e => e,
           cttElems
         );
 
       foreach (SegmentStream elStream in ElementsSCA.GetStreams())
-        StreamToStruct(
+        StreamToStruct<InfElementsElemContainer, InfElementsElem>(
           elStream,
           InfElementsElem.SizeOfElementsElem,
+          e => new InfElementsElemContainer(e),
           elElems
         );
 
@@ -456,9 +456,9 @@ Exception: {ex}",
 
     protected virtual ElementBase CreateInternal(int             id,
                                                  InfContentsElem cttElem,
-                                                 InfElementsElem elElem)
+                                                 InfElementsElemContainer elElem)
     {
-      switch ((ElementType)elElem.elementType)
+      switch ((ElementType)elElem._elem.elementType)
       {
         case ElementType.Topic:
           return new Topic(id,
@@ -493,14 +493,16 @@ Exception: {ex}",
       using (Stream cttStream = File.OpenRead(Collection.GetInfoFilePath(SMConst.Files.ContentsFileName)))
       using (Stream elStream = File.OpenRead(Collection.GetInfoFilePath(SMConst.Files.ElementsInfoFileName)))
       {
-        var cttElems = StreamToStruct<InfContentsElem>(
+        var cttElems = StreamToStruct<InfContentsElem, InfContentsElem>(
           cttStream,
-          InfContentsElem.SizeOfContentsElem
+          InfContentsElem.SizeOfContentsElem,
+          s => s
         );
 
-        var elElems = StreamToStruct<InfElementsElem>(
+        var elElems = StreamToStruct<InfElementsElemContainer, InfElementsElem>(
           elStream,
-          InfElementsElem.SizeOfElementsElem
+          InfElementsElem.SizeOfElementsElem,
+          e => new InfElementsElemContainer(e)
         );
 
         foreach (int id in cttElems.Keys.Union(elElems.Keys))
@@ -511,8 +513,8 @@ Exception: {ex}",
     }
 
     protected virtual void Commit(int              id,
-                                  InfContentsElem? cttElem,
-                                  InfElementsElem? elElem)
+                                  InfContentsElem cttElem,
+                                  InfElementsElemContainer elElem)
     {
       var el = Elements.SafeGet(id);
 
@@ -550,8 +552,8 @@ Exception: {ex}",
       else
       {
         el = CreateInternal(id,
-                            cttElem ?? default(InfContentsElem),
-                            elElem ?? default(InfElementsElem));
+                            cttElem,
+                            elElem);
         Elements[id] = el;
 
         try

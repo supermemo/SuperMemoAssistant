@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/12/26 16:56
-// Modified On:  2018/12/26 16:59
+// Created On:   2019/01/14 19:15
+// Modified On:  2019/01/24 11:54
 // Modified By:  Alexis
 
 #endregion
@@ -41,14 +41,24 @@ namespace SuperMemoAssistant.Extensions
   {
     #region Methods
 
-    public static string GetBase64(this Image  image,
-                                   ImageFormat format)
+    public static string ToBase64(this Image  image,
+                                  ImageFormat format)
     {
       using (MemoryStream ms = new MemoryStream())
       {
         image.Save(ms,
                    format);
         return Convert.ToBase64String(ms.ToArray());
+      }
+    }
+
+    public static Image FromBase64(string base64)
+    {
+      using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(base64)))
+      {
+        ms.Seek(0, SeekOrigin.Begin);
+
+        return Image.FromStream(ms);
       }
     }
 

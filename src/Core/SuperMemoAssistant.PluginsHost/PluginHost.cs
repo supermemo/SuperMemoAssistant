@@ -98,7 +98,6 @@ namespace SuperMemoAssistant.PluginsHost
     {
       try
       {
-        SystemDb.Instance.Dispose();
         KeyboardHotKeyService.Instance.Dispose();
 
         foreach (var plugin in Plugins)
@@ -289,8 +288,8 @@ namespace SuperMemoAssistant.PluginsHost
 
     public static (AppDomain domain, PluginHost runner) Create(SMCollection collection)
     {
-      DirectoryEx.EnsureExists(SMAConst.Paths.AppDomainCachePath);
-      DirectoryEx.EnsureExists(SMAConst.Paths.PluginPath);
+      DirectoryEx.EnsureExists(SMAFileSystem.AppDomainCachePath);
+      DirectoryEx.EnsureExists(SMAFileSystem.PluginPath);
       DirectoryEx.EnsureExists(collection.GetSMAFolder());
       DirectoryEx.EnsureExists(collection.GetSMAElementsFolder());
       DirectoryEx.EnsureExists(collection.GetSMAPluginsFolder());
@@ -302,7 +301,7 @@ namespace SuperMemoAssistant.PluginsHost
       var setup = new AppDomainSetup()
       {
         ApplicationBase       = AppDomain.CurrentDomain.SetupInformation.ApplicationBase,
-        CachePath             = SMAConst.Paths.AppDomainCachePath,
+        CachePath             = SMAFileSystem.AppDomainCachePath,
         PrivateBinPath        = assemblyPaths,
         ShadowCopyFiles       = "true",
         ShadowCopyDirectories = assemblyPaths
@@ -353,7 +352,7 @@ namespace SuperMemoAssistant.PluginsHost
 
     private static List<String> GetPluginsPath()
     {
-      return Directory.GetDirectories(SMAConst.Paths.PluginPath).ToList();
+      return Directory.GetDirectories(SMAFileSystem.PluginPath).ToList();
     }
 
     private static PermissionSet GetPermissions(SMCollection collection)
@@ -386,7 +385,7 @@ namespace SuperMemoAssistant.PluginsHost
       permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess,
                                                      collection.GetSMAFolder()));
       permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess,
-                                                     SMAConst.Paths.AppDataPath));
+                                                     SMAFileSystem.AppDataPath));
       permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess,
                                                      AppDomain.CurrentDomain.BaseDirectory));
 

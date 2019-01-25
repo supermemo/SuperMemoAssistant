@@ -12,14 +12,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
     protected int ColorGreen { get; set; }
     protected int ColorBlue { get; set; }
 
-    public ComponentHtml(InfComponentsHtml comp)
+    public ComponentHtml(ref InfComponentsHtml comp)
       : base(comp.left, comp.top, comp.width, comp.height, (AtFlags)comp.displayAt)
     {
       TextId = SetValue(comp.registryId, nameof(TextId));
       IsFullHtml = SetValue(comp.isFullHtml != 0, nameof(IsFullHtml));
     }
 
-    public void Update(InfComponentsHtml comp)
+    public void Update(ref InfComponentsHtml comp)
     {
       ComponentFieldFlags flags = ComponentFieldFlags.None;
 

@@ -36,7 +36,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
 {
   [StructLayout(LayoutKind.Sequential,
     Pack = 1)]
-  public struct RegRtElem
+  public class RegRtElem
   {
     public byte[] value;
     public int    no;

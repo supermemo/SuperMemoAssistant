@@ -14,7 +14,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
     protected int ColorGreen { get; set; }
     protected int ColorBlue { get; set; }
 
-    public ComponentSound(InfComponentsSound comp)
+    public ComponentSound(ref InfComponentsSound comp)
       : base(comp.left, comp.top, comp.width, comp.height, (AtFlags)comp.displayAt)
     {
       SoundId = SetValue(comp.registryId, nameof(SoundId));
@@ -29,7 +29,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
       TextAlignment = SetValue((TextAlignment)comp.textAlignment, nameof(TextAlignment));
     }
 
-    public void Update(InfComponentsSound comp)
+    public void Update(ref InfComponentsSound comp)
     {
       ComponentFieldFlags flags = ComponentFieldFlags.None;
 

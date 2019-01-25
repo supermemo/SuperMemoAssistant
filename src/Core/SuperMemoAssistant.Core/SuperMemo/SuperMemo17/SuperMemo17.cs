@@ -31,7 +31,6 @@
 
 
 using System.Collections.Generic;
-using SuperMemoAssistant.Hooks;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Components;

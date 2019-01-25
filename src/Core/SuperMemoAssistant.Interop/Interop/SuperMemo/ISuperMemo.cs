@@ -30,7 +30,6 @@
 
 
 
-using Process.NET;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Components;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements;
@@ -43,7 +42,6 @@ namespace SuperMemoAssistant.Interop.SuperMemo
   {
     SMAppVersion AppVersion { get; }
     SMCollection Collection { get; }
-    IProcess     SMProcess  { get; }
 
     bool IgnoreUserConfirmation { get; set; }
 
@@ -66,8 +64,6 @@ namespace SuperMemoAssistant.Interop.SuperMemo
 
   public interface ISuperMemoUI
   {
-    //IMainBarWdw     MainBarWindow     { get; }
     IElementWdw ElementWindow { get; }
-    //IElementDataWdw ElementDataWindow { get; }
   }
 }

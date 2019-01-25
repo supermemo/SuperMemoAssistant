@@ -13,7 +13,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
     protected int ColorGreen { get; set; }
     protected int ColorBlue { get; set; }
 
-    public ComponentSpelling(InfComponentsSpelling comp)
+    public ComponentSpelling(ref InfComponentsSpelling comp)
       : base(comp.left, comp.top, comp.width, comp.height, (AtFlags)comp.displayAt)
     {
       TextId = SetValue(comp.registryId, nameof(TextId));
@@ -22,7 +22,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
       ColorBlue = SetValue(comp.colorBlue, nameof(ColorBlue));
     }
 
-    public void Update(InfComponentsSpelling comp)
+    public void Update(ref InfComponentsSpelling comp)
     {
       ComponentFieldFlags flags = ComponentFieldFlags.None;
 

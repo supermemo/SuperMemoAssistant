@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/08 15:19
-// Modified On:  2018/11/22 18:37
+// Modified On:  2019/01/23 16:35
 // Modified By:  Alexis
 
 #endregion
@@ -33,7 +33,6 @@
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
-using Sentry;
 using SuperMemoAssistant.Services.IO;
 using SuperMemoAssistant.SuperMemo;
 
@@ -45,6 +44,21 @@ namespace SuperMemoAssistant
     #region Properties & Fields - Non-Public
 
     private SynchronizationContext SyncContext { get; set; }
+
+    #endregion
+
+
+
+
+    #region Methods Impl
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+      Logger.Instance.Shutdown();
+      ModuleInitializer.SentryInstance.Dispose();
+
+      base.OnExit(e);
+    }
 
     #endregion
 
@@ -82,14 +96,6 @@ namespace SuperMemoAssistant
       SyncContext.Send(
         delegate { Shutdown(); },
         null);
-    }
-
-    protected override void OnExit(ExitEventArgs e)
-    {
-      Logger.Instance.Shutdown();
-      ModuleInitializer.SentryInstance.Dispose();
-
-      base.OnExit(e);
     }
 
     #endregion

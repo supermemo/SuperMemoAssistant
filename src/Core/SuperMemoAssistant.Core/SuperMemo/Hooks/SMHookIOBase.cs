@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/19 15:08
-// Modified On:  2018/05/31 13:48
+// Created On:   2018/06/01 14:11
+// Modified On:  2019/01/24 14:01
 // Modified By:  Alexis
 
 #endregion
@@ -35,11 +35,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using SuperMemoAssistant.Hooks;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Sys;
-using SuperMemoAssistant.Sys.Collections;
+using SuperMemoAssistant.Sys.SparseClusteredArray;
 
 namespace SuperMemoAssistant.SuperMemo.Hooks
 {
@@ -80,7 +79,8 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     //
     // Hooks-related
 
-    public void OnFileCreate(string filePath, IntPtr fileHandle)
+    public void OnFileCreate(string filePath,
+                             IntPtr fileHandle)
     {
       string fileName = Path.GetFileName(filePath)?.ToLowerInvariant();
       var    sca      = GetSCAForFileName(fileName);
@@ -89,7 +89,8 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
         FileHandles[fileHandle] = (0, sca);
     }
 
-    public void OnFileSeek(IntPtr fileHandle, uint position)
+    public void OnFileSeek(IntPtr fileHandle,
+                           uint   position)
     {
       var hdlData = FileHandles.SafeGet(fileHandle);
 
@@ -97,7 +98,9 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
         FileHandles[fileHandle] = (position, hdlData.sca);
     }
 
-    public void OnFileWrite(IntPtr fileHandle, byte[] buffer, uint count)
+    public void OnFileWrite(IntPtr fileHandle,
+                            byte[] buffer,
+                            uint   count)
     {
       var (position, sca) = FileHandles.SafeGet(fileHandle);
 
@@ -124,23 +127,27 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     #region Methods
 
-    private void OnSMStarting(object sender, SMEventArgs e)
+    private void OnSMStarting(object      sender,
+                              SMEventArgs e)
     {
       Initialize();
     }
 
-    private void OnSMStopped(object sender, SMProcessArgs e)
+    private void OnSMStopped(object        sender,
+                             SMProcessArgs e)
     {
       FileHandles.Clear();
 
       Cleanup();
     }
 
-    protected static Dictionary<int, T> StreamToStruct<T>(Stream             structStream, int sizeOfStruct,
-                                                          Dictionary<int, T> dict = null)
-      where T : struct
+    protected static Dictionary<int, TContainer> StreamToStruct<TContainer, TStruct>(
+      Stream                      structStream,
+      int                         sizeOfStruct,
+      Func<TStruct, TContainer>   wrapperFunc,
+      Dictionary<int, TContainer> dict = null)
     {
-      var ret = dict ?? new Dictionary<int, T>();
+      var ret = dict ?? new Dictionary<int, TContainer>();
 
       if (structStream.Position % sizeOfStruct != 0 || structStream.Length % sizeOfStruct != 0)
         throw new InvalidDataException("Invalid Position or Length for struct Stream");
@@ -151,9 +158,9 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
       using (BinaryReader binStream = new BinaryReader(structStream, Encoding.Default, true))
         for (int i = 0; i < elemCount; i++)
         {
-          var elem = binStream.ReadStruct<T>();
+          var elem = binStream.ReadStruct<TStruct>();
 
-          ret[elemId++] = elem;
+          ret[elemId++] = wrapperFunc(elem);
         }
 
       return ret;

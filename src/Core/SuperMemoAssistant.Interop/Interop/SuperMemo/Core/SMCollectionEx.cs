@@ -76,7 +76,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
     public static string GetSMAFolder(
       this SMCollection collection)
     {
-      return collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder);
+      return collection.GetFilePath(SMAFileSystem.CollectionSMAFolder);
     }
 
     public static string GetSMAElementsFolder(
@@ -84,11 +84,11 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
       int               elementId = 0)
     {
       return elementId == 0
-        ? collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                 SMAConst.Paths.CollectionElementsFolder,
+        ? collection.GetFilePath(SMAFileSystem.CollectionSMAFolder,
+                                 SMAFileSystem.CollectionElementsFolder,
                                  elementId.ToString())
-        : collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                 SMAConst.Paths.CollectionElementsFolder);
+        : collection.GetFilePath(SMAFileSystem.CollectionSMAFolder,
+                                 SMAFileSystem.CollectionElementsFolder);
     }
 
     public static string GetSMAPluginsFolder(
@@ -96,18 +96,18 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
       ISMAPlugin        plugin = null)
     {
       return plugin != null
-        ? collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                 SMAConst.Paths.CollectionPluginsFolder,
+        ? collection.GetFilePath(SMAFileSystem.CollectionSMAFolder,
+                                 SMAFileSystem.CollectionPluginsFolder,
                                  plugin.Id.ToString("D"))
-        : collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                 SMAConst.Paths.CollectionPluginsFolder);
+        : collection.GetFilePath(SMAFileSystem.CollectionSMAFolder,
+                                 SMAFileSystem.CollectionPluginsFolder);
     }
 
     public static string GetSMASystemFolder(
       this SMCollection collection)
     {
-      return collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                    SMAConst.Paths.CollectionSystemFolder);
+      return collection.GetFilePath(SMAFileSystem.CollectionSMAFolder,
+                                    SMAFileSystem.CollectionSystemFolder);
     }
 
     public static string GetSMAElementsFilePath(
@@ -115,8 +115,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
       IElement          element,
       string            fileName)
     {
-      return collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                    SMAConst.Paths.CollectionElementsFolder,
+      return collection.GetFilePath(SMAFileSystem.CollectionSMAFolder,
+                                    SMAFileSystem.CollectionElementsFolder,
                                     element.Id.ToString(),
                                     fileName);
     }
@@ -126,8 +126,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
       int               elementId,
       string            fileName)
     {
-      return collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                    SMAConst.Paths.CollectionElementsFolder,
+      return collection.GetFilePath(SMAFileSystem.CollectionSMAFolder,
+                                    SMAFileSystem.CollectionElementsFolder,
                                     elementId.ToString(),
                                     fileName);
     }
@@ -137,8 +137,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
       ISMAPlugin        plugin,
       string            fileName)
     {
-      return collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                    SMAConst.Paths.CollectionPluginsFolder,
+      return collection.GetFilePath(SMAFileSystem.CollectionSMAFolder,
+                                    SMAFileSystem.CollectionPluginsFolder,
                                     plugin.Id.ToString("D"),
                                     fileName);
     }
@@ -147,8 +147,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
       this SMCollection collection,
       string            fileName)
     {
-      return collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                    SMAConst.Paths.CollectionSystemFolder,
+      return collection.GetFilePath(SMAFileSystem.CollectionSMAFolder,
+                                    SMAFileSystem.CollectionSystemFolder,
                                     fileName);
     }
 

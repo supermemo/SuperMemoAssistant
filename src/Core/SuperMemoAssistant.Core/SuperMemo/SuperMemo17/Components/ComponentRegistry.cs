@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 22:52
-// Modified On:  2018/11/20 22:08
+// Modified On:  2019/01/25 23:36
 // Modified By:  Alexis
 
 #endregion
@@ -45,7 +45,7 @@ using SuperMemoAssistant.SuperMemo.Hooks;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.Sys;
-using SuperMemoAssistant.Sys.Collections;
+using SuperMemoAssistant.Sys.SparseClusteredArray;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components
 {
@@ -184,43 +184,43 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components
       {
         case CHtmlHeader:
           var htmlStruct = binStream.ReadStruct<InfComponentsHtml>();
-          return new ComponentHtml(htmlStruct);
+          return new ComponentHtml(ref htmlStruct);
 
         case CTextHeader:
           var textStruct = binStream.ReadStruct<InfComponentsText>();
-          return new ComponentText(textStruct);
+          return new ComponentText(ref textStruct);
 
         case CRtfHeader:
           var rtfStruct = binStream.ReadStruct<InfComponentsRtf>();
-          return new ComponentRtf(rtfStruct);
+          return new ComponentRtf(ref rtfStruct);
 
         case CSpellingHeader:
           var spellingStruct = binStream.ReadStruct<InfComponentsSpelling>();
-          return new ComponentSpelling(spellingStruct);
+          return new ComponentSpelling(ref spellingStruct);
 
         case CImageHeader:
           var imgStruct = binStream.ReadStruct<InfComponentsImage>();
-          return new ComponentImage(imgStruct);
+          return new ComponentImage(ref imgStruct);
 
         case CSoundHeader:
           var audioStruct = binStream.ReadStruct<InfComponentsSound>();
-          return new ComponentSound(audioStruct);
+          return new ComponentSound(ref audioStruct);
 
         case CVideoHeader:
           var videoStruct = binStream.ReadStruct<InfComponentsVideo>();
-          return new ComponentVideo(videoStruct);
+          return new ComponentVideo(ref videoStruct);
 
         case CShapeEllipseHeader:
           var shapeEllipseStruct = binStream.ReadStruct<InfComponentsShape>();
-          return new ComponentShapeEllipse(shapeEllipseStruct);
+          return new ComponentShapeEllipse(ref shapeEllipseStruct);
 
         case CShapeRectHeader:
           var shapeRectStruct = binStream.ReadStruct<InfComponentsShape>();
-          return new ComponentShapeRectangle(shapeRectStruct);
+          return new ComponentShapeRectangle(ref shapeRectStruct);
 
         case CShapeRoundedRectHeader:
           var shapeRoundedRectStruct = binStream.ReadStruct<InfComponentsShape>();
-          return new ComponentShapeRoundedRectangle(shapeRoundedRectStruct);
+          return new ComponentShapeRoundedRectangle(ref shapeRoundedRectStruct);
       }
 
       return null;
@@ -246,7 +246,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components
           binStream.ReadChars(offset);
 
           ComponentGroup cGroup = new ComponentGroup((int)position - 4);
-          ComponentBase comp;
+          ComponentBase  comp;
 
           while (compCount-- > 0 && (comp = ParseCompStream(binStream)) != null)
             cGroup.AddComponent(comp);

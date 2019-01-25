@@ -42,7 +42,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
   [StructLayout(LayoutKind.Explicit,
     Pack = 1,
     Size = 30)]
-  public struct RegMemElem
+  public class RegMemElem
   {
     [FieldOffset(0)]  public int  useCount;
     [FieldOffset(4)]  public byte linkType;

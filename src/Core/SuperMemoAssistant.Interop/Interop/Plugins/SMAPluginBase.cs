@@ -32,27 +32,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.Configuration;
-using SuperMemoAssistant.Services.IO.FS;
 using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.Sys.ComponentModel;
 
 namespace SuperMemoAssistant.Interop.Plugins
 {
-  [PartNotDiscoverable]
   public abstract class SMAPluginBase<TPlugin> : SMMarshalByRefObject, ISMAPlugin
     where TPlugin : SMAPluginBase<TPlugin>
   {
-    #region Properties & Fields - Non-Public
-
-    private CompositionContainer _container = null;
-
-    #endregion
 
 
 
@@ -71,8 +62,9 @@ namespace SuperMemoAssistant.Interop.Plugins
 
 
 
-
-    #region Properties & Fields - Public
+    
+#if false
+    private CompositionContainer _container = null;
 
     [Import]
     public CompositionContainer Container
@@ -84,8 +76,7 @@ namespace SuperMemoAssistant.Interop.Plugins
         Init();
       }
     }
-
-    #endregion
+#endif
 
 
 
@@ -128,9 +119,7 @@ namespace SuperMemoAssistant.Interop.Plugins
     private void Init()
     {
       Svc<TPlugin>.Plugin = (TPlugin)this;
-
-      Svc<TPlugin>.CollectionFS = new PluginCollectionFSService(this,
-                                                                Container.GetExportedValue<ICollectionFSService>());
+      
       Svc<TPlugin>.Configuration = new ConfigurationService(this);
 
       OnInit();

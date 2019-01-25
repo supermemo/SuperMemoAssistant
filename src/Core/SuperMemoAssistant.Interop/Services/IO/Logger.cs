@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/12/20 12:23
-// Modified On:  2018/12/20 12:29
+// Modified On:  2019/01/19 05:37
 // Modified By:  Alexis
 
 #endregion
@@ -47,8 +47,8 @@ namespace SuperMemoAssistant.Services.IO
     protected const string OutputFormat = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}";
 
 
-    private static Logger instance;
-    public static  Logger Instance => instance ?? (instance = new Logger());
+    private static Logger _instance;
+    public static  Logger Instance => _instance ?? (_instance = new Logger());
 
     #endregion
 
@@ -75,7 +75,7 @@ namespace SuperMemoAssistant.Services.IO
 
     #region Methods
 
-    public void Initialize()
+    public void Initialize(Func<LoggerConfiguration, LoggerConfiguration> configPredicate = null)
     {
 #if DEBUG || DEBUG_IN_PROD
       var logLevel = LogEventLevel.Debug;
@@ -85,7 +85,7 @@ namespace SuperMemoAssistant.Services.IO
 
       LevelSwitch = new LoggingLevelSwitch(logLevel);
 
-      Log.Logger = new LoggerConfiguration()
+      var config = new LoggerConfiguration()
                    .MinimumLevel.ControlledBy(LevelSwitch)
                    .Enrich.WithExceptionDetails()
                    .Enrich.WithDemystifiedStackTraces()
@@ -97,9 +97,12 @@ namespace SuperMemoAssistant.Services.IO
                                       retainedFileCountLimit: 7,
                                       shared: true,
                                       outputTemplate: OutputFormat
-                                    ))
-                   .WriteTo.Sentry()
-                   .CreateLogger();
+                                    ));
+
+      if (configPredicate != null)
+        config = configPredicate(config);
+
+      Log.Logger = config.CreateLogger();
     }
 
     public static string GetLogFilePath()
@@ -111,9 +114,13 @@ namespace SuperMemoAssistant.Services.IO
                           "log-{Date}.txt");
     }
 
-    public void SetMinimumLevel(LogEventLevel level)
+    public LogEventLevel SetMinimumLevel(LogEventLevel level)
     {
+      var oldLevel = LevelSwitch.MinimumLevel;
+
       LevelSwitch.MinimumLevel = level;
+
+      return oldLevel;
     }
 
     public void Shutdown()

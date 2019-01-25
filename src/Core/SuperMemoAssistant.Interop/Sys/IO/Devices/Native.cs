@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/31 03:56
-// Modified On:  2018/05/31 08:54
+// Created On:   2018/06/01 14:25
+// Modified On:  2019/01/25 23:40
 // Modified By:  Alexis
 
 #endregion
@@ -32,6 +32,8 @@
 
 using System;
 using System.Runtime.InteropServices;
+
+// ReSharper disable InconsistentNaming
 
 namespace SuperMemoAssistant.Sys.IO.Devices
 {
@@ -74,34 +76,51 @@ namespace SuperMemoAssistant.Sys.IO.Devices
 
     //[return: MarshalAs(UnmanagedType.Bool)]
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
-    public static extern int SendMessage(IntPtr hWnd, int wMsg, uint wParam, uint lParam);
+    public static extern int SendMessage(IntPtr hWnd,
+                                         int    wMsg,
+                                         uint   wParam,
+                                         uint   lParam);
 
     [return: MarshalAs(UnmanagedType.Bool)]
     [DllImport("user32.dll", SetLastError = true)]
-    public static extern bool PostMessage(IntPtr hWnd, int Msg, uint wParam, uint lParam);
+    public static extern bool PostMessage(IntPtr hWnd,
+                                          int    Msg,
+                                          uint   wParam,
+                                          uint   lParam);
 
     [DllImport("user32.dll")]
-    public static extern uint MapVirtualKey(uint uCode, uint uMapType);
+    public static extern uint MapVirtualKey(uint uCode,
+                                            uint uMapType);
 
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool SetKeyboardState([In] byte[] keyboardState);
 
     [DllImport("user32.dll", SetLastError = true)]
-    public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+    public static extern bool RegisterHotKey(IntPtr hWnd,
+                                             int    id,
+                                             uint   fsModifiers,
+                                             uint   vk);
 
     [DllImport("user32.dll", SetLastError = true)]
-    public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+    public static extern bool UnregisterHotKey(IntPtr hWnd,
+                                               int    id);
 
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-    public static extern int SetWindowsHookEx(int idHook, KeyboardHookHandler lpfn, IntPtr hMod, uint dwThreadId);
+    public static extern int SetWindowsHookEx(int                 idHook,
+                                              KeyboardHookHandler lpfn,
+                                              IntPtr              hMod,
+                                              uint                dwThreadId);
 
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool UnhookWindowsHookEx(int hhk);
 
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-    public static extern int CallNextHookEx(int hhk, int nCode, int wParam, KBDLLHOOKSTRUCT lParam);
+    public static extern int CallNextHookEx(int             hhk,
+                                            int             nCode,
+                                            int             wParam,
+                                            KBDLLHOOKSTRUCT lParam);
 
     [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     public static extern IntPtr GetModuleHandle(string lpModuleName);
@@ -113,12 +132,16 @@ namespace SuperMemoAssistant.Sys.IO.Devices
       return MapVirtualKey((uint)vkey, MAPVK_VK_TO_VSC_EX);
     }
 
-    public static uint GetLParam(int x, int y)
+    public static uint GetLParam(int x,
+                                 int y)
     {
       return (uint)((y << 16) | (x & 0xFFFF));
     }
 
-    public static uint GetLParam(Int16 repeatCount, VKey vkey, byte extended, byte contextCode,
+    public static uint GetLParam(Int16 repeatCount,
+                                 VKey  vkey,
+                                 byte  extended,
+                                 byte  contextCode,
                                  byte  previousState,
                                  byte  transitionState)
     {
@@ -139,7 +162,9 @@ namespace SuperMemoAssistant.Sys.IO.Devices
 
 
 
-    public delegate int KeyboardHookHandler(int nCode, int wParam, KBDLLHOOKSTRUCT lParam);
+    public delegate int KeyboardHookHandler(int             nCode,
+                                            int             wParam,
+                                            KBDLLHOOKSTRUCT lParam);
   }
 
   [StructLayout(LayoutKind.Sequential)]

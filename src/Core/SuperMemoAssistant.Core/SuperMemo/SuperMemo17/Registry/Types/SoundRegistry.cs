@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/19 20:51
-// Modified On:  2018/05/30 23:27
+// Created On:   2018/06/01 14:13
+// Modified On:  2019/01/24 13:55
 // Modified By:  Alexis
 
 #endregion
@@ -35,7 +35,6 @@ using System.Threading.Tasks;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
-using SuperMemoAssistant.Services;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members;
 using SuperMemoAssistant.Sys;
@@ -59,8 +58,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override string MemFileName => SMConst.Files.SoundMemFileName;
     protected override string RtxFileName => SMConst.Files.SoundRtxFileName;
     protected override string RtfFileName => null;
-    protected override IntPtr RegistryPtr => new IntPtr(SM17Natives.TRegistry.SoundRegistryInstance.Read<int>(Svc.SM.Memory));
-    protected override bool   IsOptional  => true;
+    protected override IntPtr RegistryPtr =>
+      new IntPtr(SM17Natives.TRegistry.SoundRegistryInstance.Read<int>(SMA.Instance.SMProcess.Memory));
+    protected override bool IsOptional => true;
 
     #endregion
 
@@ -78,12 +78,15 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
     #region Methods Impl
 
-    protected override Sound Create(int id, RegMemElem mem, RegRtElem rtxOrRtf)
+    protected override Sound Create(int        id,
+                                    RegMemElem mem,
+                                    RegRtElem  rtxOrRtf)
     {
       return new Sound(id, mem, rtxOrRtf);
     }
 
-    public Task<ISound> AddAsync(string soundName, string soundPath)
+    public Task<ISound> AddAsync(string soundName,
+                                 string soundPath)
     {
       throw new NotImplementedException();
     }

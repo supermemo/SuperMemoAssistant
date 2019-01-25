@@ -41,7 +41,6 @@ using Anotar.Serilog;
 using EasyHook;
 using Process.NET;
 using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Hooks;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SuperMemo.SuperMemo17;
@@ -313,7 +312,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
       string channelName = HookConst.ChannelName;
 
-      // TODO: Switch to WCF DuplexClientBase
+      // TODO: Switch to Duplex (get callback)
       ServerChannel = RemoteHooking.IpcCreateServer<SMHookCallback>(
         ref channelName,
         WellKnownObjectMode.Singleton,

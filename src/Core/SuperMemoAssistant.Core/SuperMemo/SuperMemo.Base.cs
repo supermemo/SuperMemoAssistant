@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/12 18:26
-// Modified On:  2019/01/15 12:35
+// Modified On:  2019/01/19 05:04
 // Modified By:  Alexis
 
 #endregion
@@ -38,7 +38,6 @@ using Process.NET;
 using Process.NET.Assembly;
 using Process.NET.Memory;
 using Process.NET.Utilities;
-using SuperMemoAssistant.Hooks;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
@@ -110,7 +109,7 @@ namespace SuperMemoAssistant.SuperMemo
       {
         OnSMStoppedEvent?.Invoke(this,
                                  new SMProcessArgs(this,
-                                                   SMProcess));
+                                                   NativeProcess));
       }
       catch (Exception ex)
       {
@@ -127,6 +126,7 @@ namespace SuperMemoAssistant.SuperMemo
     #region Properties & Fields - Public
 
     public ManualResetEvent MainThreadReady { get; } = new ManualResetEvent(false);
+    public IProcess         SMProcess       { get; }
 
     #endregion
 
@@ -135,8 +135,8 @@ namespace SuperMemoAssistant.SuperMemo
 
     #region Properties Impl - Public
 
-    public SMCollection Collection { get; }
-    public IProcess     SMProcess  { get; }
+    public SMCollection               Collection    { get; }
+    public System.Diagnostics.Process NativeProcess => SMProcess.Native;
     public bool IgnoreUserConfirmation
     {
       get => IgnoreUserConfirmationPtr.Read<bool>();
@@ -274,84 +274,6 @@ namespace SuperMemoAssistant.SuperMemo
     #region Methods Abs
 
     protected abstract IEnumerable<ISMHookIO> GetIOCallbacks();
-
-
-    //
-    // UI Automation Core
-    /*
-    protected FocusChangedEventHandlerBase FocusChangedHandler { get; set; }
-
-    protected virtual void SetupUI()
-    {
-      SMApp = Application.Attach(SMProcess);
-
-    }
-
-    protected virtual void CleanupUIAutomation()
-    {
-      UnregisterUIAutomationEvents();
-    }
-
-    private virtual void RegisterUIAutomationEvents()
-    {
-      FocusChangedHandler = UIAuto.RegisterFocusChangedEvent(OnFocusChangedGlobal);
-
-      // WindowOpenedEvent
-      RegisterAutomationEvent(
-        UIAuto.EventLibrary.Window.WindowOpenedEvent,
-        TreeScope.Children,
-        IsSMProcess,
-        OnWindowOpened,
-        WrapAutomationEvent(OnWindowOpenedEvent));
-
-      // WindowClosedEvent
-      RegisterAutomationEvent(
-        UIAuto.EventLibrary.Window.WindowClosedEvent,
-        TreeScope.Children,
-        IsSMProcess,
-        OnWindowClosed,
-        WrapAutomationEvent(OnWindowClosedEvent));
-    }
-
-    private override void UnregisterUIAutomationEvents()
-    {
-      UIAuto.UnregisterFocusChangedEvent(FocusChangedHandler);
-      FocusChangedHandler = null;
-
-      base.UnregisterUIAutomationEvents();
-    }
-
-    protected virtual void OnFocusChangedGlobal(AutomationElement elem)
-    {
-      if (elem.Properties.ProcessId == SMProcess.Id)
-        OnFocusChanged(elem);
-    }
-
-
-
-    //
-    // UI Automation Events
-
-    /// <summary>
-    /// Notification for a SM-related focus changed event.
-    /// </summary>
-    /// <param name="elem"></param>
-    /// <param name="eventId"></param>
-    protected abstract void OnFocusChanged(AutomationElement elem);
-
-    /// <summary>
-    /// Notification for a SM-related window open event.
-    /// </summary>
-    /// <param name="elem"></param>
-    /// <param name="eventId"></param>
-    protected abstract void OnWindowOpened(AutomationElement elem, EventId eventId);
-    /// <summary>
-    /// Notification for a SM-related window close event.
-    /// </summary>
-    /// <param name="elem"></param>
-    /// <param name="eventId"></param>
-    protected abstract void OnWindowClosed(AutomationElement elem, EventId eventId);
-    */
 
 
     //

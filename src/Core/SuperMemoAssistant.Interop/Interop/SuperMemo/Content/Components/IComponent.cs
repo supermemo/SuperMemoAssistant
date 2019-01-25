@@ -30,7 +30,6 @@
 
 
 
-using System.Drawing;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Content.Components

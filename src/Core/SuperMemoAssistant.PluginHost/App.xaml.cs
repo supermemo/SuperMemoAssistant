@@ -30,22 +30,91 @@
 
 
 
+using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
+using SuperMemoAssistant.Interop.Plugins;
 
 namespace SuperMemoAssistant.PluginHost
 {
   /// <summary>Interaction logic for App.xaml</summary>
   public partial class App : Application
   {
+    private const int ExitParameters = 1;
+    private const int ExitUnknownError = 2;
+    private const int ExitParentExited = 3;
+    private const int ExitIpcConnectionError = 4;
+    private const int ExitCouldNotGetAssembliesPaths = 5;
+    private const int ExitNoPluginTypeFound = 6;
+    private const int ExitCouldNotConnectPlugin = 7;
+
     #region Methods
 
     private void Application_Startup(object           sender,
                                      StartupEventArgs e)
     {
-      if (ReadArgs(e.Args, out var assemblyName, out var parentPId) == false)
-        return;
+      try
+      {
+        if (ReadArgs(e.Args, out var pluginPackageName, out var smaProcId, out var channelName) == false)
+        {
+          Exit(ExitParameters);
+          return;
+        }
+        
+        if (StartMonitoringSMAProcess(Process.GetProcessById(smaProcId)) == false)
+        {
+          Exit(ExitParentExited);
+          return;
+        }
 
+        var pluginMgr = ConnectToIpcServer(channelName);
+
+        if (pluginMgr == null)
+        {
+          Exit(ExitIpcConnectionError);
+          return;
+        }
+
+        // TODO: AppDomain
+
+        if (pluginMgr.GetAssembliesPathsForPlugin(
+          pluginPackageName,
+          out var pluginAssemblies,
+          out var dependenciesAssemblies) == false)
+        {
+          Exit(ExitCouldNotGetAssembliesPaths);
+          return;
+        }
+
+        var plugin = PluginLoader.LoadAssembliesAndCreatePluginInstance(
+          dependenciesAssemblies,
+          pluginAssemblies);
+
+        if (plugin == null)
+        {
+          Exit(ExitNoPluginTypeFound);
+          return;
+        }
+
+        var sma = pluginMgr.ConnectPlugin(plugin, Process.GetCurrentProcess().Id);
+
+        if (sma == null)
+        {
+          Exit(ExitCouldNotConnectPlugin);
+          return;
+        }
+
+        PluginLoader.InjectPropertyDependencies(plugin, sma, pluginMgr);
+
+        // TODO: Logger, Sentry, etc.
+      }
+      catch
+      {
+        Exit(ExitUnknownError);
+      }
+      
       // Monitor parentPID
       // new IpcChannel(null, null, null)
       // Request assemblies for assemblyName
@@ -54,19 +123,70 @@ namespace SuperMemoAssistant.PluginHost
       // Plugin loader
     }
 
-    private bool ReadArgs(string[]   args,
-                          out string assemblyName,
-                          out int    parentPId)
+    private ISMAPluginManager ConnectToIpcServer(string channelName)
     {
-      assemblyName = null;
-      parentPId    = -1;
+      return (ISMAPluginManager)Activator.GetObject(
+        typeof(ISMAPluginManager),
+        "ipc://" + channelName + "/" + channelName);
+    }
 
-      if (args.Length != 2 || args.Any(string.IsNullOrWhiteSpace))
+    private bool StartMonitoringSMAProcess(Process smaProc)
+    {  
+      if (smaProc.HasExited)
         return false;
 
-      assemblyName = args[0];
+      Task.Factory.StartNew(MonitorSMAProcess,
+                            smaProc,
+                            TaskCreationOptions.LongRunning);
+      
+      smaProc.Exited += (o, ev) => OnSMAStopped();
 
-      return int.TryParse(args[1], out parentPId);
+      return true;
+    }
+
+    private void MonitorSMAProcess(object param)
+    {
+      Process smaProc = (Process)param;
+
+      while (HasExited == false && smaProc.HasExited == false)
+      {
+        smaProc.Refresh();
+      }
+
+      if (smaProc.HasExited)
+        OnSMAStopped();
+    }
+
+    private void OnSMAStopped()
+    {
+      Exit(0);
+    }
+
+    private new void Exit(int code)
+    {
+      HasExited = true;
+      
+      Environment.Exit(code);
+    }
+
+    private bool HasExited { get; set; }
+
+    private bool ReadArgs(string[]   args,
+                          out string pluginPackageName,
+                          out int    smaProcId,
+                          out string channelName)
+    {
+      pluginPackageName = null;
+      smaProcId    = -1;
+      channelName = null;
+
+      if (args.Length != 3 || args.Any(string.IsNullOrWhiteSpace))
+        return false;
+
+      pluginPackageName = args[0];
+      channelName = args[2];
+
+      return int.TryParse(args[1], out smaProcId);
     }
 
     #endregion

@@ -20,11 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 // 
-// https://github.com/Wyamio/Wyam/
-// Copyright (c) 2014 Dave Glick
 // 
 // Created On:   2019/01/20 08:10
-// Modified On:  2019/01/20 08:13
+// Modified On:  2019/01/26 01:15
 // Modified By:  Alexis
 
 #endregion
@@ -37,6 +35,7 @@ using System;
 namespace SuperMemoAssistant.Sys.IO
 {
   /// <summary>Represents a file path.</summary>
+  /// https://github.com/Wyamio/Wyam/ Copyright (c) 2014 Dave Glick
   public sealed class FilePath : NormalizedPath
   {
     #region Constructors

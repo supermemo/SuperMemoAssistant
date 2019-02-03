@@ -69,11 +69,11 @@ namespace SuperMemoAssistant.Plugins.PackageManager
 
     #region Constructors
 
-    internal PluginPackageManager(
-      [NotNull] DirectoryPath                   pluginDirPath,
-      [NotNull] DirectoryPath                   packageDirPath,
-      [NotNull] FilePath                        configFilePath,
-      Func<ISettings, SourceRepositoryProvider> providerCreator = null)
+    internal PluginPackageManager([NotNull] DirectoryPath                   pluginDirPath,
+                                  [NotNull] DirectoryPath                   pluginHomeDirPath,
+                                  [NotNull] DirectoryPath                   packageDirPath,
+                                  [NotNull] FilePath                        configFilePath,
+                                  Func<ISettings, SourceRepositoryProvider> providerCreator = null)
     {
       pluginDirPath  = pluginDirPath.Collapse();
       packageDirPath = packageDirPath.Collapse();
@@ -94,7 +94,7 @@ namespace SuperMemoAssistant.Plugins.PackageManager
       _sourceRepositories = providerCreator?.Invoke(settings) ?? new SourceRepositoryProvider(settings);
       _pluginRepo         = packageCacheTask.Result;
       _solution = new NuGetPluginSolution<TMeta>(
-        pluginDirPath, packageDirPath,
+        pluginDirPath, pluginHomeDirPath, packageDirPath,
         _pluginRepo,
         _sourceRepositories,
         settings,
@@ -134,7 +134,7 @@ namespace SuperMemoAssistant.Plugins.PackageManager
     ///   Whether to verify if each version, and its dependencies, are correctly
     ///   installed.
     /// </param>
-    public IEnumerable<NuGetVersion> GetInstalledVersions(string packageId,
+    public IEnumerable<NuGetVersion> FindInstalledPluginVersions(string packageId,
                                                           bool   verify = false)
     {
       var pkgs = _pluginRepo.FindPackageById(packageId);
@@ -144,38 +144,38 @@ namespace SuperMemoAssistant.Plugins.PackageManager
 
       return pkgs.Select(p => p.Identity.Version);
     }
+    
+    public PluginPackage<TMeta> FindInstalledPluginById(string pluginId) => _pluginRepo.FindPluginById(pluginId);
 
-    public PluginPackage<TMeta> GetInstalledPackage(PackageIdentity identity) => _pluginRepo[identity];
+    public PluginPackage<TMeta> GetInstalledPlugin(PackageIdentity identity) => _pluginRepo[identity];
+
+    public IEnumerable<PluginPackage<TMeta>> GetInstalledPlugins() => _pluginRepo.Plugins;
 
     /// <summary>
     ///   Gets assemblies (.dll, .exe) file paths referenced in given
-    ///   <paramref name="packageIdentity" />, and its dependencies if
-    ///   <paramref name="includeDependencies" /> is true, for framework
+    ///   <paramref name="packageIdentity" /> and its dependencies , for framework
     ///   <paramref name="targetFramework" />
     /// </summary>
     /// <param name="packageIdentity">Package to look for</param>
-    /// <param name="includeDependencies">Whether to include dependencies assemblies</param>
+    /// <param name="dependenciesAssemblies"></param>
     /// <param name="targetFramework">
     ///   Target framework to match, or current assembly's framework if
     ///   <see langword="null" />
     /// </param>
-    public IEnumerable<FilePath> GetInstalledPluginAssembliesFilePath(PackageIdentity packageIdentity,
-                                                                      bool            includeDependencies = true,
+    /// <param name="pluginAssemblies"></param>
+    public void GetInstalledPluginAssembliesFilePath(PackageIdentity packageIdentity,
+                                                                      out IEnumerable<FilePath> pluginAssemblies,
+                                                                      out IEnumerable<FilePath> dependenciesAssemblies,
                                                                       NuGetFramework  targetFramework     = null)
     {
       var project = _solution.GetPluginProject(packageIdentity.Id);
+      var plugin = _pluginRepo[packageIdentity];
 
-      if (project == null)
-        throw new ArgumentException($"No such plugin {packageIdentity.Id}");
+      if (project == null || plugin == null)
+        throw new ArgumentException($"No such plugin {packageIdentity.Id} {packageIdentity.Version.ToNormalizedString()}");
 
-      if (includeDependencies)
-      {
-        var packages = _pluginRepo.GetPackageAndDependencies(packageIdentity);
-
-        return packages?.SelectMany(i => i.GetReferencedAssembliesFilePaths(project, targetFramework ?? _currentFramework));
-      }
-
-      return _pluginRepo[packageIdentity]?.GetReferencedAssembliesFilePaths(project, targetFramework ?? _currentFramework);
+      pluginAssemblies = plugin.GetReferencedAssembliesFilePaths(project, targetFramework ?? _currentFramework);
+      dependenciesAssemblies = plugin.Dependencies.SelectMany(i => i.GetReferencedAssembliesFilePaths(project, targetFramework ?? _currentFramework));
     }
 
     public Task<bool> UninstallPluginAsync(string            pluginId,

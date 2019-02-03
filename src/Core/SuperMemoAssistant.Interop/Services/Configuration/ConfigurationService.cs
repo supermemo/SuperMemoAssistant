@@ -127,7 +127,7 @@ namespace SuperMemoAssistant.Services.Configuration
     }
 
     private static string GetPluginDefaultConfigFilePath(ISMAPlugin plugin) =>
-      Path.Combine(SMAFileSystem.ConfigPath, plugin.Id.ToString("D"));
+      SMAFileSystem.ConfigDir.CombineFile(plugin.Id.ToString("D")).FullPath;
 
     #endregion
   }

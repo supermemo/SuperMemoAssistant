@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/07/27 12:55
-// Modified On:  2019/01/26 04:31
+// Created On:   2019/01/26 02:21
+// Modified On:  2019/01/26 05:53
 // Modified By:  Alexis
 
 #endregion
@@ -30,20 +30,48 @@
 
 
 
-using System;
-using System.Collections.Generic;
-using SuperMemoAssistant.Sys.ComponentModel;
+using SuperMemoAssistant.Interop.Plugins;
+using SysProcess = System.Diagnostics.Process;
 
-namespace SuperMemoAssistant.Interop.Plugins
+namespace SuperMemoAssistant.Plugins
 {
-  public interface ISMAPlugin : IDisposable
+  /// <summary>Represents a running instance of a plugin process</summary>
+  internal class PluginInstance
   {
-    Guid   Id              { get; }
-    string Name            { get; }
-    string AssemblyName    { get; }
-    string AssemblyVersion { get; }
+    #region Properties & Fields - Non-Public
 
-    List<INotifyPropertyChangedEx> SettingsModels { get; }
-    void                           SettingsSaved(object cfgObject);
+    private SysProcess _process = null;
+
+    #endregion
+
+
+
+
+    #region Constructors
+
+    public PluginInstance(ISMAPlugin     plugin,
+                          PluginMetadata metadata,
+                          int            processId)
+    {
+      Plugin    = plugin;
+      Metadata  = metadata;
+      ProcessId = processId;
+    }
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public ISMAPlugin     Plugin      { get; }
+    public PluginMetadata Metadata    { get; }
+    public int            ProcessId   { get; }
+    public bool           ExitHandled { get; set; } = false;
+
+    public SysProcess Process => _process ?? (_process = SysProcess.GetProcessById(ProcessId));
+
+    #endregion
   }
 }

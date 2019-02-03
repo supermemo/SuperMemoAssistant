@@ -20,11 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 // 
-// https://github.com/Wyamio/Wyam/
-// Copyright (c) 2014 Dave Glick
 // 
 // Created On:   2019/01/20 08:10
-// Modified On:  2019/01/20 08:12
+// Modified On:  2019/01/26 01:15
 // Modified By:  Alexis
 
 #endregion
@@ -37,6 +35,7 @@ using System.Collections.Generic;
 
 namespace SuperMemoAssistant.Sys.IO
 {
+  /// https://github.com/Wyamio/Wyam/ Copyright (c) 2014 Dave Glick
   internal static class RelativePathResolver
   {
     #region Methods

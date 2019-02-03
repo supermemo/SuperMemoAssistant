@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/01/25 12:37
-// Modified On:  2019/01/25 23:01
+// Modified On:  2019/01/26 01:41
 // Modified By:  Alexis
 
 #endregion
@@ -54,6 +54,7 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet.Project
 
     private readonly NuGetFramework                                       _currentFramework;
     private readonly Func<NuGetPluginProject<TMeta>, NuGetPackageManager> _packageManagerCreator;
+    private readonly DirectoryPath                                        _pluginHomeDirPath;
 
     private bool _isInstalled;
 
@@ -67,6 +68,7 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet.Project
     public NuGetPluginProject(Func<NuGetPluginProject<TMeta>, NuGetPackageManager> packageManagerCreator,
                               NuGetFramework                                       currentFramework,
                               DirectoryPath                                        packageDirPath,
+                              DirectoryPath                                        pluginHomeDirPath,
                               PluginPackage<TMeta>                                 plugin,
                               bool                                                 isInstalled)
       : base(packageDirPath.FullPath)
@@ -75,6 +77,7 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet.Project
       _packageManagerCreator = packageManagerCreator;
       _currentFramework      = currentFramework;
       _isInstalled           = isInstalled;
+      _pluginHomeDirPath     = pluginHomeDirPath.Combine(Plugin.Id);
     }
 
     #endregion
@@ -105,7 +108,12 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet.Project
         $"Installing plugin or dependency {packageIdentity.Id} {(packageIdentity.HasVersion ? packageIdentity.Version.ToNormalizedString() : string.Empty)}");
 
       if (packageIdentity.Id != Plugin.Identity.Id)
-        Plugin.AddDependency(packageIdentity);
+      {
+        var dependency = Plugin.AddDependency(packageIdentity);
+
+        foreach (var contentDir in dependency.GetContentDirectoryPath(this, _currentFramework))
+          contentDir.CopyTo(_pluginHomeDirPath);
+      }
 
       return base.InstallPackageAsync(packageIdentity, downloadResourceResult, nuGetProjectContext, token);
     }
@@ -161,6 +169,9 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet.Project
         uninstallContext,
         projectContext,
         cancellationToken);
+
+      if (_pluginHomeDirPath.Exists())
+        _pluginHomeDirPath.Delete();
     }
 
     public async Task InstallPluginAsync(
@@ -169,6 +180,11 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet.Project
       bool                          allowPrereleaseVersions = false,
       CancellationToken             cancellationToken       = default)
     {
+      if (_pluginHomeDirPath.Exists())
+        _pluginHomeDirPath.Delete();
+
+      _pluginHomeDirPath.Create();
+
       ResolutionContext resolutionContext = new ResolutionContext(
         DependencyBehavior.Lowest, allowPrereleaseVersions, false, VersionConstraints.None);
 
@@ -180,6 +196,9 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet.Project
         sourceRepositories,
         Array.Empty<SourceRepository>(),
         cancellationToken).ConfigureAwait(false);
+
+      foreach (var contentDir in Plugin.GetContentDirectoryPath(this, _currentFramework))
+        contentDir.CopyTo(_pluginHomeDirPath);
 
       _isInstalled = true;
     }

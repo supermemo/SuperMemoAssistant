@@ -260,7 +260,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
           collection.GetKnoFilePath().Quotify(),
           0,
           InjectionOptions.Default,
-          SMAConst.Assembly.GetInjectionLibFilePath(),
+          SMAFileSystem.GetInjectionLibFile().FullPath,
           null,
           out var pId
         );

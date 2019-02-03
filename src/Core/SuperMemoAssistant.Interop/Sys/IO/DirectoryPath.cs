@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/01/20 08:10
-// Modified On:  2019/01/22 16:02
+// Modified On:  2019/01/26 01:36
 // Modified By:  Alexis
 
 #endregion
@@ -37,6 +37,7 @@ using System.Linq;
 namespace SuperMemoAssistant.Sys.IO
 {
   /// <summary>Represents a directory path.</summary>
+  /// https://github.com/Wyamio/Wyam/ Copyright (c) 2014 Dave Glick
   public sealed class DirectoryPath : NormalizedPath
   {
     #region Constructors
@@ -249,6 +250,107 @@ namespace SuperMemoAssistant.Sys.IO
     ///   determine if the specified directory exists.
     /// </returns>
     public bool Exists() => Directory.Exists(FullPath);
+
+    /// <summary>
+    ///   Deletes the specified directory and, if indicated, any subdirectories and files in
+    ///   the directory.
+    /// </summary>
+    /// <param name="recursive">
+    ///   <see langword="true" /> to remove directories, subdirectories, and
+    ///   files in directory; otherwise, <see langword="false" />.
+    /// </param>
+    /// <exception cref="T:System.IO.IOException">
+    ///   A file with the same name and location specified by
+    ///   directory exists.-or-The directory specified by directory is read-only, or
+    ///   <paramref name="recursive" /> is <see langword="false" /> and directory is not an empty
+    ///   directory. -or-The directory is the application's current working directory. -or-The
+    ///   directory contains a read-only file.-or-The directory is being used by another process.
+    /// </exception>
+    /// <exception cref="T:System.UnauthorizedAccessException">
+    ///   The caller does not have the required
+    ///   permission.
+    /// </exception>
+    /// <exception cref="T:System.ArgumentException">
+    ///   directory is a zero-length string, contains only
+    ///   white space, or contains one or more invalid characters. You can query for invalid
+    ///   characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.
+    /// </exception>
+    /// <exception cref="T:System.ArgumentNullException">directory is <see langword="null" />. </exception>
+    /// <exception cref="T:System.IO.PathTooLongException">
+    ///   The specified path, file name, or both
+    ///   exceed the system-defined maximum length. For example, on Windows-based platforms, paths
+    ///   must be less than 248 characters and file names must be less than 260 characters.
+    /// </exception>
+    /// <exception cref="T:System.IO.DirectoryNotFoundException">
+    ///   directory does not exist or could not
+    ///   be found.-or-The specified path is invalid (for example, it is on an unmapped drive).
+    /// </exception>
+    public void Delete(bool recursive = true) => Directory.Delete(FullPath, recursive);
+
+    /// <summary>
+    ///   Creates all directories and subdirectories in the specified path unless they already
+    ///   exist.
+    /// </summary>
+    /// <returns>
+    ///   An object that represents the directory at the specified path. This object is
+    ///   returned regardless of whether a directory at the specified path already exists.
+    /// </returns>
+    /// <exception cref="T:System.IO.IOException">
+    ///   The directory specified by directory is a
+    ///   file.-or-The network name is not known.
+    /// </exception>
+    /// <exception cref="T:System.UnauthorizedAccessException">
+    ///   The caller does not have the required
+    ///   permission.
+    /// </exception>
+    /// <exception cref="T:System.ArgumentException">
+    ///   directory is a zero-length string, contains only
+    ///   white space, or contains one or more invalid characters. You can query for invalid
+    ///   characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.-or-
+    ///   directory is prefixed with, or contains, only a colon character (:).
+    /// </exception>
+    /// <exception cref="T:System.ArgumentNullException">directory is <see langword="null" />. </exception>
+    /// <exception cref="T:System.IO.PathTooLongException">
+    ///   The specified path, file name, or both
+    ///   exceed the system-defined maximum length. For example, on Windows-based platforms, paths
+    ///   must be less than 248 characters and file names must be less than 260 characters.
+    /// </exception>
+    /// <exception cref="T:System.IO.DirectoryNotFoundException">
+    ///   The specified path is invalid (for
+    ///   example, it is on an unmapped drive).
+    /// </exception>
+    /// <exception cref="T:System.NotSupportedException">
+    ///   directory contains a colon character (:) that
+    ///   is not part of a drive label ("C:\").
+    /// </exception>
+    public void Create() => Directory.CreateDirectory(FullPath);
+
+    public void CopyTo(DirectoryPath destinationDir,
+                       bool          overwrite = true,
+                       DirectoryPath srcDir    = null)
+    {
+      srcDir = srcDir ?? this;
+      var srcDirPath  = srcDir.FullPath;
+      var destDirPath = destinationDir.FullPath;
+
+      foreach (var itSrcDirPath in Directory.GetDirectories(srcDirPath))
+      {
+        string itDirName = Path.GetFileName(itSrcDirPath);
+
+        if (string.IsNullOrWhiteSpace(itDirName))
+          continue;
+
+        string itDestDirPath = Path.Combine(destDirPath, itDirName);
+
+        if (Directory.Exists(itDestDirPath) == false)
+          Directory.CreateDirectory(itDestDirPath);
+
+        CopyTo(itDestDirPath, overwrite, itSrcDirPath);
+      }
+
+      foreach (var file in Directory.GetFiles(srcDirPath))
+        File.Copy(file, Path.Combine(destDirPath, Path.GetFileName(file)), overwrite);
+    }
 
     /// <summary>Collapses a <see cref="DirectoryPath" /> containing ellipses.</summary>
     /// <returns>A collapsed <see cref="DirectoryPath" />.</returns>

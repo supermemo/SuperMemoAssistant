@@ -20,11 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 // 
-// https://github.com/Wyamio/Wyam/
-// Copyright (c) 2014 Dave Glick
 // 
 // Created On:   2019/01/20 08:10
-// Modified On:  2019/01/20 08:13
+// Modified On:  2019/01/26 01:16
 // Modified By:  Alexis
 
 #endregion
@@ -41,6 +39,7 @@ namespace SuperMemoAssistant.Sys.IO
 {
   /// <summary>An ordered collection of unique <see cref="NormalizedPath" />.</summary>
   /// <typeparam name="TPath">The type of the path (file or directory).</typeparam>
+  /// https://github.com/Wyamio/Wyam/ Copyright (c) 2014 Dave Glick
   public class PathCollection<TPath> : IReadOnlyList<TPath>
     where TPath : NormalizedPath
   {

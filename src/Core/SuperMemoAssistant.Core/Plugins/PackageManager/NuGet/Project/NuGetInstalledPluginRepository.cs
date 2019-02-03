@@ -138,9 +138,9 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet.Project
       return true;
     }
 
-    public PackageIdentity FindPluginById(string packageId)
+    public PluginPackage<TMeta> FindPluginById(string packageId)
     {
-      return _identityPluginMap.Keys.FirstOrDefault(p => p.Id == packageId);
+      return _identityPluginMap.FirstOrDefault(kv => kv.Key.Id == packageId).Value;
     }
 
     public IEnumerable<Package> FindPackageById(string packageId)

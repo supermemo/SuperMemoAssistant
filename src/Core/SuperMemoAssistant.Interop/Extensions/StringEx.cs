@@ -38,9 +38,12 @@ namespace SuperMemoAssistant.Extensions
   {
     #region Methods
 
-    public static string Quotify(this string text)
+    public static string Quotify(this string text, bool escapeQuotes = false)
     {
-      return "\"" + text + "\"";
+      if (escapeQuotes)
+        text = text.Replace("\"", "\\\"");
+
+      return $"\"{text}\"";
     }
 
     public static string ReplaceFirst(this string text,

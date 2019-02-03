@@ -80,7 +80,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Accessibility" />
     <Reference Include="Anotar.Serilog, Version=4.6.7.0, Culture=neutral, PublicKeyToken=9d5b24f0733c26f7, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Anotar.Serilog.Fody.4.6.7\lib\net452\Anotar.Serilog.dll</HintPath>
     </Reference>
@@ -126,18 +125,13 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Management" />
     <Reference Include="System.Net" />
     <Reference Include="System.Reflection.Metadata, Version=1.4.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\System.Reflection.Metadata.1.6.0\lib\netstandard2.0\System.Reflection.Metadata.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="Visualize, Version=1.1.4.0, Culture=neutral, PublicKeyToken=409b3227471b0f0d, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Visualize.Fody.1.1.4\lib\net452\Visualize.dll</HintPath>
@@ -151,6 +145,7 @@
     <Compile Include="Extensions\StreamEx.cs" />
     <Compile Include="Extensions\TreeViewEx.cs" />
     <Compile Include="Extensions\WindowEx.cs" />
+    <Compile Include="Interop\Plugins\ISMAPluginManager.cs" />
     <Compile Include="Interop\SMAFileSystem.cs" />
     <Compile Include="Interop\SuperMemo\Content\Components\Base\ComponentSoundBase.cs" />
     <Compile Include="Interop\SuperMemo\Content\Components\Base\ComponentImageBase.cs" />

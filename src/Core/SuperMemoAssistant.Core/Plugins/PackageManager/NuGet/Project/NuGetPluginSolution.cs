@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/01/25 15:56
-// Modified On:  2019/01/25 22:42
+// Modified On:  2019/01/26 01:41
 // Modified By:  Alexis
 
 #endregion
@@ -52,6 +52,7 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet.Project
 
     private readonly NuGetFramework                                _currentFramework;
     private readonly DirectoryPath                                 _packageDirPath;
+    private readonly DirectoryPath                                 _pluginHomeDirPath;
     private readonly NuGetInstalledPluginRepository<TMeta>         _pluginRepo;
     private readonly Dictionary<string, NuGetPluginProject<TMeta>> _projectMap;
     private readonly ISettings                                     _settings;
@@ -65,6 +66,7 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet.Project
     #region Constructors
 
     public NuGetPluginSolution(DirectoryPath                         pluginDirPath,
+                               DirectoryPath                         pluginHomeDirPath,
                                DirectoryPath                         packageDirPath,
                                NuGetInstalledPluginRepository<TMeta> pluginRepo,
                                SourceRepositoryProvider              sourceRepositories,
@@ -75,6 +77,7 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet.Project
       NuGetProjectContext = new NuGetProjectContext(settings);
 
       _packageDirPath     = packageDirPath;
+      _pluginHomeDirPath  = pluginHomeDirPath;
       _pluginRepo         = pluginRepo;
       _sourceRepositories = sourceRepositories;
       _settings           = settings;
@@ -85,6 +88,7 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet.Project
           CreatePackageManager,
           _currentFramework,
           _packageDirPath,
+          _pluginHomeDirPath,
           p,
           true)
       ).ToDictionary(k => k.Plugin.Id);
@@ -178,7 +182,7 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet.Project
         removeDependencies,
         forceRemove,
         cancellationToken);
-      
+
       _pluginRepo.RemovePlugin(project.Plugin.Identity);
       _projectMap.Remove(pluginId);
 
@@ -201,7 +205,8 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet.Project
         project = new NuGetPluginProject<TMeta>(
           CreatePackageManager,
           _currentFramework,
-          _packageDirPath.FullPath,
+          _packageDirPath,
+          _pluginHomeDirPath,
           pluginInstallSession.Plugin,
           false);
 

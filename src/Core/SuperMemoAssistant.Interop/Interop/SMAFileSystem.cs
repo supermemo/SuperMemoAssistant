@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/01/21 14:16
-// Modified On:  2019/01/21 14:18
+// Modified On:  2019/01/26 02:50
 // Modified By:  Alexis
 
 #endregion
@@ -32,7 +32,9 @@
 
 using System;
 using System.IO;
+using System.Windows.Forms;
 using SuperMemoAssistant.Interop.Plugins;
+using SuperMemoAssistant.Sys.IO;
 
 namespace SuperMemoAssistant.Interop
 {
@@ -45,44 +47,49 @@ namespace SuperMemoAssistant.Interop
     public const string CollectionPluginsFolder  = "plugins";
     public const string CollectionSystemFolder   = "system";
 
-    public static string AppRootPath =>
+    public static DirectoryPath AppRootDir =>
       Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         SMAConst.Name
       );
 
-    public static string ConfigPath =>
-      Path.Combine(AppRootPath,
-                   "Configs"
-      );
+    public static DirectoryPath ConfigDir =>
+      AppRootDir.Combine("Configs");
 
-    public static string DataPath =>
-      Path.Combine(AppRootPath,
-                   "Data"
-      );
+    public static DirectoryPath DataDir =>
+      AppRootDir.Combine("Data");
 
-    public static string AppDomainCachePath =>
-      Path.Combine(AppRootPath,
-                   "AppDomainCache"
-      );
+    public static DirectoryPath PluginDir =>
+      AppRootDir.Combine("Plugins");
 
-    public static string PluginPath =>
-      Path.Combine(AppRootPath,
-                   "Plugins"
-      );
+    public static DirectoryPath PluginPackageDir =>
+      PluginDir.Combine("Packages");
 
-    public static string PluginPackagePath =>
-      Path.Combine(PluginPath,
-                   "Packages"
-      );
+    public static DirectoryPath PluginHomeDir =>
+      PluginDir.Combine("Home");
 
-    public static string PluginConfigPath =>
-      Path.Combine(PluginPath,
-                   "plugins.json"
-      );
+    public static FilePath PluginConfigFile =>
+      PluginDir.CombineFile("plugins.json");
 
-    public static string MakePluginDataPath(ISMAPlugin plugin) =>
-      Path.Combine(DataPath, plugin.Name);
+    #endregion
+
+
+
+
+    #region Methods
+
+    public static DirectoryPath MakePluginDataPath(ISMAPlugin plugin) =>
+      DataDir.Combine(plugin.Name);
+    
+    public static FilePath GetPluginHostExeFile() => Path.Combine(
+      Application.StartupPath,
+      SMAConst.Assembly.PluginHostExe
+    );
+    
+    public static FilePath GetInjectionLibFile() => Path.Combine(
+      Application.StartupPath,
+      SMAConst.Assembly.SMInjectionLib
+    );
 
     #endregion
   }

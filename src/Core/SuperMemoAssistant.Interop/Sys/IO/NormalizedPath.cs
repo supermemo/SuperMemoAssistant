@@ -20,11 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 // 
-// https://github.com/Wyamio/Wyam/
-// Copyright (c) 2014 Dave Glick
 // 
 // Created On:   2019/01/20 08:10
-// Modified On:  2019/01/20 08:13
+// Modified On:  2019/01/26 01:16
 // Modified By:  Alexis
 
 #endregion
@@ -40,6 +38,7 @@ using System.Runtime.InteropServices;
 namespace SuperMemoAssistant.Sys.IO
 {
   /// <summary>Provides properties and instance methods for working with paths.</summary>
+  /// https://github.com/Wyamio/Wyam/ Copyright (c) 2014 Dave Glick
   public abstract class NormalizedPath : IComparable<NormalizedPath>, IComparable, IEquatable<NormalizedPath>
   {
     #region Constants & Statics

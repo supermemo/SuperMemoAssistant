@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/07/27 12:55
-// Modified On:  2019/01/26 04:31
+// Created On:   2019/01/26 03:40
+// Modified On:  2019/01/26 03:41
 // Modified By:  Alexis
 
 #endregion
@@ -31,19 +31,27 @@
 
 
 using System;
-using System.Collections.Generic;
-using SuperMemoAssistant.Sys.ComponentModel;
+using System.Threading.Tasks;
+using Nito.AsyncEx;
 
-namespace SuperMemoAssistant.Interop.Plugins
+namespace SuperMemoAssistant.Sys
 {
-  public interface ISMAPlugin : IDisposable
+  public static class AsyncExEx
   {
-    Guid   Id              { get; }
-    string Name            { get; }
-    string AssemblyName    { get; }
-    string AssemblyVersion { get; }
+    #region Methods
 
-    List<INotifyPropertyChangedEx> SettingsModels { get; }
-    void                           SettingsSaved(object cfgObject);
+    public static async Task<bool> WaitAsync(this AsyncManualResetEvent waitHandle,
+                                             int                        timeoutMs)
+    {
+      if (waitHandle == null)
+        throw new ArgumentNullException(nameof(waitHandle));
+
+      Task waitTask      = waitHandle.WaitAsync();
+      Task completedTask = await Task.WhenAny(Task.Delay(timeoutMs), waitHandle.WaitAsync());
+
+      return completedTask == waitTask;
+    }
+
+    #endregion
   }
 }

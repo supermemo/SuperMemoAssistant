@@ -22,16 +22,13 @@
 // 
 // 
 // Created On:   2018/07/27 12:54
-// Modified On:  2019/01/25 23:38
+// Modified On:  2019/01/26 02:40
 // Modified By:  Alexis
 
 #endregion
 
 
 
-
-using System.IO;
-using System.Windows.Forms;
 
 namespace SuperMemoAssistant.Interop
 {
@@ -50,22 +47,8 @@ namespace SuperMemoAssistant.Interop
     {
       #region Constants & Statics
 
+      public const string PluginHostExe  = "SuperMemoAssistant.PluginHost";
       public const string SMInjectionLib = "SuperMemoAssistant.Hooks.InjectLib.dll";
-
-      #endregion
-
-
-
-
-      #region Methods
-
-      public static string GetInjectionLibFilePath()
-      {
-        return Path.Combine(
-          Application.StartupPath,
-          SMInjectionLib
-        );
-      }
 
       #endregion
     }

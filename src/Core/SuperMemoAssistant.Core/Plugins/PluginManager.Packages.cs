@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/07/27 12:55
-// Modified On:  2019/01/26 04:31
+// Created On:   2019/01/26 03:51
+// Modified On:  2019/01/26 05:14
 // Modified By:  Alexis
 
 #endregion
@@ -30,20 +30,27 @@
 
 
 
-using System;
-using System.Collections.Generic;
-using SuperMemoAssistant.Sys.ComponentModel;
+using SuperMemoAssistant.Interop;
+using SuperMemoAssistant.Plugins.PackageManager;
+using SuperMemoAssistant.Plugins.PackageManager.NuGet;
 
-namespace SuperMemoAssistant.Interop.Plugins
+namespace SuperMemoAssistant.Plugins
 {
-  public interface ISMAPlugin : IDisposable
+  public partial class PluginManager
   {
-    Guid   Id              { get; }
-    string Name            { get; }
-    string AssemblyName    { get; }
-    string AssemblyVersion { get; }
+    #region Properties & Fields - Non-Public
 
-    List<INotifyPropertyChangedEx> SettingsModels { get; }
-    void                           SettingsSaved(object cfgObject);
+    private PluginPackageManager<PluginMetadata> _packageManager = null;
+
+    private PluginPackageManager<PluginMetadata> PackageManager =>
+      _packageManager ??
+      (_packageManager = new PluginPackageManager<PluginMetadata>(
+        SMAFileSystem.PluginDir,
+        SMAFileSystem.PluginHomeDir,
+        SMAFileSystem.PluginPackageDir,
+        SMAFileSystem.PluginConfigFile,
+        s => new NuGetSourceRepositoryProvider(s)));
+
+    #endregion
   }
 }

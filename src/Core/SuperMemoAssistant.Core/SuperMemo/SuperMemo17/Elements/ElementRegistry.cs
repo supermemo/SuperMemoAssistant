@@ -103,7 +103,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
     //
     // Elements
 
-    public IElement this[int id] => (IElement)Elements.SafeGet(id);
+    public IElement this[int id] => Elements.SafeGet(id);
 
     public int Count => Root.DescendantCount + 1;
 
@@ -527,7 +527,7 @@ Exception: {ex}",
           try
           {
             OnElementDeleted?.Invoke(new SMElementArgs(SMA.Instance,
-                                                       (IElement)el));
+                                                       el));
           }
           catch (Exception ex)
           {
@@ -539,7 +539,7 @@ Exception: {ex}",
           try
           {
             OnElementModified?.Invoke(new SMElementChangedArgs(SMA.Instance,
-                                                               (IElement)el,
+                                                               el,
                                                                flags));
           }
           catch (Exception ex)
@@ -559,7 +559,7 @@ Exception: {ex}",
         try
         {
           OnElementCreated?.Invoke(new SMElementArgs(SMA.Instance,
-                                                     (IElement)el));
+                                                     el));
         }
         catch (Exception ex)
         {
@@ -568,8 +568,6 @@ Exception: {ex}",
         }
       }
     }
-
-    protected void DelayedFocus(ref List<IDisposable> toDispose) { }
 
     #endregion
 

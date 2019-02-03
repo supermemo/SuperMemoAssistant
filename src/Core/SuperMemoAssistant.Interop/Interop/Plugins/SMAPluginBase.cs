@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/12/30 19:28
+// Modified On:  2019/01/26 06:13
 // Modified By:  Alexis
 
 #endregion
@@ -44,15 +44,18 @@ namespace SuperMemoAssistant.Interop.Plugins
   public abstract class SMAPluginBase<TPlugin> : SMMarshalByRefObject, ISMAPlugin
     where TPlugin : SMAPluginBase<TPlugin>
   {
-
-
-
-
     #region Constructors
 
-    protected SMAPluginBase()
+    protected SMAPluginBase(bool attachDebuggerInDebugConfiguration = true,
+                            bool forceAttachDebbuger                = false)
     {
-      AttachDebugger();
+      if (forceAttachDebbuger)
+        Debugger.Launch();
+
+      else if (attachDebuggerInDebugConfiguration)
+        AttachDebugger();
+
+      Init();
     }
 
     /// <inheritdoc />
@@ -62,31 +65,15 @@ namespace SuperMemoAssistant.Interop.Plugins
 
 
 
-    
-#if false
-    private CompositionContainer _container = null;
-
-    [Import]
-    public CompositionContainer Container
-    {
-      get => _container;
-      set
-      {
-        _container = value;
-        Init();
-      }
-    }
-#endif
-
-
-
 
     #region Properties Impl - Public
 
     /// <inheritdoc />
-    public Guid Id => AssemblyEx.GetAssemblyGuid();
+    public Guid Id => AssemblyEx.GetAssemblyGuid(GetType());
     /// <inheritdoc />
-    public string Version => AssemblyEx.GetAssemblyVersion();
+    public string AssemblyName => AssemblyEx.GetAssemblyName(GetType());
+    /// <inheritdoc />
+    public string AssemblyVersion => AssemblyEx.GetAssemblyVersion(GetType());
     /// <inheritdoc />
     public virtual List<INotifyPropertyChangedEx> SettingsModels { get; protected set; }
 
@@ -112,14 +99,12 @@ namespace SuperMemoAssistant.Interop.Plugins
     [Conditional("DEBUG_IN_PROD")]
     private void AttachDebugger()
     {
-      // Uncomment if plugins ever are isolated in their own process
-      //Debugger.Launch();
+      Debugger.Launch();
     }
 
     private void Init()
     {
       Svc<TPlugin>.Plugin = (TPlugin)this;
-      
       Svc<TPlugin>.Configuration = new ConfigurationService(this);
 
       OnInit();

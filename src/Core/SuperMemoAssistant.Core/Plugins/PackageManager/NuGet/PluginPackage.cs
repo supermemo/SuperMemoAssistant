@@ -80,14 +80,31 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet
 
     #region Methods
 
-    public void AddDependency(PackageIdentity packageIdentity)
+    public Package AddDependency(PackageIdentity packageIdentity)
     {
-      Dependencies.Add(new Package(packageIdentity));
+      var dependency = new Package(packageIdentity);
+
+      Dependencies.Add(dependency);
+
+      return dependency;
     }
 
-    public void RemoveDependency(PackageIdentity packageIdentity)
+    public Package RemoveDependency(PackageIdentity packageIdentity)
     {
-      Dependencies.RemoveWhere(p => Equals(p.Identity, packageIdentity));
+      Package dependency = null;
+
+      Dependencies.RemoveWhere(p =>
+      {
+        if (Equals(p.Identity, packageIdentity))
+        {
+          dependency = p;
+          return true;
+        }
+
+        return false;
+      });
+
+      return dependency;
     }
 
     public IEnumerable<FilePath> GetPluginAndDependenciesAssembliesFilePaths(FolderNuGetProject project,

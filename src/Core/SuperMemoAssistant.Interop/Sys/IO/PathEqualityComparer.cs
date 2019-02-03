@@ -20,11 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 // 
-// https://github.com/Wyamio/Wyam/
-// Copyright (c) 2014 Dave Glick
 // 
 // Created On:   2019/01/20 08:10
-// Modified On:  2019/01/20 08:12
+// Modified On:  2019/01/26 01:16
 // Modified By:  Alexis
 
 #endregion
@@ -38,6 +36,7 @@ using System.Collections.Generic;
 namespace SuperMemoAssistant.Sys.IO
 {
   /// <summary>Compares <see cref="NormalizedPath" /> instances.</summary>
+  /// https://github.com/Wyamio/Wyam/ Copyright (c) 2014 Dave Glick
   public sealed class PathEqualityComparer : IEqualityComparer<NormalizedPath>
   {
     #region Methods Impl

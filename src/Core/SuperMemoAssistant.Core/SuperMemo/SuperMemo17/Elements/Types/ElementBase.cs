@@ -173,17 +173,17 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     public int DescendantCount { get; protected set; }
     public int ChildrenCount   { get; protected set; }
 
-    public string Title => SMA.Instance.Registry.Text?[TitleTextId]?.Name;
+    public string Title => SMA.SMA.Instance.Registry.Text?[TitleTextId]?.Name;
 
-    public IComponentGroup ComponentGroup => SMA.Instance.Registry.Component?[ComponentPos];
-    public IElement        Template       => SMA.Instance.Registry.Element?[TemplateId];
-    public IConcept        Concept        => SMA.Instance.Registry.Concept?[ConceptId];
+    public IComponentGroup ComponentGroup => SMA.SMA.Instance.Registry.Component?[ComponentPos];
+    public IElement        Template       => SMA.SMA.Instance.Registry.Element?[TemplateId];
+    public IConcept        Concept        => SMA.SMA.Instance.Registry.Concept?[ConceptId];
 
-    public IElement Parent      => SMA.Instance.Registry.Element?[ParentId];
-    public IElement FirstChild  => SMA.Instance.Registry.Element?[FirstChildId];
-    public IElement LastChild   => SMA.Instance.Registry.Element?[LastChildId];
-    public IElement NextSibling => SMA.Instance.Registry.Element?[NextSiblingId];
-    public IElement PrevSibling => SMA.Instance.Registry.Element?[PrevSiblingId];
+    public IElement Parent      => SMA.SMA.Instance.Registry.Element?[ParentId];
+    public IElement FirstChild  => SMA.SMA.Instance.Registry.Element?[FirstChildId];
+    public IElement LastChild   => SMA.SMA.Instance.Registry.Element?[LastChildId];
+    public IElement NextSibling => SMA.SMA.Instance.Registry.Element?[NextSiblingId];
+    public IElement PrevSibling => SMA.SMA.Instance.Registry.Element?[PrevSiblingId];
 
     public IEnumerable<IElement> Children => EnumerateChildren();
 
@@ -302,7 +302,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
       try
       {
-        OnChanged?.Invoke(new SMElementChangedArgs(SMA.Instance,
+        OnChanged?.Invoke(new SMElementChangedArgs(SMA.SMA.Instance,
                                                    (IElement)this,
                                                    flags));
       }
@@ -318,12 +318,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     protected void OnComponentPosChanged(int oldCompPos,
                                          int newCompPos)
     {
-      if (SMA.Instance.Registry.Component == null)
+      if (SMA.SMA.Instance.Registry.Component == null)
         return;
 
       if (oldCompPos >= 0)
       {
-        var comp = SMA.Instance.Registry.Component[oldCompPos];
+        var comp = SMA.SMA.Instance.Registry.Component[oldCompPos];
 
         if (comp != null)
           comp.OnChanged -= OnComponentChanged;
@@ -332,7 +332,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
       if (newCompPos >= 0)
       {
-        var comp = SMA.Instance.Registry.Component[newCompPos];
+        var comp = SMA.SMA.Instance.Registry.Component[newCompPos];
 
         if (comp != null)
           comp.OnChanged += OnComponentChanged;
@@ -343,7 +343,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     {
       try
       {
-        OnChanged?.Invoke(new SMElementChangedArgs(SMA.Instance,
+        OnChanged?.Invoke(new SMElementChangedArgs(SMA.SMA.Instance,
                                                    (IElement)this,
                                                    ElementFieldFlags.Components));
       }

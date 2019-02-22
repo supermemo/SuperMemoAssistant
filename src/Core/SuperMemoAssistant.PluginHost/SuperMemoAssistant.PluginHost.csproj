@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{149C5A9B-0588-41B9-8F77-C5D17A1CDFBE}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>SuperMemoAssistant.PluginHost</RootNamespace>
+    <RootNamespace>SuperMemoAssistant</RootNamespace>
     <AssemblyName>SuperMemoAssistant.PluginHost</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -89,17 +89,17 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <ApplicationDefinition Include="PluginHost\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="App.xaml.cs">
+    <Compile Include="PluginHost\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PluginLoader.cs" />
+    <Compile Include="PluginHost\PluginLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -125,11 +125,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SuperMemoAssistant.Interop\SuperMemoAssistant.Interop.csproj">
-      <Project>{fd0e1be8-bed3-4ab0-a9c8-022a2dbc8450}</Project>
-      <Name>SuperMemoAssistant.Interop</Name>
-    </ProjectReference>
-  </ItemGroup>
+  <Import Project="..\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /R /Y $(TargetPath) %25AppData%25\SuperMemoAssistant\</PostBuildEvent>
+  </PropertyGroup>
 </Project>

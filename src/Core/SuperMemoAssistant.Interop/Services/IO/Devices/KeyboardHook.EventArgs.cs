@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/12/21 02:18
-// Modified On:  2018/12/21 02:20
+// Created On:   2019/02/22 13:14
+// Modified On:  2019/02/22 13:14
 // Modified By:  Alexis
 
 #endregion
@@ -30,10 +30,7 @@
 
 
 
-using System;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.Windows.Input;
 
 namespace SuperMemoAssistant.Services.IO.Devices
 {
@@ -73,55 +70,5 @@ namespace SuperMemoAssistant.Services.IO.Devices
     public bool Meta  { get; }
 
     #endregion
-  }
-
-
-
-
-  #region Enums
-
-  //const int HC_ACTION = 0;
-
-  public enum KeyboardState
-  {
-    KeyDown    = 0x0100,
-    KeyUp      = 0x0101,
-    SysKeyDown = 0x0104,
-    SysKeyUp   = 0x0105
-  }
-
-  #endregion
-
-
-
-
-  [StructLayout(LayoutKind.Sequential)]
-  public struct LowLevelKeyboardInputEvent
-  {
-    /// <summary>A virtual-key code. The code must be a value in the range 1 to 254.</summary>
-    public readonly int VirtualCode;
-
-    /// <summary>A hardware scan code for the key.</summary>
-    public readonly int HardwareScanCode;
-
-    /// <summary>
-    ///   The extended-key flag, event-injected Flags, context code, and transition-state flag.
-    ///   This member is specified as follows. An application can use the following values to test the
-    ///   keystroke Flags. Testing LLKHF_INJECTED (bit 4) will tell you whether the event was
-    ///   injected. If it was, then testing LLKHF_LOWER_IL_INJECTED (bit 1) will tell you whether or
-    ///   not the event was injected from a process running at lower integrity level.
-    /// </summary>
-    public readonly int Flags;
-
-    /// <summary>
-    ///   The time stamp stamp for this message, equivalent to what GetMessageTime would return
-    ///   for this message.
-    /// </summary>
-    public readonly int TimeStamp;
-
-    /// <summary>Additional information associated with the message.</summary>
-    public readonly IntPtr AdditionalInformation;
-
-    public Key Key => KeyInterop.KeyFromVirtualKey(VirtualCode);
   }
 }

@@ -47,7 +47,7 @@ namespace SuperMemoAssistant.Interop
     {
       #region Constants & Statics
 
-      public const string PluginHostExe  = "SuperMemoAssistant.PluginHost";
+      public const string PluginHostExe  = "SuperMemoAssistant.PluginHost.exe";
       public const string SMInjectionLib = "SuperMemoAssistant.Hooks.InjectLib.dll";
 
       #endregion

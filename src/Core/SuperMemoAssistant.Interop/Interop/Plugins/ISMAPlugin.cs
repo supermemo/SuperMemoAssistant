@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/07/27 12:55
-// Modified On:  2019/01/26 04:31
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/22 17:33
 // Modified By:  Alexis
 
 #endregion
@@ -38,10 +38,14 @@ namespace SuperMemoAssistant.Interop.Plugins
 {
   public interface ISMAPlugin : IDisposable
   {
-    Guid   Id              { get; }
     string Name            { get; }
     string AssemblyName    { get; }
     string AssemblyVersion { get; }
+    string ChannelName     { get; }
+
+    void OnInjected();
+    void OnServicePublished(string interfaceTypeName);
+    void OnServiceRevoked(string   interfaceTypeName);
 
     List<INotifyPropertyChangedEx> SettingsModels { get; }
     void                           SettingsSaved(object cfgObject);

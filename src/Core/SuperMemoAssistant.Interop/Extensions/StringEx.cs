@@ -31,6 +31,8 @@
 
 
 using System;
+using System.Linq;
+// ReSharper disable LocalizableElement
 
 namespace SuperMemoAssistant.Extensions
 {
@@ -99,6 +101,16 @@ namespace SuperMemoAssistant.Extensions
       var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
 
       return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+    }
+
+    public static string CapitalizeFirst(this string str)
+    {
+      switch (str)
+      {
+        case null: throw new ArgumentNullException(nameof(str));
+        case "":   throw new ArgumentException($"{nameof(str)} cannot be empty", nameof(str));
+        default:   return str.First().ToString().ToUpper() + str.Substring(1);
+      }
     }
 
     #endregion

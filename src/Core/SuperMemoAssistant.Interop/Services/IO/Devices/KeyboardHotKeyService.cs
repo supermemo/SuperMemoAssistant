@@ -36,12 +36,11 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Input;
-using SuperMemoAssistant.Services.IO.Devices;
 using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.Sys.IO.Devices;
 using Message = SuperMemoAssistant.Sys.IO.Devices.Message;
 
-namespace SuperMemoAssistant.PluginsHost.Services.Devices
+namespace SuperMemoAssistant.Services.IO.Devices
 {
   /// <summary>https://stackoverflow.com/questions/1153009/how-can-i-convert-system-windows-input-key-to-system-windows-forms-keys</summary>
   public class KeyboardHotKeyService 

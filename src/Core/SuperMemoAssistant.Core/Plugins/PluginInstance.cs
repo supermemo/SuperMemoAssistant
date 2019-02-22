@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/26 02:21
-// Modified On:  2019/01/26 05:53
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/21 15:44
 // Modified By:  Alexis
 
 #endregion
@@ -30,13 +30,14 @@
 
 
 
+using System.Collections.Concurrent;
 using SuperMemoAssistant.Interop.Plugins;
 using SysProcess = System.Diagnostics.Process;
 
 namespace SuperMemoAssistant.Plugins
 {
   /// <summary>Represents a running instance of a plugin process</summary>
-  internal class PluginInstance
+  public class PluginInstance
   {
     #region Properties & Fields - Non-Public
 
@@ -68,9 +69,11 @@ namespace SuperMemoAssistant.Plugins
     public ISMAPlugin     Plugin      { get; }
     public PluginMetadata Metadata    { get; }
     public int            ProcessId   { get; }
-    public bool           ExitHandled { get; set; } = false;
+    public bool           ExitHandled { get; set; }
+    public bool           IsStopping  { get; set; }
 
-    public SysProcess Process => _process ?? (_process = SysProcess.GetProcessById(ProcessId));
+    public SysProcess                           Process             => _process ?? (_process = SysProcess.GetProcessById(ProcessId));
+    public ConcurrentDictionary<string, string> InterfaceChannelMap { get; } = new ConcurrentDictionary<string, string>();
 
     #endregion
   }

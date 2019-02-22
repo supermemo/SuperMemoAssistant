@@ -36,7 +36,7 @@ using System.Windows.Markup;
 using Forge.Forms;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Layout.XamlLayouts;
 
-namespace SuperMemoAssistant.PluginsHost.UI
+namespace SuperMemoAssistant.SMA.UI
 {
   /// <summary>Interaction logic for LayoutEditorWindow.xaml</summary>
   public partial class LayoutEditorWindow : Window
@@ -46,8 +46,9 @@ namespace SuperMemoAssistant.PluginsHost.UI
     public LayoutEditorWindow(XamlLayout xamlLayout)
     {
       XamlLayout = xamlLayout;
-      InitializeComponent();
 
+      InitializeComponent();
+      
       Xaml = XamlLayout.Xaml;
     }
 

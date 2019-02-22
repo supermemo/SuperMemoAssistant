@@ -39,7 +39,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Plugins;
 using SuperMemoAssistant.Services;
 
 namespace SuperMemoAssistant
@@ -52,12 +51,12 @@ namespace SuperMemoAssistant
     public CollectionSelectionWindow()
     {
       InitializeComponent();
-
+      
       LoadCollections();
-
+      
       Loaded += CollectionSelectionWindow_Loaded;
 
-      Config = Svc<CorePlugin>.Configuration.Load<CoreCfg>().Result;
+      Config = Svc.Configuration.Load<CoreCfg>().Result;
     }
 
     #endregion
@@ -102,7 +101,7 @@ namespace SuperMemoAssistant
 
     private void SaveConfig()
     {
-      Svc<CorePlugin>.Configuration.Save<CoreCfg>(Config).Wait();
+      Svc.Configuration.Save<CoreCfg>(Config).Wait();
     }
 
     private void btnBrowse_Click(object          sender,

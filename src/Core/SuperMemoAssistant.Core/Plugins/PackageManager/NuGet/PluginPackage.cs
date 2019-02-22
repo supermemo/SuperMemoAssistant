@@ -38,6 +38,7 @@ using NuGet.Frameworks;
 using NuGet.PackageManagement;
 using NuGet.Packaging.Core;
 using NuGet.ProjectManagement;
+using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Sys.IO;
 
 // ReSharper disable PossibleMultipleEnumeration
@@ -80,7 +81,12 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet
 
     #region Methods
 
-    public Package AddDependency(PackageIdentity packageIdentity)
+    public virtual DirectoryPath GetHomeDir()
+    {
+      return SMAFileSystem.PluginHomeDir.Combine(Id);
+    }
+
+    public virtual Package AddDependency(PackageIdentity packageIdentity)
     {
       var dependency = new Package(packageIdentity);
 
@@ -89,7 +95,7 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet
       return dependency;
     }
 
-    public Package RemoveDependency(PackageIdentity packageIdentity)
+    public virtual Package RemoveDependency(PackageIdentity packageIdentity)
     {
       Package dependency = null;
 
@@ -107,20 +113,20 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet
       return dependency;
     }
 
-    public IEnumerable<FilePath> GetPluginAndDependenciesAssembliesFilePaths(FolderNuGetProject project,
+    public virtual IEnumerable<FilePath> GetPluginAndDependenciesAssembliesFilePaths(FolderNuGetProject project,
                                                                              NuGetFramework     targetFramework)
     {
       return PluginAndDependencies.SelectMany(p => p.GetReferencedAssembliesFilePaths(project, targetFramework));
     }
 
-    public IEnumerable<DirectoryPath> GetPluginAndDependenciesContentDirectoryPaths(FolderNuGetProject project,
+    public virtual IEnumerable<DirectoryPath> GetPluginAndDependenciesContentDirectoryPaths(FolderNuGetProject project,
                                                                                     NuGetFramework     targetFramework)
     {
       return PluginAndDependencies.SelectMany(p => p.GetContentDirectoryPath(project, targetFramework));
     }
 
     /// <summary>Verifies that the plugin package and all of its dependencies exist locally</summary>
-    public bool PackageAndDependenciesExist(NuGetPackageManager packageManager)
+    public virtual bool PackageAndDependenciesExist(NuGetPackageManager packageManager)
     {
       // Check this package
       if (!packageManager.PackageExistsInPackagesFolder(Identity))

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/01 15:25
-// Modified On:  2019/01/04 21:21
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/21 19:03
 // Modified By:  Alexis
 
 #endregion
@@ -44,10 +44,13 @@ namespace SuperMemoAssistant.Services
   {
     #region Constants & Statics
 
-    public static ISuperMemoAssistant SMA { get; set; }
+    public static ISuperMemoAssistant SMA    { get; set; }
+    public static ISMAPlugin          Plugin { get; set; }
 
     public static IKeyboardHotKeyService KeyboardHotKeyLegacy { get; set; }
     public static IKeyboardHookService   KeyboardHotKey       { get; set; }
+
+    public static ConfigurationServiceBase Configuration { get; set; }
 
     #endregion
   }
@@ -56,10 +59,8 @@ namespace SuperMemoAssistant.Services
     where T : ISMAPlugin
   {
     #region Constants & Statics
-    
-    public static ConfigurationService      Configuration { get; set; }
 
-    public static T Plugin { get; set; }
+    public static T Plugin => (T)Svc.Plugin;
 
     #endregion
   }

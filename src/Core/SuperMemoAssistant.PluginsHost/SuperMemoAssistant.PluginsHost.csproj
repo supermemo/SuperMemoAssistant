@@ -117,19 +117,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainCfg.cs" />
-    <Compile Include="MainPlugin.cs" />
-    <Compile Include="Services\Devices\KeyboardHook.cs" />
-    <Compile Include="Services\Devices\KeyboardHotKeyService.cs" />
     <Compile Include="PluginHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\ElementPickerInterceptor.cs" />
-    <Compile Include="UI\GlobalSettingsWindow.xaml.cs">
-      <DependentUpon>GlobalSettingsWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\LayoutEditorWindow.xaml.cs">
-      <DependentUpon>LayoutEditorWindow.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\libs\Forge.Forms\Forge.Forms\src\Forge.Forms\Forge.Forms.csproj">
@@ -149,20 +138,14 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="UI\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\GlobalSettingsWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\LayoutEditorWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

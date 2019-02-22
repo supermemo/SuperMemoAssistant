@@ -35,9 +35,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using SuperMemoAssistant.Interop.Plugins;
+using SuperMemoAssistant.Plugins;
 using SuperMemoAssistant.Sys.ComponentModel;
 
-namespace SuperMemoAssistant.PluginsHost.UI
+namespace SuperMemoAssistant.SMA.UI
 {
   /// <summary>Interaction logic for GlobalSettingsWindow.xaml</summary>
   public partial class GlobalSettingsWindow : Window
@@ -47,13 +48,17 @@ namespace SuperMemoAssistant.PluginsHost.UI
     public GlobalSettingsWindow()
     {
       InitializeComponent();
-
+      
       DataContext = this;
 
-      foreach (var plugin in PluginHost.Instance.Plugins)
+      foreach (var pluginInstance in PluginManager.Instance.GetRunningPlugins())
+      {
+        var plugin = pluginInstance.Plugin;
+
         if (plugin.SettingsModels != null)
           foreach (var model in plugin.SettingsModels)
             PluginModelsMap[model] = plugin;
+      }
 
       if (PluginModelsMap.Any())
         tcSettings.SelectedIndex = 0;

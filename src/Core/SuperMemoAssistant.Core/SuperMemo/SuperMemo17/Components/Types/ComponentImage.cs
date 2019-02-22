@@ -31,7 +31,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
       );
     }
 
-    public IImage Image => SMA.Instance.Registry.Image?[ImageId];
+    public IImage Image => SMA.SMA.Instance.Registry.Image?[ImageId];
     public ImageStretchMode Stretch { get; set; }
   }
 }

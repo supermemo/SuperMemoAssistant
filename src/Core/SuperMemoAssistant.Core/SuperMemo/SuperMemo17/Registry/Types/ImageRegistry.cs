@@ -61,7 +61,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override string RtxFileName => SMConst.Files.ImageRtxFileName;
     protected override string RtfFileName => null;
     protected override IntPtr RegistryPtr =>
-      new IntPtr(SM17Natives.TRegistry.ImageRegistryInstance.Read<int>(SMA.Instance.SMProcess.Memory));
+      new IntPtr(SM17Natives.TRegistry.ImageRegistryInstance.Read<int>(SMA.SMA.Instance.SMProcess.Memory));
 
     #endregion
 

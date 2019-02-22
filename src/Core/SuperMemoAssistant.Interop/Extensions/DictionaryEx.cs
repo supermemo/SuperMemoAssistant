@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/31 13:45
-// Modified On:  2019/01/26 06:38
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/21 22:56
 // Modified By:  Alexis
 
 #endregion
@@ -41,9 +41,23 @@ namespace SuperMemoAssistant.Extensions
   {
     #region Methods
 
+    public static bool Remove<TKey, T>(this IDictionary<TKey, T> dic,
+                                       TKey                      key,
+                                       out T                     value)
+    {
+      if (dic.ContainsKey(key))
+      {
+        value = dic[key];
+        return dic.Remove(key);
+      }
+
+      value = default;
+      return false;
+    }
+
     public static T SafeGet<TKey, T>(this ConcurrentDictionary<TKey, T> dic,
                                      TKey                               key,
-                                     T                                  defaultRet = default(T))
+                                     T                                  defaultRet = default)
     {
       if (dic.ContainsKey(key))
         return dic[key];
@@ -53,7 +67,7 @@ namespace SuperMemoAssistant.Extensions
 
     public static T SafeGet<TKey, T>(this Dictionary<TKey, T> dic,
                                      TKey                     key,
-                                     T                        defaultRet = default(T))
+                                     T                        defaultRet = default)
     {
       if (dic.ContainsKey(key))
         return dic[key];
@@ -63,7 +77,7 @@ namespace SuperMemoAssistant.Extensions
 
     public static T SafeGet<TKey, T>(this IReadOnlyDictionary<TKey, T> dic,
                                      TKey                              key,
-                                     T                                 defaultRet = default(T))
+                                     T                                 defaultRet = default)
     {
       if (dic.ContainsKey(key))
         return dic[key];
@@ -73,7 +87,7 @@ namespace SuperMemoAssistant.Extensions
 
     public static T SafeGet<TKey, T>(this IDictionary<TKey, T> dic,
                                      TKey                      key,
-                                     T                         defaultRet = default(T))
+                                     T                         defaultRet = default)
     {
       if (dic.ContainsKey(key))
         return dic[key];

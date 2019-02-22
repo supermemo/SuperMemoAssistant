@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/07/27 12:55
-// Modified On:  2019/01/26 06:13
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/22 17:40
 // Modified By:  Alexis
 
 #endregion
@@ -31,11 +31,20 @@
 
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.Remoting;
+using System.Runtime.Remoting.Channels.Ipc;
+using System.Windows;
+using Anotar.Serilog;
+using Serilog;
 using SuperMemoAssistant.Extensions;
+using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.Configuration;
+using SuperMemoAssistant.Services.IO;
+using SuperMemoAssistant.Services.IO.Devices;
 using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.Sys.ComponentModel;
 
@@ -44,22 +53,74 @@ namespace SuperMemoAssistant.Interop.Plugins
   public abstract class SMAPluginBase<TPlugin> : SMMarshalByRefObject, ISMAPlugin
     where TPlugin : SMAPluginBase<TPlugin>
   {
+    #region Properties & Fields - Non-Public
+
+    private readonly string           _channelName;
+    private readonly IpcServerChannel _ipcServer;
+
+
+    private ConcurrentDictionary<string, (IpcServerChannel ipcServer, IDisposable disposable)> RegisteredServicesMap { get; } =
+      new ConcurrentDictionary<string, (IpcServerChannel, IDisposable)>();
+    private ConcurrentDictionary<string, object> ConsumedServiceMap { get; } = new ConcurrentDictionary<string, object>();
+
+    #endregion
+
+
+
+
     #region Constructors
 
-    protected SMAPluginBase(bool attachDebuggerInDebugConfiguration = true,
-                            bool forceAttachDebbuger                = false)
+    protected SMAPluginBase(DebuggerAttachStrategy debuggerAttachStrategy = DebuggerAttachStrategy.Never)
     {
-      if (forceAttachDebbuger)
-        Debugger.Launch();
+      switch (debuggerAttachStrategy)
+      {
+        case DebuggerAttachStrategy.Always:
+          Debugger.Launch();
+          break;
 
-      else if (attachDebuggerInDebugConfiguration)
-        AttachDebugger();
+        case DebuggerAttachStrategy.InDebugConfiguration:
+          AttachDebuggerIfDebug();
+          break;
+      }
 
-      Init();
+      // Create Plugin's IPC Server
+      _channelName = RemotingServicesEx.GenerateIpcServerChannelName();
+      _ipcServer = RemotingServicesEx.CreateIpcServer(
+        this,
+        _channelName);
     }
 
     /// <inheritdoc />
-    public virtual void Dispose() { }
+    public virtual void Dispose()
+    {
+      RevokeServices();
+
+      try
+      {
+        _ipcServer.StopListening(null);
+
+        KeyboardHotKeyService.Instance.Dispose();
+
+        Application.Current.Dispatcher.InvokeShutdown();
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex,
+                    "Plugin threw an exception while disposing.");
+      }
+
+      Logger.Instance.Shutdown();
+    }
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public ISuperMemoAssistant SMA          { get; set; }
+    public ISMAPluginManager   SMAPluginMgr { get; set; }
 
     #endregion
 
@@ -69,11 +130,11 @@ namespace SuperMemoAssistant.Interop.Plugins
     #region Properties Impl - Public
 
     /// <inheritdoc />
-    public Guid Id => AssemblyEx.GetAssemblyGuid(GetType());
-    /// <inheritdoc />
     public string AssemblyName => AssemblyEx.GetAssemblyName(GetType());
     /// <inheritdoc />
     public string AssemblyVersion => AssemblyEx.GetAssemblyVersion(GetType());
+    /// <inheritdoc />
+    public string ChannelName => _channelName;
     /// <inheritdoc />
     public virtual List<INotifyPropertyChangedEx> SettingsModels { get; protected set; }
 
@@ -88,6 +149,38 @@ namespace SuperMemoAssistant.Interop.Plugins
     /// <inheritdoc />
     public virtual void SettingsSaved(object cfgObject) { }
 
+    /// <inheritdoc />
+    public void OnInjected()
+    {
+      Logger.Instance.Initialize(AssemblyName, ConfigureLogger);
+
+      if (SMA == null)
+        throw new NullReferenceException($"{nameof(SMA)} is null");
+
+      if (SMAPluginMgr == null)
+        throw new NullReferenceException($"{nameof(SMAPluginMgr)} is null");
+
+      Svc.Plugin               = this;
+      Svc.SMA                  = SMA;
+      Svc.KeyboardHotKey       = KeyboardHookService.Instance;
+      Svc.KeyboardHotKeyLegacy = KeyboardHotKeyService.Instance;
+      Svc.Configuration        = new PluginConfigurationService(this);
+
+      PluginInit();
+    }
+
+    /// <inheritdoc />
+    public virtual void OnServicePublished(string interfaceTypeName)
+    {
+      // Ignored -- override for desired behavior
+    }
+
+    /// <inheritdoc />
+    public virtual void OnServiceRevoked(string interfaceTypeName)
+    {
+      ConsumedServiceMap.TryRemove(interfaceTypeName, out _);
+    }
+
     #endregion
 
 
@@ -97,17 +190,128 @@ namespace SuperMemoAssistant.Interop.Plugins
 
     [Conditional("DEBUG")]
     [Conditional("DEBUG_IN_PROD")]
-    private void AttachDebugger()
+    private void AttachDebuggerIfDebug()
     {
       Debugger.Launch();
     }
 
-    private void Init()
+    protected virtual LoggerConfiguration ConfigureLogger(LoggerConfiguration loggerConfiguration)
     {
-      Svc<TPlugin>.Plugin = (TPlugin)this;
-      Svc<TPlugin>.Configuration = new ConfigurationService(this);
+      return loggerConfiguration;
+    }
 
-      OnInit();
+    public IService GetService<IService>()
+      where IService : class
+    {
+      var svcType = typeof(IService);
+
+      if (svcType.IsInterface == false)
+        throw new ArgumentException($"{nameof(IService)} must be an interface");
+
+      var svcTypeName = svcType.FullName;
+
+      if (svcTypeName == null)
+        throw new ArgumentException("Invalid type");
+
+      if (ConsumedServiceMap.ContainsKey(svcTypeName))
+        return (IService)ConsumedServiceMap[svcTypeName];
+
+      var channelName = SMAPluginMgr.GetService(svcTypeName);
+
+      if (string.IsNullOrWhiteSpace(channelName))
+        return null;
+
+      try
+      {
+        var svc = RemotingServicesEx.ConnectToIpcServer<IService>(channelName);
+
+        ConsumedServiceMap[svcTypeName] = svc;
+
+        return svc;
+      }
+      catch (RemotingException ex)
+      {
+        LogTo.Error(ex, $"Failed to acquire remoting object for published service {svcTypeName}");
+        return null;
+      }
+    }
+
+    public void PublishService<IService, TService>(TService service)
+      where IService : class
+      where TService : SMMarshalByRefObject, IService
+    {
+      var svcType = typeof(IService);
+
+      if (svcType.IsInterface == false)
+        throw new ArgumentException($"{nameof(IService)} must be an interface");
+
+      var svcTypeName = svcType.FullName;
+
+      if (svcTypeName == null)
+        throw new ArgumentException("Invalid type");
+
+      if (RegisteredServicesMap.ContainsKey(svcTypeName))
+        throw new ArgumentException($"Service {svcTypeName} already registered");
+
+      LogTo.Information($"Publishing service {svcTypeName}");
+
+      var channelName = RemotingServicesEx.GenerateIpcServerChannelName();
+      var ipcServer   = RemotingServicesEx.CreateIpcServer(service, channelName);
+
+      var unregisterObj = SMAPluginMgr.RegisterService(
+        svcTypeName,
+        channelName,
+        this);
+
+      RegisteredServicesMap[svcTypeName] = (ipcServer, unregisterObj);
+    }
+
+    public bool RevokeService<IService>()
+      where IService : class
+    {
+      return RevokeService(typeof(IService));
+    }
+
+    public bool RevokeService(Type svcType)
+    {
+      if (svcType.IsInterface == false)
+        throw new ArgumentException("Service type must be an interface");
+
+      var svcTypeName = svcType.FullName;
+
+      if (svcTypeName == null)
+        throw new ArgumentException("Invalid type");
+
+      if (RegisteredServicesMap.Remove(svcTypeName, out var svcData) == false)
+        return false;
+
+      LogTo.Information($"Revoking service {svcTypeName}");
+
+      svcData.disposable.Dispose();
+      svcData.ipcServer.StopListening(null);
+
+      return true;
+    }
+
+    public void RevokeServices()
+    {
+      foreach (var svcKeyValue in RegisteredServicesMap)
+      {
+        var svcType = svcKeyValue.Key;
+        var svcData = svcKeyValue.Value;
+
+        LogTo.Information($"Revoking service {svcType}");
+
+        try
+        {
+          svcData.ipcServer.StopListening(null);
+          svcData.disposable.Dispose();
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, $"Exception while stopping published service {svcType}");
+        }
+      }
     }
 
     #endregion
@@ -117,10 +321,24 @@ namespace SuperMemoAssistant.Interop.Plugins
 
     #region Methods Abs
 
-    protected abstract void OnInit();
+    protected abstract void PluginInit();
 
     /// <inheritdoc />
     public abstract string Name { get; }
+
+    #endregion
+
+
+
+
+    #region Enums
+
+    protected enum DebuggerAttachStrategy
+    {
+      Never,
+      InDebugConfiguration,
+      Always
+    }
 
     #endregion
   }

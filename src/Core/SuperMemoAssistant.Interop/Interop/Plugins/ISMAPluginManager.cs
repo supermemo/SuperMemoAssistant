@@ -57,39 +57,39 @@ namespace SuperMemoAssistant.Interop.Plugins
                                      out IEnumerable<string> dependenciesAssemblies);
 
     /// <summary>Registers a newly started plugin process with SMA</summary>
-    /// <param name="plugin">Plugin's interface</param>
+    /// <param name="channel"></param>
     /// <param name="processId">Plugin's process id</param>
     /// <returns>
     ///   An instance of <see cref="ISuperMemoAssistant" /> if successfull,
     ///   <see langword="null" /> otherwise
     /// </returns>
-    ISuperMemoAssistant ConnectPlugin(ISMAPlugin plugin,
-                                      int        processId);
+    ISuperMemoAssistant ConnectPlugin(string channel,
+                                      int    processId);
 
     /// <summary>
     ///   Attempts to retrieve an Ipc Server's channel name for given remote interface. The
-    ///   interface must be registered with <see cref="RegisterChannelForType" />
+    ///   interface must be registered with <see cref="RegisterService" />
     ///   beforehand.
     /// </summary>
-    /// <param name="remoteInterface"></param>
+    /// <param name="remoteInterfaceType"></param>
     /// <returns>The channel name if successfull, <see langword="null" /> otherwise.</returns>
-    string GetChannelNameForType(Type remoteInterface);
+    string GetService(string remoteInterfaceType);
 
     /// <summary>
     ///   Registers an Ipc Server's channel name for interface of type
-    ///   <paramref name="remoteInterface" />.
+    ///   <paramref name="remoteServiceType" />.
     /// </summary>
-    /// <param name="remoteInterface">The implemented interface contract</param>
+    /// <param name="remoteServiceType"></param>
     /// <param name="channelName">
     ///   Channel name where clients can acquire a proxy for
-    ///   <paramref name="remoteInterface" />
+    ///   <paramref name="remoteServiceType" />
     /// </param>
     /// <param name="plugin">The requesting plugin's interface</param>
     /// <returns>
     ///   A disposable object, which unregisters the channel when disposed, or
     ///   <see langword="null" />.
     /// </returns>
-    IDisposable RegisterChannelForType(Type       remoteInterface,
+    IDisposable RegisterService(string     remoteServiceType,
                                        string     channelName,
                                        ISMAPlugin plugin);
   }

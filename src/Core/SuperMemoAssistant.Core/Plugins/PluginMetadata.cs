@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/25 23:55
-// Modified On:  2019/01/26 00:50
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/21 13:39
 // Modified By:  Alexis
 
 #endregion
@@ -41,13 +41,14 @@ namespace SuperMemoAssistant.Plugins
   {
     #region Properties & Fields - Public
 
-    public bool     Enabled      { get; set; }
-    public string   DisplayName { get; set; }
-    public string   PackageName  { get; set; }
-    public string   Description  { get; set; }
-    public string   Author       { get; set; }
-    public DateTime UpdatedAt    { get; set; }
-    public string   IconBase64   { get; set; }
+    public bool     Enabled       { get; set; }
+    public string   DisplayName   { get; set; }
+    public string   PackageName   { get; set; }
+    public string   Description   { get; set; }
+    public string   Author        { get; set; }
+    public DateTime UpdatedAt     { get; set; }
+    public string   IconBase64    { get; set; }
+    public bool     IsDevelopment { get; set; }
 
     [JsonIgnore]
     public int Rating { get; set; }

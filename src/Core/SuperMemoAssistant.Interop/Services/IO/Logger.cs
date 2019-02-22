@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/12/20 12:23
-// Modified On:  2019/01/19 05:37
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/22 13:52
 // Modified By:  Alexis
 
 #endregion
@@ -31,12 +31,12 @@
 
 
 using System;
-using System.IO;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Exceptions;
 using SuperMemoAssistant.Interop;
+using SuperMemoAssistant.Sys.IO;
 
 namespace SuperMemoAssistant.Services.IO
 {
@@ -75,7 +75,9 @@ namespace SuperMemoAssistant.Services.IO
 
     #region Methods
 
-    public void Initialize(Func<LoggerConfiguration, LoggerConfiguration> configPredicate = null)
+    public void Initialize(
+      string                                         appName,
+      Func<LoggerConfiguration, LoggerConfiguration> configPredicate = null)
     {
 #if DEBUG || DEBUG_IN_PROD
       var logLevel = LogEventLevel.Debug;
@@ -92,7 +94,7 @@ namespace SuperMemoAssistant.Services.IO
                    .WriteTo.Debug(outputTemplate: OutputFormat)
                    .WriteTo.Async(a =>
                                     a.RollingFile(
-                                      GetLogFilePath(),
+                                      GetLogFilePath(appName).FullPath,
                                       fileSizeLimitBytes: 5242880, // Math.Min(ConfigMgr.AppConfig.LogMaxSize, 26214400),
                                       retainedFileCountLimit: 7,
                                       shared: true,
@@ -105,13 +107,14 @@ namespace SuperMemoAssistant.Services.IO
       Log.Logger = config.CreateLogger();
     }
 
-    public static string GetLogFilePath()
+    public static FilePath GetLogFilePath(string appName)
     {
-      string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+      var logDir = SMAFileSystem.LogDir;
 
-      return Path.Combine(appData,
-                          SMConst.AppName,
-                          "log-{Date}.txt");
+      if (logDir.Exists() == false)
+        logDir.Create();
+
+      return logDir.CombineFile($"{appName}-{{Date}}.log");
     }
 
     public LogEventLevel SetMinimumLevel(LogEventLevel level)

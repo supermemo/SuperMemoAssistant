@@ -34,7 +34,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
       );
     }
 
-    public IText Text => SMA.Instance.Registry.Text?[TextId];
+    public IText Text => SMA.SMA.Instance.Registry.Text?[TextId];
     public bool IsFullHtml { get; set; }
   }
 }

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/12 18:26
-// Modified On:  2019/01/19 05:04
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/22 13:39
 // Modified By:  Alexis
 
 #endregion
@@ -38,7 +38,6 @@ using Process.NET;
 using Process.NET.Assembly;
 using Process.NET.Memory;
 using Process.NET.Utilities;
-using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SuperMemo.Hooks;
@@ -125,8 +124,9 @@ namespace SuperMemoAssistant.SuperMemo
 
     #region Properties & Fields - Public
 
-    public ManualResetEvent MainThreadReady { get; } = new ManualResetEvent(false);
-    public IProcess         SMProcess       { get; }
+    public ManualResetEvent           MainThreadReady { get; } = new ManualResetEvent(false);
+    public IProcess                   SMProcess       { get; }
+    public System.Diagnostics.Process NativeProcess   => SMProcess.Native;
 
     #endregion
 
@@ -135,8 +135,7 @@ namespace SuperMemoAssistant.SuperMemo
 
     #region Properties Impl - Public
 
-    public SMCollection               Collection    { get; }
-    public System.Diagnostics.Process NativeProcess => SMProcess.Native;
+    public SMCollection Collection { get; }
     public bool IgnoreUserConfirmation
     {
       get => IgnoreUserConfirmationPtr.Read<bool>();
@@ -235,7 +234,7 @@ namespace SuperMemoAssistant.SuperMemo
                                new IntPtr((int)InjectLibMessages.ExecuteOnMainThread),
                                new IntPtr(0));
 
-      SMA.Instance.SMMgmt.MainThreadReady.WaitOne(AssemblyFactory.ExecutionTimeout);
+      SMA.SMA.Instance.SMMgmt.MainThreadReady.WaitOne(AssemblyFactory.ExecutionTimeout);
 
       SM17Natives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
                                                                    restoreWndProcAddr);
@@ -256,12 +255,12 @@ namespace SuperMemoAssistant.SuperMemo
 
     protected virtual void OnPreInit()
     {
-      SMA.Instance.OnSMStartingImpl(this);
+      SMA.SMA.Instance.OnSMStartingImpl(this);
     }
 
     protected virtual void OnPostInit()
     {
-      SMA.Instance.OnSMStartedImpl();
+      SMA.SMA.Instance.OnSMStartedImpl();
 
       IgnoreUserConfirmationPtr = SMProcess[SM17Natives.Globals.IgnoreUserConfirmationPtr];
     }

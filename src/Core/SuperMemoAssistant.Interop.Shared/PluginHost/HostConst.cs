@@ -1,4 +1,4 @@
-﻿#region License & Metadata
+#region License & Metadata
 
 // The MIT License (MIT)
 // 
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/01 16:47
-// Modified On:  2019/01/01 17:35
+// Created On:   2019/02/22 19:27
+// Modified On:  2019/02/22 19:32
 // Modified By:  Alexis
 
 #endregion
@@ -30,35 +30,24 @@
 
 
 
-using Forge.Forms;
-using SuperMemoAssistant.UI;
-
-namespace SuperMemoAssistant.PluginsHost.UI
+namespace SuperMemoAssistant.PluginHost
 {
-  internal class ElementPickerInterceptor : IActionInterceptor
+  public static class HostConst
   {
-    #region Methods Impl
+    #region Constants & Statics
 
-    /// <inheritdoc />
-    public IActionContext InterceptAction(IActionContext ctxt)
-    {
-      if (ctxt.Action is ElementPicker.ElementPickerAction == false
-        || ctxt.Model is IElementPickerCallback == false)
-        return null;
+    public const int ExitParameters                 = 1;
+    public const int ExitUnknownError               = 2;
+    public const int ExitParentExited               = 3;
+    public const int ExitIpcConnectionError         = 4;
+    public const int ExitCouldNotGetAssembliesPaths = 5;
+    public const int ExitNoPluginTypeFound          = 6;
+    public const int ExitCouldNotConnectPlugin      = 7;
 
-      var m = (IElementPickerCallback)ctxt.Model;
 
-      var elemPicker = new ElementPicker();
-
-      if (elemPicker.ShowDialog() ?? false)
-      {
-        m.SetElement(elemPicker.SelectedElement);
-
-        return ctxt;
-      }
-
-      return null;
-    }
+    public const string AppDomainName          = "PluginsHost_AppDomain";
+    public const string PluginHostAssemblyName = "SuperMemoAssistant.Interop";
+    public const string PluginHostTypeName     = "SuperMemoAssistant.Interop.Plugins.PluginHost";
 
     #endregion
   }

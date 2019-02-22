@@ -184,7 +184,7 @@ namespace SuperMemoAssistant.Sys.IO
       if (path == null)
         throw new ArgumentNullException(nameof(path));
 
-      return new FilePath(FileProvider, Path.Combine(FullPath, path.FileName.FullPath));
+      return new FilePath(FileProvider, Path.Combine(FullPath, path.FileName));
     }
 
     /// <summary>

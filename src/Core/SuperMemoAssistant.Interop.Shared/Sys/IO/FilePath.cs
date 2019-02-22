@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/20 08:10
-// Modified On:  2019/01/26 01:15
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/13 14:15
 // Modified By:  Alexis
 
 #endregion
@@ -31,6 +31,7 @@
 
 
 using System;
+using System.IO;
 
 namespace SuperMemoAssistant.Sys.IO
 {
@@ -120,7 +121,7 @@ namespace SuperMemoAssistant.Sys.IO
 
     /// <summary>Gets a value indicating whether this path has a file extension.</summary>
     /// <value><c>true</c> if this file path has a file extension; otherwise, <c>false</c>.</value>
-    public bool HasExtension => System.IO.Path.HasExtension(FullPath);
+    public bool HasExtension => Path.HasExtension(FullPath);
 
     /// <summary>Gets the directory part of the path.</summary>
     /// <value>The directory part of the path.</value>
@@ -128,7 +129,7 @@ namespace SuperMemoAssistant.Sys.IO
     {
       get
       {
-        string directory = System.IO.Path.GetDirectoryName(FullPath);
+        string directory = Path.GetDirectoryName(FullPath);
         if (string.IsNullOrWhiteSpace(directory))
           directory = ".";
         return new DirectoryPath(FileProvider, directory);
@@ -152,17 +153,17 @@ namespace SuperMemoAssistant.Sys.IO
 
     /// <summary>Gets the filename.</summary>
     /// <value>The filename.</value>
-    public FilePath FileName =>
-      new FilePath(System.IO.Path.GetFileName(FullPath));
+    public string FileName =>
+      Path.GetFileName(FullPath);
 
     /// <summary>Gets the filename without it's extension.</summary>
     /// <value>The filename without it's extension, or <c>null</c> if the file has no name.</value>
-    public FilePath FileNameWithoutExtension
+    public string FileNameWithoutExtension
     {
       get
       {
-        string fileName = System.IO.Path.GetFileNameWithoutExtension(FullPath);
-        return string.IsNullOrEmpty(fileName) ? null : new FilePath(System.IO.Path.GetFileNameWithoutExtension(FullPath));
+        string fileName = Path.GetFileNameWithoutExtension(FullPath);
+        return string.IsNullOrEmpty(fileName) ? null : Path.GetFileNameWithoutExtension(FullPath);
       }
     }
 
@@ -172,7 +173,7 @@ namespace SuperMemoAssistant.Sys.IO
     {
       get
       {
-        string extension = System.IO.Path.GetExtension(FullPath);
+        string extension = Path.GetExtension(FullPath);
         return string.IsNullOrWhiteSpace(extension) ? null : extension;
       }
     }
@@ -188,7 +189,7 @@ namespace SuperMemoAssistant.Sys.IO
     /// <param name="extension">The new extension.</param>
     /// <returns>A new <see cref="FilePath" /> with a new extension.</returns>
     public FilePath ChangeExtension(string extension) =>
-      new FilePath(FileProvider, System.IO.Path.ChangeExtension(FullPath, extension));
+      new FilePath(FileProvider, Path.ChangeExtension(FullPath, extension));
 
     /// <summary>Appends a file extension to the path.</summary>
     /// <param name="extension">The extension.</param>
@@ -236,6 +237,17 @@ namespace SuperMemoAssistant.Sys.IO
     /// <summary>Collapses a <see cref="FilePath" /> containing ellipses.</summary>
     /// <returns>A collapsed <see cref="FilePath" />.</returns>
     public FilePath Collapse() => new FilePath(FileProvider, Collapse(this));
+
+    /// <summary>Determines whether the specified file exists.</summary>
+    /// <returns>
+    ///   <see langword="true" /> if the caller has the required permissions and file path
+    ///   contains the name of an existing file; otherwise, <see langword="false" />. This method also
+    ///   returns <see langword="false" /> if file path is <see langword="null" />, an
+    ///   invalid path, or a zero-length string. If the caller does not have sufficient permissions to
+    ///   read the specified file, no exception is thrown and the method returns
+    ///   <see langword="false" /> regardless of the existence of file path.
+    /// </returns>
+    public bool Exists() => File.Exists(FullPath);
 
     /// <summary>
     ///   Performs an implicit conversion from <see cref="string" /> to <see cref="FilePath" />

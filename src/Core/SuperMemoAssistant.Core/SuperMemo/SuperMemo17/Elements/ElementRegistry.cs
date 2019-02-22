@@ -526,7 +526,7 @@ Exception: {ex}",
         if (flags.HasFlag(ElementFieldFlags.Deleted))
           try
           {
-            OnElementDeleted?.Invoke(new SMElementArgs(SMA.Instance,
+            OnElementDeleted?.Invoke(new SMElementArgs(SMA.SMA.Instance,
                                                        el));
           }
           catch (Exception ex)
@@ -538,7 +538,7 @@ Exception: {ex}",
         else
           try
           {
-            OnElementModified?.Invoke(new SMElementChangedArgs(SMA.Instance,
+            OnElementModified?.Invoke(new SMElementChangedArgs(SMA.SMA.Instance,
                                                                el,
                                                                flags));
           }
@@ -558,7 +558,7 @@ Exception: {ex}",
 
         try
         {
-          OnElementCreated?.Invoke(new SMElementArgs(SMA.Instance,
+          OnElementCreated?.Invoke(new SMElementArgs(SMA.SMA.Instance,
                                                      el));
         }
         catch (Exception ex)

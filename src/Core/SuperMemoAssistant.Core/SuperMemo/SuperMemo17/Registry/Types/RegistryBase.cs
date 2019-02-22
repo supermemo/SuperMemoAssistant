@@ -233,7 +233,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
       {
         ImportElementAddedEvent.Reset();
 
-        SMA.Instance.IgnoreUserConfirmation = true;
+        SMA.SMA.Instance.IgnoreUserConfirmation = true;
 
         int ret = SM17Natives.Instance.Registry.ImportFile.Invoke(
           RegistryPtr,
@@ -258,7 +258,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
       }
       finally
       {
-        SMA.Instance.IgnoreUserConfirmation = false;
+        SMA.SMA.Instance.IgnoreUserConfirmation = false;
         ImportElementId                     = -1;
       }
     }

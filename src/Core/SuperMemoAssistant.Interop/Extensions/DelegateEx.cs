@@ -111,7 +111,7 @@ namespace SuperMemoAssistant.Extensions
         LogTo.Error(ex,
                     "Call failed");
 
-        return default(TRet);
+        return default;
       }
     }
 
@@ -126,7 +126,7 @@ namespace SuperMemoAssistant.Extensions
         LogTo.Error(ex,
                     "Call failed");
 
-        return default(TRet);
+        return default;
       }
     }
 
@@ -141,7 +141,7 @@ namespace SuperMemoAssistant.Extensions
         LogTo.Error(ex,
                     "Call failed");
 
-        return default(TRet);
+        return default;
       }
     }
 
@@ -156,7 +156,7 @@ namespace SuperMemoAssistant.Extensions
         LogTo.Error(ex,
                     "Call failed");
 
-        return default(TRet);
+        return default;
       }
     }
   }

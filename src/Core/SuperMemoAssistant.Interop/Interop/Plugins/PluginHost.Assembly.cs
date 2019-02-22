@@ -34,23 +34,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using SuperMemoAssistant.Interop.Plugins;
 using SuperMemoAssistant.Interop.SuperMemo;
 
-namespace SuperMemoAssistant.PluginHost
+namespace SuperMemoAssistant.Interop.Plugins
 {
-  public static class PluginLoader
+  public partial class PluginHost
   {
     #region Constants & Statics
 
-    public static string PluginInterfaceFullName { get; } = typeof(ISMAPlugin).FullName;
-    public static HashSet<Type> SMAInterfaceTypes { get; } = new HashSet<Type>
+    private static string PluginInterfaceFullName { get; } = typeof(ISMAPlugin).FullName;
+    private static HashSet<Type> SMAInterfaceTypes { get; } = new HashSet<Type>
     {
       typeof(ISuperMemoAssistant)
+      // Insert subsequent versions here
     };
-    public static HashSet<Type> PluginMgrInterfaceTypes { get; } = new HashSet<Type>
+    private static HashSet<Type> PluginMgrInterfaceTypes { get; } = new HashSet<Type>
     {
       typeof(ISMAPluginManager)
+      // Insert subsequent versions here
     };
 
     #endregion
@@ -60,7 +61,7 @@ namespace SuperMemoAssistant.PluginHost
 
     #region Methods
 
-    public static ISMAPlugin LoadAssembliesAndCreatePluginInstance(
+    private ISMAPlugin LoadAssembliesAndCreatePluginInstance(
       IEnumerable<string> dependenciesAssembliesPaths,
       IEnumerable<string> pluginAssembliesPaths)
     {
@@ -70,7 +71,7 @@ namespace SuperMemoAssistant.PluginHost
       return CreatePluginInstance(pluginAssembliesPaths.Select(Assembly.LoadFrom));
     }
 
-    private static ISMAPlugin CreatePluginInstance(IEnumerable<Assembly> pluginAssemblies)
+    private ISMAPlugin CreatePluginInstance(IEnumerable<Assembly> pluginAssemblies)
     {
       foreach (var pluginAssembly in pluginAssemblies)
       {
@@ -85,14 +86,14 @@ namespace SuperMemoAssistant.PluginHost
       return null;
     }
 
-    private static Type FindPluginType(Assembly pluginAssembly)
+    private Type FindPluginType(Assembly pluginAssembly)
     {
       var exportedTypes = pluginAssembly.GetExportedTypes();
 
       return exportedTypes.FirstOrDefault(t => t.IsAbstract == false && t.GetInterface(PluginInterfaceFullName) != null);
     }
 
-    public static bool InjectPropertyDependencies(
+    public bool InjectPropertyDependencies(
       ISMAPlugin          plugin,
       ISuperMemoAssistant sma,
       ISMAPluginManager   pluginMgr)
@@ -108,13 +109,13 @@ namespace SuperMemoAssistant.PluginHost
         foreach (var prop in props)
           if (SMAInterfaceTypes.Contains(prop.PropertyType))
           {
-            prop.SetValue(plugin, Convert.ChangeType(sma, prop.PropertyType));
+            prop.SetValue(plugin, sma /*Convert.ChangeType(sma, prop.PropertyType)*/);
             smaSet = true;
           }
 
           else if (PluginMgrInterfaceTypes.Contains(prop.PropertyType))
           {
-            prop.SetValue(plugin, Convert.ChangeType(pluginMgr, prop.PropertyType));
+            prop.SetValue(plugin, pluginMgr /*Convert.ChangeType(pluginMgr, prop.PropertyType)*/);
             mgrSet = true;
           }
 

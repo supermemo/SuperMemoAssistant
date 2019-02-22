@@ -46,7 +46,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Content.Contents
     protected ContentBase(AtFlags             displayAt,
                           VerticalAlignment   verticalAlignment   = VerticalAlignment.Stretch,
                           HorizontalAlignment horizontalAlignment = HorizontalAlignment.Stretch,
-                          Size                size                = default(Size))
+                          Size                size                = default)
     {
       DisplayAt           = displayAt;
       VerticalAlignment   = verticalAlignment;

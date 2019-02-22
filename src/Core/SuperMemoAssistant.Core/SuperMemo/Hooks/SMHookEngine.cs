@@ -165,13 +165,13 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     public override Dictionary<string, int> GetPatternsHintAddresses()
     {
-      return SMA.Instance.Config.PatternsHintAddresses;
+      return SMA.SMA.Instance.Config.PatternsHintAddresses;
     }
 
     public override void SetPatternsHintAddresses(Dictionary<string, int> hintAddrs)
     {
-      SMA.Instance.Config.PatternsHintAddresses = hintAddrs;
-      SMA.Instance.SaveConfig(false);
+      SMA.SMA.Instance.Config.PatternsHintAddresses = hintAddrs;
+      SMA.SMA.Instance.SaveConfig(false);
     }
 
 
@@ -260,7 +260,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
           collection.GetKnoFilePath().Quotify(),
           0,
           InjectionOptions.Default,
-          SMAFileSystem.GetInjectionLibFile().FullPath,
+          SMAFileSystem.InjectionLibFile.FullPath,
           null,
           out var pId
         );
@@ -283,7 +283,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
           pId,
           Process.NET.Memory.MemoryType.Remote,
           true,
-          SMA.Instance.Config.PatternsHintAddresses);
+          SMA.SMA.Instance.Config.PatternsHintAddresses);
       }
       finally
       {

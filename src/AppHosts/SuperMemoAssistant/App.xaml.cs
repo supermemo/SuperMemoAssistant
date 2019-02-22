@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/08 15:19
-// Modified On:  2019/01/23 16:35
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/22 13:45
 // Modified By:  Alexis
 
 #endregion
@@ -34,7 +34,6 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using SuperMemoAssistant.Services.IO;
-using SuperMemoAssistant.SuperMemo;
 
 namespace SuperMemoAssistant
 {
@@ -81,8 +80,8 @@ namespace SuperMemoAssistant
 
       if (selectionWdw.Collection != null)
       {
-        if (SMA.Instance.Start(selectedCol))
-          SMA.Instance.OnSMStoppedEvent += Instance_OnSMStoppedEvent;
+        if (SMA.SMA.Instance.Start(selectedCol))
+          SMA.SMA.Instance.OnSMStoppedEvent += Instance_OnSMStoppedEvent;
       }
       else
       {

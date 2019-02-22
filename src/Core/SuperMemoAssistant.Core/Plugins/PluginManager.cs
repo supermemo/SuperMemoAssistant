@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/30 12:47
-// Modified On:  2019/01/26 05:55
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/22 17:46
 // Modified By:  Alexis
 
 #endregion
@@ -43,9 +43,7 @@ using SuperMemoAssistant.Interop.Plugins;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Plugins.PackageManager.NuGet;
-using SuperMemoAssistant.SuperMemo;
 using SuperMemoAssistant.Sys;
-using SysProcess = System.Diagnostics.Process;
 
 // ReSharper disable RedundantTypeArgumentsOfMethod
 
@@ -54,8 +52,6 @@ namespace SuperMemoAssistant.Plugins
   public partial class PluginManager : SMMarshalByRefObject, ISMAPluginManager, IDisposable
   {
     #region Constants & Statics
-
-    private const int PluginConnectTimeout = 8000;
 
     public static PluginManager Instance { get; } = new PluginManager();
 
@@ -66,8 +62,10 @@ namespace SuperMemoAssistant.Plugins
 
     #region Properties & Fields - Non-Public
 
-    private ConcurrentDictionary<ISMAPlugin, PluginInstance> InstanceMap { get; } =
-      new ConcurrentDictionary<ISMAPlugin, PluginInstance>();
+    private ConcurrentDictionary<string, PluginInstance> InstanceMap { get; } =
+      new ConcurrentDictionary<string, PluginInstance>();
+    private ConcurrentDictionary<string, (ISMAPlugin plugin, string channel)> InterfaceChannelMap { get; } =
+      new ConcurrentDictionary<string, (ISMAPlugin, string)>();
 
     #endregion
 
@@ -78,13 +76,16 @@ namespace SuperMemoAssistant.Plugins
 
     private PluginManager()
     {
-      SMA.Instance.OnSMStartedEvent += OnSMStarted;
-      SMA.Instance.OnSMStoppedEvent += OnSMStopped;
+      SMA.SMA.Instance.OnSMStartedEvent += OnSMStarted;
+      SMA.SMA.Instance.OnSMStoppedEvent += OnSMStopped;
     }
 
     /// <inheritdoc />
     public void Dispose()
     {
+      if (IsDisposed)
+        throw new InvalidOperationException("Already disposed");
+
       IsDisposed = true;
 
       Task.Run(UnloadPlugins).Wait();
@@ -126,6 +127,9 @@ namespace SuperMemoAssistant.Plugins
           return false;
         }
 
+        if (StartInfoMap[pluginId].Plugin.Metadata.IsDevelopment)
+          throw new InvalidOperationException("Development plugin cannot request assemblies paths");
+
         var pm = PackageManager;
 
         lock (pm)
@@ -155,13 +159,14 @@ namespace SuperMemoAssistant.Plugins
     }
 
     /// <inheritdoc />
-    public ISuperMemoAssistant ConnectPlugin(ISMAPlugin plugin,
-                                             int        processId)
+    public ISuperMemoAssistant ConnectPlugin(string channel,
+                                             int    processId)
     {
       string pluginId = "N/A";
 
       try
       {
+        var plugin = RemotingServicesEx.ConnectToIpcServer<ISMAPlugin>(channel);
         pluginId = plugin.AssemblyName;
 
         LogTo.Information($"Connecting plugin {pluginId}");
@@ -177,12 +182,12 @@ namespace SuperMemoAssistant.Plugins
         pluginStartInfo.ConnectedEvent.Set();
         var pluginPackage = pluginStartInfo.Plugin;
 
-        var pluginInst = InstanceMap[plugin] = new PluginInstance(plugin, pluginPackage.Metadata, processId);
+        var pluginInst = InstanceMap[pluginId] = new PluginInstance(plugin, pluginPackage.Metadata, processId);
 
         pluginInst.Process.Exited += (o,
                                       ev) => OnPluginStopped(pluginInst);
 
-        return SMA.Instance;
+        return SMA.SMA.Instance;
       }
       catch (Exception ex)
       {
@@ -193,17 +198,27 @@ namespace SuperMemoAssistant.Plugins
     }
 
     /// <inheritdoc />
-    public string GetChannelNameForType(Type remoteInterface)
+    public string GetService(string remoteInterfaceType)
     {
-      return null;
+      return InterfaceChannelMap.SafeGet(remoteInterfaceType).channel;
     }
 
     /// <inheritdoc />
-    public IDisposable RegisterChannelForType(Type       remoteInterface,
-                                              string     channelName,
-                                              ISMAPlugin plugin)
+    public IDisposable RegisterService(string     remoteServiceType,
+                                       string     channelName,
+                                       ISMAPlugin plugin)
     {
-      return null;
+      var pluginInst = InstanceMap.SafeGet(plugin.AssemblyName);
+
+      if (pluginInst == null)
+        throw new ArgumentException("Invalid plugin");
+
+      pluginInst.InterfaceChannelMap[remoteServiceType] = channelName;
+      InterfaceChannelMap[remoteServiceType]            = (plugin, channelName);
+
+      Task.Run(() => NotifyServicePublished(remoteServiceType));
+
+      return new PluginChannelDisposer(this, remoteServiceType, plugin);
     }
 
     #endregion
@@ -230,23 +245,26 @@ namespace SuperMemoAssistant.Plugins
       Task.Run(UnloadPlugins).Wait();
     }
 
+    public IEnumerable<PluginInstance> GetRunningPlugins()
+    {
+      return InstanceMap.Values;
+    }
+
     public async Task ReloadPlugins()
     {
       await UnloadPlugins();
       await LoadPlugins();
     }
 
-    /// <summary>
-    /// Attempts to load <paramref name="pluginId"/>
-    /// </summary>
+    /// <summary>Attempts to load <paramref name="pluginId" /></summary>
     /// <param name="pluginId">Plugin's assembly name</param>
     /// <exception cref="InvalidOperationException">if plugin cannot be found</exception>
     public async Task LoadPlugin(string pluginId)
     {
       LogTo.Information($"Loading plugin {pluginId}");
-      
+
       PluginPackage<PluginMetadata> plugin;
-      var                                        pm = PackageManager;
+      var                           pm = PackageManager;
 
       lock (pm)
         plugin = pm.FindInstalledPluginById(pluginId);
@@ -257,14 +275,12 @@ namespace SuperMemoAssistant.Plugins
       await StartPlugin(plugin);
     }
 
-    /// <summary>
-    /// Attempts tu unload <paramref name="pluginId"/>
-    /// </summary>
+    /// <summary>Attempts tu unload <paramref name="pluginId" /></summary>
     /// <param name="pluginId">Plugin's assembly name</param>
-    /// <returns><see langword="true"/> if successful, <see langword="false"/> otherwise</returns>
+    /// <returns><see langword="true" /> if successful, <see langword="false" /> otherwise</returns>
     public async Task<bool> UnloadPlugin(string pluginId)
     {
-      LogTo.Information($"Unoading plugin {pluginId}");
+      LogTo.Information($"Unloading plugin {pluginId}");
 
       var pluginInstance = InstanceMap.Values.FirstOrDefault(pi => pi.Metadata.PackageName == pluginId);
 
@@ -280,13 +296,8 @@ namespace SuperMemoAssistant.Plugins
     {
       LogTo.Information("Loading plugins.");
 
-      IEnumerable<PluginPackage<PluginMetadata>> plugins;
-      var                                        pm = PackageManager;
-
-      lock (pm)
-        plugins = pm.GetInstalledPlugins();
-
-      var startTasks = plugins.Select(StartPlugin);
+      var plugins    = GetPlugins(true);
+      var startTasks = plugins.Select(StartPlugin).ToList();
 
       await Task.WhenAll(startTasks);
     }
@@ -305,11 +316,66 @@ namespace SuperMemoAssistant.Plugins
         if (IsDisposed || pluginInstance.ExitHandled)
           return;
 
+        LogTo.Information($"Plugin {pluginInstance.Metadata.PackageName} has stopped.");
+
         // TODO: Notify user if plugin crashed
+
+        foreach (var interfaceType in pluginInstance.InterfaceChannelMap.Keys)
+          UnregisterChannelType(interfaceType, pluginInstance.Plugin);
 
         pluginInstance.ExitHandled = true;
 
-        InstanceMap.TryRemove(pluginInstance.Plugin, out _);
+        InstanceMap.TryRemove(pluginInstance.Metadata.PackageName, out _);
+      }
+    }
+
+    public void UnregisterChannelType(string     remoteServiceType,
+                                      ISMAPlugin plugin)
+    {
+      var pluginInst = InstanceMap.SafeGet(plugin.AssemblyName);
+
+      if (pluginInst == null)
+        throw new ArgumentException("Invalid plugin");
+
+      pluginInst.InterfaceChannelMap.TryRemove(remoteServiceType, out _);
+      InterfaceChannelMap.TryRemove(remoteServiceType, out _);
+
+      Task.Run(() => NotifyServiceRevoked(remoteServiceType));
+    }
+
+    private void NotifyServicePublished(string remoteServiceType)
+    {
+      foreach (var pluginKeyValue in InstanceMap.Values)
+      {
+        var plugin     = pluginKeyValue.Plugin;
+        var pluginName = pluginKeyValue.Metadata.PackageName;
+
+        try
+        {
+          plugin.OnServicePublished(remoteServiceType);
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, $"Exception while notifying plugin {pluginName} of published service {remoteServiceType}");
+        }
+      }
+    }
+
+    private void NotifyServiceRevoked(string remoteServiceType)
+    {
+      foreach (var pluginKeyValue in InstanceMap.Values)
+      {
+        var plugin     = pluginKeyValue.Plugin;
+        var pluginName = pluginKeyValue.Metadata.PackageName;
+
+        try
+        {
+          plugin.OnServiceRevoked(remoteServiceType);
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, $"Exception while notifying plugin {pluginName} of revoked service {remoteServiceType}");
+        }
       }
     }
 

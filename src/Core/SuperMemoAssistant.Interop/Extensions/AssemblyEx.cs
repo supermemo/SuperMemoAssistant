@@ -63,7 +63,7 @@ namespace SuperMemoAssistant.Extensions
 
     public static string GetAssemblyName(Type typeInAssembly)
     {
-      return typeInAssembly.Assembly.FullName;
+      return typeInAssembly.Assembly.GetName().Name;
     }
 
     #endregion

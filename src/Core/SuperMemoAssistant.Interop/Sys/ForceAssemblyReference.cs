@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/05 03:57
-// Modified On:  2019/01/05 03:58
+// Created On:   2019/02/22 14:27
+// Modified On:  2019/02/22 14:28
 // Modified By:  Alexis
 
 #endregion
@@ -30,27 +30,24 @@
 
 
 
-using SuperMemoAssistant.Interop.Plugins;
+using System;
 
-namespace SuperMemoAssistant.Plugins
+namespace SuperMemoAssistant.Sys
 {
-  /// <summary>Dummy plugin</summary>
-  public class CorePlugin : SMAPluginBase<CorePlugin>
+  [AttributeUsage(AttributeTargets.Assembly)]
+  public class ForceAssemblyReference : Attribute
   {
-    #region Properties Impl - Public
+    #region Constructors
 
-    /// <inheritdoc />
-    public override string Name => "Core";
+    public ForceAssemblyReference(Type forcedType)
+    {
+      void Noop(Type t)
+      {
+        System.Console.WriteLine(t.Name);
+      }
 
-    #endregion
-
-
-
-
-    #region Methods Impl
-
-    /// <inheritdoc />
-    protected override void OnInit() { }
+      Noop(forcedType);
+    }
 
     #endregion
   }

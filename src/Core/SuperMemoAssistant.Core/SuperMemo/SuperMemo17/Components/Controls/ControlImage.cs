@@ -58,7 +58,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
     /// <inheritdoc />
     public IImage ImageMember
     {
-      get => SMA.Instance.Registry.Image[ImageMemberId];
+      get => SMA.SMA.Instance.Registry.Image[ImageMemberId];
       set => ImageMemberId = value?.Id ?? throw new ArgumentNullException();
     }
 

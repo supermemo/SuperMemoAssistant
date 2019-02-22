@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/26 03:51
-// Modified On:  2019/01/26 05:14
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/22 13:39
 // Modified By:  Alexis
 
 #endregion
@@ -30,9 +30,13 @@
 
 
 
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Plugins.PackageManager;
 using SuperMemoAssistant.Plugins.PackageManager.NuGet;
+using SuperMemoAssistant.Sys.IO;
 
 namespace SuperMemoAssistant.Plugins
 {
@@ -50,6 +54,58 @@ namespace SuperMemoAssistant.Plugins
         SMAFileSystem.PluginPackageDir,
         SMAFileSystem.PluginConfigFile,
         s => new NuGetSourceRepositoryProvider(s)));
+
+    #endregion
+
+
+
+
+    #region Methods
+
+    public IEnumerable<PluginPackage<PluginMetadata>> GetPlugins(bool includeDev)
+    {
+      IEnumerable<PluginPackage<PluginMetadata>> plugins;
+      var                                        pm = PackageManager;
+
+      lock (pm)
+        plugins = pm.GetInstalledPlugins();
+
+      if (includeDev == false)
+        return plugins;
+
+      var devPlugins = GetDevelopmentPlugins();
+
+      return devPlugins.Concat(plugins.Where(p => devPlugins.Any(dp => dp.Id == p.Id) == false));
+    }
+
+    public List<PluginPackage<PluginMetadata>> GetDevelopmentPlugins()
+    {
+      var devPlugins = new List<PluginPackage<PluginMetadata>>();
+      var devDir     = SMAFileSystem.PluginDevelopmentDir;
+
+      if (devDir.Exists() == false)
+      {
+        devDir.Create();
+        return devPlugins;
+      }
+
+      foreach (DirectoryPath devPluginDir in Directory.EnumerateDirectories(devDir.FullPath))
+      {
+        var pluginPkg = DevPluginPackage.Create(devPluginDir.Segments.Last());
+
+        if (pluginPkg == null)
+          continue;
+
+        devPlugins.Add(pluginPkg);
+      }
+
+      return devPlugins;
+    }
+
+    public PluginPackage<PluginMetadata> GetDevelopmentPlugin(string pkgId)
+    {
+      return DevPluginPackage.Create(pkgId);
+    }
 
     #endregion
   }

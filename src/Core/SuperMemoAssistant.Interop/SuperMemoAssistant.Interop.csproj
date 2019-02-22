@@ -12,11 +12,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SuperMemoAssistant</RootNamespace>
     <AssemblyName>SuperMemoAssistant.Interop</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AssemblyVersion>0.1.133</AssemblyVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,7 +48,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -58,6 +59,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-InProd|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -78,13 +80,14 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Anotar.Serilog, Version=4.6.7.0, Culture=neutral, PublicKeyToken=9d5b24f0733c26f7, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Anotar.Serilog.Fody.4.6.7\lib\net452\Anotar.Serilog.dll</HintPath>
     </Reference>
     <Reference Include="Ben.Demystifier, Version=0.1.0.0, Culture=neutral, PublicKeyToken=a6d206e05440431a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Ben.Demystifier.0.1.3\lib\net45\Ben.Demystifier.dll</HintPath>
+      <HintPath>..\..\..\packages\Ben.Demystifier.0.1.4\lib\net45\Ben.Demystifier.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Annotations, Version=2018.3.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\JetBrains.Annotations.2018.3.0\lib\net20\JetBrains.Annotations.dll</HintPath>
@@ -129,6 +132,7 @@
     <Reference Include="System.Reflection.Metadata, Version=1.4.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\System.Reflection.Metadata.1.6.0\lib\netstandard2.0\System.Reflection.Metadata.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="Microsoft.CSharp" />
@@ -142,11 +146,13 @@
     <Compile Include="Extensions\DependencyObjectEx.cs" />
     <Compile Include="Extensions\ImageEx.cs" />
     <Compile Include="Extensions\JsonEx.cs" />
+    <Compile Include="Extensions\RemotingServicesEx.cs" />
     <Compile Include="Extensions\StreamEx.cs" />
     <Compile Include="Extensions\TreeViewEx.cs" />
     <Compile Include="Extensions\WindowEx.cs" />
     <Compile Include="Interop\Plugins\ISMAPluginManager.cs" />
-    <Compile Include="Interop\SMAFileSystem.cs" />
+    <Compile Include="Interop\Plugins\PluginHost.Assembly.cs" />
+    <Compile Include="Interop\Plugins\PluginHost.cs" />
     <Compile Include="Interop\SuperMemo\Content\Components\Base\ComponentSoundBase.cs" />
     <Compile Include="Interop\SuperMemo\Content\Components\Base\ComponentImageBase.cs" />
     <Compile Include="Interop\SuperMemo\Content\Components\Base\ComponentHtmlBase.cs" />
@@ -182,16 +188,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\IO\Devices\IKeyboardHookService.cs" />
+    <Compile Include="Services\IO\Devices\IKeyboardHotKeyService.cs" />
+    <Compile Include="Services\IO\Devices\KeyboardHook.cs" />
+    <Compile Include="Services\IO\Devices\KeyboardHook.Win32.cs" />
+    <Compile Include="Services\IO\Devices\KeyboardHook.EventArgs.cs" />
+    <Compile Include="Services\IO\Devices\KeyboardHotKeyService.cs" />
     <Compile Include="Sys\Collections\BiDictionary.cs" />
     <Compile Include="Sys\EmptyDisposable.cs" />
+    <Compile Include="Sys\ForceAssemblyReference.cs" />
     <Compile Include="Sys\Index2D.cs" />
-    <Compile Include="Sys\IO\DirectoryPath.cs" />
-    <Compile Include="Sys\IO\FilePath.cs" />
-    <Compile Include="Sys\IO\NormalizedPath.cs" />
-    <Compile Include="Sys\IO\PathCollection.cs" />
-    <Compile Include="Sys\IO\PathEqualityComparer.cs" />
-    <Compile Include="Sys\IO\PathKind.cs" />
-    <Compile Include="Sys\IO\RelativePathResolver.cs" />
     <Compile Include="Sys\Windows\KeyboardEx.cs" />
     <Compile Include="UI\Converters\ElementIconConverter.cs" />
     <Compile Include="UI\ElementPicker.xaml.cs">
@@ -211,13 +217,10 @@
     <Compile Include="Extensions\PathEx.cs" />
     <Compile Include="Extensions\ProcessEx.cs" />
     <Compile Include="Extensions\StringEx.cs" />
-    <Compile Include="Interop\InjectLibMessages.cs" />
     <Compile Include="Interop\SuperMemo\Elements\ConceptSnapshot.cs" />
     <Compile Include="Interop\SuperMemo\Elements\HookSnapshot.cs" />
     <Compile Include="Interop\SuperMemo\Registry\Members\IBinary.cs" />
     <Compile Include="Interop\SuperMemo\Registry\Types\IBinaryRegistry.cs" />
-    <Compile Include="Services\IO\Devices\KeyboardHookEventArgs.cs" />
-    <Compile Include="Services\IO\Devices\IKeyboardHookService.cs" />
     <Compile Include="Interop\SuperMemo\Content\Controls\IControl.cs" />
     <Compile Include="Interop\SuperMemo\Content\Controls\IControlGroup.cs" />
     <Compile Include="Interop\SuperMemo\Content\Controls\IControlImage.cs" />
@@ -233,7 +236,6 @@
     <Compile Include="Sys\Drawing\ImageWrapper.cs" />
     <Compile Include="Sys\IO\Devices\HotKey.cs" />
     <Compile Include="Sys\IO\Devices\HotKeyEventArgs.cs" />
-    <Compile Include="Services\IO\Devices\IKeyboardHotKeyService.cs" />
     <Compile Include="Sys\IO\Devices\Keyboard.cs" />
     <Compile Include="Sys\IO\Devices\KeyModifiers.cs" />
     <Compile Include="Sys\IO\Devices\Keys.cs" />
@@ -244,7 +246,6 @@
     <Compile Include="Interop\Plugins\SMAPluginBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Svc.cs" />
-    <Compile Include="Interop\SMAConst.cs" />
     <Compile Include="Interop\SMConst.cs" />
     <Compile Include="Interop\SuperMemo\Content\Models\ComponentFieldFlags.cs" />
     <Compile Include="Interop\SuperMemo\Content\Models\ImageStretchMode.cs" />
@@ -360,15 +361,16 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup />
+  <Import Project="..\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\Fody.3.3.5\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.3.3.5\build\Fody.targets'))" />
     <Error Condition="!Exists('..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Resourcer.Fody.1.7.3\build\Resourcer.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Resourcer.Fody.1.7.3\build\Resourcer.Fody.props'))" />
+    <Error Condition="!Exists('..\..\..\packages\Fody.4.0.2\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.4.0.2\build\Fody.targets'))" />
   </Target>
-  <Import Project="..\..\..\packages\Fody.3.3.5\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.3.3.5\build\Fody.targets')" />
+  <Import Project="..\..\..\packages\Fody.4.0.2\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.4.0.2\build\Fody.targets')" />
 </Project>

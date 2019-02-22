@@ -49,7 +49,6 @@ using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.Plugins;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.PluginsHost.Services.Devices;
 using SuperMemoAssistant.PluginsHost.UI;
 using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.Configuration;

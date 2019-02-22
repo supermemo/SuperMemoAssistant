@@ -1,4 +1,5 @@
 ﻿#region License & Metadata
+
 // The MIT License (MIT)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -20,16 +21,45 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/12/21 15:18
-// Modified On:  2018/12/21 15:18
+// Created On:   2019/01/01 16:47
+// Modified On:  2019/01/01 17:35
 // Modified By:  Alexis
+
 #endregion
 
-namespace SuperMemoAssistant.Interop
+
+
+
+using Forge.Forms;
+using SuperMemoAssistant.UI;
+
+namespace SuperMemoAssistant.SMA.UI
 {
-  public enum InjectLibMessages
+  internal class ElementPickerInterceptor : IActionInterceptor
   {
-    ExecuteOnMainThread = 9100101,
-    AttachDebugger = 9100199,
+    #region Methods Impl
+
+    /// <inheritdoc />
+    public IActionContext InterceptAction(IActionContext ctxt)
+    {
+      if (ctxt.Action is ElementPicker.ElementPickerAction == false
+        || ctxt.Model is IElementPickerCallback == false)
+        return null;
+
+      var m = (IElementPickerCallback)ctxt.Model;
+
+      var elemPicker = new ElementPicker();
+
+      if (elemPicker.ShowDialog() ?? false)
+      {
+        m.SetElement(elemPicker.SelectedElement);
+
+        return ctxt;
+      }
+
+      return null;
+    }
+
+    #endregion
   }
 }

@@ -40,12 +40,13 @@ using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Plugins;
 using SuperMemoAssistant.Services;
+using SuperMemoAssistant.SMA.UI;
+using SuperMemoAssistant.SuperMemo;
 using SuperMemoAssistant.SuperMemo.SuperMemo17;
 using SuperMemoAssistant.Sys;
 
-namespace SuperMemoAssistant.SuperMemo
+namespace SuperMemoAssistant.SMA
 {
   /// <summary>
   ///   Wrapper around a SM management instance that handles SuperMemo App lifecycle events
@@ -99,6 +100,7 @@ namespace SuperMemoAssistant.SuperMemo
       Svc.SMA = this;
 
       Config = LoadConfig();
+      SMAUI.Initialize();
       //StartMonitoring();
     }
 
@@ -208,12 +210,12 @@ namespace SuperMemoAssistant.SuperMemo
 
     public CoreCfg LoadConfig()
     {
-      return Svc<CorePlugin>.Configuration.Load<CoreCfg>().Result ?? new CoreCfg();
+      return Svc.Configuration.Load<CoreCfg>().Result ?? new CoreCfg();
     }
 
     public void SaveConfig(bool sync)
     {
-      var task = Svc<CorePlugin>.Configuration.Save<CoreCfg>(Config);
+      var task = Svc.Configuration.Save<CoreCfg>(Config);
 
       if (sync)
         task.Wait();

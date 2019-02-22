@@ -1,13 +1,13 @@
-﻿<Window x:Class="SuperMemoAssistant.PluginsHost.UI.GlobalSettingsWindow"
+﻿<Window x:Class="SuperMemoAssistant.SMA.UI.GlobalSettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:forge="clr-namespace:Forge.Forms.Controls;assembly=Forge.Forms"
-        xmlns:ui="clr-namespace:SuperMemoAssistant.PluginsHost.UI"
+        xmlns:ui="clr-namespace:SuperMemoAssistant.SMA.UI"
         mc:Ignorable="d"
-        Title="Global Settings" Height="450" Width="800"
         KeyDown="Window_KeyDown"
+        Title="Global Settings" Height="450" Width="800"
         d:DataContext="{d:DesignInstance ui:GlobalSettingsWindow}">
     <Grid>
         <Grid.RowDefinitions>

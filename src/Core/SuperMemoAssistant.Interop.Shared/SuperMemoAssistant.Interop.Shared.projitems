@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>d4eff016-9a16-4560-8e1d-2a33d0de399f</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>SuperMemoAssistant</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Interop\SMAConst.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PluginHost\HostConst.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interop\SMAFileSystem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sys\IO\DirectoryPath.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sys\IO\FilePath.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sys\IO\NormalizedPath.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sys\IO\PathCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sys\IO\PathEqualityComparer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sys\IO\PathKind.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sys\IO\RelativePathResolver.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)PluginHost\" />
+  </ItemGroup>
+</Project>

@@ -57,7 +57,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 
     #region Properties Impl - Public
 
-    public IConceptGroup ConceptGroup => (IConceptGroup)SMA.Instance.Registry.Element?[SlotLengthOrConceptGroupId];
+    public IConceptGroup ConceptGroup => (IConceptGroup)SMA.SMA.Instance.Registry.Element?[SlotLengthOrConceptGroupId];
 
     #endregion
 

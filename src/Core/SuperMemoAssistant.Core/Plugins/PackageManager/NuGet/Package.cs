@@ -169,7 +169,7 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet
 
         foreach (FilePath assemblyPath in referenceGroup.Items
                                                         .Select(x => new FilePath(x))
-                                                        .Where(x => x.FileName.Extension == ".dll" || x.FileName.Extension == ".exe")
+                                                        .Where(x => x.Extension == ".dll" || x.Extension == ".exe")
                                                         .Select(pkgPath.CombineFile))
         {
           LogTo.Verbose($"Found NuGet reference {assemblyPath} from package {Identity}");

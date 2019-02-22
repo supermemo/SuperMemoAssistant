@@ -31,11 +31,12 @@
 
 
 using System;
+using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Plugins;
 using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO;
-using SuperMemoAssistant.SuperMemo;
+using SuperMemoAssistant.Services.IO.Devices;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Components;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types;
@@ -61,9 +62,12 @@ namespace SuperMemoAssistant
     public static void Initialize()
     {
       //InitOnLoad.Initialize();
-
-      Svc<CorePlugin>.Plugin        = new CorePlugin();
-      Svc<CorePlugin>.Configuration = new ConfigurationService(Svc<CorePlugin>.Plugin);
+      
+      SentryInstance = Services.Sentry.Sentry.Initialize();
+      Logger.Instance.Initialize(SMAConst.Name, Services.Sentry.Sentry.ConfigureSerilog);
+      
+      Svc.Configuration = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
+      Svc.KeyboardHotKey = KeyboardHookService.Instance;
 
       // ReSharper disable once NotAccessedVariable
       // ReSharper disable once JoinDeclarationAndInitializer
@@ -79,10 +83,7 @@ namespace SuperMemoAssistant
       tmp = VideoRegistry.Instance;
       tmp = ElementWdw.Instance;
       tmp = PluginManager.Instance;
-      tmp = SMA.Instance;
-
-      SentryInstance = Services.Sentry.Sentry.Initialize();
-      Logger.Instance.Initialize(Services.Sentry.Sentry.ConfigureSerilog);
+      tmp = SMA.SMA.Instance;
     }
 
     #endregion

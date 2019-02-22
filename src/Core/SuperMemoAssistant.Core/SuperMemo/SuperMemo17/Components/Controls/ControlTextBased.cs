@@ -65,7 +65,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 
     public virtual IText TextMember
     {
-      get => SMA.Instance.Registry.Text[TextMemberId];
+      get => SMA.SMA.Instance.Registry.Text[TextMemberId];
       set => TextMemberId = value?.Id ?? throw new ArgumentNullException();
     }
 

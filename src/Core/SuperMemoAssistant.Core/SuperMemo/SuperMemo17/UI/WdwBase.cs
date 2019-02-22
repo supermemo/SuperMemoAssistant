@@ -46,7 +46,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     protected abstract IntPtr WindowHandle { get; }
 
 
-    protected IProcess SMProcess => SMA.Instance.SMProcess;
+    protected IProcess SMProcess => SMA.SMA.Instance.SMProcess;
 
     #endregion
 

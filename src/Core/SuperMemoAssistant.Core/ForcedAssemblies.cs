@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/18 20:39
-// Modified On:  2019/01/18 20:40
+// Created On:   2019/02/22 14:29
+// Modified On:  2019/02/22 14:29
 // Modified By:  Alexis
 
 #endregion
@@ -30,27 +30,7 @@
 
 
 
-using SuperMemoAssistant.Interop.Plugins;
+using SuperMemoAssistant.Sys;
 
-namespace SuperMemoAssistant.PluginsHost
-{
-  public class MainPlugin : SMAPluginBase<MainPlugin>
-  {
-    #region Properties Impl - Public
+[assembly: ForceAssemblyReference(typeof(Microsoft.Web.XmlTransform.AttributeTransform))]
 
-    /// <inheritdoc />
-    public override string Name => "Main";
-
-    #endregion
-
-
-
-
-    #region Methods Impl
-
-    /// <inheritdoc />
-    protected override void OnInit() { }
-
-    #endregion
-  }
-}

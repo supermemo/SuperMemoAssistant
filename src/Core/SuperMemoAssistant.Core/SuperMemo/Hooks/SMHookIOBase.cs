@@ -46,7 +46,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
   {
     #region Properties & Fields - Non-Public
 
-    protected SMCollection Collection => SMA.Instance.Collection;
+    protected SMCollection Collection => SMA.SMA.Instance.Collection;
 
     protected ConcurrentDictionary<IntPtr, (UInt32 position, SparseClusteredArray<byte> sca)> FileHandles { get; } =
       new ConcurrentDictionary<IntPtr, (UInt32 position, SparseClusteredArray<byte> sca)>();
@@ -60,8 +60,8 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     protected SMHookIOBase()
     {
-      SMA.Instance.OnSMStartingEvent += OnSMStarting;
-      SMA.Instance.OnSMStoppedEvent  += OnSMStopped;
+      SMA.SMA.Instance.OnSMStartingEvent += OnSMStarting;
+      SMA.SMA.Instance.OnSMStoppedEvent  += OnSMStopped;
     }
 
     public virtual void Dispose()

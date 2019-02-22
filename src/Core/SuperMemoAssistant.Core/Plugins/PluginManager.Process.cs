@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/26 03:52
-// Modified On:  2019/01/26 06:02
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/21 13:57
 // Modified By:  Alexis
 
 #endregion
@@ -46,8 +46,14 @@ namespace SuperMemoAssistant.Plugins
   public partial class PluginManager
   {
     #region Constants & Statics
-
+    
     private const int PluginStopTimeout = 3000;
+    
+#if DEBUG
+    private const int PluginConnectTimeout = 60000;
+#else
+    private const int PluginConnectTimeout = 5000;
+#endif
 
     #endregion
 
@@ -78,7 +84,7 @@ namespace SuperMemoAssistant.Plugins
 
       while (IsDisposed == false)
       {
-        if (sleepCounter > 15)
+        if (sleepCounter > 6)
         {
           try
           {
@@ -86,6 +92,9 @@ namespace SuperMemoAssistant.Plugins
 
             foreach (var pluginInstance in pluginInstances)
             {
+              if (pluginInstance.IsStopping)
+                continue;
+
               pluginInstance.Process.Refresh();
 
               if (pluginInstance.Process.HasExited)
@@ -101,26 +110,27 @@ namespace SuperMemoAssistant.Plugins
         }
 
         sleepCounter++;
-        Thread.Sleep(100);
+        Thread.Sleep(250);
       }
     }
 
     private async Task StartPlugin(PluginPackage<PluginMetadata> pluginPackage)
     {
-      LogTo.Information($"Stating plugin {pluginPackage.Id}");
+      bool   isDev     = pluginPackage.Metadata.IsDevelopment;
+      string pluginLog = isDev ? "development plugin" : "plugin";
+
+      LogTo.Information($"Starting {pluginLog} {pluginPackage.Id}");
 
       var startInfo = StartInfoMap[pluginPackage.Id] = new PluginStartInfo(pluginPackage);
 
       var smaProcId     = System.Diagnostics.Process.GetCurrentProcess().Id;
+      var devSwitch     = isDev ? "--development" : string.Empty;
       var pluginId      = pluginPackage.Id;
-      var pluginHomeDir = SMAFileSystem.PluginHomeDir.Combine(pluginId);
+      var pluginHomeDir = pluginPackage.GetHomeDir();
 
       var pluginStartInfo = new ProcessStartInfo(
-        SMAFileSystem.GetPluginHostExeFile().FullPath,
-        $"{pluginId.Quotify()} {smaProcId} {IpcServerChannelName.Quotify()}")
-      {
-        WorkingDirectory = pluginHomeDir.FullPath
-      };
+        SMAFileSystem.PluginHostExeFile.FullPath,
+        $"{pluginId.Quotify()} {smaProcId} {IpcServerChannelName.Quotify()} {pluginHomeDir.FullPath.Quotify()} {devSwitch}");
 
       try
       {
@@ -128,20 +138,21 @@ namespace SuperMemoAssistant.Plugins
 
         if (proc == null)
         {
-          LogTo.Warning($"Failed to start process for plugin {pluginId}");
+          LogTo.Warning($"Failed to start process for {pluginLog} {pluginId}");
           return;
         }
 
         if (await startInfo.ConnectedEvent.WaitAsync(PluginConnectTimeout))
           return;
 
-        LogTo.Warning($"Plugin {pluginId} failed to connect in {PluginConnectTimeout}ms. Attempting to kill process");
+        LogTo.Warning(
+          $"{pluginLog.CapitalizeFirst()} {pluginId} failed to connect in {PluginConnectTimeout}ms. Attempting to kill process");
 
         proc.Refresh();
 
         if (proc.HasExited)
         {
-          LogTo.Warning($"Plugin {pluginId} has already exited");
+          LogTo.Warning($"{pluginLog.CapitalizeFirst()} {pluginId} has already exited");
           return;
         }
 
@@ -149,16 +160,21 @@ namespace SuperMemoAssistant.Plugins
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex, $"An error occured while starting plugin {pluginId}");
+        LogTo.Error(ex, $"An error occured while starting {pluginLog} {pluginId}");
       }
     }
 
     private async Task StopPlugin(PluginInstance pluginInstance)
     {
+      bool   isDev     = pluginInstance.Metadata.IsDevelopment;
+      string pluginLog = isDev ? "development plugin" : "plugin";
+      LogTo.Information($"Stopping {pluginLog} {pluginInstance.Metadata.PackageName}.");
+
       try
       {
         try
         {
+          pluginInstance.IsStopping = true;
           pluginInstance.Plugin.Dispose();
 
           if (await Task.Run(() => pluginInstance.Process.WaitForExit(PluginStopTimeout)))
@@ -188,7 +204,7 @@ namespace SuperMemoAssistant.Plugins
       }
       finally
       {
-        InstanceMap.TryRemove(pluginInstance.Plugin, out _);
+        OnPluginStopped(pluginInstance);
       }
     }
 

@@ -283,7 +283,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components
         oldCGroup.Update(cGroup);
         try
         {
-          OnComponentGroupModified?.Invoke(new SMComponentGroupArgs(SMA.Instance,
+          OnComponentGroupModified?.Invoke(new SMComponentGroupArgs(SMA.SMA.Instance,
                                                                     cGroup));
         }
         catch (Exception ex)
@@ -298,7 +298,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components
         ComponentGroups[cGroup.Offset] = cGroup;
         try
         {
-          OnComponentGroupCreated?.Invoke(new SMComponentGroupArgs(SMA.Instance,
+          OnComponentGroupCreated?.Invoke(new SMComponentGroupArgs(SMA.SMA.Instance,
                                                                    cGroup));
         }
         catch (Exception ex)

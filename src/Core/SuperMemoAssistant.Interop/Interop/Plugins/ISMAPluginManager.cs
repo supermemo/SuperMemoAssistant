@@ -84,13 +84,13 @@ namespace SuperMemoAssistant.Interop.Plugins
     ///   Channel name where clients can acquire a proxy for
     ///   <paramref name="remoteServiceType" />
     /// </param>
-    /// <param name="plugin">The requesting plugin's interface</param>
+    /// <param name="assemblyName"></param>
     /// <returns>
     ///   A disposable object, which unregisters the channel when disposed, or
     ///   <see langword="null" />.
     /// </returns>
-    IDisposable RegisterService(string     remoteServiceType,
-                                       string     channelName,
-                                       ISMAPlugin plugin);
+    IDisposable RegisterService(string remoteServiceType,
+                                string channelName,
+                                string assemblyName);
   }
 }

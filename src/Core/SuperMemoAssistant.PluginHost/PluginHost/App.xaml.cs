@@ -72,7 +72,6 @@ namespace SuperMemoAssistant.PluginHost
     {
       try
       {
-        Debugger.Launch();
         Process smaProc;
 
         if (ReadArgs(e.Args,

@@ -52,7 +52,6 @@ using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
 using SuperMemoAssistant.Sys.SparseClusteredArray;
-using SuperMemoAssistant.Sys.UIAutomation;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 {
@@ -242,7 +241,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
         //
         // Focus
 
-        toDispose.Add(new FocusSnapshot()); // TODO: Only if inserting 1 element
+        // toDispose.Add(new FocusSnapshot(true)); // TODO: Only if inserting 1 element
 
         //
         // Select appropriate insertion method, depending on element type and content

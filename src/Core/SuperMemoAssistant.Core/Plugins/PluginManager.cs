@@ -64,8 +64,8 @@ namespace SuperMemoAssistant.Plugins
 
     private ConcurrentDictionary<string, PluginInstance> InstanceMap { get; } =
       new ConcurrentDictionary<string, PluginInstance>();
-    private ConcurrentDictionary<string, (ISMAPlugin plugin, string channel)> InterfaceChannelMap { get; } =
-      new ConcurrentDictionary<string, (ISMAPlugin, string)>();
+    private ConcurrentDictionary<string, string> InterfaceChannelMap { get; } =
+      new ConcurrentDictionary<string, string>();
 
     #endregion
 
@@ -168,7 +168,7 @@ namespace SuperMemoAssistant.Plugins
       {
         var plugin = RemotingServicesEx.ConnectToIpcServer<ISMAPlugin>(channel);
         pluginId = plugin.AssemblyName;
-
+        
         LogTo.Information($"Connecting plugin {pluginId}");
 
         PluginStartInfo pluginStartInfo = StartInfoMap.SafeGet(pluginId);
@@ -200,25 +200,25 @@ namespace SuperMemoAssistant.Plugins
     /// <inheritdoc />
     public string GetService(string remoteInterfaceType)
     {
-      return InterfaceChannelMap.SafeGet(remoteInterfaceType).channel;
+      return InterfaceChannelMap.SafeGet(remoteInterfaceType);
     }
 
     /// <inheritdoc />
-    public IDisposable RegisterService(string     remoteServiceType,
-                                       string     channelName,
-                                       ISMAPlugin plugin)
+    public IDisposable RegisterService(string remoteServiceType,
+                                       string channelName,
+                                       string assemblyName)
     {
-      var pluginInst = InstanceMap.SafeGet(plugin.AssemblyName);
+      var pluginInst = InstanceMap.SafeGet(assemblyName);
 
       if (pluginInst == null)
         throw new ArgumentException("Invalid plugin");
 
       pluginInst.InterfaceChannelMap[remoteServiceType] = channelName;
-      InterfaceChannelMap[remoteServiceType]            = (plugin, channelName);
+      InterfaceChannelMap[remoteServiceType]            = channelName;
 
       Task.Run(() => NotifyServicePublished(remoteServiceType));
 
-      return new PluginChannelDisposer(this, remoteServiceType, plugin);
+      return new PluginChannelDisposer(this, remoteServiceType, assemblyName);
     }
 
     #endregion
@@ -321,7 +321,7 @@ namespace SuperMemoAssistant.Plugins
         // TODO: Notify user if plugin crashed
 
         foreach (var interfaceType in pluginInstance.InterfaceChannelMap.Keys)
-          UnregisterChannelType(interfaceType, pluginInstance.Plugin);
+          UnregisterChannelType(interfaceType, pluginInstance.Metadata.PackageName);
 
         pluginInstance.ExitHandled = true;
 
@@ -330,9 +330,9 @@ namespace SuperMemoAssistant.Plugins
     }
 
     public void UnregisterChannelType(string     remoteServiceType,
-                                      ISMAPlugin plugin)
+                                      string packageName)
     {
-      var pluginInst = InstanceMap.SafeGet(plugin.AssemblyName);
+      var pluginInst = InstanceMap.SafeGet(packageName);
 
       if (pluginInst == null)
         throw new ArgumentException("Invalid plugin");

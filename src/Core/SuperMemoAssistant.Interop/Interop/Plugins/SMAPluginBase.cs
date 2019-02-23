@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/02/13 13:55
-// Modified On:  2019/02/22 17:40
+// Modified On:  2019/02/23 01:58
 // Modified By:  Alexis
 
 #endregion
@@ -55,8 +55,7 @@ namespace SuperMemoAssistant.Interop.Plugins
   {
     #region Properties & Fields - Non-Public
 
-    private readonly string           _channelName;
-    private readonly IpcServerChannel _ipcServer;
+    private readonly string _channelName;
 
 
     private ConcurrentDictionary<string, (IpcServerChannel ipcServer, IDisposable disposable)> RegisteredServicesMap { get; } =
@@ -85,7 +84,7 @@ namespace SuperMemoAssistant.Interop.Plugins
 
       // Create Plugin's IPC Server
       _channelName = RemotingServicesEx.GenerateIpcServerChannelName();
-      _ipcServer = RemotingServicesEx.CreateIpcServer(
+      RemotingServicesEx.CreateIpcServer<ISMAPlugin, SMAPluginBase<TPlugin>>(
         this,
         _channelName);
     }
@@ -93,15 +92,15 @@ namespace SuperMemoAssistant.Interop.Plugins
     /// <inheritdoc />
     public virtual void Dispose()
     {
-      RevokeServices();
+      //RevokeServices();
 
       try
       {
-        _ipcServer.StopListening(null);
+        //_ipcServer.StopListening(null);
 
         KeyboardHotKeyService.Instance.Dispose();
 
-        Application.Current.Dispatcher.InvokeShutdown();
+        Application.Current?.Dispatcher.InvokeShutdown();
       }
       catch (Exception ex)
       {
@@ -110,6 +109,8 @@ namespace SuperMemoAssistant.Interop.Plugins
       }
 
       Logger.Instance.Shutdown();
+
+      Environment.Exit(0);
     }
 
     #endregion
@@ -256,12 +257,12 @@ namespace SuperMemoAssistant.Interop.Plugins
       LogTo.Information($"Publishing service {svcTypeName}");
 
       var channelName = RemotingServicesEx.GenerateIpcServerChannelName();
-      var ipcServer   = RemotingServicesEx.CreateIpcServer(service, channelName);
+      var ipcServer   = RemotingServicesEx.CreateIpcServer<IService, TService>(service, channelName);
 
       var unregisterObj = SMAPluginMgr.RegisterService(
         svcTypeName,
         channelName,
-        this);
+        AssemblyName);
 
       RegisteredServicesMap[svcTypeName] = (ipcServer, unregisterObj);
     }

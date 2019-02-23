@@ -33,6 +33,7 @@
 using System.Runtime.Remoting.Channels.Ipc;
 using Anotar.Serilog;
 using SuperMemoAssistant.Extensions;
+using SuperMemoAssistant.Interop.Plugins;
 
 namespace SuperMemoAssistant.Plugins
 {
@@ -58,7 +59,7 @@ namespace SuperMemoAssistant.Plugins
       // Generate random channel name
       IpcServerChannelName = RemotingServicesEx.GenerateIpcServerChannelName();
 
-      IpcServer = RemotingServicesEx.CreateIpcServer(this, IpcServerChannelName);
+      IpcServer = RemotingServicesEx.CreateIpcServer<ISMAPluginManager, PluginManager>(this, IpcServerChannelName);
     }
 
     private void StopIpcServer()

@@ -56,11 +56,12 @@ namespace SuperMemoAssistant.Extensions
         "ipc://" + channelName + "/" + (channelPort ?? channelName));
     }
 
-    public static IpcServerChannel CreateIpcServer<TService>(
+    public static IpcServerChannel CreateIpcServer<IService, TService>(
       [NotNull] TService service,
       string             channelName = null,
       WellKnownSidType   aclSid      = WellKnownSidType.WorldSid)
-      where TService : MarshalByRefObject
+      where IService : class
+      where TService : MarshalByRefObject, IService
     {
       if (channelName == null)
         channelName = GenerateIpcServerChannelName();
@@ -100,7 +101,7 @@ namespace SuperMemoAssistant.Extensions
       ChannelServices.RegisterChannel(ipcServer, false);
 
       // Initialize with SMA interface
-      RemotingServices.Marshal(service, channelName);
+      RemotingServices.Marshal(service, channelName, typeof(IService));
 
       return ipcServer;
     }

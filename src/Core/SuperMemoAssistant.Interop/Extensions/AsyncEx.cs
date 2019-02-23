@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/19 04:23
-// Modified On:  2019/01/19 04:38
+// Created On:   2019/01/26 03:40
+// Modified On:  2019/01/26 03:41
 // Modified By:  Alexis
 
 #endregion
@@ -31,57 +31,26 @@
 
 
 using System;
-using System.Windows;
-using Anotar.Serilog;
-using Process.NET.Utilities;
+using System.Threading.Tasks;
+using Nito.AsyncEx;
 
-namespace SuperMemoAssistant.Sys.UIAutomation
+namespace SuperMemoAssistant.Extensions
 {
-  public class FocusSnapshot : IDisposable
+  public static class AsyncEx
   {
-    private readonly bool _useDispatcher;
+    #region Methods
 
-
-
-
-    #region Constructors
-
-    /// <param name="useDispatcher"></param>
-    /// <inheritdoc />
-    public FocusSnapshot(bool useDispatcher = false)
+    public static async Task<bool> WaitAsync(this AsyncManualResetEvent waitHandle,
+                                             int                        timeoutMs)
     {
-      _useDispatcher = useDispatcher;
-      WindowHandle = WindowHelper.GetForegroundWindow();
-      //FocusedElement = Svc.UIAutomation.FocusedElement();
+      if (waitHandle == null)
+        throw new ArgumentNullException(nameof(waitHandle));
+
+      Task waitTask      = waitHandle.WaitAsync();
+      Task completedTask = await Task.WhenAny(Task.Delay(timeoutMs), waitHandle.WaitAsync());
+
+      return completedTask == waitTask;
     }
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-      try
-      {
-        //FocusedElement?.Focus();
-        if (_useDispatcher)
-          Application.Current.Dispatcher.InvokeAsync(() => WindowHelper.SetForegroundWindow(WindowHandle));
-
-        else
-          WindowHelper.SetForegroundWindow(WindowHandle);
-      }
-      catch (Exception ex)
-      {
-        LogTo.Error(ex, $"Failed to restore window {WindowHandle}");
-      }
-    }
-
-    #endregion
-
-
-
-
-    #region Properties & Fields - Public
-
-    public IntPtr WindowHandle { get; }
-    //public AutomationElement FocusedElement { get; set; }
 
     #endregion
   }

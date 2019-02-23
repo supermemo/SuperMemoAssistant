@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/07 01:50
-// Modified On:  2019/01/18 20:48
+// Created On:   2019/02/23 02:19
+// Modified On:  2019/02/23 14:39
 // Modified By:  Alexis
 
 #endregion
@@ -31,14 +31,33 @@
 
 
 using System;
+using System.Threading;
 
-namespace SuperMemoAssistant.Sys
+namespace SuperMemoAssistant.Sys.Remoting
 {
-  public class ActionProxy<T> : SMMarshalByRefObject
+  public static class RemoteCancellationTokenEx
+  {
+    #region Methods
+
+    public static CancellationToken Token(this RemoteCancellationToken remoteCancellationToken)
+    {
+      CancellationTokenSource tokenSrc = new CancellationTokenSource();
+
+      remoteCancellationToken.Register(new ActionProxy(() => tokenSrc.Cancel()));
+
+      return tokenSrc.Token;
+    }
+
+    #endregion
+  }
+
+  public class RemoteCancellationToken : MarshalByRefObject
   {
     #region Properties & Fields - Non-Public
 
-    private readonly Action<T> _action;
+    // ReSharper disable once NotAccessedField.Local
+    private readonly CancellationToken _token;
+    private          ActionProxy       _cancelledCallback;
 
     #endregion
 
@@ -47,9 +66,12 @@ namespace SuperMemoAssistant.Sys
 
     #region Constructors
 
-    public ActionProxy(Action<T> action)
+    /// <inheritdoc />
+    public RemoteCancellationToken(CancellationToken token)
     {
-      _action = action;
+      _token = token;
+
+      token.Register(OnCancelled);
     }
 
     #endregion
@@ -59,14 +81,14 @@ namespace SuperMemoAssistant.Sys
 
     #region Methods
 
-    public void Invoke(T args)
+    private void OnCancelled()
     {
-      _action(args);
+      _cancelledCallback?.Invoke();
     }
 
-    public static implicit operator Action<T>(ActionProxy<T> aProxy)
+    public void Register(ActionProxy cancelledCallback)
     {
-      return aProxy.Invoke;
+      _cancelledCallback = cancelledCallback;
     }
 
     #endregion

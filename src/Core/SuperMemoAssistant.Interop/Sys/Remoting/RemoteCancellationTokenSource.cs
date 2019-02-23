@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/26 03:40
-// Modified On:  2019/01/26 03:41
+// Created On:   2019/02/23 13:50
+// Modified On:  2019/02/23 14:39
 // Modified By:  Alexis
 
 #endregion
@@ -31,25 +31,71 @@
 
 
 using System;
-using System.Threading.Tasks;
-using Nito.AsyncEx;
+using System.Threading;
 
-namespace SuperMemoAssistant.Sys
+namespace SuperMemoAssistant.Sys.Remoting
 {
-  public static class AsyncExEx
+  public class RemoteCancellationTokenSource : IDisposable
   {
+    #region Properties & Fields - Non-Public
+
+    private readonly CancellationTokenSource _tokenSrc;
+
+    #endregion
+
+
+
+
+    #region Constructors
+
+    public RemoteCancellationTokenSource()
+    {
+      _tokenSrc = new CancellationTokenSource();
+
+      Token = new RemoteCancellationToken(_tokenSrc.Token);
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+      _tokenSrc?.Dispose();
+    }
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public bool                    IsCancellationRequested => _tokenSrc.IsCancellationRequested;
+    public RemoteCancellationToken Token                   { get; }
+
+    #endregion
+
+
+
+
     #region Methods
 
-    public static async Task<bool> WaitAsync(this AsyncManualResetEvent waitHandle,
-                                             int                        timeoutMs)
+    public static implicit operator CancellationTokenSource(RemoteCancellationTokenSource remoteTokenSrc)
     {
-      if (waitHandle == null)
-        throw new ArgumentNullException(nameof(waitHandle));
+      return remoteTokenSrc._tokenSrc;
+    }
 
-      Task waitTask      = waitHandle.WaitAsync();
-      Task completedTask = await Task.WhenAny(Task.Delay(timeoutMs), waitHandle.WaitAsync());
+    public void Cancel()
+    {
+      _tokenSrc.Cancel();
+    }
 
-      return completedTask == waitTask;
+    public void CancelAfter(int millisecondDelay)
+    {
+      _tokenSrc.CancelAfter(millisecondDelay);
+    }
+
+    public void CancelAfter(TimeSpan delay)
+    {
+      _tokenSrc.CancelAfter(delay);
     }
 
     #endregion

@@ -295,7 +295,6 @@
     <Compile Include="Sys\SparseClusteredArray\SparseClusteredArray.Enumerators.cs" />
     <Compile Include="Sys\SparseClusteredArray\SparseClusteredArray.Segment.cs" />
     <Compile Include="Sys\SparseClusteredArray\SparseClusteredArray.Streams.cs" />
-    <Compile Include="Sys\AsyncEx.cs" />
     <Compile Include="Sys\UIAutomation\FocusSnapshot.cs" />
   </ItemGroup>
   <ItemGroup>

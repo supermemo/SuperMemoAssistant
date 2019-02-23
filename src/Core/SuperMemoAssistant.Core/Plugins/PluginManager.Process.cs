@@ -39,7 +39,6 @@ using Anotar.Serilog;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Plugins.PackageManager.NuGet;
-using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.Plugins
 {

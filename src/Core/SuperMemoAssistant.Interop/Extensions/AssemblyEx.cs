@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/10/26 22:37
-// Modified On:  2018/12/13 13:01
+// Modified On:  2019/01/26 06:10
 // Modified By:  Alexis
 
 #endregion
@@ -33,7 +33,6 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace SuperMemoAssistant.Extensions
@@ -42,9 +41,9 @@ namespace SuperMemoAssistant.Extensions
   {
     #region Methods
 
-    public static Guid GetAssemblyGuid()
+    public static Guid GetAssemblyGuid(Type typeInAssembly)
     {
-      var assembly = Assembly.GetExecutingAssembly();
+      var assembly = typeInAssembly.Assembly;
       var guidAttr = assembly.GetCustomAttributes(typeof(GuidAttribute),
                                                   true);
 
@@ -54,12 +53,17 @@ namespace SuperMemoAssistant.Extensions
       return Guid.Parse(guidStr);
     }
 
-    public static string GetAssemblyVersion()
+    public static string GetAssemblyVersion(Type typeInAssembly)
     {
-      var assembly = Assembly.GetExecutingAssembly();
+      var assembly = typeInAssembly.Assembly;
       var fvi      = FileVersionInfo.GetVersionInfo(assembly.Location);
 
       return fvi.FileVersion;
+    }
+
+    public static string GetAssemblyName(Type typeInAssembly)
+    {
+      return typeInAssembly.Assembly.GetName().Name;
     }
 
     #endregion

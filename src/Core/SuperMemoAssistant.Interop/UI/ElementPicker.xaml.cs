@@ -33,7 +33,6 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using MahApps.Metro.Controls;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Services;
@@ -41,7 +40,7 @@ using SuperMemoAssistant.Services;
 namespace SuperMemoAssistant.UI
 {
   /// <summary>Interaction logic for ElementPicker.xaml</summary>
-  public partial class ElementPicker : MetroWindow
+  public partial class ElementPicker : Window
   {
     #region Constants & Statics
 

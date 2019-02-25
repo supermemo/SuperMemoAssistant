@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/07/27 12:55
-// Modified On:  2018/12/09 03:03
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/22 01:13
 // Modified By:  Alexis
 
 #endregion
@@ -31,8 +31,6 @@
 
 
 using System.IO;
-using SuperMemoAssistant.Interop.Plugins;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Core
 {
@@ -76,7 +74,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
     public static string GetSMAFolder(
       this SMCollection collection)
     {
-      return collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder);
+      return collection.GetFilePath(SMAFileSystem.CollectionSMAFolder);
     }
 
     public static string GetSMAElementsFolder(
@@ -84,71 +82,26 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
       int               elementId = 0)
     {
       return elementId == 0
-        ? collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                 SMAConst.Paths.CollectionElementsFolder,
+        ? collection.GetFilePath(SMAFileSystem.CollectionSMAFolder,
+                                 SMAFileSystem.CollectionElementsFolder,
                                  elementId.ToString())
-        : collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                 SMAConst.Paths.CollectionElementsFolder);
-    }
-
-    public static string GetSMAPluginsFolder(
-      this SMCollection collection,
-      ISMAPlugin        plugin = null)
-    {
-      return plugin != null
-        ? collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                 SMAConst.Paths.CollectionPluginsFolder,
-                                 plugin.Id.ToString("D"))
-        : collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                 SMAConst.Paths.CollectionPluginsFolder);
+        : collection.GetFilePath(SMAFileSystem.CollectionSMAFolder,
+                                 SMAFileSystem.CollectionElementsFolder);
     }
 
     public static string GetSMASystemFolder(
       this SMCollection collection)
     {
-      return collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                    SMAConst.Paths.CollectionSystemFolder);
-    }
-
-    public static string GetSMAElementsFilePath(
-      this SMCollection collection,
-      IElement          element,
-      string            fileName)
-    {
-      return collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                    SMAConst.Paths.CollectionElementsFolder,
-                                    element.Id.ToString(),
-                                    fileName);
-    }
-
-    public static string GetSMAElementsFilePath(
-      this SMCollection collection,
-      int               elementId,
-      string            fileName)
-    {
-      return collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                    SMAConst.Paths.CollectionElementsFolder,
-                                    elementId.ToString(),
-                                    fileName);
-    }
-
-    public static string GetSMAPluginsFilePath(
-      this SMCollection collection,
-      ISMAPlugin        plugin,
-      string            fileName)
-    {
-      return collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                    SMAConst.Paths.CollectionPluginsFolder,
-                                    plugin.Id.ToString("D"),
-                                    fileName);
+      return collection.GetFilePath(SMAFileSystem.CollectionSMAFolder,
+                                    SMAFileSystem.CollectionSystemFolder);
     }
 
     public static string GetSMASystemFilePath(
       this SMCollection collection,
       string            fileName)
     {
-      return collection.GetFilePath(SMAConst.Paths.CollectionSMAFolder,
-                                    SMAConst.Paths.CollectionSystemFolder,
+      return collection.GetFilePath(SMAFileSystem.CollectionSMAFolder,
+                                    SMAFileSystem.CollectionSystemFolder,
                                     fileName);
     }
 

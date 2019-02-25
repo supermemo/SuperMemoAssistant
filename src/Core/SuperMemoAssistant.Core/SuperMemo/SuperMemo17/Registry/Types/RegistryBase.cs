@@ -49,7 +49,7 @@ using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
 using SuperMemoAssistant.SuperMemo.Hooks;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members;
-using SuperMemoAssistant.Sys.Collections;
+using SuperMemoAssistant.Sys.SparseClusteredArray;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 {
@@ -124,9 +124,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     {
       foreach (SegmentStream memStream in MemSCA.GetStreams())
       {
-        var memElems = StreamToStruct<RegMemElem>(
+        var memElems = StreamToStruct<RegMemElem, RegMemElem>(
           memStream,
-          RegMemElem.SizeOfMemElem
+          RegMemElem.SizeOfMemElem,
+          e => e
         );
 
         foreach (var memElem in memElems.OrderBy(kv => kv.Value.rtxOffset))
@@ -144,7 +145,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
           using (SegmentStream rtStream = RtxSCA.GetSubsetStream(rtxBounds))
           {
-            RegRtElem rtxElem = default(RegRtElem);
+            RegRtElem rtxElem = default;
 
             if (rtStream != null)
               rtxElem = ParseRtStream(rtStream,
@@ -232,7 +233,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
       {
         ImportElementAddedEvent.Reset();
 
-        SMA.Instance.IgnoreUserConfirmation = true;
+        SMA.SMA.Instance.IgnoreUserConfirmation = true;
 
         int ret = SM17Natives.Instance.Registry.ImportFile.Invoke(
           RegistryPtr,
@@ -257,7 +258,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
       }
       finally
       {
-        SMA.Instance.IgnoreUserConfirmation = false;
+        SMA.SMA.Instance.IgnoreUserConfirmation = false;
         ImportElementId                     = -1;
       }
     }
@@ -270,12 +271,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
                                              RegMemElem mem)
     {
       if (mem.rtxOffset == 0)
-        return new RegRtElem()
+      {
+        return new RegRtElem
         {
           value   = null,
           no      = 0,
           unknown = 2,
         };
+      }
 
       using (BinaryReader binStream = new BinaryReader(rtxStream,
                                                        Encoding.Default,
@@ -284,14 +287,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
         rtxStream.Seek(mem.rtxOffset - 1,
                        SeekOrigin.Begin);
 
-        RegRtElem rtx = new RegRtElem
+        return new RegRtElem
         {
           value   = binStream.ReadBytes(mem.rtxLength - sizeof(int) - sizeof(byte)),
           no      = binStream.ReadInt32(),
           unknown = binStream.ReadByte()
         };
-
-        return rtx;
       }
     }
 
@@ -311,18 +312,21 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
       using (Stream rtxStream = File.OpenRead(rtxFilePath))
         //using (Stream rtfStream = File.OpenRead(rtfFilePath))
       {
-        Dictionary<int, RegMemElem> memElems = StreamToStruct<RegMemElem>(
+        Dictionary<int, RegMemElem> memElems = StreamToStruct<RegMemElem, RegMemElem>(
           memStream,
-          RegMemElem.SizeOfMemElem
+          RegMemElem.SizeOfMemElem,
+          e => e
         );
 
-        foreach (var memElem in memElems.OrderBy(kv => kv.Value.rtxOffset))
+        foreach (var id in memElems.Keys.OrderBy(id => id))
         {
-          var rtxElem = ParseRtStream(rtxStream,
-                                      memElem.Value);
+          var memElem = memElems[id];
 
-          Commit(memElem.Key,
-                 memElem.Value,
+          var rtxElem = ParseRtStream(rtxStream,
+                        memElem);
+
+          Commit(id,
+                 memElem,
                  rtxElem);
         }
       }

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/19 12:02
-// Modified On:  2018/05/30 23:26
+// Created On:   2018/06/01 14:13
+// Modified On:  2019/01/24 13:56
 // Modified By:  Alexis
 
 #endregion
@@ -35,7 +35,6 @@ using System.Threading.Tasks;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
-using SuperMemoAssistant.Services;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members;
 using SuperMemoAssistant.Sys;
@@ -59,7 +58,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override string MemFileName => SMConst.Files.ConceptMemFileName;
     protected override string RtxFileName => SMConst.Files.ConceptRtxFileName;
     protected override string RtfFileName => null;
-    protected override IntPtr RegistryPtr => new IntPtr(SM17Natives.TRegistry.ConceptRegistryInstance.Read<int>(Svc.SM.Memory));
+    protected override IntPtr RegistryPtr =>
+      new IntPtr(SM17Natives.TRegistry.ConceptRegistryInstance.Read<int>(SMA.SMA.Instance.SMProcess.Memory));
 
     #endregion
 
@@ -77,7 +77,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
     #region Methods Impl
 
-    protected override Concept Create(int id, RegMemElem mem, RegRtElem rtxOrRtf)
+    protected override Concept Create(int        id,
+                                      RegMemElem mem,
+                                      RegRtElem  rtxOrRtf)
     {
       return new Concept(id, mem, rtxOrRtf);
     }

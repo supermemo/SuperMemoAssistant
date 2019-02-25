@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/12/13 13:07
+// Modified On:  2019/02/25 15:47
 // Modified By:  Alexis
 
 #endregion
@@ -36,14 +36,9 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
 {
   [Serializable]
   public class SMCollection
+    : IEquatable<SMCollection>
   {
     #region Constructors
-
-    public SMCollection(string name,
-                        string path)
-      : this(name,
-             path,
-             DateTime.MinValue) { }
 
     public SMCollection(string   name,
                         string   path,
@@ -61,9 +56,68 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
 
     #region Properties & Fields - Public
 
-    public string   Name     { get; set; }
-    public string   Path     { get; set; }
+    public string   Name     { get; }
+    public string   Path     { get; }
     public DateTime LastOpen { get; set; }
+
+    #endregion
+
+
+
+
+    #region Methods Impl
+
+    /// <inheritdoc />
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj))
+        return false;
+      if (ReferenceEquals(this, obj))
+        return true;
+      if (obj.GetType() != GetType())
+        return false;
+
+      return Equals((SMCollection)obj);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+      unchecked
+      {
+        return ((Name != null ? Name.GetHashCode() : 0) * 397) ^ (Path != null ? Path.GetHashCode() : 0);
+      }
+    }
+
+    /// <inheritdoc />
+    public bool Equals(SMCollection other)
+    {
+      if (ReferenceEquals(null, other))
+        return false;
+      if (ReferenceEquals(this, other))
+        return true;
+
+      return string.Equals(Name, other.Name) && string.Equals(Path, other.Path);
+    }
+
+    #endregion
+
+
+
+
+    #region Methods
+
+    public static bool operator ==(SMCollection left,
+                                   SMCollection right)
+    {
+      return Equals(left, right);
+    }
+
+    public static bool operator !=(SMCollection left,
+                                   SMCollection right)
+    {
+      return !Equals(left, right);
+    }
 
     #endregion
   }

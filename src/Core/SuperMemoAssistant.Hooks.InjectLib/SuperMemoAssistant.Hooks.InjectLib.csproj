@@ -10,11 +10,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SuperMemoAssistant.Hooks.InjectLib</RootNamespace>
     <AssemblyName>SuperMemoAssistant.Hooks.InjectLib</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AssemblyVersion>0.1.141</AssemblyVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -99,9 +100,6 @@
       <HintPath>..\..\..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -114,8 +112,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IOHooks.cs" />
-    <Compile Include="SMHooks.cs" />
+    <Compile Include="Delphi.cs" />
+    <Compile Include="SMInject.Hooks.cs" />
+    <Compile Include="HookedFunction.cs" />
+    <Compile Include="SMInject.Services.cs" />
+    <Compile Include="SMInject.Hooks.IO.cs" />
+    <Compile Include="Win32.cs" />
+    <Compile Include="SMInject.SM.cs" />
     <Compile Include="SMInject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -124,9 +127,9 @@
       <Project>{501257d3-f788-4a5d-b990-16c01ff71926}</Project>
       <Name>Process.NET</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SuperMemoAssistant.Core.Remote\SuperMemoAssistant.Core.Remote.csproj">
+    <ProjectReference Include="..\SuperMemoAssistant.Hooks.Common\SuperMemoAssistant.Hooks.Common.csproj">
       <Project>{cc5b9485-9ef1-4133-9242-719d263700ae}</Project>
-      <Name>SuperMemoAssistant.Core.Remote</Name>
+      <Name>SuperMemoAssistant.Hooks.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\SuperMemoAssistant.Hooks.NativeLib\SuperMemoAssistant.Hooks.NativeLib.vcxproj">
       <Project>{fffe85ef-4719-4f7f-ab5f-a63d2e184bd2}</Project>
@@ -134,37 +137,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="EasyHook32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EasyHook32Svc.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EasyHook64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EasyHook64Svc.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EasyLoad32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EasyLoad64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <Import Project="..\..\..\src\Core\SuperMemoAssistant.Hooks.Shared\SuperMemoAssistant.Hooks.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\..\..\packages\Fody.3.3.5\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.3.3.5\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\..\packages\Fody.3.3.5\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.3.3.5\build\Fody.targets'))" />
     <Error Condition="!Exists('..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props'))" />
+    <Error Condition="!Exists('..\..\..\packages\Fody.4.0.2\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.4.0.2\build\Fody.targets'))" />
   </Target>
+  <Import Project="..\..\..\packages\Fody.4.0.2\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.4.0.2\build\Fody.targets')" />
 </Project>

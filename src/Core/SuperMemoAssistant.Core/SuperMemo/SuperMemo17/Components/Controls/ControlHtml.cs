@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/21 12:26
-// Modified On:  2018/12/16 13:25
+// Modified On:  2019/01/19 04:39
 // Modified By:  Alexis
 
 #endregion
@@ -36,18 +36,27 @@ using System.Threading;
 using Anotar.Serilog;
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Exceptions;
+using FlaUI.UIA3;
 using mshtml;
 using Process.NET.Extensions;
-using SuperMemoAssistant.COM.InternetExplorer;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
-using SuperMemoAssistant.Services;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
+using SuperMemoAssistant.Sys.COM.InternetExplorer;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 {
   public class ControlHtml : ControlTextBased, IControlHtml
   {
+    #region Constants & Statics
+
+    private static UIA3Automation UIAutomation { get; } = new UIA3Automation();
+
+    #endregion
+
+
+
+
     #region Properties & Fields - Non-Public
 
     private IHTMLDocument2 _document;
@@ -120,7 +129,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
             new IntPtr(NativeControlAddr + SM17Natives.TControl.HandleOffset)
           );
 
-          ieSrvFrame = Svc.UIAutomation.FromHandle(shellEmbedHwnd).FindFirstDescendant(c => c.ByClassName("Internet Explorer_Server"));
+          ieSrvFrame = UIAutomation.FromHandle(shellEmbedHwnd).FindFirstDescendant(c => c.ByClassName("Internet Explorer_Server"));
         }
         catch (Exception ex)
           when (ex is ElementNotAvailableException

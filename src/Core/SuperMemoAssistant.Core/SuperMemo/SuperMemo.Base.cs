@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/12 18:26
-// Modified On:  2019/01/15 12:35
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/24 23:11
 // Modified By:  Alexis
 
 #endregion
@@ -33,15 +33,15 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Anotar.Serilog;
 using Process.NET;
 using Process.NET.Assembly;
 using Process.NET.Memory;
 using Process.NET.Utilities;
-using SuperMemoAssistant.Hooks;
-using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.SMA.Hooks;
 using SuperMemoAssistant.SuperMemo.Hooks;
 using SuperMemoAssistant.SuperMemo.SuperMemo17;
 
@@ -51,16 +51,16 @@ namespace SuperMemoAssistant.SuperMemo
   public abstract class SuperMemoBase
     : IDisposable,
       ISuperMemo,
-      ISMHookSystem
+      ISMAHookSystem
   {
     #region Properties & Fields - Non-Public
 
-    private IPointer IgnoreUserConfirmationPtr { get; set; }
+    private readonly   string           _binPath;
+    protected readonly ExecutionContext _execCtxt = new ExecutionContext();
 
+    private IPointer _ignoreUserConfirmationPtr;
 
-    protected ExecutionContext ExecCtxt { get; } = new ExecutionContext();
-
-    private int WndProcHookAddr { get; set; }
+    private int _wndProcHookAddr;
 
     #endregion
 
@@ -73,26 +73,12 @@ namespace SuperMemoAssistant.SuperMemo
                             string       binPath)
     {
       Collection = collection;
-
-      OnPreInit();
-
-      SMProcess = SMHookEngine.Instance.CreateAndHook(
-        collection,
-        binPath,
-        this,
-        GetIOCallbacks()
-      );
-
-      SMProcess.Native.Exited += OnSMExited;
-
-      OnPostInit();
-
-      SMHookEngine.Instance.SignalWakeUp();
+      _binPath   = binPath;
     }
 
     public virtual void Dispose()
     {
-      IgnoreUserConfirmationPtr = null;
+      _ignoreUserConfirmationPtr = null;
 
       SMProcess.Native.Exited -= OnSMExited;
 
@@ -108,9 +94,7 @@ namespace SuperMemoAssistant.SuperMemo
 
       try
       {
-        OnSMStoppedEvent?.Invoke(this,
-                                 new SMProcessArgs(this,
-                                                   SMProcess));
+        SMA.SMA.Instance.OnSMStopped().Wait();
       }
       catch (Exception ex)
       {
@@ -126,7 +110,9 @@ namespace SuperMemoAssistant.SuperMemo
 
     #region Properties & Fields - Public
 
-    public ManualResetEvent MainThreadReady { get; } = new ManualResetEvent(false);
+    public ManualResetEvent           MainThreadReady { get; } = new ManualResetEvent(false);
+    public IProcess                   SMProcess       { get; private set; }
+    public System.Diagnostics.Process NativeProcess   => SMProcess.Native;
 
     #endregion
 
@@ -136,12 +122,11 @@ namespace SuperMemoAssistant.SuperMemo
     #region Properties Impl - Public
 
     public SMCollection Collection { get; }
-    public IProcess     SMProcess  { get; }
     public bool IgnoreUserConfirmation
     {
-      get => IgnoreUserConfirmationPtr.Read<bool>();
-      set => IgnoreUserConfirmationPtr.Write<bool>(0,
-                                                   value);
+      get => _ignoreUserConfirmationPtr.Read<bool>();
+      set => _ignoreUserConfirmationPtr.Write<bool>(0,
+                                                    value);
     }
     public ISuperMemoRegistry Registry => SuperMemoRegistry.Instance;
     public ISuperMemoUI       UI       => SuperMemoUI.Instance;
@@ -166,7 +151,7 @@ namespace SuperMemoAssistant.SuperMemo
     /// <inheritdoc />
     public void SetWndProcHookAddr(int addr)
     {
-      WndProcHookAddr = addr;
+      _wndProcHookAddr = addr;
     }
 
     /// <param name="wParam"></param>
@@ -186,13 +171,13 @@ namespace SuperMemoAssistant.SuperMemo
     public void GetExecutionParameters(out int       method,
                                        out dynamic[] parameters)
     {
-      method     = (int)ExecCtxt.ExecutionMethod;
-      parameters = ExecCtxt.ExecutionParameters;
+      method     = (int)_execCtxt.ExecutionMethod;
+      parameters = _execCtxt.ExecutionParameters;
     }
 
     public void SetExecutionResult(int result)
     {
-      ExecCtxt.ExecutionResult = result;
+      _execCtxt.ExecutionResult = result;
       MainThreadReady.Set();
     }
 
@@ -219,51 +204,69 @@ namespace SuperMemoAssistant.SuperMemo
     {
       MainThreadReady.Reset();
 
-      ExecCtxt.ExecutionResult     = 0;
-      ExecCtxt.ExecutionMethod     = method;
-      ExecCtxt.ExecutionParameters = parameters;
+      _execCtxt.ExecutionResult     = 0;
+      _execCtxt.ExecutionMethod     = method;
+      _execCtxt.ExecutionParameters = parameters;
 
       var smMain = SMProcess.Memory.Read<int>(SM17Natives.TSMMain.InstancePtr);
       var handle = SMProcess.Memory.Read<IntPtr>(new IntPtr(smMain + SM17Natives.TControl.HandleOffset));
 
       var restoreWndProcAddr = SM17Natives.TApplication.TApplicationOnMessagePtr.Read<int>(SMProcess.Memory);
       SM17Natives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
-                                                                   WndProcHookAddr);
+                                                                   _wndProcHookAddr);
 
       WindowHelper.PostMessage(handle,
                                2345,
                                new IntPtr((int)InjectLibMessages.ExecuteOnMainThread),
                                new IntPtr(0));
 
-      SMA.Instance.SMMgmt.MainThreadReady.WaitOne(AssemblyFactory.ExecutionTimeout);
+      SMA.SMA.Instance.SMMgmt.MainThreadReady.WaitOne(AssemblyFactory.ExecutionTimeout);
 
       SM17Natives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
                                                                    restoreWndProcAddr);
 
-      ExecCtxt.ExecutionParameters = null;
+      _execCtxt.ExecutionParameters = null;
 
-      return ExecCtxt.ExecutionResult;
+      return _execCtxt.ExecutionResult;
     }
 
     //
     // SM-App Lifecycle
 
+    public async Task Start()
+    {
+      await OnPreInit();
+
+      SMProcess = await SMHookEngine.Instance.CreateAndHook(
+        Collection,
+        _binPath,
+        this,
+        GetIOCallbacks()
+      );
+
+      SMProcess.Native.Exited += OnSMExited;
+
+      await OnPostInit();
+
+      SMHookEngine.Instance.SignalWakeUp();
+    }
+
+    protected virtual Task OnPreInit()
+    {
+      return SMA.SMA.Instance.OnSMStarting();
+    }
+
+    protected virtual Task OnPostInit()
+    {
+      _ignoreUserConfirmationPtr = SMProcess[SM17Natives.Globals.IgnoreUserConfirmationPtr];
+
+      return SMA.SMA.Instance.OnSMStarted();
+    }
+
     protected virtual void OnSMExited(object    called,
                                       EventArgs args)
     {
       Dispose();
-    }
-
-    protected virtual void OnPreInit()
-    {
-      SMA.Instance.OnSMStartingImpl(this);
-    }
-
-    protected virtual void OnPostInit()
-    {
-      SMA.Instance.OnSMStartedImpl();
-
-      IgnoreUserConfirmationPtr = SMProcess[SM17Natives.Globals.IgnoreUserConfirmationPtr];
     }
 
     #endregion
@@ -273,100 +276,13 @@ namespace SuperMemoAssistant.SuperMemo
 
     #region Methods Abs
 
-    protected abstract IEnumerable<ISMHookIO> GetIOCallbacks();
-
-
-    //
-    // UI Automation Core
-    /*
-    protected FocusChangedEventHandlerBase FocusChangedHandler { get; set; }
-
-    protected virtual void SetupUI()
-    {
-      SMApp = Application.Attach(SMProcess);
-
-    }
-
-    protected virtual void CleanupUIAutomation()
-    {
-      UnregisterUIAutomationEvents();
-    }
-
-    private virtual void RegisterUIAutomationEvents()
-    {
-      FocusChangedHandler = UIAuto.RegisterFocusChangedEvent(OnFocusChangedGlobal);
-
-      // WindowOpenedEvent
-      RegisterAutomationEvent(
-        UIAuto.EventLibrary.Window.WindowOpenedEvent,
-        TreeScope.Children,
-        IsSMProcess,
-        OnWindowOpened,
-        WrapAutomationEvent(OnWindowOpenedEvent));
-
-      // WindowClosedEvent
-      RegisterAutomationEvent(
-        UIAuto.EventLibrary.Window.WindowClosedEvent,
-        TreeScope.Children,
-        IsSMProcess,
-        OnWindowClosed,
-        WrapAutomationEvent(OnWindowClosedEvent));
-    }
-
-    private override void UnregisterUIAutomationEvents()
-    {
-      UIAuto.UnregisterFocusChangedEvent(FocusChangedHandler);
-      FocusChangedHandler = null;
-
-      base.UnregisterUIAutomationEvents();
-    }
-
-    protected virtual void OnFocusChangedGlobal(AutomationElement elem)
-    {
-      if (elem.Properties.ProcessId == SMProcess.Id)
-        OnFocusChanged(elem);
-    }
-
-
-
-    //
-    // UI Automation Events
-
-    /// <summary>
-    /// Notification for a SM-related focus changed event.
-    /// </summary>
-    /// <param name="elem"></param>
-    /// <param name="eventId"></param>
-    protected abstract void OnFocusChanged(AutomationElement elem);
-
-    /// <summary>
-    /// Notification for a SM-related window open event.
-    /// </summary>
-    /// <param name="elem"></param>
-    /// <param name="eventId"></param>
-    protected abstract void OnWindowOpened(AutomationElement elem, EventId eventId);
-    /// <summary>
-    /// Notification for a SM-related window close event.
-    /// </summary>
-    /// <param name="elem"></param>
-    /// <param name="eventId"></param>
-    protected abstract void OnWindowClosed(AutomationElement elem, EventId eventId);
-    */
+    protected abstract IEnumerable<ISMAHookIO> GetIOCallbacks();
 
 
     //
     // ISuperMemo Methods
 
     public abstract SMAppVersion AppVersion { get; }
-
-    #endregion
-
-
-
-
-    #region Events
-
-    public event EventHandler<SMProcessArgs> OnSMStoppedEvent;
 
     #endregion
 

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/12/27 20:00
+// Modified On:  2019/01/19 04:55
 // Modified By:  Alexis
 
 #endregion
@@ -31,13 +31,11 @@
 
 
 using System;
-using Process.NET.Windows;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.UI
 {
   public interface IWdw
   {
-    IWindow Window { get; }
+    IntPtr Handle { get; }
   }
 }

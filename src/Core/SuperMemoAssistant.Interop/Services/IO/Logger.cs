@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/12/20 12:23
-// Modified On:  2018/12/20 12:29
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/22 13:52
 // Modified By:  Alexis
 
 #endregion
@@ -31,12 +31,12 @@
 
 
 using System;
-using System.IO;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Exceptions;
 using SuperMemoAssistant.Interop;
+using SuperMemoAssistant.Sys.IO;
 
 namespace SuperMemoAssistant.Services.IO
 {
@@ -47,8 +47,8 @@ namespace SuperMemoAssistant.Services.IO
     protected const string OutputFormat = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}";
 
 
-    private static Logger instance;
-    public static  Logger Instance => instance ?? (instance = new Logger());
+    private static Logger _instance;
+    public static  Logger Instance => _instance ?? (_instance = new Logger());
 
     #endregion
 
@@ -75,7 +75,9 @@ namespace SuperMemoAssistant.Services.IO
 
     #region Methods
 
-    public void Initialize()
+    public void Initialize(
+      string                                         appName,
+      Func<LoggerConfiguration, LoggerConfiguration> configPredicate = null)
     {
 #if DEBUG || DEBUG_IN_PROD
       var logLevel = LogEventLevel.Debug;
@@ -85,35 +87,43 @@ namespace SuperMemoAssistant.Services.IO
 
       LevelSwitch = new LoggingLevelSwitch(logLevel);
 
-      Log.Logger = new LoggerConfiguration()
+      var config = new LoggerConfiguration()
                    .MinimumLevel.ControlledBy(LevelSwitch)
                    .Enrich.WithExceptionDetails()
                    .Enrich.WithDemystifiedStackTraces()
                    .WriteTo.Debug(outputTemplate: OutputFormat)
                    .WriteTo.Async(a =>
                                     a.RollingFile(
-                                      GetLogFilePath(),
+                                      GetLogFilePath(appName).FullPath,
                                       fileSizeLimitBytes: 5242880, // Math.Min(ConfigMgr.AppConfig.LogMaxSize, 26214400),
                                       retainedFileCountLimit: 7,
                                       shared: true,
                                       outputTemplate: OutputFormat
-                                    ))
-                   .WriteTo.Sentry()
-                   .CreateLogger();
+                                    ));
+
+      if (configPredicate != null)
+        config = configPredicate(config);
+
+      Log.Logger = config.CreateLogger();
     }
 
-    public static string GetLogFilePath()
+    public static FilePath GetLogFilePath(string appName)
     {
-      string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+      var logDir = SMAFileSystem.LogDir;
 
-      return Path.Combine(appData,
-                          SMConst.AppName,
-                          "log-{Date}.txt");
+      if (logDir.Exists() == false)
+        logDir.Create();
+
+      return logDir.CombineFile($"{appName}-{{Date}}.log");
     }
 
-    public void SetMinimumLevel(LogEventLevel level)
+    public LogEventLevel SetMinimumLevel(LogEventLevel level)
     {
+      var oldLevel = LevelSwitch.MinimumLevel;
+
       LevelSwitch.MinimumLevel = level;
+
+      return oldLevel;
     }
 
     public void Shutdown()

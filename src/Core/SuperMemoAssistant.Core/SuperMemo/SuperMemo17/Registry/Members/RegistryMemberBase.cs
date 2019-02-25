@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/18 19:25
-// Modified On:  2019/01/16 15:06
+// Modified On:  2019/01/24 13:50
 // Modified By:  Alexis
 
 #endregion
@@ -148,7 +148,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
                          mem.rtxLength,
                          nameof(RtxLength));
 
-      if (rt.value != null)
+      if (rt != null)
       {
         RtxId = SetDbg(RtxId,
                        rt.no,
@@ -230,7 +230,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 
     public string GetFilePath(string fileExt)
     {
-      SMCollection collection = SMA.Instance.Collection;
+      SMCollection collection = SMA.SMA.Instance.Collection;
 
       return GetFilePathForSlotId(
         collection,

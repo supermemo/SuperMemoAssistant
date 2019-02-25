@@ -37,7 +37,7 @@ using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo
 {
-  public class SuperMemoUI : SMMarshalByRefObject, ISuperMemoUI
+  public class SuperMemoUI : PerpetualMarshalByRefObject, ISuperMemoUI
   {
     #region Constants & Statics
 

@@ -14,7 +14,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
     protected int ColorBlue { get; set; }
 
 
-    public ComponentText(InfComponentsText comp)
+    public ComponentText(ref InfComponentsText comp)
       : base(comp.left, comp.top, comp.width, comp.height, (AtFlags)comp.displayAt)
     {
       TextId = SetValue(comp.registryId, nameof(TextId));
@@ -24,7 +24,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
       TextAlignment = SetValue((TextAlignment)comp.textAlignment, nameof(TextAlignment));
     }
 
-    public void Update(InfComponentsText comp)
+    public void Update(ref InfComponentsText comp)
     {
       ComponentFieldFlags flags = ComponentFieldFlags.None;
 
@@ -42,7 +42,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
       );
     }
 
-    public IText Text => SMA.Instance.Registry.Text?[TextId];
+    public IText Text => SMA.SMA.Instance.Registry.Text?[TextId];
     public Color Color => Color.FromArgb(ColorRed, ColorGreen, ColorBlue);
     public TextAlignment TextAlignment { get; set; }
   }

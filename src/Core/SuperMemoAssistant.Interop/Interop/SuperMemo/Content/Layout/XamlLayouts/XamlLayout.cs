@@ -32,6 +32,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Windows;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Contents;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Layout.XamlControls;
 
@@ -65,18 +66,23 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Content.Layout.XamlLayouts
 
     public string Build(List<ContentBase> contents)
     {
-      var ctrlGroup = new XamlControlGroup();
+      return Application.Current.Dispatcher.Invoke<string>(
+        () =>
+        {
+          var ctrlGroup = new XamlControlGroup();
 
-      try
-      {
-        ctrlGroup.LoadXaml(Xaml);
+          try
+          {
+            ctrlGroup.LoadXaml(Xaml);
 
-        return ctrlGroup.ToString(contents);
-      }
-      finally
-      {
-        ctrlGroup.Unload();
-      }
+            return ctrlGroup.ToString(contents);
+          }
+          finally
+          {
+            ctrlGroup.Unload();
+          }
+        }
+      );
     }
 
     #endregion

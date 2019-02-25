@@ -10,7 +10,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>SuperMemoAssistant</RootNamespace>
     <AssemblyName>SuperMemoAssistant</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -18,6 +18,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <AssemblyVersion>0.1.591</AssemblyVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,6 +48,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>C:\Users\Lila\AppData\Roaming\SuperMemoAssistant\</OutputPath>
@@ -57,6 +59,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-InProd|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -77,33 +80,44 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <LangVersion>default</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>robot-24.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Accessibility" />
     <Reference Include="Anotar.Serilog, Version=4.6.7.0, Culture=neutral, PublicKeyToken=9d5b24f0733c26f7, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Anotar.Serilog.Fody.4.6.7\lib\net452\Anotar.Serilog.dll</HintPath>
     </Reference>
-    <Reference Include="JetBrains.Annotations, Version=2018.3.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\JetBrains.Annotations.2018.3.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="AsyncEvent, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\AsyncEvent.0.2.0\lib\netstandard2.0\AsyncEvent.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
+    <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Threading.Tasks.Extensions, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
+    <Reference Include="DeviceId, Version=4.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\DeviceId.4.2.0\lib\net40\DeviceId.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop, Version=1.0.168.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
+    <Reference Include="FontAwesome5, Version=1.0.0.0, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FontAwesome5.1.0.10\lib\net40\FontAwesome5.dll</HintPath>
+    </Reference>
+    <Reference Include="FontAwesome5.WPF, Version=1.0.10.89, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FontAwesome5.1.0.10\lib\net40\FontAwesome5.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+    </Reference>
+    <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\MahApps.Metro.1.6.5\lib\net47\MahApps.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.XmlTransform, Version=3.0.0.34420, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.Web.Xdt.3.0.0\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
     </Reference>
     <Reference Include="ModuleInit, Version=1.9.0.0, Culture=neutral, PublicKeyToken=409b3227471b0f0d, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\ModuleInit.Fody.1.9.0\lib\net452\ModuleInit.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Patagames.Pdf, Version=3.33.12.462, Culture=neutral, PublicKeyToken=60fd6cf9b15941cf, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\Pdfium.Net.SDK.3.34.2704\lib\net47\Patagames.Pdf.dll</HintPath>
     </Reference>
     <Reference Include="Sentry, Version=1.1.2.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Sentry.1.1.2\lib\net461\Sentry.dll</HintPath>
@@ -114,6 +128,9 @@
     <Reference Include="Sentry.Protocol, Version=1.0.3.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Sentry.Protocol.1.0.3\lib\net46\Sentry.Protocol.dll</HintPath>
     </Reference>
+    <Reference Include="Sentry.Serilog, Version=1.1.2.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Sentry.Serilog.1.1.2\lib\net461\Sentry.Serilog.dll</HintPath>
+    </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Serilog.2.8.0\lib\net46\Serilog.dll</HintPath>
     </Reference>
@@ -121,17 +138,14 @@
     <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Management" />
     <Reference Include="System.Net" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\ControlzEx.3.0.2.4\lib\net462\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -144,6 +158,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="SMATaskbarIcon.cs" />
     <Page Include="CollectionSelectionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -155,6 +170,10 @@
     <Compile Include="CollectionSelectionWindow.xaml.cs">
       <DependentUpon>CollectionSelectionWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="SMATaskbarIcon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ModuleInitializer.cs" />
@@ -172,8 +191,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -192,64 +212,40 @@
       <Project>{4e0c323d-5afc-4105-815f-587346aa5321}</Project>
       <Name>Forge.Forms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\libs\Patagames.Pdf.Wpf\Pdf.WpfPubl.csproj">
-      <Project>{380a4f46-413d-49b4-884f-21c7683f093c}</Project>
-      <Name>Pdf.WpfPubl</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\src\Core\SuperMemoAssistant.Core\SuperMemoAssistant.Core.csproj">
       <Project>{7550628d-0630-4a42-b0b7-55d26f981365}</Project>
       <Name>SuperMemoAssistant.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\SuperMemoAssistant.Plugins.Dictionary.Interop\SuperMemoAssistant.Plugins.Dictionary.Interop.csproj">
-      <Project>{aa97c5aa-ca1a-4988-ae2e-e5a292b63c12}</Project>
-      <Name>SuperMemoAssistant.Plugins.Dictionary.Interop</Name>
+    <ProjectReference Include="..\..\Core\SuperMemoAssistant.Hooks.InjectLib\SuperMemoAssistant.Hooks.InjectLib.csproj">
+      <Project>{d5086d5e-84a6-4c0d-b6f2-d1b82c5fb487}</Project>
+      <Name>SuperMemoAssistant.Hooks.InjectLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\SuperMemoAssistant.Interop\SuperMemoAssistant.Interop.csproj">
       <Project>{fd0e1be8-bed3-4ab0-a9c8-022a2dbc8450}</Project>
       <Name>SuperMemoAssistant.Interop</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Core\SuperMemoAssistant.Hooks.InjectLib\SuperMemoAssistant.Hooks.InjectLib.csproj">
-      <Project>{d5086d5e-84a6-4c0d-b6f2-d1b82c5fb487}</Project>
-      <Name>SuperMemoAssistant.Hooks.InjectLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\SuperMemoAssistant.PluginsHost\SuperMemoAssistant.PluginsHost.csproj">
-      <Project>{9799923c-3de6-48bf-b459-aa3029016727}</Project>
-      <Name>SuperMemoAssistant.PluginsHost</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Plugins\SuperMemoAssistant.Plugins.Dictionary\SuperMemoAssistant.Plugins.Dictionary.csproj">
-      <Project>{c76cfa78-f820-4f05-9429-4a3a3c9c1414}</Project>
-      <Name>SuperMemoAssistant.Plugins.Dictionary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Plugins\SuperMemoAssistant.Plugins.ImageOcclusion\SuperMemoAssistant.Plugins.ImageOcclusion.csproj">
-      <Project>{f8bb6993-25df-4173-bb3d-acee15c5a2b9}</Project>
-      <Name>SuperMemoAssistant.Plugins.ImageOcclusion</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Plugins\SuperMemoAssistant.Plugins.LateX\SuperMemoAssistant.Plugins.LateX.csproj">
-      <Project>{cd2988da-b610-40ad-995a-aa5a28fbbbfe}</Project>
-      <Name>SuperMemoAssistant.Plugins.LateX</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Services\SuperMemoAssistant.Services.Medias.Images\SuperMemoAssistant.Services.Medias.Images.csproj">
-      <Project>{677647e4-f052-41d0-915a-ad76da72463e}</Project>
-      <Name>SuperMemoAssistant.Services.Medias.Images</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Plugins\SuperMemoAssistant.Plugins.PDF\SuperMemoAssistant.Plugins.PDF.csproj">
-      <Project>{faecf9bb-9fd5-4fb1-a3a8-9f7caa57a1fe}</Project>
-      <Name>SuperMemoAssistant.Plugins.PDF</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\robot-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\robot-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="robot-24.ico" />
+  </ItemGroup>
+  <Import Project="..\..\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
     <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\Fody.3.3.5\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.3.3.5\build\Fody.targets'))" />
     <Error Condition="!Exists('..\..\..\packages\ModuleInit.Fody.1.9.0\build\ModuleInit.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\ModuleInit.Fody.1.9.0\build\ModuleInit.Fody.props'))" />
+    <Error Condition="!Exists('..\..\..\packages\Fody.4.0.2\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.4.0.2\build\Fody.targets'))" />
   </Target>
-  <Import Project="..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
-  <Import Project="..\..\..\packages\Fody.3.3.5\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.3.3.5\build\Fody.targets')" />
+  <Import Project="..\..\..\packages\Fody.4.0.2\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.4.0.2\build\Fody.targets')" />
 </Project>

@@ -31,7 +31,7 @@
 
 
 using System;
-using Process.NET;
+using System.Diagnostics;
 using SuperMemoAssistant.Interop.SuperMemo.Content;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Components;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
@@ -71,7 +71,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
     #region Constructors
 
     public SMProcessArgs(ISuperMemo smMgmt,
-                         IProcess   process)
+                         Process   process)
       : base(smMgmt)
     {
       Process = process;
@@ -84,7 +84,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
 
     #region Properties & Fields - Public
 
-    public IProcess Process { get; }
+    public Process Process { get; }
 
     #endregion
   }

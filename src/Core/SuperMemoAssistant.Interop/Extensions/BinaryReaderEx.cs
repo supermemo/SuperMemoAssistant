@@ -33,7 +33,6 @@ namespace SuperMemoAssistant.Extensions
     }
 
     public static T ReadStruct<T>(this BinaryReader r)
-      where T : struct
     {
       byte[] rawData = r.ReadBytes(Marshal.SizeOf(typeof(T)));
 
@@ -53,7 +52,5 @@ namespace SuperMemoAssistant.Extensions
         pinnedRawData.Free();
       }
     }
-
-    //public static T[] ReadArray<T>(this BinaryReader r)
   }
 }

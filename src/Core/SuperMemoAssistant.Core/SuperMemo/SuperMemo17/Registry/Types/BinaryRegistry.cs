@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/12/07 13:56
-// Modified On:  2018/12/10 13:12
+// Modified On:  2019/01/24 13:56
 // Modified By:  Alexis
 
 #endregion
@@ -34,7 +34,6 @@ using System;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
-using SuperMemoAssistant.Services;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members;
 using SuperMemoAssistant.Sys;
@@ -61,7 +60,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override string RtxFileName => SMConst.Files.BinaryRtxFileName;
     protected override string RtfFileName => null;
     protected override IntPtr RegistryPtr =>
-      new IntPtr(SM17Natives.TRegistry.BinaryRegistryInstance.Read<int>(Svc.SM.Memory));
+      new IntPtr(SM17Natives.TRegistry.BinaryRegistryInstance.Read<int>(SMA.SMA.Instance.SMProcess.Memory));
 
     #endregion
 

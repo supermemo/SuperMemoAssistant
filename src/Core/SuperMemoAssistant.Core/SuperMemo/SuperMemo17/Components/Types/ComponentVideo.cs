@@ -9,7 +9,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
   {
     protected int VideoId { get; set; }
 
-    public ComponentVideo(InfComponentsVideo comp)
+    public ComponentVideo(ref InfComponentsVideo comp)
       : base(comp.left, comp.top, comp.width, comp.height, (AtFlags)comp.displayAt)
     {
       VideoId = SetValue(comp.registryId, nameof(VideoId));
@@ -20,7 +20,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
       Panel = SetValue((MediaPanelType)comp.panel, nameof(Panel));
     }
 
-    public void Update(InfComponentsVideo comp)
+    public void Update(ref InfComponentsVideo comp)
     {
       ComponentFieldFlags flags = ComponentFieldFlags.None;
 
@@ -39,7 +39,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
       );
     }
 
-    public IVideo Video => SMA.Instance.Registry.Video?[VideoId];
+    public IVideo Video => SMA.SMA.Instance.Registry.Video?[VideoId];
     public bool IsContinuous { get; set; }
     public bool IsFullScreen { get; set; }
     public uint ExtractStart { get; set; }

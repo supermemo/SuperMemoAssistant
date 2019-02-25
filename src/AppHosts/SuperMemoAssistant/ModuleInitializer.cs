@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/08 16:29
-// Modified On:  2018/12/30 14:32
+// Modified On:  2019/01/25 23:41
 // Modified By:  Alexis
 
 #endregion
@@ -31,16 +31,18 @@
 
 
 using System;
+using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Plugins;
 using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO;
-using SuperMemoAssistant.SuperMemo;
+using SuperMemoAssistant.Services.IO.Devices;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Components;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
-using SuperMemoAssistant.Sys;
+
+// ReSharper disable RedundantAssignment
 
 namespace SuperMemoAssistant
 {
@@ -60,9 +62,12 @@ namespace SuperMemoAssistant
     public static void Initialize()
     {
       //InitOnLoad.Initialize();
-
-      Svc<CorePlugin>.Plugin        = new CorePlugin();
-      Svc<CorePlugin>.Configuration = new ConfigurationService(Svc<CorePlugin>.Plugin);
+      
+      SentryInstance = Services.Sentry.SentryEx.Initialize();
+      Logger.Instance.Initialize(SMAConst.Name, Services.Sentry.SentryEx.LogToSentry);
+      
+      Svc.Configuration = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
+      Svc.KeyboardHotKey = KeyboardHookService.Instance;
 
       // ReSharper disable once NotAccessedVariable
       // ReSharper disable once JoinDeclarationAndInitializer
@@ -77,11 +82,8 @@ namespace SuperMemoAssistant
       tmp = TextRegistry.Instance;
       tmp = VideoRegistry.Instance;
       tmp = ElementWdw.Instance;
-      tmp = PluginMgr.Instance;
-      tmp = SMA.Instance;
-
-      SentryInstance = Services.Sentry.Initialize();
-      Logger.Instance.Initialize();
+      tmp = PluginManager.Instance;
+      tmp = SMA.SMA.Instance;
     }
 
     #endregion

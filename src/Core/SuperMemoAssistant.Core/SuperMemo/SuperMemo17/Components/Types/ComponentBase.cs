@@ -32,9 +32,12 @@
 
 using System;
 using System.Collections.Generic;
-using Anotar.Serilog;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
+
+#if DEBUG && !DEBUG_IN_PROD
+using Anotar.Serilog;
+#endif
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
 {

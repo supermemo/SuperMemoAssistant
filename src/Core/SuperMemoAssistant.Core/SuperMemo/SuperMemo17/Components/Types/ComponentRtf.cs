@@ -13,7 +13,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
     protected int ColorGreen { get; set; }
     protected int ColorBlue { get; set; }
 
-    public ComponentRtf(InfComponentsRtf comp)
+    public ComponentRtf(ref InfComponentsRtf comp)
       : base(comp.left, comp.top, comp.width, comp.height, (AtFlags)comp.displayAt)
     {
       TextId = SetValue(comp.registryId, nameof(TextId));
@@ -22,7 +22,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
       ColorBlue = SetValue(comp.colorBlue, nameof(ColorBlue));
     }
 
-    public void Update(InfComponentsRtf comp)
+    public void Update(ref InfComponentsRtf comp)
     {
       ComponentFieldFlags flags = ComponentFieldFlags.None;
 
@@ -39,7 +39,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
       );
     }
 
-    public IText Text => SMA.Instance.Registry.Text?[TextId];
+    public IText Text => SMA.SMA.Instance.Registry.Text?[TextId];
     public Color Color => Color.FromArgb(ColorRed, ColorGreen, ColorBlue);
   }
 }

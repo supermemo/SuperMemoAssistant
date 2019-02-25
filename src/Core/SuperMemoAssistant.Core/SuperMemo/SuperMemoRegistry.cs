@@ -41,7 +41,7 @@ using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo
 {
-  public class SuperMemoRegistry : SMMarshalByRefObject, ISuperMemoRegistry
+  public class SuperMemoRegistry : PerpetualMarshalByRefObject, ISuperMemoRegistry
   {
     #region Constants & Statics
 

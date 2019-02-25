@@ -87,7 +87,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
     protected ElementBase(int             id,
                           InfContentsElem cttElem,
-                          InfElementsElem elElem)
+                          InfElementsElemContainer elElem)
     {
       Id = id;
 
@@ -97,21 +97,21 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
                   Id);
 #endif
 
-      TitleTextId = SetValue(elElem.titleTextId,
+      TitleTextId = SetValue(elElem._elem.titleTextId,
                              nameof(TitleTextId));
       Deleted = SetValue(cttElem.deleted != 0,
                          nameof(Deleted));
 
-      TemplateId = SetValue(elElem.templateId,
+      TemplateId = SetValue(elElem._elem.templateId,
                             nameof(TemplateId));
-      ConceptId = SetValue(elElem.conceptId,
+      ConceptId = SetValue(elElem._elem.conceptId,
                            nameof(ConceptId));
 
-      ComponentPos = SetValue(elElem.componPos,
+      ComponentPos = SetValue(elElem._elem.componPos,
                               nameof(ComponentPos));
       OnComponentPosChanged(-1,
                             ComponentPos);
-      //AFactor = SetDbg(elElem.AFactor, nameof(AFactor));
+      //AFactor = SetDbg(elElem._elem.AFactor, nameof(AFactor));
 
       ParentId = SetValue(cttElem.parentId,
                           nameof(ParentId));
@@ -173,17 +173,17 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     public int DescendantCount { get; protected set; }
     public int ChildrenCount   { get; protected set; }
 
-    public string Title => SMA.Instance.Registry.Text?[TitleTextId]?.Name;
+    public string Title => SMA.SMA.Instance.Registry.Text?[TitleTextId]?.Name;
 
-    public IComponentGroup ComponentGroup => SMA.Instance.Registry.Component?[ComponentPos];
-    public IElement        Template       => SMA.Instance.Registry.Element?[TemplateId];
-    public IConcept        Concept        => SMA.Instance.Registry.Concept?[ConceptId];
+    public IComponentGroup ComponentGroup => SMA.SMA.Instance.Registry.Component?[ComponentPos];
+    public IElement        Template       => SMA.SMA.Instance.Registry.Element?[TemplateId];
+    public IConcept        Concept        => SMA.SMA.Instance.Registry.Concept?[ConceptId];
 
-    public IElement Parent      => SMA.Instance.Registry.Element?[ParentId];
-    public IElement FirstChild  => SMA.Instance.Registry.Element?[FirstChildId];
-    public IElement LastChild   => SMA.Instance.Registry.Element?[LastChildId];
-    public IElement NextSibling => SMA.Instance.Registry.Element?[NextSiblingId];
-    public IElement PrevSibling => SMA.Instance.Registry.Element?[PrevSiblingId];
+    public IElement Parent      => SMA.SMA.Instance.Registry.Element?[ParentId];
+    public IElement FirstChild  => SMA.SMA.Instance.Registry.Element?[FirstChildId];
+    public IElement LastChild   => SMA.SMA.Instance.Registry.Element?[LastChildId];
+    public IElement NextSibling => SMA.SMA.Instance.Registry.Element?[NextSiblingId];
+    public IElement PrevSibling => SMA.SMA.Instance.Registry.Element?[PrevSiblingId];
 
     public IEnumerable<IElement> Children => EnumerateChildren();
 
@@ -226,8 +226,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
     #region Methods
 
-    public ElementFieldFlags Update(InfContentsElem? cttElem,
-                                    InfElementsElem? elElem)
+    public ElementFieldFlags Update(InfContentsElem cttElem,
+                                    InfElementsElemContainer elElem)
     {
 #if DEBUG && !DEBUG_IN_PROD
       LogTo.Debug("[{0} {1}] Updating",
@@ -241,68 +241,68 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
       if (elElem != null)
       {
         TitleTextId = SetValue(TitleTextId,
-                               elElem.Value.titleTextId,
+                               elElem._elem.titleTextId,
                                nameof(TitleTextId),
                                ref flags);
 
         TemplateId = SetValue(TemplateId,
-                              elElem.Value.templateId,
+                              elElem._elem.templateId,
                               nameof(TemplateId),
                               ref flags);
         ConceptId = SetValue(ConceptId,
-                             elElem.Value.conceptId,
+                             elElem._elem.conceptId,
                              nameof(ConceptId),
                              ref flags);
 
         ComponentPos = SetValue(ComponentPos,
-                                elElem.Value.componPos,
+                                elElem._elem.componPos,
                                 nameof(ComponentPos),
                                 ref flags,
                                 OnComponentPosChanged);
-        //AFactor = SetDbg(elElem.Value.AFactor, nameof(AFactor));
+        //AFactor = SetDbg(elElem._elem.AFactor, nameof(AFactor));
       }
 
       if (cttElem != null)
       {
         Deleted = SetValue(Deleted,
-                           cttElem.Value.deleted != 0,
+                           cttElem.deleted != 0,
                            nameof(Deleted),
                            ref flags);
 
         ParentId = SetValue(ParentId,
-                            cttElem.Value.parentId,
+                            cttElem.parentId,
                             nameof(ParentId),
                             ref flags);
         FirstChildId = SetValue(FirstChildId,
-                                cttElem.Value.firstChildId,
+                                cttElem.firstChildId,
                                 nameof(FirstChildId),
                                 ref flags);
         LastChildId = SetValue(LastChildId,
-                               cttElem.Value.lastChildId,
+                               cttElem.lastChildId,
                                nameof(LastChildId),
                                ref flags);
         NextSiblingId = SetValue(NextSiblingId,
-                                 cttElem.Value.nextSiblingId,
+                                 cttElem.nextSiblingId,
                                  nameof(NextSiblingId),
                                  ref flags);
         PrevSiblingId = SetValue(PrevSiblingId,
-                                 cttElem.Value.prevSiblingId,
+                                 cttElem.prevSiblingId,
                                  nameof(PrevSiblingId),
                                  ref flags);
 
         DescendantCount = SetValue(DescendantCount,
-                                   cttElem.Value.descendantCount,
+                                   cttElem.descendantCount,
                                    nameof(DescendantCount),
                                    ref flags);
         ChildrenCount = SetValue(ChildrenCount,
-                                 cttElem.Value.childrenCount,
+                                 cttElem.childrenCount,
                                  nameof(ChildrenCount),
                                  ref flags);
       }
 
       try
       {
-        OnChanged?.Invoke(new SMElementChangedArgs(SMA.Instance,
+        OnChanged?.Invoke(new SMElementChangedArgs(SMA.SMA.Instance,
                                                    (IElement)this,
                                                    flags));
       }
@@ -318,12 +318,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     protected void OnComponentPosChanged(int oldCompPos,
                                          int newCompPos)
     {
-      if (SMA.Instance.Registry.Component == null)
+      if (SMA.SMA.Instance.Registry.Component == null)
         return;
 
       if (oldCompPos >= 0)
       {
-        var comp = SMA.Instance.Registry.Component[oldCompPos];
+        var comp = SMA.SMA.Instance.Registry.Component[oldCompPos];
 
         if (comp != null)
           comp.OnChanged -= OnComponentChanged;
@@ -332,7 +332,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
       if (newCompPos >= 0)
       {
-        var comp = SMA.Instance.Registry.Component[newCompPos];
+        var comp = SMA.SMA.Instance.Registry.Component[newCompPos];
 
         if (comp != null)
           comp.OnChanged += OnComponentChanged;
@@ -343,7 +343,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     {
       try
       {
-        OnChanged?.Invoke(new SMElementChangedArgs(SMA.Instance,
+        OnChanged?.Invoke(new SMElementChangedArgs(SMA.SMA.Instance,
                                                    (IElement)this,
                                                    ElementFieldFlags.Components));
       }

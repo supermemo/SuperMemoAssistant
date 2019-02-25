@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/19 12:03
-// Modified On:  2018/12/07 14:20
+// Modified On:  2019/01/24 13:50
 // Modified By:  Alexis
 
 #endregion
@@ -57,7 +57,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 
     #region Properties Impl - Public
 
-    public IConceptGroup ConceptGroup => (IConceptGroup)SMA.Instance.Registry.Element?[SlotLengthOrConceptGroupId];
+    public IConceptGroup ConceptGroup => (IConceptGroup)SMA.SMA.Instance.Registry.Element?[SlotLengthOrConceptGroupId];
 
     #endregion
 

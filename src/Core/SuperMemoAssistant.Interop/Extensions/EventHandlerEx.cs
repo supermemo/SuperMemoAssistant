@@ -43,7 +43,7 @@ namespace SuperMemoAssistant.Extensions
     public static Task<(bool success, object sender, TArgs args)> WaitEventAsync<TArgs>(this EventHandler<TArgs> eventHandler,
                                                                                         int                      timeOut = Timeout.Infinite)
     {
-      TArgs          args   = default(TArgs);
+      TArgs          args   = default;
       object         sender = null;
       AutoResetEvent ev     = new AutoResetEvent(false);
 

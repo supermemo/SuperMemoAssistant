@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/31 09:26
-// Modified On:  2018/05/31 09:26
+// Created On:   2018/06/01 14:25
+// Modified On:  2019/01/25 23:39
 // Modified By:  Alexis
 
 #endregion
@@ -34,23 +34,22 @@ using System;
 
 namespace SuperMemoAssistant.Sys.IO.Devices
 {
-  /// <summary>
-  /// https://stackoverflow.com/questions/1153009/how-can-i-convert-system-windows-input-key-to-system-windows-forms-keys
-  /// </summary>
+  /// <summary>https://stackoverflow.com/questions/1153009/how-can-i-convert-system-windows-input-key-to-system-windows-forms-keys</summary>
   public class HotKeyEventArgs : EventArgs
   {
     #region Constructors
 
-    public HotKeyEventArgs(VKey vKey, KeyModifiers modifiers)
+    public HotKeyEventArgs(VKey         vKey,
+                           KeyModifiers modifiers)
     {
-      VKey       = vKey;
+      VKey      = vKey;
       Modifiers = modifiers;
     }
 
     public HotKeyEventArgs(IntPtr hotKeyParam)
     {
       uint param = (uint)hotKeyParam.ToInt64();
-      VKey       = (VKey)((param & 0xffff0000) >> 16);
+      VKey      = (VKey)((param & 0xffff0000) >> 16);
       Modifiers = (KeyModifiers)(param & 0x0000ffff);
     }
 
@@ -61,8 +60,8 @@ namespace SuperMemoAssistant.Sys.IO.Devices
 
     #region Properties & Fields - Public
 
-    public readonly VKey         VKey;
-    public readonly KeyModifiers Modifiers;
+    public VKey         VKey      { get; }
+    public KeyModifiers Modifiers { get; }
 
     #endregion
   }

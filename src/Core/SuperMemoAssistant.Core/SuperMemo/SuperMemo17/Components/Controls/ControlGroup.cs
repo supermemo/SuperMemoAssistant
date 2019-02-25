@@ -43,7 +43,7 @@ using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 {
-  public class ControlGroup : SMMarshalByRefObject, IControlGroup, IDisposable
+  public class ControlGroup : PerpetualMarshalByRefObject, IControlGroup, IDisposable
   {
     #region Constants & Statics
 
@@ -301,7 +301,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
       //                     new DelphiUString(text),
       //                     _smProcess.ThreadFactory.MainThread);
 
-      return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.TCompDataSetText,
+      return SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.TCompDataSetText,
                                                      new IntPtr(_componentDataAddr),
                                                      control.Id + 1,
                                                      new DelphiUString(text)) == 1;
@@ -316,7 +316,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
       //                            control.Id + 1,
       //                            _smProcess.ThreadFactory.MainThread);
 
-      return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.TCompDataGetTextRegMember,
+      return SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.TCompDataGetTextRegMember,
                                                      new IntPtr(_componentDataAddr),
                                                      control.Id + 1);
     }
@@ -327,7 +327,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
       if (IsDisposed)
         throw new InvalidOperationException(DisposedException);
 
-      if (SMA.Instance.Registry.Text[member] == null)
+      if (SMA.SMA.Instance.Registry.Text[member] == null)
         return false;
 
       //return SetTextRegMemberMethod(new IntPtr(_componentDataAddr),
@@ -335,7 +335,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
       //                              member,
       //                              _smProcess.ThreadFactory.MainThread);
 
-      return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.TCompDataSetTextRegMember,
+      return SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.TCompDataSetTextRegMember,
                                                      new IntPtr(_componentDataAddr),
                                                      control.Id + 1,
                                                      member) == 1;
@@ -351,7 +351,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
       //                             _smProcess.ThreadFactory.MainThread);
       
 
-      return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.TCompDataGetImageRegMember,
+      return SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.TCompDataGetImageRegMember,
                                                      new IntPtr(_componentDataAddr),
                                                      control.Id + 1);
     }
@@ -362,7 +362,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
       if (IsDisposed)
         throw new InvalidOperationException(DisposedException);
 
-      if (SMA.Instance.Registry.Image[member] == null)
+      if (SMA.SMA.Instance.Registry.Image[member] == null)
         return false;
 
       //return SetImageRegMemberMethod(new IntPtr(_componentDataAddr),
@@ -370,7 +370,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
       //                               member,
       //                               _smProcess.ThreadFactory.MainThread);
 
-      return SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.TCompDataSetImageRegMember,
+      return SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.TCompDataSetImageRegMember,
                                                      new IntPtr(_componentDataAddr),
                                                      control.Id + 1,
                                                      member) == 1;

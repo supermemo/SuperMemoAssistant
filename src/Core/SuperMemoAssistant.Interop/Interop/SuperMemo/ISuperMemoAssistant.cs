@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/07/27 12:55
-// Modified On:  2018/12/13 13:09
+// Modified On:  2019/02/24 19:09
 // Modified By:  Alexis
 
 #endregion
@@ -30,13 +30,9 @@
 
 
 
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-
 namespace SuperMemoAssistant.Interop.SuperMemo
 {
   public interface ISuperMemoAssistant : ISuperMemo
   {
-    bool Start(SMCollection collection);
-    bool IsRunning { get; }
   }
 }

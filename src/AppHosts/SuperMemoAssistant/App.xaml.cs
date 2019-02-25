@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/08 15:19
-// Modified On:  2018/11/22 18:37
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/25 00:50
 // Modified By:  Alexis
 
 #endregion
@@ -30,21 +30,32 @@
 
 
 
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
-using Sentry;
+using Hardcodet.Wpf.TaskbarNotification;
 using SuperMemoAssistant.Services.IO;
-using SuperMemoAssistant.SuperMemo;
 
 namespace SuperMemoAssistant
 {
   /// <summary>Interaction logic for App.xaml</summary>
   public partial class App : Application
   {
-    #region Properties & Fields - Non-Public
+    private TaskbarIcon _taskbarIcon;
 
-    private SynchronizationContext SyncContext { get; set; }
+
+
+
+    #region Methods Impl
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+      _taskbarIcon.Dispose();
+
+      Logger.Instance.Shutdown();
+      ModuleInitializer.SentryInstance.Dispose();
+
+      base.OnExit(e);
+    }
 
     #endregion
 
@@ -56,8 +67,7 @@ namespace SuperMemoAssistant
     private void Application_Startup(object           sender,
                                      StartupEventArgs e)
     {
-      SyncContext = new DispatcherSynchronizationContext();
-      SynchronizationContext.SetSynchronizationContext(SyncContext);
+      _taskbarIcon = (TaskbarIcon)FindResource("TbIcon");
 
       var selectionWdw = new CollectionSelectionWindow();
 
@@ -67,8 +77,8 @@ namespace SuperMemoAssistant
 
       if (selectionWdw.Collection != null)
       {
-        if (SMA.Instance.Start(selectedCol))
-          SMA.Instance.OnSMStoppedEvent += Instance_OnSMStoppedEvent;
+        SMA.SMA.Instance.OnSMStoppedEvent += Instance_OnSMStoppedEvent;
+        SMA.SMA.Instance.Start(selectedCol).ConfigureAwait(false);
       }
       else
       {
@@ -76,20 +86,10 @@ namespace SuperMemoAssistant
       }
     }
 
-    private void Instance_OnSMStoppedEvent(object                               sender,
+    private Task Instance_OnSMStoppedEvent(object                               sender,
                                            Interop.SuperMemo.Core.SMProcessArgs e)
     {
-      SyncContext.Send(
-        delegate { Shutdown(); },
-        null);
-    }
-
-    protected override void OnExit(ExitEventArgs e)
-    {
-      Logger.Instance.Shutdown();
-      ModuleInitializer.SentryInstance.Dispose();
-
-      base.OnExit(e);
+      return Dispatcher.InvokeAsync(Shutdown).Task;
     }
 
     #endregion

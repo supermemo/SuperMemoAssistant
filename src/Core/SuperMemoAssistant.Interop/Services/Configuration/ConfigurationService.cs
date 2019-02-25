@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/01 13:31
-// Modified On:  2018/06/01 13:33
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/22 14:07
 // Modified By:  Alexis
 
 #endregion
@@ -33,14 +33,15 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Anotar.Serilog;
 using Newtonsoft.Json;
-using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.Plugins;
+using SuperMemoAssistant.Sys.IO;
 
 namespace SuperMemoAssistant.Services.Configuration
 {
-  public class ConfigurationService
+  public class PluginConfigurationService : ConfigurationServiceBase
   {
     #region Properties & Fields - Non-Public
 
@@ -53,9 +54,11 @@ namespace SuperMemoAssistant.Services.Configuration
 
     #region Constructors
 
-    public ConfigurationService(ISMAPlugin plugin)
+    public PluginConfigurationService(ISMAPlugin plugin)
     {
       Plugin = plugin;
+      
+      EnsureFolderExists();
     }
 
     #endregion
@@ -63,41 +66,83 @@ namespace SuperMemoAssistant.Services.Configuration
 
 
 
+    #region Methods Impl
+
+    protected override DirectoryPath GetDefaultConfigDirectoryPath() =>
+      SMAFileSystem.ConfigDir.CombineFile(Plugin.AssemblyName).FullPath;
+
+    #endregion
+  }
+
+  public class ConfigurationService : ConfigurationServiceBase
+  {
+    #region Properties & Fields - Non-Public
+
+    private readonly DirectoryPath _dirPath;
+
+    #endregion
+
+
+
+
+    #region Constructors
+
+    /// <inheritdoc />
+    public ConfigurationService(DirectoryPath dirPath)
+    {
+      _dirPath = dirPath;
+
+      EnsureFolderExists();
+    }
+
+    #endregion
+
+
+
+
+    #region Methods Impl
+
+    /// <inheritdoc />
+    protected override DirectoryPath GetDefaultConfigDirectoryPath()
+    {
+      return _dirPath;
+    }
+
+    #endregion
+  }
+
+
+  public abstract class ConfigurationServiceBase
+  {
     #region Methods
 
-    public Task<T> Load<T>(string fileName = null)
+    public async Task<T> Load<T>(DirectoryPath dirPath = null)
     {
-      // TODO: Implement fileName
-      return Load<T>(Plugin);
-    }
+      dirPath = dirPath ?? GetDefaultConfigDirectoryPath();
 
-    public Task<bool> Save<T>(T config, string fileName = null)
-    {
-      // TODO: Implement fileName
-      return Save<T>(Plugin, config);
-    }
-
-
-    private static async Task<T> Load<T>(ISMAPlugin requester)
-    {
       try
       {
-        using (var stream = EnsurePluginConf(requester, typeof(T), FileAccess.Read))
+        using (var stream = OpenConf(dirPath.FullPath, typeof(T), FileAccess.Read))
         using (var reader = new StreamReader(stream))
           return JsonConvert.DeserializeObject<T>(await reader.ReadToEndAsync().ConfigureAwait(false));
       }
       catch (Exception ex)
       {
-        // TODO: Log
-        return default(T);
+        var filePath = GetConfigFilePath(dirPath, typeof(T));
+        LogTo.Warning(ex, $"Failed to load config {filePath}");
+
+        throw;
       }
     }
 
-    private static async Task<bool> Save<T>(ISMAPlugin requester, T config)
+    public async Task<bool> Save<T>(T             config,
+                                    DirectoryPath dirPath = null)
     {
+      dirPath = dirPath ?? GetDefaultConfigDirectoryPath();
+
       try
       {
-        using (var stream = EnsurePluginConf(requester, typeof(T), FileAccess.Write))
+        using (var stream = OpenConf(dirPath.FullPath, typeof(T), FileAccess.Write))
         using (var writer = new StreamWriter(stream))
           await writer.WriteAsync(JsonConvert.SerializeObject(config, Formatting.Indented)).ConfigureAwait(false);
 
@@ -105,22 +150,47 @@ namespace SuperMemoAssistant.Services.Configuration
       }
       catch (Exception ex)
       {
-        // TODO: Log
-        return false;
+        var filePath = GetConfigFilePath(dirPath, typeof(T));
+        LogTo.Warning(ex, $"Failed to save config {filePath}");
+
+        throw;
       }
     }
 
-    private static FileStream EnsurePluginConf(ISMAPlugin plugin, Type confType, FileAccess fileAccess)
+    protected FileStream OpenConf(DirectoryPath dirPath,
+                                  Type          confType,
+                                  FileAccess    fileAccess)
     {
-      string filePath = Path.Combine(SMAConst.Paths.ConfigPath, plugin.Id.ToString("D"));
-
-      if (!DirectoryEx.EnsureExists(filePath))
+      if (!dirPath.Exists())
         return null;
 
-      filePath = Path.Combine(filePath, confType.Name);
+      var filePath = GetConfigFilePath(dirPath, confType);
 
-      return File.Open(filePath, fileAccess == FileAccess.Read ? FileMode.OpenOrCreate : FileMode.Create, fileAccess);
+      return File.Open(filePath.FullPath, fileAccess == FileAccess.Read ? FileMode.OpenOrCreate : FileMode.Create, fileAccess);
     }
+
+    protected virtual FilePath GetConfigFilePath(DirectoryPath dirPath,
+                                                 Type          confType)
+    {
+      return dirPath.CombineFile(confType.Name + ".json");
+    }
+
+    protected void EnsureFolderExists()
+    {
+      var dirPath = GetDefaultConfigDirectoryPath();
+
+      if (dirPath.Exists() == false)
+        Directory.CreateDirectory(dirPath.FullPath);
+    }
+
+    #endregion
+
+
+
+
+    #region Methods Abs
+
+    protected abstract DirectoryPath GetDefaultConfigDirectoryPath();
 
     #endregion
   }

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/05/24 13:30
-// Modified On:  2019/01/19 00:40
+// Modified On:  2019/01/19 05:07
 // Modified By:  Alexis
 
 #endregion
@@ -33,34 +33,20 @@
 using System;
 using Process.NET;
 using Process.NET.Windows;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.UI;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 {
-  public abstract class WdwBase : /*UIAutomationBase,*/MarshalByRefObject, IDisposable, IWdw
+  public abstract class WdwBase : /*UIAutomationBase,*/MarshalByRefObject, IWdw
   {
     #region Properties & Fields - Non-Public
 
-    //internal AutomationElement Window { get; set; }
     private IWindow _window = null;
 
     protected abstract IntPtr WindowHandle { get; }
 
-    #endregion
 
-
-
-
-    #region Constructors
-
-    protected WdwBase()
-    {
-      SMA.Instance.OnSMStartedEvent += OnSMStarted;
-      SMA.Instance.OnSMStoppedEvent += OnSMStopped;
-    }
-
-    public virtual void Dispose() { }
+    protected IProcess SMProcess => SMA.SMA.Instance.SMProcess;
 
     #endregion
 
@@ -69,7 +55,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
     #region Properties & Fields - Public
 
-    public IProcess SMProcess { get; set; }
+    public IWindow Window => _window ?? (_window = GetWindow());
 
     #endregion
 
@@ -78,7 +64,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
     #region Properties Impl - Public
 
-    public IWindow Window => _window ?? (_window = GetWindow());
+    /// <inheritdoc />
+    public IntPtr Handle => WindowHandle;
 
     #endregion
 
@@ -92,15 +79,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       return new RemoteWindow(SMProcess,
                               WindowHandle);
     }
-
-    private void OnSMStarted(object        sender,
-                             SMProcessArgs e)
-    {
-      SMProcess = e.Process;
-    }
-
-    private void OnSMStopped(object        sender,
-                             SMProcessArgs e) { }
 
     #endregion
 

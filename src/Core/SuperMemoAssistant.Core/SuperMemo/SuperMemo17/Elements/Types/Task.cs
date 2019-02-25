@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:12
-// Modified On:  2019/01/01 18:12
+// Modified On:  2019/01/24 14:16
 // Modified By:  Alexis
 
 #endregion
@@ -50,9 +50,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
     #region Constructors
 
-    public Task(int             id,
-                InfContentsElem cttElem,
-                InfElementsElem elElem)
+    public Task(int                      id,
+                InfContentsElem          cttElem,
+                InfElementsElemContainer elElem)
       : base(id,
              cttElem,
              elElem) { }

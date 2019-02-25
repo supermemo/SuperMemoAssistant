@@ -104,7 +104,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components
 
       try
       {
-        OnChanged?.Invoke(new SMComponentGroupArgs(SMA.Instance,
+        OnChanged?.Invoke(new SMComponentGroupArgs(SMA.SMA.Instance,
                                                    this));
       }
       catch (Exception ex)

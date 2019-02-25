@@ -49,7 +49,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Content.Contents
                         AtFlags             displayAt  = AtFlags.All,
                         VerticalAlignment   vAlignment = VerticalAlignment.Stretch,
                         HorizontalAlignment hAlignment = HorizontalAlignment.Stretch,
-                        Size                size       = default(Size))
+                        Size                size       = default)
       : base(displayAt,
              vAlignment,
              hAlignment,

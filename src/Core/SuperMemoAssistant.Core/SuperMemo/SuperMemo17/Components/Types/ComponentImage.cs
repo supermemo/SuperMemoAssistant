@@ -9,14 +9,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
   {
     protected int ImageId { get; set; }
 
-    public ComponentImage(InfComponentsImage comp)
+    public ComponentImage(ref InfComponentsImage comp)
       : base(comp.left, comp.top, comp.width, comp.height, (AtFlags)comp.displayAt)
     {
       ImageId = SetValue(comp.registryId, nameof(ImageId));
       Stretch = SetValue((ImageStretchMode)comp.stretchType, nameof(Stretch));
     }
 
-    public void Update(InfComponentsImage comp)
+    public void Update(ref InfComponentsImage comp)
     {
       ComponentFieldFlags flags = ComponentFieldFlags.None;
 
@@ -31,7 +31,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Types
       );
     }
 
-    public IImage Image => SMA.Instance.Registry.Image?[ImageId];
+    public IImage Image => SMA.SMA.Instance.Registry.Image?[ImageId];
     public ImageStretchMode Stretch { get; set; }
   }
 }

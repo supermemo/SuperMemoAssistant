@@ -1,6 +1,3 @@
-[submodule "libs/Patagames.Pdf.Wpf"]
-	path = libs/Patagames.Pdf.Wpf
-	url = https://github.com/supermemo/Pdf.Wpf.git
 [submodule "libs/Process.NET"]
 	path = libs/Process.NET
 	url = https://github.com/supermemo/Process.NET.git

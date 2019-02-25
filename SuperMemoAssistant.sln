@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Resources", "_Resources", "{68D4CD2C-A5B9-441D-8D5E-F0A9C02B96A6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Libs", "_Libs", "{052AFAF6-318D-4D7F-AAEC-3C8A5667FFBC}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "pngcs", "libs\pngcs\pngcs.shproj", "{4F65145F-6F0C-49CD-830A-A51A2A9C5F75}"

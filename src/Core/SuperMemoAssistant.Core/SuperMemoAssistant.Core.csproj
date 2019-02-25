@@ -403,6 +403,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="..\SuperMemoAssistant.PluginHost.Shared\SuperMemoAssistant.PluginHost.Shared.projitems" Label="Shared" />

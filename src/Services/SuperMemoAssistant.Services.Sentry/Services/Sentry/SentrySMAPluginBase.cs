@@ -35,6 +35,7 @@ using Anotar.Serilog;
 using Serilog;
 using SuperMemoAssistant.Interop.Plugins;
 
+// ReSharper disable once CheckNamespace
 namespace SuperMemoAssistant.Services.Sentry
 {
   public abstract class SentrySMAPluginBase<TPlugin> : SMAPluginBase<TPlugin>

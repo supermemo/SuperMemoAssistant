@@ -36,6 +36,7 @@ using Sentry;
 using Sentry.Protocol;
 using Serilog;
 
+// ReSharper disable once CheckNamespace
 namespace SuperMemoAssistant.Services.Sentry
 {
   public static class SentryEx

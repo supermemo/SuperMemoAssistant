@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/02/13 13:55
-// Modified On:  2019/02/22 13:45
+// Modified On:  2019/02/25 00:50
 // Modified By:  Alexis
 
 #endregion
@@ -30,9 +30,9 @@
 
 
 
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
+using Hardcodet.Wpf.TaskbarNotification;
 using SuperMemoAssistant.Services.IO;
 
 namespace SuperMemoAssistant
@@ -40,11 +40,7 @@ namespace SuperMemoAssistant
   /// <summary>Interaction logic for App.xaml</summary>
   public partial class App : Application
   {
-    #region Properties & Fields - Non-Public
-
-    private SynchronizationContext SyncContext { get; set; }
-
-    #endregion
+    private TaskbarIcon _taskbarIcon;
 
 
 
@@ -53,6 +49,8 @@ namespace SuperMemoAssistant
 
     protected override void OnExit(ExitEventArgs e)
     {
+      _taskbarIcon.Dispose();
+
       Logger.Instance.Shutdown();
       ModuleInitializer.SentryInstance.Dispose();
 
@@ -69,8 +67,7 @@ namespace SuperMemoAssistant
     private void Application_Startup(object           sender,
                                      StartupEventArgs e)
     {
-      SyncContext = new DispatcherSynchronizationContext();
-      SynchronizationContext.SetSynchronizationContext(SyncContext);
+      _taskbarIcon = (TaskbarIcon)FindResource("TbIcon");
 
       var selectionWdw = new CollectionSelectionWindow();
 
@@ -80,8 +77,8 @@ namespace SuperMemoAssistant
 
       if (selectionWdw.Collection != null)
       {
-        if (SMA.SMA.Instance.Start(selectedCol))
-          SMA.SMA.Instance.OnSMStoppedEvent += Instance_OnSMStoppedEvent;
+        SMA.SMA.Instance.OnSMStoppedEvent += Instance_OnSMStoppedEvent;
+        SMA.SMA.Instance.Start(selectedCol).ConfigureAwait(false);
       }
       else
       {
@@ -89,12 +86,10 @@ namespace SuperMemoAssistant
       }
     }
 
-    private void Instance_OnSMStoppedEvent(object                               sender,
+    private Task Instance_OnSMStoppedEvent(object                               sender,
                                            Interop.SuperMemo.Core.SMProcessArgs e)
     {
-      SyncContext.Send(
-        delegate { Shutdown(); },
-        null);
+      return Dispatcher.InvokeAsync(Shutdown).Task;
     }
 
     #endregion

@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/02/13 13:55
-// Modified On:  2019/02/21 13:57
+// Modified On:  2019/02/25 03:27
 // Modified By:  Alexis
 
 #endregion
@@ -31,38 +31,28 @@
 
 
 using System;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Anotar.Serilog;
+using CommandLine;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
-using SuperMemoAssistant.Plugins.PackageManager.NuGet;
+using SuperMemoAssistant.PluginHost;
 
 namespace SuperMemoAssistant.Plugins
 {
   public partial class PluginManager
   {
     #region Constants & Statics
-    
+
     private const int PluginStopTimeout = 3000;
-    
+
 #if DEBUG
-    private const int PluginConnectTimeout = 60000;
+    private const int PluginConnectTimeout = 5000;
 #else
     private const int PluginConnectTimeout = 5000;
 #endif
-
-    #endregion
-
-
-
-
-    #region Properties & Fields - Non-Public
-
-    private ConcurrentDictionary<string, PluginStartInfo> StartInfoMap { get; } =
-      new ConcurrentDictionary<string, PluginStartInfo>();
 
     #endregion
 
@@ -83,128 +73,170 @@ namespace SuperMemoAssistant.Plugins
 
       while (IsDisposed == false)
       {
-        if (sleepCounter > 6)
+        if (sleepCounter > 5)
         {
-          try
-          {
-            var pluginInstances = InstanceMap.Values;
+          foreach (var pluginInstance in _runningPluginMap.Values)
+            using (pluginInstance.Lock.Lock())
+              try
+              {
+                if (pluginInstance.Status != PluginStatus.Connected)
+                  continue;
 
-            foreach (var pluginInstance in pluginInstances)
-            {
-              if (pluginInstance.IsStopping)
-                continue;
+                pluginInstance.Process.Refresh();
 
-              pluginInstance.Process.Refresh();
+                if (pluginInstance.Process.HasExited)
+                  OnPluginStopped(pluginInstance, true);
+              }
+              catch (Exception ex)
+              {
+                LogTo.Error(ex, $"An exception occured while monitoring plugin {pluginInstance.Package.Id}");
 
-              if (pluginInstance.Process.HasExited)
-                OnPluginStopped(pluginInstance);
-            }
-          }
-          catch (Exception ex)
-          {
-            LogTo.Error(ex, "An exception occured while monitoring plugins");
-          }
+                OnPluginStopped(pluginInstance, false);
+              }
 
           sleepCounter = 0;
         }
 
         sleepCounter++;
-        Thread.Sleep(250);
+        Thread.Sleep(100);
       }
     }
 
-    private async Task StartPlugin(PluginPackage<PluginMetadata> pluginPackage)
+    public async Task StartPlugin(PluginInstance pluginInstance)
     {
-      bool   isDev     = pluginPackage.Metadata.IsDevelopment;
-      string pluginLog = isDev ? "development plugin" : "plugin";
-
-      LogTo.Information($"Starting {pluginLog} {pluginPackage.Id}");
-
-      var startInfo = StartInfoMap[pluginPackage.Id] = new PluginStartInfo(pluginPackage);
-
-      var smaProcId     = System.Diagnostics.Process.GetCurrentProcess().Id;
-      var devSwitch     = isDev ? "--development" : string.Empty;
-      var pluginId      = pluginPackage.Id;
-      var pluginHomeDir = pluginPackage.GetHomeDir();
-
-      var pluginStartInfo = new ProcessStartInfo(
-        SMAFileSystem.PluginHostExeFile.FullPath,
-        $"{pluginId.Quotify()} {smaProcId} {IpcServerChannelName.Quotify()} {pluginHomeDir.FullPath.Quotify()} {devSwitch}");
+      var                        pluginPackage = pluginInstance.Package;
+      var                        packageName   = pluginPackage.Id;
 
       try
       {
-        var proc = System.Diagnostics.Process.Start(pluginStartInfo);
-
-        if (proc == null)
+        using (await pluginInstance.Lock.LockAsync())
         {
-          LogTo.Warning($"Failed to start process for {pluginLog} {pluginId}");
+          if (pluginInstance.Status != PluginStatus.Stopped)
+            return;
+
+          if (_runningPluginMap.ContainsKey(pluginInstance.Guid))
+            throw new InvalidOperationException("A plugin with the same Package name is already running");
+
+          OnPluginStarting(pluginInstance);
+        }
+
+        var cmdLineParams = new PluginHostParameters
+        {
+          PackageName    = packageName,
+          HomePath       = pluginPackage.GetHomeDir().FullPath,
+          SessionString  = pluginInstance.Guid.ToString(),
+          SMAChannelName = IpcServerChannelName,
+          SMAProcessId   = System.Diagnostics.Process.GetCurrentProcess().Id,
+          IsDeveloment   = pluginInstance.Metadata.IsDevelopment,
+        };
+
+        var pluginStartInfo = new ProcessStartInfo(
+          SMAFileSystem.PluginHostExeFile.FullPath,
+          Parser.Default.FormatCommandLine(cmdLineParams))
+        {
+          UseShellExecute = false,
+        };
+
+        pluginInstance.Process = System.Diagnostics.Process.Start(pluginStartInfo);
+
+        if (pluginInstance.Process == null)
+        {
+          LogTo.Warning($"Failed to start process for {pluginInstance.Denomination} {packageName}");
           return;
         }
 
-        if (await startInfo.ConnectedEvent.WaitAsync(PluginConnectTimeout))
-          return;
-
-        LogTo.Warning(
-          $"{pluginLog.CapitalizeFirst()} {pluginId} failed to connect in {PluginConnectTimeout}ms. Attempting to kill process");
-
-        proc.Refresh();
-
-        if (proc.HasExited)
+        pluginInstance.Process.EnableRaisingEvents = true;
+        pluginInstance.Process.Exited += (o,
+                                          e) =>
         {
-          LogTo.Warning($"{pluginLog.CapitalizeFirst()} {pluginId} has already exited");
-          return;
-        }
+          lock (pluginInstance.Lock.Lock())
+            OnPluginStopped(pluginInstance);
+        };
 
-        proc.Kill();
+        if (await pluginInstance.ConnectedEvent.WaitAsync(PluginConnectTimeout))
+          return;
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex, $"An error occured while starting {pluginLog} {pluginId}");
+        LogTo.Error(ex, $"An error occured while starting {pluginInstance.Denomination} {packageName}");
+        return;
       }
-    }
-
-    private async Task StopPlugin(PluginInstance pluginInstance)
-    {
-      bool   isDev     = pluginInstance.Metadata.IsDevelopment;
-      string pluginLog = isDev ? "development plugin" : "plugin";
-      LogTo.Information($"Stopping {pluginLog} {pluginInstance.Metadata.PackageName}.");
 
       try
       {
-        try
-        {
-          pluginInstance.IsStopping = true;
-          pluginInstance.Plugin.Dispose();
+        LogTo.Warning(
+          $"{pluginInstance.Denomination.CapitalizeFirst()} {packageName} failed to connect in {PluginConnectTimeout}ms. Attempting to kill process");
 
-          if (await Task.Run(() => pluginInstance.Process.WaitForExit(PluginStopTimeout)))
-            return;
-        }
-        catch (Exception ex)
+        pluginInstance.Process.Refresh();
+
+        if (pluginInstance.Process.HasExited)
         {
-          LogTo.Error(ex, $"An exception occured while gracefully stopping plugin {pluginInstance.Metadata.PackageName}.");
+          LogTo.Warning($"{pluginInstance.Denomination.CapitalizeFirst()} {packageName} has already exited");
+          return;
         }
 
-        try
-        {
-          pluginInstance.Process.Refresh();
-
-          if (pluginInstance.Process.HasExited)
-            return;
-
-          LogTo.Warning(
-            $"Plugin {pluginInstance.Metadata.PackageName} didn't shut down gracefully after {PluginStopTimeout}ms. Attempting to kill process");
-
-          pluginInstance.Process.Kill();
-        }
-        catch (Exception ex)
-        {
-          LogTo.Error(ex, $"An exception occured while killing plugin {pluginInstance.Metadata.PackageName}");
-        }
+        pluginInstance.Process.Kill();
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, $"An error occured while starting {pluginInstance.Denomination} {packageName}");
       }
       finally
       {
-        OnPluginStopped(pluginInstance);
+        using (await pluginInstance.Lock.LockAsync())
+          OnPluginStopped(pluginInstance);
       }
+    }
+
+    public async Task StopPlugin(PluginInstance pluginInstance)
+    {
+      using (await pluginInstance.Lock.LockAsync())
+        try
+        {
+          if (pluginInstance.Status == PluginStatus.Stopping)
+            return;
+
+          if (pluginInstance.Status == PluginStatus.Stopped)
+            return;
+
+          OnPluginStopping(pluginInstance);
+
+          bool   isDev     = pluginInstance.Metadata.IsDevelopment;
+          string pluginLog = isDev ? "development plugin" : "plugin";
+
+          try
+          {
+            pluginInstance.Plugin.Dispose();
+
+            if (await Task.Run(() => pluginInstance.Process.WaitForExit(PluginStopTimeout)))
+              return;
+          }
+          catch (Exception ex)
+          {
+            LogTo.Error(ex, $"An exception occured while gracefully stopping {pluginLog} {pluginInstance.Metadata.PackageName}.");
+          }
+
+          try
+          {
+            pluginInstance.Process.Refresh();
+
+            if (pluginInstance.Process.HasExited)
+              return;
+
+            LogTo.Warning(
+              $"{pluginLog.CapitalizeFirst()} {pluginInstance.Metadata.PackageName} didn't shut down gracefully after {PluginStopTimeout}ms. Attempting to kill process");
+
+            pluginInstance.Process.Kill();
+          }
+          catch (Exception ex)
+          {
+            LogTo.Error(ex, $"An exception occured while killing {pluginLog} {pluginInstance.Metadata.PackageName}");
+          }
+        }
+        finally
+        {
+          OnPluginStopped(pluginInstance);
+        }
     }
 
     #endregion

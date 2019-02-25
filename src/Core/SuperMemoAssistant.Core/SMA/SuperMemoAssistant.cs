@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/08 13:06
-// Modified On:  2019/01/25 23:37
+// Created On:   2019/02/21 20:26
+// Modified On:  2019/02/25 00:34
 // Modified By:  Alexis
 
 #endregion
@@ -32,11 +32,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Anotar.Serilog;
+using AsyncEvent;
 using Process.NET;
-using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
@@ -53,7 +53,7 @@ namespace SuperMemoAssistant.SMA
   ///   (start, exit, ...) and provides a safe interface to interact with SuperMemo
   /// </summary>
   public class SMA
-    : SMMarshalByRefObject,
+    : PerpetualMarshalByRefObject,
       ISuperMemoAssistant, // Proxy for wrapped SMxx object
       IDisposable
   {
@@ -99,16 +99,12 @@ namespace SuperMemoAssistant.SMA
     {
       Svc.SMA = this;
 
-      Config = LoadConfig();
       SMAUI.Initialize();
-      //StartMonitoring();
     }
 
     /// <inheritdoc />
     public virtual void Dispose()
     {
-      //StopMonitoring();
-
       SMMgmt?.Dispose();
     }
 
@@ -119,7 +115,7 @@ namespace SuperMemoAssistant.SMA
 
     #region Properties & Fields - Public
 
-    public CoreCfg  Config    { get; set; }
+    public StartupCfg  Config    { get; set; }
     public IProcess SMProcess => SMMgmt?.SMProcess;
 
     public System.Diagnostics.Process NativeProcess => SMProcess.Native;
@@ -148,30 +144,30 @@ namespace SuperMemoAssistant.SMA
     public ISuperMemoRegistry Registry => SuperMemoRegistry.Instance;
     public ISuperMemoUI       UI       => SuperMemoUI.Instance;
 
-    /// <inheritdoc />
-    public bool IsRunning => SMMgmt != null;
-
     #endregion
 
 
 
 
-    #region Methods Impl
+    #region Methods
 
     //
     // Collection loading management
 
-    public bool Start(SMCollection collection)
+    public async Task<bool> Start(SMCollection collection)
     {
       if (SMMgmt != null)
         return false;
 
       try
       {
-        // TODO: Look at PE version and select Management Engine version
-        var dummy = new SM17(collection,
-                             Config.SMBinPath);
+        Config = LoadConfig();
 
+        // TODO: Look at PE version and select Management Engine version
+        SMMgmt = new SM17(collection,
+                          Config.SMBinPath);
+
+        await SMMgmt.Start();
         // TODO: Ensure opened collection (windows title) matches parameter
       }
       catch (Exception ex)
@@ -183,9 +179,9 @@ namespace SuperMemoAssistant.SMA
 
         try
         {
-          OnSMStoppedEvent?.Invoke(this,
-                                   new SMProcessArgs(this,
-                                                     null));
+          await OnSMStoppedEvent.InvokeAsync(this,
+                                             new SMProcessArgs(this,
+                                                               null));
         }
         catch (Exception pluginEx)
         {
@@ -201,229 +197,66 @@ namespace SuperMemoAssistant.SMA
       return true;
     }
 
-    #endregion
-
-
-
-
-    #region Methods
-
-    public CoreCfg LoadConfig()
+    public StartupCfg LoadConfig()
     {
-      return Svc.Configuration.Load<CoreCfg>().Result ?? new CoreCfg();
+      return Svc.Configuration.Load<StartupCfg>().Result ?? new StartupCfg();
     }
 
-    public void SaveConfig(bool sync)
+    public Task SaveConfig(bool sync)
     {
-      var task = Svc.Configuration.Save<CoreCfg>(Config);
+      var task = Svc.Configuration.Save<StartupCfg>(Config);
 
       if (sync)
         task.Wait();
+
+      return task;
     }
 
-    public void OnSMStartingImpl(SuperMemoBase smMgmt)
+    public async Task OnSMStarting()
     {
-      SMMgmt = smMgmt;
-
       try
       {
-        OnSMStartingEvent?.Invoke(this,
-                                  new SMEventArgs(this));
+        await OnSMStartingEvent.InvokeAsync(this,
+                                            new SMEventArgs(this));
       }
       catch (Exception ex)
       {
         LogTo.Error(ex,
-                    "Error while notifying plugins OnSMStartingEvent");
+                    "Error while notifying OnSMStartingEvent");
       }
     }
 
-    /// <summary>Called from this very class when a new matching SM Instance is found</summary>
-    public void OnSMStartedImpl()
+    public async Task OnSMStarted()
     {
-      SMMgmt.OnSMStoppedEvent += OnSMStoppedImpl;
-
-      SaveConfig(false);
+      await SaveConfig(false);
 
       try
       {
-        OnSMStartedEvent?.Invoke(this,
-                                 new SMProcessArgs(this,
-                                                   SMProcess.Native));
+        await OnSMStartedEvent.InvokeAsync(this,
+                                           new SMProcessArgs(this,
+                                                             SMProcess.Native));
       }
       catch (Exception ex)
       {
         LogTo.Error(ex,
-                    "Error while notifying plugins OnSMStartedEvent");
+                    "Error while notifying OnSMStartedEvent");
       }
     }
 
-    protected void OnSMStoppedImpl(object        sender,
-                                   SMProcessArgs args)
+    public async Task OnSMStopped()
     {
       SMMgmt = null;
 
       try
       {
-        OnSMStoppedEvent?.Invoke(this,
-                                 ProxifyArgs(args));
+        await OnSMStoppedEvent.InvokeAsync(this,
+                                           null);
       }
       catch (Exception ex)
       {
         LogTo.Error(ex,
                     "Error while notifying plugins OnSMStoppedEvent");
       }
-    }
-
-    protected EventHandler<T> MakeEventProxy<T>(EventHandler<T> eventProxy)
-      where T : SMEventArgs
-    {
-      void Proxy(object sm,
-                 T      args)
-      {
-        try
-        {
-          eventProxy?.Invoke(this,
-                             ProxifyArgs(args));
-        }
-        catch (Exception ex)
-        {
-          LogTo.Error(ex,
-                      "Error while invoking proxified event");
-        }
-      }
-
-      return Proxy;
-    }
-
-    protected T ProxifyArgs<T>(T args)
-      where T : SMEventArgs
-    {
-      return args.With(a => a.SMMgmt = this);
-    }
-
-
-    //
-    // Process-monitoring-related
-
-/*
-/// <summary>
-/// Starts a System-wide Watch on Processes being started
-/// </summary>
-    protected void StartMonitoring()
-    {
-      StopMonitoring();
-
-      ProcessStartedWatcher =
- new ManagementEventWatcher(new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace"));
-      ProcessStartedWatcher.EventArrived += ProcessStarted_EventArrived;
-      ProcessStartedWatcher.Start();
-    }
-
-    /// <summary>
-    /// Stop watching, cleanup
-    /// </summary>
-    protected void StopMonitoring()
-    {
-      if (ProcessStartedWatcher != null)
-      {
-        ProcessStartedWatcher.Stop();
-        ProcessStartedWatcher.EventArrived -= ProcessStarted_EventArrived;
-        ProcessStartedWatcher = null;
-      }
-    }
-
-    /// <summary>
-    /// We are being notified a new process has been started.
-    /// Check whether this is the SuperMemo we are interested in.
-    /// If we already wrap a SM Management instance, ignore the notification.
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    protected void ProcessStarted_EventArrived(object sender, EventArrivedEventArgs e)
-    {
-      if (SMMgmt != null)
-        return;
-
-      string procName = (string)e.NewEvent.Properties["ProcessName"].Value;
-
-      if (procName?.Contains("SuperMemo") == false)
-        return;
-
-      int processId = (int)e.NewEvent.GetPropertyValue("ProcessID");
-      Process process = Process.GetProcessById(processId);
-      ISuperMemo smMgmt = null;
-
-      try
-      {
-        if (TryCreateInstance(process, CollectionName, out smMgmt))
-          OnSMStartedImpl(this, new SMProcessArgs(smMgmt, process));
-      }
-      catch (Exception ex)
-      {
-        // TODO: Log/Warn + Callback for UI notification
-      }
-    }
-
-
-    //
-    // Process-collection-related
-
-    /// <summary>
-    /// Creates a new SM management instance for given collection name, if available
-    /// </summary>
-    /// <param name="collectionName">As displayed in SM window's title</param>
-    /// <returns>SM management instance, or null if instance for given collection name cannot be found</returns>
-    protected ISuperMemo CreateFromInstance(string collectionName)
-    {
-      ISuperMemo smMgmt = null;
-
-      Process.GetProcesses()
-        .FirstOrDefault(p => TryCreateInstance(p, collectionName, out smMgmt));
-
-      return smMgmt;
-    }
-
-    /// <summary>
-    /// Attempts to create a new SM management interface for given process and collection name
-    /// </summary>
-    /// <param name="p">Target Process</param>
-    /// <param name="collectionName"></param>
-    /// <param name="instance">Resulting SM mgmt interface</param>
-    /// <returns>Whether the operation was successfull</returns>
-    protected bool TryCreateFromInstance(Process p, string collectionName, out ISuperMemo instance)
-    {
-      var allTitleRegEx = SMTitleFactoryMap.Keys;
-
-      instance = allTitleRegEx.Select(
-        r =>
-        {
-          var match = r.Match(p.ProcessName);
-
-          return match.Success && collectionName.Equals(match.Groups[1].Value)
-            ? SMTitleFactoryMap[r](p)
-            : null;
-        }
-      ).FirstOrDefault(i => i != null);
-
-      return instance != null;
-    }
-*/
-
-    /// <summary>Probe running smXX.exe processes</summary>
-    /// <returns>Open collection names</returns>
-    public static IEnumerable<SMCollection> GetRunningInstances()
-    {
-      var allTitleRegEx = SMTitleFactoryMap.Keys;
-
-      return System.Diagnostics.Process.GetProcesses()
-                   .Select(p => allTitleRegEx
-                                .Select(r => r.Match(p.ProcessName))
-                                .FirstOrDefault(r => r.Success)
-                                ?.Groups
-                   )
-                   .Where(g => g != null)
-                   .Select(g => new SMCollection(g[1].Value,
-                                                 g[2].Value));
     }
 
     #endregion
@@ -433,12 +266,9 @@ namespace SuperMemoAssistant.SMA
 
     #region Events
 
-    //
-    // ISuperMemo Events
-
-    public virtual event EventHandler<SMProcessArgs> OnSMStartedEvent;
-    public virtual event EventHandler<SMEventArgs>   OnSMStartingEvent;
-    public virtual event EventHandler<SMProcessArgs> OnSMStoppedEvent;
+    public virtual event AsyncEventHandler<SMProcessArgs> OnSMStartedEvent;
+    public virtual event AsyncEventHandler<SMEventArgs>   OnSMStartingEvent;
+    public virtual event AsyncEventHandler<SMProcessArgs> OnSMStoppedEvent;
 
     #endregion
   }

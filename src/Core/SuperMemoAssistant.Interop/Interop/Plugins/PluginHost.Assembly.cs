@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/26 07:22
-// Modified On:  2019/01/26 09:28
+// Created On:   2019/02/22 19:04
+// Modified On:  2019/02/24 21:21
 // Modified By:  Alexis
 
 #endregion
@@ -93,14 +93,15 @@ namespace SuperMemoAssistant.Interop.Plugins
       return exportedTypes.FirstOrDefault(t => t.IsAbstract == false && t.GetInterface(PluginInterfaceFullName) != null);
     }
 
-    public bool InjectPropertyDependencies(
-      ISMAPlugin          plugin,
-      ISuperMemoAssistant sma,
-      ISMAPluginManager   pluginMgr)
+    public bool InjectPropertyDependencies(ISMAPlugin          plugin,
+                                           ISuperMemoAssistant sma,
+                                           ISMAPluginManager   pluginMgr,
+                                           Guid                sessionGuid)
     {
-      bool smaSet = false;
-      bool mgrSet = false;
-      var  type   = plugin.GetType();
+      bool smaSet  = false;
+      bool mgrSet  = false;
+      bool guidSet = false;
+      var  type    = plugin.GetType();
 
       while (type != null && type != typeof(ISMAPlugin))
       {
@@ -119,10 +120,16 @@ namespace SuperMemoAssistant.Interop.Plugins
             mgrSet = true;
           }
 
+          else if (prop.PropertyType == typeof(Guid))
+          {
+            prop.SetValue(plugin, sessionGuid);
+            guidSet = true;
+          }
+
         type = type.BaseType;
       }
 
-      return smaSet && mgrSet;
+      return smaSet && mgrSet && guidSet;
     }
 
     #endregion

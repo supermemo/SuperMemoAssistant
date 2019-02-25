@@ -33,6 +33,7 @@
 using System.Collections.Generic;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.SMA.Hooks;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Components;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types;
@@ -80,9 +81,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
     //
     // Init/Hooks-related
 
-    protected override IEnumerable<ISMHookIO> GetIOCallbacks()
+    protected override IEnumerable<ISMAHookIO> GetIOCallbacks()
     {
-      return new ISMHookIO[]
+      return new ISMAHookIO[]
       {
         ElementRegistry.Instance,
         ComponentRegistry.Instance,

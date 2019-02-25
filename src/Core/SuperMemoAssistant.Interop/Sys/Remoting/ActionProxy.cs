@@ -34,7 +34,7 @@ using System;
 
 namespace SuperMemoAssistant.Sys.Remoting
 {
-  public class ActionProxy : SMMarshalByRefObject
+  public class ActionProxy : PerpetualMarshalByRefObject
   {
     #region Properties & Fields - Non-Public
 
@@ -77,7 +77,7 @@ namespace SuperMemoAssistant.Sys.Remoting
     #endregion
   }
 
-  public class ActionProxy<T1> : SMMarshalByRefObject
+  public class ActionProxy<T1> : PerpetualMarshalByRefObject
   {
     #region Properties & Fields - Non-Public
 
@@ -120,7 +120,7 @@ namespace SuperMemoAssistant.Sys.Remoting
     #endregion
   }
 
-  public class ActionProxy<T1, T2> : SMMarshalByRefObject
+  public class ActionProxy<T1, T2> : PerpetualMarshalByRefObject
   {
     #region Properties & Fields - Non-Public
 

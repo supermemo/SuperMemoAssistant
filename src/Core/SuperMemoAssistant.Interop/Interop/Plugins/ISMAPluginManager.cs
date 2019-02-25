@@ -39,10 +39,10 @@ namespace SuperMemoAssistant.Interop.Plugins
   public interface ISMAPluginManager
   {
     /// <summary>
-    ///   Request a list of assemblies to load plugin <paramref name="pluginId" /> and its
+    ///   Request a list of assemblies to load plugin <paramref name="sessionGuid" /> and its
     ///   dependencies.
     /// </summary>
-    /// <param name="pluginId">The plugin assembly name</param>
+    /// <param name="sessionGuid"></param>
     /// <param name="pluginAssemblies">
     ///   The list of paths representing plugin's referenced assemblies,
     ///   or null.
@@ -52,19 +52,19 @@ namespace SuperMemoAssistant.Interop.Plugins
     ///   referenced assemblies, or null.
     /// </param>
     /// <returns><see langword="true" /> if successfull, <see langword="false" /> otherwise</returns>
-    bool GetAssembliesPathsForPlugin(string                  pluginId,
+    bool GetAssembliesPathsForPlugin(Guid                    sessionGuid,
                                      out IEnumerable<string> pluginAssemblies,
                                      out IEnumerable<string> dependenciesAssemblies);
 
     /// <summary>Registers a newly started plugin process with SMA</summary>
     /// <param name="channel"></param>
-    /// <param name="processId">Plugin's process id</param>
+    /// <param name="sessionGuid"></param>
     /// <returns>
     ///   An instance of <see cref="ISuperMemoAssistant" /> if successfull,
     ///   <see langword="null" /> otherwise
     /// </returns>
     ISuperMemoAssistant ConnectPlugin(string channel,
-                                      int    processId);
+                                      Guid   sessionGuid);
 
     /// <summary>
     ///   Attempts to retrieve an Ipc Server's channel name for given remote interface. The
@@ -79,18 +79,18 @@ namespace SuperMemoAssistant.Interop.Plugins
     ///   Registers an Ipc Server's channel name for interface of type
     ///   <paramref name="remoteServiceType" />.
     /// </summary>
+    /// <param name="sessionGuid"></param>
     /// <param name="remoteServiceType"></param>
     /// <param name="channelName">
     ///   Channel name where clients can acquire a proxy for
     ///   <paramref name="remoteServiceType" />
     /// </param>
-    /// <param name="assemblyName"></param>
     /// <returns>
     ///   A disposable object, which unregisters the channel when disposed, or
     ///   <see langword="null" />.
     /// </returns>
-    IDisposable RegisterService(string remoteServiceType,
-                                string channelName,
-                                string assemblyName);
+    IDisposable RegisterService(Guid   sessionGuid,
+                                string remoteServiceType,
+                                string channelName);
   }
 }

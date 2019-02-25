@@ -33,6 +33,8 @@
 using System.Windows;
 using Forge.Forms.FormBuilding.Defaults;
 using SuperMemoAssistant.Services;
+using SuperMemoAssistant.SMA.UI.Interceptors;
+using SuperMemoAssistant.SMA.UI.Settings;
 
 namespace SuperMemoAssistant.SMA.UI
 {
@@ -70,9 +72,7 @@ namespace SuperMemoAssistant.SMA.UI
 
     private static void ShowGlobalSettings()
     {
-      Application.Current.Dispatcher.Invoke(
-        () => new GlobalSettingsWindow().Show()
-      );
+      Application.Current.Dispatcher.Invoke(SettingsWindow.ShowOrActivate);
     }
 
     private static void DebugInjectLib()

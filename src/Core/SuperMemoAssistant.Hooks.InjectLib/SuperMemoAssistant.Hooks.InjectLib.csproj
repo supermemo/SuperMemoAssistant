@@ -112,8 +112,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IOHooks.cs" />
-    <Compile Include="SMHooks.cs" />
+    <Compile Include="Delphi.cs" />
+    <Compile Include="SMInject.Hooks.cs" />
+    <Compile Include="HookedFunction.cs" />
+    <Compile Include="SMInject.Services.cs" />
+    <Compile Include="SMInject.Hooks.IO.cs" />
+    <Compile Include="Win32.cs" />
+    <Compile Include="SMInject.SM.cs" />
     <Compile Include="SMInject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -122,9 +127,9 @@
       <Project>{501257d3-f788-4a5d-b990-16c01ff71926}</Project>
       <Name>Process.NET</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SuperMemoAssistant.Core.Remote\SuperMemoAssistant.Core.Remote.csproj">
+    <ProjectReference Include="..\SuperMemoAssistant.Hooks.Common\SuperMemoAssistant.Hooks.Common.csproj">
       <Project>{cc5b9485-9ef1-4133-9242-719d263700ae}</Project>
-      <Name>SuperMemoAssistant.Core.Remote</Name>
+      <Name>SuperMemoAssistant.Hooks.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\SuperMemoAssistant.Hooks.NativeLib\SuperMemoAssistant.Hooks.NativeLib.vcxproj">
       <Project>{fffe85ef-4719-4f7f-ab5f-a63d2e184bd2}</Project>

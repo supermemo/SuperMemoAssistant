@@ -54,7 +54,7 @@ namespace SuperMemoAssistant.Plugins
 
     private void StartIpcServer()
     {
-      LogTo.Information("Starting Plugin IPC Server");
+      LogTo.Debug("Starting Plugin IPC Server");
 
       // Generate random channel name
       IpcServerChannelName = RemotingServicesEx.GenerateIpcServerChannelName();
@@ -64,6 +64,8 @@ namespace SuperMemoAssistant.Plugins
 
     private void StopIpcServer()
     {
+      LogTo.Debug("Stopping Plugin IPC Server");
+
       IpcServer.StopListening(null);
       IpcServer = null;
     }

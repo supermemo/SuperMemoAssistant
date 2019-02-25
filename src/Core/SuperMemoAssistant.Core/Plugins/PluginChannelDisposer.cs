@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/02/21 14:22
-// Modified On:  2019/02/22 23:19
+// Modified On:  2019/02/24 21:18
 // Modified By:  Alexis
 
 #endregion
@@ -35,14 +35,14 @@ using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.Plugins
 {
-  public class PluginChannelDisposer : SMMarshalByRefObject, IDisposable
+  public class PluginChannelDisposer : PerpetualMarshalByRefObject, IDisposable
   {
     #region Properties & Fields - Non-Public
 
-    private readonly string _assemblyName;
-
     private readonly string        _interfaceType;
     private readonly PluginManager _pm;
+
+    private readonly Guid _sessionGuid;
 
     #endregion
 
@@ -54,17 +54,17 @@ namespace SuperMemoAssistant.Plugins
     /// <inheritdoc />
     public PluginChannelDisposer(PluginManager pm,
                                  string        interfaceType,
-                                 string        assemblyName)
+                                 Guid          sessionGuid)
     {
       _pm            = pm;
       _interfaceType = interfaceType;
-      _assemblyName  = assemblyName;
+      _sessionGuid   = sessionGuid;
     }
 
     /// <inheritdoc />
     public void Dispose()
     {
-      _pm.UnregisterChannelType(_interfaceType, _assemblyName);
+      _pm.UnregisterChannelType(_interfaceType, _sessionGuid);
     }
 
     #endregion

@@ -47,18 +47,19 @@ namespace SuperMemoAssistant.PluginHost
     #region Methods
 
     public static IDisposable Create(string  pluginPackageName,
+                                     string  pluginHomeDir,
+                                     Guid    sessionGuid,
+                                     string  smaChannelName,
                                      Process smaProcess,
-                                     string  channelName,
-                                     string  homeDir,
                                      bool    isDev)
     {
-      var appDomain = CreateAppDomain(pluginPackageName, homeDir, isDev);
+      var appDomain = CreateAppDomain(pluginPackageName, pluginHomeDir, isDev);
 
       return (IDisposable)appDomain.CreateInstanceAndUnwrap(HostConst.PluginHostAssemblyName, HostConst.PluginHostTypeName,
         false,
         BindingFlags.Public | BindingFlags.Instance,
         null,
-        new object[] { pluginPackageName, smaProcess, channelName, isDev },
+        new object[] { pluginPackageName, sessionGuid, smaChannelName, smaProcess, isDev },
         null,
         null
       );

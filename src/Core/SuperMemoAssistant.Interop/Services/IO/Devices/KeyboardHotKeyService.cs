@@ -44,7 +44,7 @@ namespace SuperMemoAssistant.Services.IO.Devices
 {
   /// <summary>https://stackoverflow.com/questions/1153009/how-can-i-convert-system-windows-input-key-to-system-windows-forms-keys</summary>
   public class KeyboardHotKeyService 
-    : SMMarshalByRefObject,
+    : PerpetualMarshalByRefObject,
       IKeyboardHotKeyService, IDisposable
   {
     #region Constants & Statics

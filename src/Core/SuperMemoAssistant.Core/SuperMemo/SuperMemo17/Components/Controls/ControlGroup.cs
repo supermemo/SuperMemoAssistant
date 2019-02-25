@@ -43,7 +43,7 @@ using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls
 {
-  public class ControlGroup : SMMarshalByRefObject, IControlGroup, IDisposable
+  public class ControlGroup : PerpetualMarshalByRefObject, IControlGroup, IDisposable
   {
     #region Constants & Statics
 

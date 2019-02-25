@@ -63,8 +63,8 @@ namespace SuperMemoAssistant
     {
       //InitOnLoad.Initialize();
       
-      SentryInstance = Services.Sentry.Sentry.Initialize();
-      Logger.Instance.Initialize(SMAConst.Name, Services.Sentry.Sentry.ConfigureSerilog);
+      SentryInstance = Services.Sentry.SentryEx.Initialize();
+      Logger.Instance.Initialize(SMAConst.Name, Services.Sentry.SentryEx.LogToSentry);
       
       Svc.Configuration = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
       Svc.KeyboardHotKey = KeyboardHookService.Instance;

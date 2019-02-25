@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/01 14:11
-// Modified On:  2019/01/16 15:03
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/25 01:56
 // Modified By:  Alexis
 
 #endregion
@@ -33,29 +33,30 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels.Ipc;
-using System.Security.Principal;
 using System.Threading;
+using System.Threading.Tasks;
 using Anotar.Serilog;
 using EasyHook;
+using Nito.AsyncEx;
 using Process.NET;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.SMA.Hooks;
 using SuperMemoAssistant.SuperMemo.SuperMemo17;
 using SuperMemoAssistant.Sys.Exceptions;
 
 namespace SuperMemoAssistant.SuperMemo.Hooks
 {
-  public class SMHookEngine : SMHookCallback
+  public class SMHookEngine : SMAHookCallback
   {
     #region Constants & Statics
 
 #if DEBUG
     public const int WaitTimeout = 300000;
 #else
-    public const int WaitTimeout = 3000;
+    public const int WaitTimeout = 5000;
 #endif
 
     public static SMHookEngine Instance { get; } = new SMHookEngine();
@@ -67,15 +68,15 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     #region Properties & Fields - Non-Public
 
-    protected bool           HookSuccess   { get; private set; }
-    protected Exception      HookException { get; private set; }
-    protected AutoResetEvent HookInitEvent { get; set; }
-    protected AutoResetEvent SMAInitEvent  { get; set; }
+    protected bool                  HookSuccess   { get; private set; }
+    protected Exception             HookException { get; private set; }
+    protected AsyncManualResetEvent HookInitEvent { get; } = new AsyncManualResetEvent(false);
+    protected AutoResetEvent        SMAInitEvent  { get; } = new AutoResetEvent(false);
 
     protected IpcServerChannel ServerChannel     { get; set; }
-    protected ISMHookSystem    SystemCallback    { get; private set; }
+    protected ISMAHookSystem   SystemCallback    { get; private set; }
     protected List<string>     IOTargetFilePaths { get; set; }         = new List<string>();
-    protected List<ISMHookIO>  IOCallbacks       { get; private set; } = new List<ISMHookIO>();
+    protected List<ISMAHookIO> IOCallbacks       { get; private set; } = new List<ISMAHookIO>();
 
     #endregion
 
@@ -106,15 +107,16 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
         LogTo.Error(hookEx,
                     "InjectionLib threw an error during initialization.");
 
-      if (HookInitEvent == null)
-        return false;
-
       try
       {
+        LogTo.Debug($"Injected lib signal, success: {success}");
+
         HookSuccess   = success;
         HookException = hookEx;
 
-        return HookInitEvent.Set() && SMAInitEvent.WaitOne(WaitTimeout);
+        HookInitEvent.Set();
+
+        return SMAInitEvent.WaitOne(WaitTimeout);
       }
       catch (Exception ex)
       {
@@ -188,18 +190,18 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     public override void OnFileCreate(string filePath,
                                       IntPtr fileHandle)
     {
-      for (int i = 0; i < IOCallbacks.Count; i++)
-        IOCallbacks[i].OnFileCreate(filePath,
-                                    fileHandle);
+      foreach (var callback in IOCallbacks)
+        callback.OnFileCreate(filePath,
+                              fileHandle);
     }
 
     /// <inheritdoc />
     public override void OnFileSeek(IntPtr fileHandle,
                                     UInt32 position)
     {
-      for (int i = 0; i < IOCallbacks.Count; i++)
-        IOCallbacks[i].OnFileSeek(fileHandle,
-                                  position);
+      foreach (var callback in IOCallbacks)
+        callback.OnFileSeek(fileHandle,
+                            position);
     }
 
     /// <inheritdoc />
@@ -207,17 +209,17 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
                                      Byte[] buffer,
                                      UInt32 count)
     {
-      for (int i = 0; i < IOCallbacks.Count; i++)
-        IOCallbacks[i].OnFileWrite(fileHandle,
-                                   buffer,
-                                   count);
+      foreach (var callback in IOCallbacks)
+        callback.OnFileWrite(fileHandle,
+                             buffer,
+                             count);
     }
 
     /// <inheritdoc />
     public override void OnFileClose(IntPtr fileHandle)
     {
-      for (int i = 0; i < IOCallbacks.Count; i++)
-        IOCallbacks[i].OnFileClose(fileHandle);
+      foreach (var callback in IOCallbacks)
+        callback.OnFileClose(fileHandle);
     }
 
     #endregion
@@ -230,65 +232,63 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     //
     // Core hook methods
 
-    public IProcess CreateAndHook(
-      SMCollection           collection,
-      string                 binPath,
-      ISMHookSystem          systemCallback,
-      IEnumerable<ISMHookIO> ioCallbacks)
+    public async Task<IProcess> CreateAndHook(
+      SMCollection            collection,
+      string                  binPath,
+      ISMAHookSystem          systemCallback,
+      IEnumerable<ISMAHookIO> ioCallbacks)
     {
-      try
+      LogTo.Debug("Starting and injecting SuperMemo");
+
+      SystemCallback = systemCallback;
+      IOCallbacks.AddRange(ioCallbacks);
+
+      IOTargetFilePaths.AddRange(IOCallbacks.SelectMany(c => c.GetTargetFilePaths()));
+
+      HookSuccess   = false;
+      HookException = null;
+
+      // Start a new IPC server
+      var channelName = StartIPCServer();
+
+      // Start SuperMemo application with given collection as parameter,
+      // and immediatly install hooks
+      RemoteHooking.CreateAndInject(
+        binPath,
+        collection.GetKnoFilePath().Quotify(),
+        0,
+        InjectionOptions.Default,
+        SMAFileSystem.InjectionLibFile.FullPath,
+        null,
+        out var pId,
+        channelName
+      );
+
+      LogTo.Debug("Waiting for signal from Injected library");
+
+      // Wait for Signal from OnHookInstalled with timeout
+      await HookInitEvent.WaitAsync(WaitTimeout);
+
+      if (HookSuccess == false)
       {
-        SystemCallback = systemCallback;
-        IOCallbacks.AddRange(ioCallbacks);
+        LogTo.Debug("Hook failed, aborting");
 
-        IOTargetFilePaths.AddRange(IOCallbacks.SelectMany(c => c.GetTargetFilePaths()));
+        StopIPCServer();
 
-        // Initialize event to non-Signaled
-        HookInitEvent = new AutoResetEvent(false);
-        SMAInitEvent  = new AutoResetEvent(false);
-
-        HookSuccess   = false;
+        var ex = new HookException("Hook setup failed: " + HookException?.Message,
+                                   HookException);
         HookException = null;
 
-        // Start a new IPC server
-        StartIPCServer();
-
-        // Start SuperMemo application with given collection as parameter,
-        // and immediatly install hooks
-        RemoteHooking.CreateAndInject(
-          binPath,
-          collection.GetKnoFilePath().Quotify(),
-          0,
-          InjectionOptions.Default,
-          SMAFileSystem.InjectionLibFile.FullPath,
-          null,
-          out var pId
-        );
-
-        // Wait for Signal from OnHookInstalled with timeout
-        HookInitEvent.WaitOne(WaitTimeout);
-
-        if (HookSuccess == false)
-        {
-          StopIPCServer();
-
-          var ex = new HookException("Hook setup failed: " + HookException?.Message,
-                                     HookException);
-          HookException = null;
-
-          throw ex;
-        }
-
-        return new ProcessSharp<SM17Natives>(
-          pId,
-          Process.NET.Memory.MemoryType.Remote,
-          true,
-          SMA.SMA.Instance.Config.PatternsHintAddresses);
+        throw ex;
       }
-      finally
-      {
-        HookInitEvent = null;
-      }
+
+      LogTo.Debug($"SuperMemo started and injected, pId: {pId}");
+
+      return new ProcessSharp<SM17Natives>(
+        pId,
+        Process.NET.Memory.MemoryType.Remote,
+        true,
+        SMA.SMA.Instance.Config.PatternsHintAddresses);
     }
 
     public void CleanupHooks()
@@ -305,20 +305,20 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
       SMAInitEvent.Set();
     }
 
-    private void StartIPCServer()
+    private string StartIPCServer()
     {
       if (ServerChannel != null)
         throw new InvalidOperationException("IPC Server already started");
 
-      string channelName = HookConst.ChannelName;
+      var channelName = RemotingServicesEx.GenerateIpcServerChannelName();
 
       // TODO: Switch to Duplex (get callback)
-      ServerChannel = RemoteHooking.IpcCreateServer<SMHookCallback>(
-        ref channelName,
-        WellKnownObjectMode.Singleton,
+      ServerChannel = RemotingServicesEx.CreateIpcServer<SMAHookCallback, SMHookEngine>(
         this,
-        WellKnownSidType.WorldSid
+        channelName
       );
+
+      return channelName;
     }
 
     private void StopIPCServer()

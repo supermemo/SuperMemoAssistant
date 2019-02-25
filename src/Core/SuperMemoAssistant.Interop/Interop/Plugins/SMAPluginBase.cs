@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/02/13 13:55
-// Modified On:  2019/02/23 01:58
+// Modified On:  2019/02/24 21:21
 // Modified By:  Alexis
 
 #endregion
@@ -32,10 +32,10 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels.Ipc;
+using System.Threading.Tasks;
 using System.Windows;
 using Anotar.Serilog;
 using Serilog;
@@ -46,11 +46,10 @@ using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO;
 using SuperMemoAssistant.Services.IO.Devices;
 using SuperMemoAssistant.Sys;
-using SuperMemoAssistant.Sys.ComponentModel;
 
 namespace SuperMemoAssistant.Interop.Plugins
 {
-  public abstract class SMAPluginBase<TPlugin> : SMMarshalByRefObject, ISMAPlugin
+  public abstract class SMAPluginBase<TPlugin> : PerpetualMarshalByRefObject, ISMAPlugin
     where TPlugin : SMAPluginBase<TPlugin>
   {
     #region Properties & Fields - Non-Public
@@ -69,7 +68,8 @@ namespace SuperMemoAssistant.Interop.Plugins
 
     #region Constructors
 
-    protected SMAPluginBase(DebuggerAttachStrategy debuggerAttachStrategy = DebuggerAttachStrategy.Never)
+    protected SMAPluginBase(bool                   startApplication       = true,
+                            DebuggerAttachStrategy debuggerAttachStrategy = DebuggerAttachStrategy.Never)
     {
       switch (debuggerAttachStrategy)
       {
@@ -80,6 +80,19 @@ namespace SuperMemoAssistant.Interop.Plugins
         case DebuggerAttachStrategy.InDebugConfiguration:
           AttachDebuggerIfDebug();
           break;
+      }
+
+      if (startApplication)
+      {
+        App = new PluginApp();
+        App.DispatcherUnhandledException += (_,
+                                             e) =>
+        {
+#if !DEBUG
+          e.Handled = true;
+#endif
+          LogException(e.Exception, !e.Handled);
+        };
       }
 
       // Create Plugin's IPC Server
@@ -100,7 +113,7 @@ namespace SuperMemoAssistant.Interop.Plugins
 
         KeyboardHotKeyService.Instance.Dispose();
 
-        Application.Current?.Dispatcher.InvokeShutdown();
+        App?.Dispatcher.InvokeShutdown();
       }
       catch (Exception ex)
       {
@@ -110,7 +123,12 @@ namespace SuperMemoAssistant.Interop.Plugins
 
       Logger.Instance.Shutdown();
 
-      Environment.Exit(0);
+      // TODO: Improve this
+      Task.Factory.StartNew(() =>
+      {
+        Task.Yield();
+        Environment.Exit(0);
+      });
     }
 
     #endregion
@@ -120,8 +138,11 @@ namespace SuperMemoAssistant.Interop.Plugins
 
     #region Properties & Fields - Public
 
+    public Application App { get; set; }
+
     public ISuperMemoAssistant SMA          { get; set; }
     public ISMAPluginManager   SMAPluginMgr { get; set; }
+    public Guid                SessionGuid  { get; set; }
 
     #endregion
 
@@ -136,8 +157,7 @@ namespace SuperMemoAssistant.Interop.Plugins
     public string AssemblyVersion => AssemblyEx.GetAssemblyVersion(GetType());
     /// <inheritdoc />
     public string ChannelName => _channelName;
-    /// <inheritdoc />
-    public virtual List<INotifyPropertyChangedEx> SettingsModels { get; protected set; }
+    public virtual bool HasSettings => false;
 
     #endregion
 
@@ -146,14 +166,13 @@ namespace SuperMemoAssistant.Interop.Plugins
 
     #region Methods Impl
 
-    /// <param name="cfgObject"></param>
-    /// <inheritdoc />
-    public virtual void SettingsSaved(object cfgObject) { }
-
     /// <inheritdoc />
     public void OnInjected()
     {
       Logger.Instance.Initialize(AssemblyName, ConfigureLogger);
+
+      AppDomain.CurrentDomain.UnhandledException += (_,
+                                                     e) => LogException((Exception)e.ExceptionObject, e.IsTerminating);
 
       if (SMA == null)
         throw new NullReferenceException($"{nameof(SMA)} is null");
@@ -181,6 +200,9 @@ namespace SuperMemoAssistant.Interop.Plugins
     {
       ConsumedServiceMap.TryRemove(interfaceTypeName, out _);
     }
+    
+    /// <inheritdoc />
+    public virtual void OnShowSettings() { }
 
     #endregion
 
@@ -188,6 +210,12 @@ namespace SuperMemoAssistant.Interop.Plugins
 
 
     #region Methods
+
+    private void LogException(Exception ex,
+                              bool      terminating)
+    {
+      LogTo.Error(ex, $"Unhandled exception, terminating: {terminating}");
+    }
 
     [Conditional("DEBUG")]
     [Conditional("DEBUG_IN_PROD")]
@@ -239,7 +267,7 @@ namespace SuperMemoAssistant.Interop.Plugins
 
     public void PublishService<IService, TService>(TService service)
       where IService : class
-      where TService : SMMarshalByRefObject, IService
+      where TService : PerpetualMarshalByRefObject, IService
     {
       var svcType = typeof(IService);
 
@@ -259,10 +287,7 @@ namespace SuperMemoAssistant.Interop.Plugins
       var channelName = RemotingServicesEx.GenerateIpcServerChannelName();
       var ipcServer   = RemotingServicesEx.CreateIpcServer<IService, TService>(service, channelName);
 
-      var unregisterObj = SMAPluginMgr.RegisterService(
-        svcTypeName,
-        channelName,
-        AssemblyName);
+      var unregisterObj = SMAPluginMgr.RegisterService(SessionGuid, svcTypeName, channelName);
 
       RegisteredServicesMap[svcTypeName] = (ipcServer, unregisterObj);
     }

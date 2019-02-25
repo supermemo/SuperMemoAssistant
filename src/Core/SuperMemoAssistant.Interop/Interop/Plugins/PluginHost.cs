@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/02/22 19:04
-// Modified On:  2019/02/22 19:29
+// Modified On:  2019/02/24 20:58
 // Modified By:  Alexis
 
 #endregion
@@ -41,10 +41,10 @@ using SuperMemoAssistant.Sys.IO;
 
 namespace SuperMemoAssistant.Interop.Plugins
 {
-  public partial class PluginHost : SMMarshalByRefObject, IDisposable
+  public partial class PluginHost : PerpetualMarshalByRefObject, IDisposable
   {
     #region Properties & Fields - Non-Public
-    
+
     private readonly ISMAPlugin _plugin;
 
     private bool _hasExited;
@@ -58,8 +58,9 @@ namespace SuperMemoAssistant.Interop.Plugins
 
     public PluginHost(
       string  pluginPackageName,
-      Process smaProcess,
+      Guid    sessionGuid,
       string  smaChannelName,
+      Process smaProcess,
       bool    isDev)
     {
       // Connect to SMA
@@ -77,7 +78,7 @@ namespace SuperMemoAssistant.Interop.Plugins
 
       if (isDev)
       {
-        var homePath = new DirectoryPath(AppDomain.CurrentDomain.BaseDirectory);
+        var homePath       = new DirectoryPath(AppDomain.CurrentDomain.BaseDirectory);
         var pluginFilePath = homePath.CombineFile(pluginPackageName + ".dll");
 
         pluginAssemblies = new List<string>
@@ -88,7 +89,7 @@ namespace SuperMemoAssistant.Interop.Plugins
       }
 
       else if (pluginMgr.GetAssembliesPathsForPlugin(
-        pluginPackageName,
+        sessionGuid,
         out pluginAssemblies,
         out dependenciesAssemblies) == false)
       {
@@ -108,7 +109,9 @@ namespace SuperMemoAssistant.Interop.Plugins
       }
 
       // Connect plugin to SMA
-      var sma = pluginMgr.ConnectPlugin(_plugin.ChannelName, Process.GetCurrentProcess().Id);
+      var sma = pluginMgr.ConnectPlugin(
+        _plugin.ChannelName,
+        sessionGuid);
 
       if (sma == null)
       {
@@ -117,7 +120,7 @@ namespace SuperMemoAssistant.Interop.Plugins
       }
 
       // Inject properties
-      InjectPropertyDependencies(_plugin, sma, pluginMgr);
+      InjectPropertyDependencies(_plugin, sma, pluginMgr, sessionGuid);
 
       _plugin.OnInjected();
 

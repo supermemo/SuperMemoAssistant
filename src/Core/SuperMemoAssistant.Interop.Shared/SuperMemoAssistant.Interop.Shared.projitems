@@ -21,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Sys\IO\RelativePathResolver.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Interop\Plugins\" />
     <Folder Include="$(MSBuildThisFileDirectory)PluginHost\" />
   </ItemGroup>
 </Project>

@@ -168,6 +168,9 @@
     <Compile Include="Extensions\StreamEx.cs" />
     <Compile Include="Extensions\TreeViewEx.cs" />
     <Compile Include="Extensions\WindowEx.cs" />
+    <Compile Include="Interop\Plugins\PluginApp.xaml.cs">
+      <DependentUpon>PluginApp.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interop\Plugins\ISMAPluginManager.cs" />
     <Compile Include="Interop\Plugins\PluginHost.Assembly.cs" />
     <Compile Include="Interop\Plugins\PluginHost.cs" />
@@ -220,7 +223,9 @@
     <Compile Include="Sys\Remoting\RemoteCancellationToken.cs" />
     <Compile Include="Sys\Remoting\RemoteCancellationTokenSource.cs" />
     <Compile Include="Sys\Remoting\RemoteTask.cs" />
+    <Compile Include="Sys\Threading\DelayedTask.cs" />
     <Compile Include="Sys\Windows\KeyboardEx.cs" />
+    <Compile Include="Sys\Windows\RelayCommand.cs" />
     <Compile Include="UI\Converters\ElementIconConverter.cs" />
     <Compile Include="UI\ElementPicker.xaml.cs">
       <DependentUpon>ElementPicker.xaml</DependentUpon>
@@ -319,7 +324,7 @@
     <Compile Include="Interop\SuperMemo\UI\IWdw.cs" />
     <Compile Include="Services\Configuration\ConfigurationService.cs" />
     <Compile Include="Sys\Security\Cryptography\Crc32.cs" />
-    <Compile Include="Sys\SMMarshalByRefObject.cs" />
+    <Compile Include="Sys\PerpetualMarshalByRefObject.cs" />
     <Compile Include="Sys\Span.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -340,6 +345,10 @@
     <Resource Include="Resources\topic_icon.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Interop\Plugins\PluginApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlGroup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

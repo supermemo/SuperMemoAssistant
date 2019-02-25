@@ -31,7 +31,9 @@
 
 
 using System;
+using System.Threading.Tasks;
 using Anotar.Serilog;
+using Nito.AsyncEx;
 using Process.NET.Memory;
 using Process.NET.Types;
 using SuperMemoAssistant.Interop;
@@ -475,11 +477,32 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
       return ElementIdPtr.RestartTimer(updateValue);
     }
 
-    private void OnSMStartedEvent(object        sender,
+    private async Task OnSMStartedEvent(object        sender,
                                   SMProcessArgs e)
     {
-      ElementWdwPtr = SMProcess[SM17Natives.TElWind.InstancePtr];
-      ElementWdwPtr.RegisterValueChangedEventHandler<int>(OnWindowCreated);
+      LogTo.Debug($"Initializing {GetType().Name}");
+
+      await Task.Run(() =>
+      {
+        ElementWdwPtr = SMProcess[SM17Natives.TElWind.InstancePtr];
+        ElementWdwPtr.RegisterValueChangedEventHandler<int>(OnWindowCreated);
+      });
+    }
+
+    private Task OnSMStoppedEvent(object        sender,
+                                  SMProcessArgs e)
+    {
+      LogTo.Debug($"Cleaning up {GetType().Name}");
+
+      ElementIdPtr?.Dispose();
+
+      ElementWdwPtr       = null;
+      ElementIdPtr        = null;
+      CurrentConceptIdPtr = null;
+      CurrentRootIdPtr    = null;
+      CurrentHookIdPtr    = null;
+
+      return TaskConstants.Completed;
     }
 
     private bool OnWindowCreated(byte[] newVal)
@@ -502,18 +525,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
       //                                                   null));
 
       return true;
-    }
-
-    private void OnSMStoppedEvent(object        sender,
-                                  SMProcessArgs e)
-    {
-      ElementIdPtr?.Dispose();
-
-      ElementWdwPtr       = null;
-      ElementIdPtr        = null;
-      CurrentConceptIdPtr = null;
-      CurrentRootIdPtr    = null;
-      CurrentHookIdPtr    = null;
     }
 
     protected bool OnElementChangedInternal(byte[] newVal)

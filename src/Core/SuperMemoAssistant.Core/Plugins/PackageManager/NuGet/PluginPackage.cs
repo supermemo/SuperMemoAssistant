@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/20 08:05
-// Modified On:  2019/01/25 22:53
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/24 13:13
 // Modified By:  Alexis
 
 #endregion
@@ -30,6 +30,7 @@
 
 
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Anotar.Serilog;
@@ -46,7 +47,7 @@ using SuperMemoAssistant.Sys.IO;
 namespace SuperMemoAssistant.Plugins.PackageManager.NuGet
 {
   [JsonObject(MemberSerialization.OptIn)]
-  public class PluginPackage<TMeta> : Package
+  public class PluginPackage<TMeta> : Package, IEquatable<PluginPackage<TMeta>>
   {
     #region Constructors
 
@@ -73,6 +74,47 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet
     public HashSet<Package> Dependencies { get; set; } = new HashSet<Package>();
 
     public IEnumerable<Package> PluginAndDependencies => new List<Package> { this }.Concat(Dependencies);
+
+    #endregion
+
+
+
+
+    #region Methods Impl
+
+    /// <inheritdoc />
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj))
+        return false;
+      if (ReferenceEquals(this, obj))
+        return true;
+      if (obj.GetType() != GetType())
+        return false;
+
+      return Equals((PluginPackage<TMeta>)obj);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+      unchecked
+      {
+        // ReSharper disable once NonReadonlyMemberInGetHashCode
+        return (base.GetHashCode() * 397) ^ EqualityComparer<TMeta>.Default.GetHashCode(Metadata);
+      }
+    }
+
+    /// <inheritdoc />
+    public bool Equals(PluginPackage<TMeta> other)
+    {
+      if (ReferenceEquals(null, other))
+        return false;
+      if (ReferenceEquals(this, other))
+        return true;
+
+      return base.Equals(other) && EqualityComparer<TMeta>.Default.Equals(Metadata, other.Metadata);
+    }
 
     #endregion
 
@@ -114,13 +156,13 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet
     }
 
     public virtual IEnumerable<FilePath> GetPluginAndDependenciesAssembliesFilePaths(FolderNuGetProject project,
-                                                                             NuGetFramework     targetFramework)
+                                                                                     NuGetFramework     targetFramework)
     {
       return PluginAndDependencies.SelectMany(p => p.GetReferencedAssembliesFilePaths(project, targetFramework));
     }
 
     public virtual IEnumerable<DirectoryPath> GetPluginAndDependenciesContentDirectoryPaths(FolderNuGetProject project,
-                                                                                    NuGetFramework     targetFramework)
+                                                                                            NuGetFramework     targetFramework)
     {
       return PluginAndDependencies.SelectMany(p => p.GetContentDirectoryPath(project, targetFramework));
     }
@@ -149,6 +191,18 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet
         }
 
       return true;
+    }
+
+    public static bool operator ==(PluginPackage<TMeta> left,
+                                   PluginPackage<TMeta> right)
+    {
+      return Equals(left, right);
+    }
+
+    public static bool operator !=(PluginPackage<TMeta> left,
+                                   PluginPackage<TMeta> right)
+    {
+      return !Equals(left, right);
     }
 
     #endregion

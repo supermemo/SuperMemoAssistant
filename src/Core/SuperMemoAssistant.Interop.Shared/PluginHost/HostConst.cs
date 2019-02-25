@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/02/22 19:27
-// Modified On:  2019/02/22 19:32
+// Modified On:  2019/02/24 20:54
 // Modified By:  Alexis
 
 #endregion
@@ -36,13 +36,13 @@ namespace SuperMemoAssistant.PluginHost
   {
     #region Constants & Statics
 
+    public const int ExitUnknownError               = -1;
     public const int ExitParameters                 = 1;
-    public const int ExitUnknownError               = 2;
-    public const int ExitParentExited               = 3;
-    public const int ExitIpcConnectionError         = 4;
-    public const int ExitCouldNotGetAssembliesPaths = 5;
-    public const int ExitNoPluginTypeFound          = 6;
-    public const int ExitCouldNotConnectPlugin      = 7;
+    public const int ExitParentExited               = 2;
+    public const int ExitIpcConnectionError         = 3;
+    public const int ExitCouldNotGetAssembliesPaths = 4;
+    public const int ExitNoPluginTypeFound          = 5;
+    public const int ExitCouldNotConnectPlugin      = 6;
 
 
     public const string AppDomainName          = "PluginsHost_AppDomain";

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/01 14:11
-// Modified On:  2019/01/24 14:01
+// Created On:   2019/02/13 13:55
+// Modified On:  2019/02/24 22:45
 // Modified By:  Alexis
 
 #endregion
@@ -35,14 +35,17 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
+using Anotar.Serilog;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.SMA.Hooks;
 using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.Sys.SparseClusteredArray;
 
 namespace SuperMemoAssistant.SuperMemo.Hooks
 {
-  public abstract class SMHookIOBase : SMMarshalByRefObject, ISMHookIO, IDisposable
+  public abstract class SMHookIOBase : PerpetualMarshalByRefObject, ISMAHookIO, IDisposable
   {
     #region Properties & Fields - Non-Public
 
@@ -66,7 +69,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     public virtual void Dispose()
     {
-      Cleanup();
+      OnSMStopped(null, null).Wait();
     }
 
     #endregion
@@ -127,18 +130,22 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     #region Methods
 
-    private void OnSMStarting(object      sender,
+    private async Task OnSMStarting(object      sender,
                               SMEventArgs e)
     {
-      Initialize();
+      LogTo.Debug($"Initializing {GetType().Name}");
+
+      await Task.Run((Action)Initialize);
     }
 
-    private void OnSMStopped(object        sender,
+    private async Task OnSMStopped(object        sender,
                              SMProcessArgs e)
     {
-      FileHandles.Clear();
+      LogTo.Debug($"Cleaning up {GetType().Name}");
 
-      Cleanup();
+      FileHandles.Clear();
+      
+      await Task.Run((Action)Cleanup);
     }
 
     protected static Dictionary<int, TContainer> StreamToStruct<TContainer, TStruct>(

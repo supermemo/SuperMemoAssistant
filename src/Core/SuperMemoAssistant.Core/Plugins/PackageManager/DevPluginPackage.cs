@@ -115,11 +115,19 @@ namespace SuperMemoAssistant.Plugins.PackageManager
       }
 
       FileVersionInfo pluginVersionInfo = FileVersionInfo.GetVersionInfo(pluginFilePath.FullPath);
+
+      if (pluginVersionInfo.ProductName != packageName)
+      {
+        LogTo.Warning($"Development plugin Folder name {packageName} differs from Assembly name {pluginVersionInfo.ProductName}. Skipping.");
+        return null;
+      }
+
       PluginMetadata pluginMetadata = new PluginMetadata
       {
         Enabled       = true,
         DisplayName   = pluginVersionInfo.ProductName,
         PackageName   = pluginFilePath.FileNameWithoutExtension,
+        Description   = "Development plugin",
         IsDevelopment = true,
       };
       return new DevPluginPackage(

@@ -32,8 +32,8 @@
 
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows;
+using CommandLine;
 
 // ReSharper disable HeuristicUnreachableCode
 
@@ -72,30 +72,9 @@ namespace SuperMemoAssistant.PluginHost
     {
       try
       {
-        Process smaProc;
-
-        if (ReadArgs(e.Args,
-                     out var pluginPackageName,
-                     out var smaProcId,
-                     out var channelName,
-                     out var homeDir,
-                     out var isDev) == false)
-        {
-          Environment.Exit(HostConst.ExitParameters);
-          return;
-        }
-
-        try
-        {
-          smaProc = Process.GetProcessById(smaProcId);
-        }
-        catch (Exception)
-        {
-          Environment.Exit(HostConst.ExitParentExited);
-          return;
-        }
-
-        _pluginHost = PluginLoader.Create(pluginPackageName, smaProc, channelName, homeDir, isDev);
+        Parser.Default.ParseArguments<PluginHostParameters>(e.Args)
+              .WithParsed(LoadPlugin)
+              .WithNotParsed(_ => Environment.Exit(HostConst.ExitParameters));
       }
       catch (Exception ex)
       {
@@ -104,28 +83,27 @@ namespace SuperMemoAssistant.PluginHost
       }
     }
 
-
-    private bool ReadArgs(string[]   args,
-                          out string pluginPackageName,
-                          out int    smaProcId,
-                          out string channelName,
-                          out string homeDir,
-                          out bool   isDev)
+    private void LoadPlugin(PluginHostParameters args)
     {
-      pluginPackageName = null;
-      smaProcId         = -1;
-      channelName       = null;
-      homeDir           = null;
-      isDev             = args.Length == 5 && args[4] == "--development";
+      Process smaProcess;
+        
+      try
+      {
+        smaProcess = Process.GetProcessById(args.SMAProcessId);
+      }
+      catch (Exception)
+      {
+        Environment.Exit(HostConst.ExitParentExited);
+        return;
+      }
 
-      if (args.Length < 4 || args.Length > 5 || args.Any(string.IsNullOrWhiteSpace))
-        return false;
-
-      pluginPackageName = args[0];
-      channelName       = args[2];
-      homeDir           = args[3];
-
-      return int.TryParse(args[1], out smaProcId);
+      _pluginHost = PluginLoader.Create(
+        args.PackageName,
+        args.HomePath,
+        args.Guid,
+        args.SMAChannelName,
+        smaProcess,
+        args.IsDeveloment);
     }
 
     #endregion

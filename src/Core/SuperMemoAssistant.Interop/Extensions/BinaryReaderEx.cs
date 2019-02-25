@@ -52,7 +52,5 @@ namespace SuperMemoAssistant.Extensions
         pinnedRawData.Free();
       }
     }
-
-    //public static T[] ReadArray<T>(this BinaryReader r)
   }
 }

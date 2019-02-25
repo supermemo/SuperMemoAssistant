@@ -86,6 +86,15 @@
     <Reference Include="Anotar.Serilog, Version=4.6.7.0, Culture=neutral, PublicKeyToken=9d5b24f0733c26f7, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Anotar.Serilog.Fody.4.6.7\lib\net452\Anotar.Serilog.dll</HintPath>
     </Reference>
+    <Reference Include="AsyncEvent, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\AsyncEvent.0.2.0\lib\netstandard2.0\AsyncEvent.dll</HintPath>
+    </Reference>
+    <Reference Include="CommandLine, Version=2.4.3.0, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\CommandLineParser.2.4.3\lib\netstandard2.0\CommandLine.dll</HintPath>
+    </Reference>
+    <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
+    </Reference>
     <Reference Include="EasyHook, Version=2.7.6789.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\EasyHook.2.7.6789\lib\net40\EasyHook.dll</HintPath>
     </Reference>
@@ -94,6 +103,12 @@
     </Reference>
     <Reference Include="FlaUI.UIA3, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\FlaUI.UIA3.2.0.0-rc1\lib\net45\FlaUI.UIA3.dll</HintPath>
+    </Reference>
+    <Reference Include="FontAwesome5, Version=1.0.0.0, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FontAwesome5.1.0.10\lib\net40\FontAwesome5.dll</HintPath>
+    </Reference>
+    <Reference Include="FontAwesome5.WPF, Version=1.0.10.89, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FontAwesome5.1.0.10\lib\net40\FontAwesome5.WPF.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\AvalonEdit.5.0.4\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
@@ -108,6 +123,9 @@
     <Reference Include="LoadAssembliesOnStartup.Fody, Version=3.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\LoadAssembliesOnStartup.Fody.3.0.3\lib\net46\LoadAssembliesOnStartup.Fody.dll</HintPath>
     </Reference>
+    <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\MahApps.Metro.1.6.5\lib\net47\MahApps.Metro.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
     </Reference>
@@ -120,6 +138,9 @@
     <Reference Include="Microsoft.Web.XmlTransform, Version=3.0.0.34420, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Microsoft.Web.Xdt.3.0.0\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="MoreLinq, Version=3.1.0.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\morelinq.3.1.0\lib\net451\MoreLinq.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -185,11 +206,19 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net" />
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\ControlzEx.3.0.2.4\lib\net462\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
@@ -219,17 +248,26 @@
     <Compile Include="Plugins\PluginInstance.cs" />
     <Compile Include="Plugins\PluginManager.Packages.cs" />
     <Compile Include="Plugins\PluginManager.Process.cs" />
+    <Compile Include="Plugins\PluginManager.Service.cs" />
     <Compile Include="Plugins\PluginMetadata.cs" />
-    <Compile Include="SMA\UI\ElementPickerInterceptor.cs" />
-    <Compile Include="SMA\UI\GlobalSettingsWindow.xaml.cs">
-      <DependentUpon>GlobalSettingsWindow.xaml</DependentUpon>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SMA\UI\LayoutEditorWindow.xaml.cs">
+    <Compile Include="SMA\UI\Interceptors\ElementPickerInterceptor.cs" />
+    <Compile Include="SMA\UI\Settings\Settings.Plugins.xaml.cs">
+      <DependentUpon>Settings.Plugins.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMA\UI\Settings\SettingsWindow.xaml.cs">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMA\UI\Layout\LayoutEditorWindow.xaml.cs">
       <DependentUpon>LayoutEditorWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SMA\UI\SMAUI.cs" />
     <Compile Include="Sys\COM\InternetExplorer\IEComHelper.cs" />
-    <Compile Include="CoreCfg.cs" />
+    <Compile Include="SMA\StartupCfg.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ComponentControlBase.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlGroup.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlImage.cs" />
@@ -322,21 +360,19 @@
       <Project>{FD0E1BE8-BED3-4AB0-A9C8-022A2DBC8450}</Project>
       <Name>SuperMemoAssistant.Interop</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SuperMemoAssistant.Core.Remote\SuperMemoAssistant.Core.Remote.csproj">
+    <ProjectReference Include="..\SuperMemoAssistant.Hooks.Common\SuperMemoAssistant.Hooks.Common.csproj">
       <Project>{cc5b9485-9ef1-4133-9242-719d263700ae}</Project>
-      <Name>SuperMemoAssistant.Core.Remote</Name>
+      <Name>SuperMemoAssistant.Hooks.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="EasyHook32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="EasyHook32Svc.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="EasyLoad32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\plugin-default.png" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="MSHTML">
@@ -350,15 +386,26 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="SMA\UI\GlobalSettingsWindow.xaml">
+    <Page Include="SMA\UI\Settings\Settings.Plugins.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMA\UI\Settings\SettingsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SMA\UI\LayoutEditorWindow.xaml">
+    <Page Include="SMA\UI\Layout\LayoutEditorWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="..\SuperMemoAssistant.PluginHost.Shared\SuperMemoAssistant.PluginHost.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

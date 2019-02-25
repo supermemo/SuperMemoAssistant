@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/02/13 13:55
-// Modified On:  2019/02/21 13:39
+// Modified On:  2019/02/24 13:17
 // Modified By:  Alexis
 
 #endregion
@@ -34,10 +34,12 @@ using System;
 using System.Drawing;
 using Newtonsoft.Json;
 using SuperMemoAssistant.Extensions;
+// ReSharper disable NonReadonlyMemberInGetHashCode
 
 namespace SuperMemoAssistant.Plugins
 {
   public class PluginMetadata
+    : IEquatable<PluginMetadata>
   {
     #region Properties & Fields - Public
 
@@ -57,6 +59,65 @@ namespace SuperMemoAssistant.Plugins
     public Image Icon => IconBase64 == null
       ? null
       : ImageEx.FromBase64(IconBase64);
+
+    #endregion
+
+
+
+
+    #region Methods Impl
+
+    /// <inheritdoc />
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj))
+        return false;
+      if (ReferenceEquals(this, obj))
+        return true;
+      if (obj.GetType() != GetType())
+        return false;
+
+      return Equals((PluginMetadata)obj);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+      unchecked
+      {
+        return ((PackageName != null ? PackageName.GetHashCode() : 0) * 397) ^ IsDevelopment.GetHashCode();
+      }
+    }
+
+    /// <inheritdoc />
+    public bool Equals(PluginMetadata other)
+    {
+      if (ReferenceEquals(null, other))
+        return false;
+      if (ReferenceEquals(this, other))
+        return true;
+
+      return string.Equals(PackageName, other.PackageName) && IsDevelopment == other.IsDevelopment;
+    }
+
+    #endregion
+
+
+
+
+    #region Methods
+
+    public static bool operator ==(PluginMetadata left,
+                                   PluginMetadata right)
+    {
+      return Equals(left, right);
+    }
+
+    public static bool operator !=(PluginMetadata left,
+                                   PluginMetadata right)
+    {
+      return !Equals(left, right);
+    }
 
     #endregion
   }

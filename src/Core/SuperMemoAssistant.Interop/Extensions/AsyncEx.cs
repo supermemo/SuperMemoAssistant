@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/26 03:40
-// Modified On:  2019/01/26 03:41
+// Created On:   2019/02/23 02:15
+// Modified On:  2019/02/24 00:32
 // Modified By:  Alexis
 
 #endregion
@@ -42,6 +42,18 @@ namespace SuperMemoAssistant.Extensions
 
     public static async Task<bool> WaitAsync(this AsyncManualResetEvent waitHandle,
                                              int                        timeoutMs)
+    {
+      if (waitHandle == null)
+        throw new ArgumentNullException(nameof(waitHandle));
+
+      Task waitTask      = waitHandle.WaitAsync();
+      Task completedTask = await Task.WhenAny(Task.Delay(timeoutMs), waitHandle.WaitAsync());
+
+      return completedTask == waitTask;
+    }
+
+    public static async Task<bool> WaitAsync(this AsyncAutoResetEvent waitHandle,
+                                             int                      timeoutMs)
     {
       if (waitHandle == null)
         throw new ArgumentNullException(nameof(waitHandle));

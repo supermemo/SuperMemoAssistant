@@ -62,23 +62,27 @@ namespace SuperMemoAssistant.Plugins
 
     #region Methods
 
-    public IEnumerable<PluginPackage<PluginMetadata>> GetPlugins(bool includeDev)
+    public IEnumerable<PluginPackage<PluginMetadata>> ScanPlugins(bool includeDev)
     {
-      IEnumerable<PluginPackage<PluginMetadata>> plugins;
-      var                                        pm = PackageManager;
-
-      lock (pm)
-        plugins = pm.GetInstalledPlugins();
+      IEnumerable<PluginPackage<PluginMetadata>> plugins = ScanInstalledPlugins();
 
       if (includeDev == false)
         return plugins;
 
-      var devPlugins = GetDevelopmentPlugins();
+      var devPlugins = ScanDevelopmentPlugins();
 
-      return devPlugins.Concat(plugins.Where(p => devPlugins.Any(dp => dp.Id == p.Id) == false));
+      return devPlugins.Concat(plugins);
     }
 
-    public List<PluginPackage<PluginMetadata>> GetDevelopmentPlugins()
+    public IEnumerable<PluginPackage<PluginMetadata>> ScanInstalledPlugins()
+    {
+      var pm = PackageManager;
+
+      lock (pm)
+        return pm.GetInstalledPlugins();
+    }
+
+    public List<PluginPackage<PluginMetadata>> ScanDevelopmentPlugins()
     {
       var devPlugins = new List<PluginPackage<PluginMetadata>>();
       var devDir     = SMAFileSystem.PluginDevelopmentDir;
@@ -101,12 +105,7 @@ namespace SuperMemoAssistant.Plugins
 
       return devPlugins;
     }
-
-    public PluginPackage<PluginMetadata> GetDevelopmentPlugin(string pkgId)
-    {
-      return DevPluginPackage.Create(pkgId);
-    }
-
+    
     #endregion
   }
 }

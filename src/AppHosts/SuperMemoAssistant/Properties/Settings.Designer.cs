@@ -22,16 +22,5 @@ namespace SuperMemoAssistant.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Specialized.StringCollection SavedCollections {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["SavedCollections"]));
-            }
-            set {
-                this["SavedCollections"] = value;
-            }
-        }
     }
 }

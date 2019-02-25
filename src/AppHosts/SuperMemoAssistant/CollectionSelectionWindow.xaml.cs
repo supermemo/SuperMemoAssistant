@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/11/22 15:10
-// Modified On:  2019/01/15 12:40
+// Modified On:  2019/02/25 15:51
 // Modified By:  Alexis
 
 #endregion
@@ -30,33 +30,47 @@
 
 
 
-using System.Collections.Generic;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using MahApps.Metro.Controls;
 using Microsoft.Win32;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Services;
+using SuperMemoAssistant.SMA;
+using SuperMemoAssistant.Sys.Windows;
 
 namespace SuperMemoAssistant
 {
   /// <summary>Interaction logic for CollectionSelectionWindow.xaml</summary>
-  public partial class CollectionSelectionWindow : Window
+  public partial class CollectionSelectionWindow : MetroWindow
   {
+    #region Properties & Fields - Non-Public
+
+    private readonly StartupCfg _config;
+
+    #endregion
+
+
+
+
     #region Constructors
 
     public CollectionSelectionWindow()
     {
+      _config = Svc.Configuration.Load<StartupCfg>().Result;
+      SavedCollections = _config.Collections;
+
       InitializeComponent();
       
-      LoadCollections();
-      
-      Loaded += CollectionSelectionWindow_Loaded;
+      if (SavedCollections.Count > 0)
+        lbCollections.SelectedIndex = 0;
 
-      Config = Svc.Configuration.Load<CoreCfg>().Result;
+      Loaded += CollectionSelectionWindow_Loaded;
     }
 
     #endregion
@@ -67,8 +81,9 @@ namespace SuperMemoAssistant
     #region Properties & Fields - Public
 
     public SMCollection                       Collection       { get; set; }
-    public ObservableCollection<SMCollection> SavedCollections { get; set; }
-    public CoreCfg                            Config           { get; }
+    public ObservableCollection<SMCollection> SavedCollections { get; }
+
+    public ICommand DeleteCommand => new RelayCommand<SMCollection>(DeleteCollection);
 
     #endregion
 
@@ -76,32 +91,26 @@ namespace SuperMemoAssistant
 
 
     #region Methods
-
-    private void CollectionSelectionWindow_Loaded(object          sender,
-                                                  RoutedEventArgs e)
+    
+    private SMCollection CreateCollection(string knoFilePath)
     {
-      if (lbCollections.HasItems)
-        ((ListBoxItem)lbCollections.ItemContainerGenerator.ContainerFromItem(lbCollections.SelectedItem)).Focus();
+      string filePath = Path.GetDirectoryName(knoFilePath);
+      string name     = Path.GetFileNameWithoutExtension(knoFilePath);
+
+      return new SMCollection(name,
+                              filePath,
+                              DateTime.Now);
     }
 
-    private void LoadCollections()
+    private void DeleteCollection(SMCollection collection)
     {
-      SavedCollections = new ObservableCollection<SMCollection>();
-
-      var savedKnos = GetSavedKnos();
-
-      foreach (var collection in savedKnos.Select(KnoToCollection))
-        SavedCollections.Add(collection);
-
-      lbCollections.ItemsSource = SavedCollections;
-
-      if (SavedCollections.Count > 0)
-        lbCollections.SelectedIndex = 0;
+      SavedCollections.Remove(collection);
+      SaveConfig();
     }
 
     private void SaveConfig()
     {
-      Svc.Configuration.Save<CoreCfg>(Config).Wait();
+      Svc.Configuration.Save<StartupCfg>(_config).Wait();
     }
 
     private void btnBrowse_Click(object          sender,
@@ -119,10 +128,18 @@ namespace SuperMemoAssistant
 
       if (filePath != null)
       {
-        Collection = KnoToCollection(filePath);
+        var newCollection = CreateCollection(filePath);
+        var duplicate     = _config.Collections.FirstOrDefault(c => c == newCollection);
 
-        AddNewCollectionToConfig(filePath);
+        if (duplicate != null)
+          duplicate.LastOpen = DateTime.Now;
 
+        else
+          _config.Collections.Add(newCollection);
+
+        SaveConfig();
+
+        Collection = duplicate ?? newCollection;
         Close();
       }
     }
@@ -130,9 +147,10 @@ namespace SuperMemoAssistant
     private void btnOpen_Click(object          sender,
                                RoutedEventArgs e)
     {
-      Collection = (SMCollection)lbCollections.SelectedItem;
+      Collection          = (SMCollection)lbCollections.SelectedItem;
+      Collection.LastOpen = DateTime.Now;
 
-      ReorderCollectionToFront(lbCollections.SelectedIndex);
+      SaveConfig();
 
       Close();
     }
@@ -140,52 +158,9 @@ namespace SuperMemoAssistant
     private void BtnOptions_Click(object          sender,
                                   RoutedEventArgs e)
     {
-      Forge.Forms.Show.Window().For<CoreCfg>(Config).Wait();
+      Forge.Forms.Show.Window().For<StartupCfg>(_config).Wait();
 
       SaveConfig();
-    }
-
-    private void ReorderCollectionToFront(int index)
-    {
-      if (Properties.Settings.Default.SavedCollections == null
-        || Properties.Settings.Default.SavedCollections.Count <= index)
-        return;
-
-      var savedCollections = Properties.Settings.Default.SavedCollections;
-      var col              = savedCollections[index];
-
-      savedCollections.RemoveAt(index);
-      savedCollections.Insert(0,
-                              col);
-
-      Properties.Settings.Default.SavedCollections = savedCollections;
-      Properties.Settings.Default.Save();
-    }
-
-    private void AddNewCollectionToConfig(string knoFilePath)
-    {
-      var savedCollections = Properties.Settings.Default.SavedCollections ?? new System.Collections.Specialized.StringCollection();
-
-      savedCollections.Insert(0,
-                              knoFilePath);
-
-      Properties.Settings.Default.SavedCollections = savedCollections;
-      Properties.Settings.Default.Save();
-    }
-
-    private SMCollection KnoToCollection(string knoFilePath)
-    {
-      string filePath = Path.GetDirectoryName(knoFilePath);
-      string name     = Path.GetFileNameWithoutExtension(knoFilePath);
-
-      return new SMCollection(name,
-                              filePath);
-    }
-
-    private List<string> GetSavedKnos()
-    {
-      return Properties.Settings.Default.SavedCollections?.Cast<string>().ToList()
-        ?? new List<string>();
     }
 
     private void Window_KeyDown(object       sender,
@@ -197,6 +172,13 @@ namespace SuperMemoAssistant
 
       else if (e.Key == Key.Escape)
         Close();
+    }
+
+    private void CollectionSelectionWindow_Loaded(object          sender,
+                                                  RoutedEventArgs e)
+    {
+      if (lbCollections.HasItems)
+        ((ListBoxItem)lbCollections.ItemContainerGenerator.ContainerFromItem(lbCollections.SelectedItem)).Focus();
     }
 
     #endregion

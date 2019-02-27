@@ -1,55 +1,84 @@
-﻿<Window x:Class="SuperMemoAssistant.SMA.UI.Layout.LayoutEditorWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
-        xmlns:layout="clr-namespace:SuperMemoAssistant.SMA.UI.Layout"
-        mc:Ignorable="d"
-        KeyDown="Window_KeyDown"
-        Title="Layout Editor" Height="450" Width="800"
-        d:DataContext="{d:DesignInstance layout:LayoutEditorWindow}">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
+﻿<mah:MetroWindow x:Class="SuperMemoAssistant.SMA.UI.Layout.LayoutEditorWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:layout="clr-namespace:SuperMemoAssistant.SMA.UI.Layout"
+                 xmlns:xamlControls="clr-namespace:SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls"
+                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                 xmlns:data="clr-namespace:SuperMemoAssistant.Sys.Windows.Data;assembly=SuperMemoAssistant.Interop"
+                 mc:Ignorable="d"
+                 KeyDown="Window_KeyDown"
+                 Height="768" Width="1024"
+                 DataContext="{Binding RelativeSource={RelativeSource Self}}"
+                 Title="Layout Editor"
+                 TitleAlignment="Left"
+                 TitleCharacterCasing="Normal"
+                 IconScalingMode="NoScaleSmallerFrame"
+                 WindowStartupLocation="CenterScreen"
+                 ResizeMode="CanResizeWithGrip"
+                 ShowIconOnTitleBar="True"
+                 Style="{DynamicResource CleanWindowStyleKey}"
+                 GlowBrush="{DynamicResource AccentColorBrush}"
+                 d:DataContext="{d:DesignInstance layout:LayoutEditorWindow}">
+  <Window.Resources>
+    <ResourceDictionary>
+      <data:BooleanToVisiblityConverterEx x:Key="BoolToVis" />
+    </ResourceDictionary>
+  </Window.Resources>
 
-        <TabControl x:Name="tcLayout"
-                    Grid.Row="0"
-                    SelectionChanged="TcLayout_SelectionChanged">
-            <TabItem Header="Editor">
-                <avalonedit:TextEditor x:Name="XamlEditor"
-                                       SyntaxHighlighting="XML"
-                                       ShowLineNumbers="True"
-                                       Text="{Binding Xaml}" />
-            </TabItem>
-            <TabItem Header="Preview">
-                <ContentPresenter x:Name="LayoutPresenter"
-                                  Content="{Binding Layout}" />
-            </TabItem>
-        </TabControl>
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*" />
+      <RowDefinition Height="auto" />
+    </Grid.RowDefinitions>
 
-        <Grid Grid.Row="1" Margin="6">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
+    <TabControl x:Name="tcLayout"
+                Grid.Row="0"
+                SelectionChanged="TcLayout_SelectionChanged">
+      <TabItem Header="Editor">
+        <layout:TextEditorEx x:Name="XamlEditor"
+                             SyntaxHighlighting="XML"
+                             ShowLineNumbers="True"
+                             Text="{Binding NewLayout.Xaml}" />
+      </TabItem>
+      <TabItem Header="Preview">
+        <Grid>
+          <xamlControls:XamlControlGroup x:Name="CtrlGroup" />
 
-            <Button Name="BtnCancel"
-                    Grid.Column="1"
-                    VerticalAlignment="Center"
-                    Margin="6 0 6 0"
-                    Content="Cancel"
-                    Click="BtnCancel_Click" />
-
-            <Button Name="BtnOk"
-                    Grid.Column="2"
-                    VerticalAlignment="Center"
-                    Content="Ok"
-                    Click="BtnOk_Click" />
-
+          <Grid Background="#44FF0000"
+                Visibility="{Binding NewLayout.IsValid, Converter={StaticResource BoolToVis}, ConverterParameter=True}">
+          <TextBlock HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Text="Invalid XAML"
+                     Foreground="White"
+                     FontSize="28"
+                     FontWeight="Bold" />
+          </Grid>
         </Grid>
+      </TabItem>
+    </TabControl>
+
+    <Grid Grid.Row="1" Margin="6">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="auto" />
+        <ColumnDefinition Width="auto" />
+      </Grid.ColumnDefinitions>
+
+      <Button Name="BtnCancel"
+              Grid.Column="1"
+              VerticalAlignment="Center"
+              Margin="6 0 6 0"
+              Content="Cancel"
+              Click="BtnCancel_Click" />
+
+      <Button Name="BtnOk"
+              Grid.Column="2"
+              VerticalAlignment="Center"
+              Content="Ok"
+              Click="BtnOk_Click" />
+
     </Grid>
-</Window>
+  </Grid>
+</mah:MetroWindow>

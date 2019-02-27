@@ -30,9 +30,12 @@
 
 
 
+using System.Collections.Generic;
+
 namespace SuperMemoAssistant.Interop.SuperMemo
 {
   public interface ISuperMemoAssistant : ISuperMemo
   {
+    IEnumerable<string> Layouts { get; }
   }
 }

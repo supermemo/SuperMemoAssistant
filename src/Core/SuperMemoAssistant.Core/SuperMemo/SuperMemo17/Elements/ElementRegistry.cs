@@ -48,6 +48,7 @@ using SuperMemoAssistant.Interop.SuperMemo.Elements.Builders;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.SuperMemo.Hooks;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Builders;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
@@ -323,7 +324,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
             break;
 
           case ElementCreationMethod.AddElement:
-            string elementDesc = builder.ToString();
+            string elementDesc = builder.ToElementString();
 
             success = ElementWdw.Instance.AppendAndAddElementFromText(builder.Type, elementDesc) > 0;
 

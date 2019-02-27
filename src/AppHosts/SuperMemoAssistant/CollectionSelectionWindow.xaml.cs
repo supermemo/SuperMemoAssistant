@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/11/22 15:10
-// Modified On:  2019/02/25 15:51
+// Created On:   2019/02/25 22:02
+// Modified On:  2019/02/27 13:24
 // Modified By:  Alexis
 
 #endregion
@@ -35,14 +35,14 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using MahApps.Metro.Controls;
 using Microsoft.Win32;
+using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Services;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.Sys.Windows;
+using SuperMemoAssistant.SMA.Configs;
+using SuperMemoAssistant.Sys.Windows.Input;
 
 namespace SuperMemoAssistant
 {
@@ -62,11 +62,11 @@ namespace SuperMemoAssistant
 
     public CollectionSelectionWindow()
     {
-      _config = Svc.Configuration.Load<StartupCfg>().Result;
+      _config          = Svc.Configuration.Load<StartupCfg>().Result;
       SavedCollections = _config.Collections;
 
       InitializeComponent();
-      
+
       if (SavedCollections.Count > 0)
         lbCollections.SelectedIndex = 0;
 
@@ -91,7 +91,7 @@ namespace SuperMemoAssistant
 
 
     #region Methods
-    
+
     private SMCollection CreateCollection(string knoFilePath)
     {
       string filePath = Path.GetDirectoryName(knoFilePath);
@@ -177,8 +177,7 @@ namespace SuperMemoAssistant
     private void CollectionSelectionWindow_Loaded(object          sender,
                                                   RoutedEventArgs e)
     {
-      if (lbCollections.HasItems)
-        ((ListBoxItem)lbCollections.ItemContainerGenerator.ContainerFromItem(lbCollections.SelectedItem)).Focus();
+      lbCollections.SelectFirstItem();
     }
 
     #endregion

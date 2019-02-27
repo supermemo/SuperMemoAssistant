@@ -23,24 +23,13 @@
                  KeyDown="Window_KeyDown">
   <Window.Resources>
     <ResourceDictionary>
+
       <CollectionViewSource x:Key='SortedCollections' Source="{Binding SavedCollections}">
         <CollectionViewSource.SortDescriptions>
           <componentModel:SortDescription PropertyName="LastOpen" Direction="Descending" />
         </CollectionViewSource.SortDescriptions>
       </CollectionViewSource>
-
-      <ResourceDictionary.MergedDictionaries>
-        <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
-        <!-- Accent and AppTheme setting -->
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Clean/Clean.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Olive.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
-      </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
-    
   </Window.Resources>
 
   <Grid>
@@ -91,7 +80,6 @@
       <Button Name="btnOptions"
               Grid.Column="0"
               Margin="10"
-              FontSize="12"
               Click="BtnOptions_Click">
         <AccessText>O_ptions</AccessText>
       </Button>
@@ -99,18 +87,16 @@
       <Button Name="btnBrowse"
               Grid.Column="2"
               Margin="10"
-              FontSize="12"
               Click="btnBrowse_Click">
         <AccessText>_Browse</AccessText>
       </Button>
       <Button Name="btnOpen"
               Grid.Column="3"
               Margin="10"
-              FontSize="12"
               Click="btnOpen_Click">
         <AccessText>_Open</AccessText>
         <Button.Style>
-          <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MetroButton}">
+          <Style TargetType="{x:Type Button}" BasedOn="{StaticResource SMAButton}">
             <Style.Triggers>
               <DataTrigger
                 Binding="{Binding ElementName=lbCollections, Path=SelectedIndex}"

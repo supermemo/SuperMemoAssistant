@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/21 20:26
-// Modified On:  2019/02/25 00:34
+// Created On:   2019/02/25 22:02
+// Modified On:  2019/02/27 03:06
 // Modified By:  Alexis
 
 #endregion
@@ -32,6 +32,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Anotar.Serilog;
@@ -41,9 +42,11 @@ using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Services;
+using SuperMemoAssistant.SMA.Configs;
 using SuperMemoAssistant.SMA.UI;
 using SuperMemoAssistant.SuperMemo;
 using SuperMemoAssistant.SuperMemo.SuperMemo17;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout;
 using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SMA
@@ -115,8 +118,8 @@ namespace SuperMemoAssistant.SMA
 
     #region Properties & Fields - Public
 
-    public StartupCfg  Config    { get; set; }
-    public IProcess SMProcess => SMMgmt?.SMProcess;
+    public StartupCfg Config    { get; set; }
+    public IProcess   SMProcess => SMMgmt?.SMProcess;
 
     public System.Diagnostics.Process NativeProcess => SMProcess.Native;
 
@@ -140,9 +143,14 @@ namespace SuperMemoAssistant.SMA
         if (SMMgmt != null) SMMgmt.IgnoreUserConfirmation = value;
       }
     }
-
+    
+    /// <inheritdoc />
     public ISuperMemoRegistry Registry => SuperMemoRegistry.Instance;
+    /// <inheritdoc />
     public ISuperMemoUI       UI       => SuperMemoUI.Instance;
+    
+    /// <inheritdoc />
+    public IEnumerable<string> Layouts => LayoutManager.Instance.Layouts.Select(l => l.Name);
 
     #endregion
 

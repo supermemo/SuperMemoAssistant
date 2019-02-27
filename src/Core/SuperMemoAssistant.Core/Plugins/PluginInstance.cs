@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/13 13:55
-// Modified On:  2019/02/25 03:26
+// Created On:   2019/02/25 22:02
+// Modified On:  2019/02/25 23:19
 // Modified By:  Alexis
 
 #endregion
@@ -32,6 +32,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.ComponentModel;
 using Nito.AsyncEx;
 using SuperMemoAssistant.Interop.Plugins;
 using SuperMemoAssistant.Plugins.PackageManager.NuGet;
@@ -41,7 +42,7 @@ namespace SuperMemoAssistant.Plugins
 {
   /// <summary>Represents a running instance of a plugin process</summary>
   public class PluginInstance
-    : IEquatable<PluginInstance>
+    : IEquatable<PluginInstance>, INotifyPropertyChanged
   {
     #region Constructors
 
@@ -71,6 +72,7 @@ namespace SuperMemoAssistant.Plugins
     public ConcurrentDictionary<string, string> InterfaceChannelMap { get; } = new ConcurrentDictionary<string, string>();
 
     public string Denomination => Metadata.IsDevelopment ? "development plugin" : "plugin";
+    public bool   HasSettings  => Status == PluginStatus.Connected && Plugin != null && Plugin.HasSettings;
 
     #endregion
 
@@ -160,6 +162,15 @@ namespace SuperMemoAssistant.Plugins
     {
       return !Equals(left, right);
     }
+
+    #endregion
+
+
+
+
+    #region Events
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
   }

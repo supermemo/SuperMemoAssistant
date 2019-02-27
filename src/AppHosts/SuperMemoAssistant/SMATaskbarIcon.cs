@@ -109,8 +109,8 @@ namespace SuperMemoAssistant
       var tbIcon = (TaskbarIcon)sender;
 
       var runningPlugins = PluginManager.Instance.AllPlugins
-                                        .Where(p => p.Plugin.HasSettings && p.Status == PluginStatus.Connected)
-                                        .OrderBy(p => p.Plugin.Name)
+                                        .Where(p => p.HasSettings)
+                                        .OrderBy(p => p.Metadata.DisplayName)
                                         .ToList();
 
       // ReSharper disable once PossibleNullReferenceException
@@ -125,14 +125,13 @@ namespace SuperMemoAssistant
         {
           var menuItem = new MenuItem
           {
-            Header = pluginInstance.Plugin.Name,
+            Header = pluginInstance.Metadata.DisplayName,
           };
-          menuItem.Click += (o,
-                             _) =>
+          menuItem.Click += (o, _) =>
           {
             try
             {
-              pluginInstance.Plugin.OnShowSettings();
+              pluginInstance.Plugin.ShowSettings();
             }
             catch (Exception ex)
             {

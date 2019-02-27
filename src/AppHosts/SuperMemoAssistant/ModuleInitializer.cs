@@ -37,7 +37,8 @@ using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO;
 using SuperMemoAssistant.Services.IO.Devices;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Components;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.Content;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
@@ -82,6 +83,7 @@ namespace SuperMemoAssistant
       tmp = TextRegistry.Instance;
       tmp = VideoRegistry.Instance;
       tmp = ElementWdw.Instance;
+      tmp = LayoutManager.Instance;
       tmp = PluginManager.Instance;
       tmp = SMA.SMA.Instance;
     }

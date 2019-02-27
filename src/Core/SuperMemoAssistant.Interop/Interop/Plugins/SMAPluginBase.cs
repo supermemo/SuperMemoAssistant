@@ -82,11 +82,14 @@ namespace SuperMemoAssistant.Interop.Plugins
           break;
       }
 
+      Logger.Instance.Initialize(AssemblyName, ConfigureLogger);
+
+      AppDomain.CurrentDomain.UnhandledException += (_, e) => LogException((Exception)e.ExceptionObject, e.IsTerminating);
+      
       if (startApplication)
       {
         App = new PluginApp();
-        App.DispatcherUnhandledException += (_,
-                                             e) =>
+        App.DispatcherUnhandledException += (_, e) =>
         {
 #if !DEBUG
           e.Handled = true;
@@ -157,6 +160,7 @@ namespace SuperMemoAssistant.Interop.Plugins
     public string AssemblyVersion => AssemblyEx.GetAssemblyVersion(GetType());
     /// <inheritdoc />
     public string ChannelName => _channelName;
+    /// <inheritdoc />
     public virtual bool HasSettings => false;
 
     #endregion
@@ -169,10 +173,8 @@ namespace SuperMemoAssistant.Interop.Plugins
     /// <inheritdoc />
     public void OnInjected()
     {
-      Logger.Instance.Initialize(AssemblyName, ConfigureLogger);
-
-      AppDomain.CurrentDomain.UnhandledException += (_,
-                                                     e) => LogException((Exception)e.ExceptionObject, e.IsTerminating);
+      if (SessionGuid == Guid.Empty)
+        throw new NullReferenceException($"{nameof(SessionGuid)} is empty");
 
       if (SMA == null)
         throw new NullReferenceException($"{nameof(SMA)} is null");
@@ -200,9 +202,12 @@ namespace SuperMemoAssistant.Interop.Plugins
     {
       ConsumedServiceMap.TryRemove(interfaceTypeName, out _);
     }
-    
+
     /// <inheritdoc />
-    public virtual void OnShowSettings() { }
+    public virtual void ShowSettings()
+    {
+      // Ignored -- override for desired behavior
+    }
 
     #endregion
 

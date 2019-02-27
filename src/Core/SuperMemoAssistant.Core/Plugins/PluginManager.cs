@@ -207,9 +207,9 @@ namespace SuperMemoAssistant.Plugins
       foreach (var interfaceType in pluginInstance.InterfaceChannelMap.Keys)
         UnregisterChannelType(interfaceType, pluginInstance.Guid);
 
-      pluginInstance.OnStopped();
-
       _runningPluginMap.TryRemove(pluginInstance.Guid, out _);
+
+      pluginInstance.OnStopped();
     }
 
     #endregion

@@ -42,7 +42,7 @@ using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Interop.SuperMemo.UI.Element;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Components.Controls;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Controls;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
 using SuperMemoAssistant.Sys;
 

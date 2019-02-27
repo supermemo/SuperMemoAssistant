@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/24 00:49
-// Modified On:  2019/02/24 21:18
+// Created On:   2019/02/25 22:02
+// Modified On:  2019/02/26 14:56
 // Modified By:  Alexis
 
 #endregion
@@ -109,8 +109,7 @@ namespace SuperMemoAssistant.Plugins
       {
         var plugin = RemotingServicesEx.ConnectToIpcServer<ISMAPlugin>(channel);
         pluginAssemblyName = plugin.AssemblyName;
-
-        // TODO: Make sure no double run
+        
         var pluginInstance = _runningPluginMap.SafeGet(sessionGuid);
 
         if (pluginInstance == null)
@@ -118,12 +117,9 @@ namespace SuperMemoAssistant.Plugins
           LogTo.Warning($"Plugin {pluginAssemblyName} unexpected for connection. Aborting");
           return null;
         }
-        
+
         using (pluginInstance.Lock.Lock())
           OnPluginConnected(pluginInstance, plugin);
-
-        /*pluginInst.Process.Exited += (o,
-                                      ev) => OnPluginStopped(pluginInst, true);*/
 
         return SMA.SMA.Instance;
       }
@@ -180,40 +176,48 @@ namespace SuperMemoAssistant.Plugins
       Task.Run(() => NotifyServiceRevoked(remoteServiceType));
     }
 
-    private void NotifyServicePublished(string remoteServiceType)
+    private async Task NotifyServicePublished(string remoteServiceType)
     {
-      foreach (var pluginKeyValue in _runningPluginMap.Values)
-      {
-        var plugin     = pluginKeyValue.Plugin;
-        var pluginName = pluginKeyValue.Metadata.PackageName;
+      foreach (var pluginInstance in _runningPluginMap.Values)
+        using (await pluginInstance.Lock.LockAsync())
+        {
+          if (pluginInstance.Status != PluginStatus.Connected)
+            continue;
 
-        try
-        {
-          plugin.OnServicePublished(remoteServiceType);
+          var plugin     = pluginInstance.Plugin;
+          var pluginName = pluginInstance.Metadata.PackageName;
+
+          try
+          {
+            plugin.OnServicePublished(remoteServiceType);
+          }
+          catch (Exception ex)
+          {
+            LogTo.Error(ex, $"Exception while notifying plugin {pluginName} of published service {remoteServiceType}");
+          }
         }
-        catch (Exception ex)
-        {
-          LogTo.Error(ex, $"Exception while notifying plugin {pluginName} of published service {remoteServiceType}");
-        }
-      }
     }
 
-    private void NotifyServiceRevoked(string remoteServiceType)
+    private async Task NotifyServiceRevoked(string remoteServiceType)
     {
-      foreach (var pluginKeyValue in _runningPluginMap.Values)
-      {
-        var plugin     = pluginKeyValue.Plugin;
-        var pluginName = pluginKeyValue.Metadata.PackageName;
+      foreach (var pluginInstance in _runningPluginMap.Values)
+        using (await pluginInstance.Lock.LockAsync())
+        {
+          if (pluginInstance.Status != PluginStatus.Connected)
+            continue;
 
-        try
-        {
-          plugin.OnServiceRevoked(remoteServiceType);
+          var plugin     = pluginInstance.Plugin;
+          var pluginName = pluginInstance.Metadata.PackageName;
+
+          try
+          {
+            plugin.OnServiceRevoked(remoteServiceType);
+          }
+          catch (Exception ex)
+          {
+            LogTo.Error(ex, $"Exception while notifying plugin {pluginName} of revoked service {remoteServiceType}");
+          }
         }
-        catch (Exception ex)
-        {
-          LogTo.Error(ex, $"Exception while notifying plugin {pluginName} of revoked service {remoteServiceType}");
-        }
-      }
     }
 
     #endregion

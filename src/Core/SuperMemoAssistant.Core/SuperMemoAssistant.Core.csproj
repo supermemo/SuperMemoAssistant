@@ -233,6 +233,7 @@
     <Compile Include="ForcedAssemblies.cs" />
     <Compile Include="Plugins\PackageManager\DevPluginPackage.cs" />
     <Compile Include="Plugins\PluginChannelDisposer.cs" />
+    <Compile Include="Plugins\PluginManager.Helpers.cs" />
     <Compile Include="Plugins\PluginManager.Remote.cs" />
     <Compile Include="Plugins\PackageManager\NuGet\Package.cs" />
     <Compile Include="Plugins\PackageManager\NuGet\PluginPackage.cs" />
@@ -255,43 +256,73 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SMA\Configs\LayoutsCfg.cs" />
     <Compile Include="SMA\UI\Interceptors\ElementPickerInterceptor.cs" />
-    <Compile Include="SMA\UI\Settings\Settings.Plugins.xaml.cs">
-      <DependentUpon>Settings.Plugins.xaml</DependentUpon>
+    <Compile Include="SMA\UI\Layout\TextEditorEx.cs" />
+    <Compile Include="SMA\UI\Settings\Settings.Layouts.xaml.cs">
+      <DependentUpon>Settings.Layouts.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SMA\UI\Settings\SettingsWindow.xaml.cs">
-      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    <Compile Include="SMA\UI\Settings\Settings.Plugins.Converters.cs" />
+    <Compile Include="SMA\UI\Settings\Settings.Plugins.Installed.xaml.cs">
+      <DependentUpon>Settings.Plugins.Installed.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMA\UI\Settings\Settings.Plugins.Browse.xaml.cs">
+      <DependentUpon>Settings.Plugins.Browse.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMA\UI\Settings\Settings.Window.xaml.cs">
+      <DependentUpon>Settings.Window.xaml</DependentUpon>
     </Compile>
     <Compile Include="SMA\UI\Layout\LayoutEditorWindow.xaml.cs">
       <DependentUpon>LayoutEditorWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SMA\UI\SMAUI.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Content\ContentEx.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Layout\LayoutManager.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\AutoGrid.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\Container.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\XamlControlBase.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\XamlControlGroup.Content.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\XamlControlGroup.Layout.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\XamlControlGroup.xaml.cs">
+      <DependentUpon>XamlControlGroup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\XamlControlHtml.xaml.cs">
+      <DependentUpon>XamlControlHtml.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\XamlControlImage.xaml.cs">
+      <DependentUpon>XamlControlImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\XamlControlSound.xaml.cs">
+      <DependentUpon>XamlControlSound.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlLayouts\XamlLayout.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Elements\Builders\ElementBuilderEx.cs" />
     <Compile Include="Sys\COM\InternetExplorer\IEComHelper.cs" />
-    <Compile Include="SMA\StartupCfg.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ComponentControlBase.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlGroup.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlImage.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlRtf.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlText.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlTextBased.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\Controls\ControlHtml.cs" />
+    <Compile Include="SMA\Configs\StartupCfg.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Controls\ComponentControlBase.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Controls\ControlGroup.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Controls\ControlImage.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Controls\ControlRtf.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Controls\ControlText.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Controls\ControlTextBased.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Controls\ControlHtml.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Registry\Members\Binary.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Registry\Types\BinaryRegistry.cs" />
     <Compile Include="SuperMemo\SuperMemoRegistry.cs" />
     <Compile Include="SuperMemo\SuperMemoUI.cs" />
     <Compile Include="Sys\Exceptions\HookException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentBase.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\ComponentGroup.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentHtml.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentImage.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\ComponentRegistry.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentRtf.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentShapes.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentSound.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentSpelling.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentText.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Components\Types\ComponentVideo.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Components\ComponentBase.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\ComponentGroup.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Components\ComponentHtml.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Components\ComponentImage.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\ComponentRegistry.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Components\ComponentRtf.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Components\ComponentShapes.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Components\ComponentSound.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Components\ComponentSpelling.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Components\ComponentText.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Components\ComponentVideo.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Elements\Types\Task.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Elements\Types\Topic.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Elements\Types\ElementBase.cs" />
@@ -386,11 +417,19 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="SMA\UI\Settings\Settings.Plugins.xaml">
+    <Page Include="SMA\UI\Settings\Settings.Layouts.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SMA\UI\Settings\SettingsWindow.xaml">
+    <Page Include="SMA\UI\Settings\Settings.Plugins.Installed.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMA\UI\Settings\Settings.Plugins.Browse.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMA\UI\Settings\Settings.Window.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -398,6 +437,26 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\XamlControlGroup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\XamlControlHtml.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\XamlControlImage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\XamlControlSound.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <EmbeddedResource Include="SuperMemo\SuperMemo17\Content\Layout\XamlLayouts\GenericLayout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

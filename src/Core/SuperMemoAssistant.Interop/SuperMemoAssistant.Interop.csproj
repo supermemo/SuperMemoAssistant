@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\packages\Resourcer.Fody.1.7.3\build\Resourcer.Fody.props" Condition="Exists('..\..\..\packages\Resourcer.Fody.1.7.3\build\Resourcer.Fody.props')" />
   <Import Project="..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props" Condition="Exists('..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props')" />
   <Import Project="..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props" Condition="Exists('..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -115,9 +114,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Resourcer, Version=1.7.3.0, Culture=neutral, PublicKeyToken=409b3227471b0f0d, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Resourcer.Fody.1.7.3\lib\net452\Resourcer.dll</HintPath>
-    </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Serilog.2.8.0\lib\net46\Serilog.dll</HintPath>
     </Reference>
@@ -164,8 +160,10 @@
     <Compile Include="Extensions\DependencyObjectEx.cs" />
     <Compile Include="Extensions\ImageEx.cs" />
     <Compile Include="Extensions\JsonEx.cs" />
+    <Compile Include="Extensions\ListBoxEx.cs" />
     <Compile Include="Extensions\RemotingServicesEx.cs" />
     <Compile Include="Extensions\StreamEx.cs" />
+    <Compile Include="Extensions\TaskEx.cs" />
     <Compile Include="Extensions\TreeViewEx.cs" />
     <Compile Include="Extensions\WindowEx.cs" />
     <Compile Include="Interop\Plugins\PluginApp.xaml.cs">
@@ -177,27 +175,10 @@
     <Compile Include="Interop\SuperMemo\Content\Components\Base\ComponentSoundBase.cs" />
     <Compile Include="Interop\SuperMemo\Content\Components\Base\ComponentImageBase.cs" />
     <Compile Include="Interop\SuperMemo\Content\Components\Base\ComponentHtmlBase.cs" />
-    <Compile Include="Interop\SuperMemo\Content\Layout\XamlControls\Container.cs" />
-    <Compile Include="Interop\SuperMemo\Content\Layout\XamlControls\AutoGrid.cs" />
-    <Compile Include="Interop\SuperMemo\Content\Layout\LayoutManager.cs" />
     <Compile Include="Interop\SuperMemo\Content\Components\Base\ComponentGroupBase.cs" />
     <Compile Include="Interop\SuperMemo\Content\Contents\ContentBase.cs" />
     <Compile Include="Interop\SuperMemo\Content\Contents\ContentTypeFlag.cs" />
     <Compile Include="Interop\SuperMemo\Content\Contents\ImageContent.cs" />
-    <Compile Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlBase.cs" />
-    <Compile Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlGroup.xaml.cs">
-      <DependentUpon>XamlControlGroup.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlHtml.xaml.cs">
-      <DependentUpon>XamlControlHtml.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlImage.xaml.cs">
-      <DependentUpon>XamlControlImage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlSound.xaml.cs">
-      <DependentUpon>XamlControlSound.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interop\SuperMemo\Content\Layout\XamlLayouts\XamlLayout.cs" />
     <Compile Include="Interop\SuperMemo\Elements\Builders\References.cs" />
     <Compile Include="Interop\SuperMemo\Content\Contents\SoundContent.cs" />
     <Compile Include="Interop\SuperMemo\Content\Contents\TextContent.cs" />
@@ -224,9 +205,14 @@
     <Compile Include="Sys\Remoting\RemoteCancellationTokenSource.cs" />
     <Compile Include="Sys\Remoting\RemoteTask.cs" />
     <Compile Include="Sys\Threading\DelayedTask.cs" />
+    <Compile Include="Sys\Windows\Data\ElementIconConverter.cs" />
+    <Compile Include="Sys\Windows\Data\NegateBooleanConverter.cs" />
+    <Compile Include="Sys\Windows\Data\BooleanToVisiblityConverterEx.cs" />
+    <Compile Include="Sys\Windows\Data\OneWayValueConverter.cs" />
+    <Compile Include="Sys\Windows\Input\AsyncRelayCommand.cs" />
+    <Compile Include="Sys\Windows\Input\IAsyncCommand.cs" />
     <Compile Include="Sys\Windows\KeyboardEx.cs" />
-    <Compile Include="Sys\Windows\RelayCommand.cs" />
-    <Compile Include="UI\Converters\ElementIconConverter.cs" />
+    <Compile Include="Sys\Windows\Input\RelayCommand.cs" />
     <Compile Include="UI\ElementPicker.xaml.cs">
       <DependentUpon>ElementPicker.xaml</DependentUpon>
     </Compile>
@@ -349,26 +335,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlGroup.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlHtml.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlImage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interop\SuperMemo\Content\Layout\XamlControls\XamlControlSound.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <EmbeddedResource Include="Interop\SuperMemo\Content\Layout\XamlLayouts\GenericLayout.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <Page Include="UI\ElementPicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -392,6 +358,8 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Interop\SuperMemo\Content\Layout\XamlControls\" />
+    <Folder Include="Interop\SuperMemo\Content\Layout\XamlLayouts\" />
     <Folder Include="Sys\UIAutomation\" />
   </ItemGroup>
   <Import Project="..\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.projitems" Label="Shared" />
@@ -402,7 +370,6 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\Resourcer.Fody.1.7.3\build\Resourcer.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Resourcer.Fody.1.7.3\build\Resourcer.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Fody.4.0.2\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.4.0.2\build\Fody.targets'))" />
     <Error Condition="!Exists('..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
   </Target>

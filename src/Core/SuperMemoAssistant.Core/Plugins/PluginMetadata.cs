@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/13 13:55
-// Modified On:  2019/02/24 13:17
+// Created On:   2019/02/25 22:02
+// Modified On:  2019/02/25 23:20
 // Modified By:  Alexis
 
 #endregion
@@ -31,15 +31,17 @@
 
 
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using Newtonsoft.Json;
 using SuperMemoAssistant.Extensions;
+
 // ReSharper disable NonReadonlyMemberInGetHashCode
 
 namespace SuperMemoAssistant.Plugins
 {
   public class PluginMetadata
-    : IEquatable<PluginMetadata>
+    : IEquatable<PluginMetadata>, INotifyPropertyChanged
   {
     #region Properties & Fields - Public
 
@@ -118,6 +120,15 @@ namespace SuperMemoAssistant.Plugins
     {
       return !Equals(left, right);
     }
+
+    #endregion
+
+
+
+
+    #region Events
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
   }

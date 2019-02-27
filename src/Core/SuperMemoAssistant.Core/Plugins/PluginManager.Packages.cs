@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/13 13:55
-// Modified On:  2019/02/22 13:39
+// Created On:   2019/02/25 22:02
+// Modified On:  2019/02/26 01:31
 // Modified By:  Alexis
 
 #endregion
@@ -30,9 +30,12 @@
 
 
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using NuGet.Versioning;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Plugins.PackageManager;
 using SuperMemoAssistant.Plugins.PackageManager.NuGet;
@@ -61,6 +64,52 @@ namespace SuperMemoAssistant.Plugins
 
 
     #region Methods
+
+    public async Task<bool> InstallPlugin(
+      PluginMetadata pluginMetadata,
+      NuGetVersion   version    = null,
+      bool           allowPrerelease = false)
+    {
+      var pm = PackageManager;
+
+      if (pm.FindInstalledPluginById(pluginMetadata.PackageName) != null)
+        throw new ArgumentException($"Package {pluginMetadata.PackageName} is already installed");
+
+      var success = await pm.InstallPluginAsync(
+        pluginMetadata.PackageName,
+        pluginMetadata,
+        new VersionRange(version),
+        allowPrerelease);
+      
+      if (success == false)
+        return false;
+
+      var pluginPackage = pm.FindInstalledPluginById(pluginMetadata.PackageName);
+
+      if (pluginPackage == null)
+        throw new InvalidOperationException($"Package {pluginMetadata.PackageName} installed successfully but couldn't be found");
+      
+      _allPlugins.Add(new PluginInstance(pluginPackage));
+
+      return true;
+    }
+
+    public async Task UninstallPlugin(PluginInstance pluginInstance)
+    {
+      if (pluginInstance.Metadata.IsDevelopment)
+        throw new ArgumentException($"Cannot uninstall a development plugin");
+
+      await StopPlugin(pluginInstance);
+
+      using (await pluginInstance.Lock.LockAsync())
+      {
+        var pm      = PackageManager;
+        var success = await pm.UninstallPluginAsync(pluginInstance.Package.Id);
+
+        if (success)
+          _allPlugins.Remove(pluginInstance);
+      }
+    }
 
     public IEnumerable<PluginPackage<PluginMetadata>> ScanPlugins(bool includeDev)
     {
@@ -105,7 +154,7 @@ namespace SuperMemoAssistant.Plugins
 
       return devPlugins;
     }
-    
+
     #endregion
   }
 }

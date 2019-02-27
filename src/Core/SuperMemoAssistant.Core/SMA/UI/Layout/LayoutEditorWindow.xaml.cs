@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/18 19:30
-// Modified On:  2019/01/18 20:32
+// Created On:   2019/02/25 22:02
+// Modified On:  2019/02/27 13:11
 // Modified By:  Alexis
 
 #endregion
@@ -32,24 +32,23 @@
 
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Markup;
 using Forge.Forms;
-using SuperMemoAssistant.Interop.SuperMemo.Content.Layout.XamlLayouts;
+using MahApps.Metro.Controls;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts;
 
 namespace SuperMemoAssistant.SMA.UI.Layout
 {
   /// <summary>Interaction logic for LayoutEditorWindow.xaml</summary>
-  public partial class LayoutEditorWindow : Window
+  public partial class LayoutEditorWindow : MetroWindow
   {
     #region Constructors
 
     public LayoutEditorWindow(XamlLayout xamlLayout)
     {
-      XamlLayout = xamlLayout;
+      OriginalLayout = xamlLayout;
+      NewLayout      = new XamlLayout(xamlLayout, autoValidationSuspended: true);
 
       InitializeComponent();
-      
-      Xaml = XamlLayout.Xaml;
     }
 
     #endregion
@@ -59,10 +58,8 @@ namespace SuperMemoAssistant.SMA.UI.Layout
 
     #region Properties & Fields - Public
 
-    public XamlLayout XamlLayout { get; }
-
-    public string Xaml   { get; set; }
-    public object Layout { get; set; }
+    public XamlLayout NewLayout      { get; }
+    public XamlLayout OriginalLayout { get; }
 
     #endregion
 
@@ -81,18 +78,21 @@ namespace SuperMemoAssistant.SMA.UI.Layout
     private void BtnOk_Click(object          sender,
                              RoutedEventArgs e)
     {
-      if (ParseLayout() == null)
+      NewLayout.ValidateXaml();
+
+      if (NewLayout.IsValid == false)
       {
         var dialog = Forge.Forms.Show
                           .Dialog()
-                          .For(new Confirmation("Invalid XAML markup. Exit without saving ?", "Error"));
+                          .For(new Confirmation("Invalid XAML markup. Save anyway ?", "Warning"));
 
         if (dialog.Result.Model.Confirmed == false)
           return;
       }
 
-      DialogResult = true;
+      OriginalLayout.CopyFrom(NewLayout);
 
+      DialogResult = true;
       Close();
     }
 
@@ -117,31 +117,11 @@ namespace SuperMemoAssistant.SMA.UI.Layout
                                            SelectionChangedEventArgs e)
     {
       if (tcLayout.SelectedIndex == 1)
-        Layout = ParseLayout() ?? CreateErrorControl();
-    }
-
-    private DependencyObject ParseLayout()
-    {
-      var context = new ParserContext { XamlTypeMapper = new XamlTypeMapper(new string[] { }) };
-
-      var @namespace   = nameof(Interop.SuperMemo.Content.Layout.XamlControls);
-      var assemblyName = "SuperMemoAssistant.Interop";
-
-      context.XmlnsDictionary.Add("sma", $"clr-namespace:{@namespace}");
-      // ReSharper disable once AssignNullToNotNullAttribute
-      context.XamlTypeMapper.AddMappingProcessingInstruction($"clr-namespace:{@namespace}", @namespace, assemblyName);
-
-      return XamlReader.Parse(Xaml, context) as DependencyObject;
-    }
-
-    private DependencyObject CreateErrorControl()
-    {
-      return new Label
       {
-        VerticalAlignment   = VerticalAlignment.Stretch,
-        HorizontalAlignment = HorizontalAlignment.Stretch,
-        Content             = "Invalid XAML markup."
-      };
+        NewLayout.ValidateXaml();
+
+        CtrlGroup.SetXamlLayout(NewLayout);
+      }
     }
 
     #endregion

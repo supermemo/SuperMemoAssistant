@@ -4,7 +4,7 @@
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:regTypes="clr-namespace:SuperMemoAssistant.Interop.SuperMemo.Elements.Types"
-                 xmlns:converters="clr-namespace:SuperMemoAssistant.UI.Converters"
+                 xmlns:data="clr-namespace:SuperMemoAssistant.Sys.Windows.Data"
                  mc:Ignorable="d"
                  KeyDown="MetroWindow_KeyDown"
                  Title="Element Picker" Height="600" Width="540">
@@ -22,7 +22,7 @@
                   Loaded="TvElements_Loaded"
                   MouseDoubleClick="TvElements_MouseDoubleClick">
             <TreeView.Resources>
-                <converters:ElementIconConverter x:Key="ElementIconConverter" />
+                <data:ElementIconConverter x:Key="ElementIconConverter" />
             </TreeView.Resources>
             
             <TreeView.ItemContainerStyle>

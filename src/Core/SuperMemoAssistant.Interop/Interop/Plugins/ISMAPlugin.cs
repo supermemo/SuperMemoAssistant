@@ -45,6 +45,6 @@ namespace SuperMemoAssistant.Interop.Plugins
     void OnInjected();
     void OnServicePublished(string interfaceTypeName);
     void OnServiceRevoked(string   interfaceTypeName);
-    void OnShowSettings();
+    void ShowSettings();
   }
 }

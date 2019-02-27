@@ -1,13 +1,37 @@
 ﻿<Application x:Class="SuperMemoAssistant.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              ShutdownMode="OnExplicitShutdown"
              Startup="Application_Startup">
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
+        <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+        <!-- Accent and AppTheme setting -->
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Clean/Clean.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Olive.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+
         <ResourceDictionary Source="SMATaskbarIcon.xaml" />
-      </ResourceDictionary.MergedDictionaries>
+      </ResourceDictionary.MergedDictionaries>      
+      
+      <Style TargetType="{x:Type ListBoxItem}">
+        <Setter Property="mah:ItemHelper.ActiveSelectionBackgroundBrush" Value="{DynamicResource AccentColorBrush3}" />
+        <Setter Property="mah:ItemHelper.HoverBackgroundBrush" Value="{DynamicResource AccentColorBrush4}" />
+        <Setter Property="Focusable" Value="True" />
+      </Style>
+      
+      <Style x:Key="SMAButton" TargetType="{x:Type Button}" BasedOn="{StaticResource MetroButton}">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="DemiBold" />
+      </Style>
+      
+      <Style TargetType="{x:Type Button}" BasedOn="{StaticResource SMAButton}">
+      </Style>
     </ResourceDictionary>
   </Application.Resources>
 </Application>

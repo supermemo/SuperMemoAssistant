@@ -22,11 +22,10 @@
 // 
 // 
 // Created On:   2019/02/27 02:18
-// Modified On:  2019/02/27 02:19
+// Modified On:  2019/03/01 20:35
 // Modified By:  Alexis
 
 #endregion
-
 
 
 
@@ -55,7 +54,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Content
       switch (content.ContentType)
       {
         case ContentTypeFlag.Html:
-        case ContentTypeFlag.Text:
+        case ContentTypeFlag.RawText:
           var textContent = (TextContent)content;
           return new XamlControlHtml(id, textContent.Text, content.DisplayAt);
 
@@ -63,20 +62,24 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Content
           var imgContent = (ImageContent)content;
           var img        = Svc.SMA.Registry.Image[imgContent.RegistryId];
 
-          if (img == null) // || imgMember.Empty) // TODO: Why is Empty always true ?
+          // Display mode
+          if (id != int.MinValue)
           {
-            LogTo.Error($"Error while building XamlControlImage: IImage {imgContent.RegistryId} is null. Skipping");
-            return null;
-          }
+            if (img == null) // || imgMember.Empty) // TODO: Why is Empty always true ?
+            {
+              LogTo.Error($"Error while building XamlControlImage: IImage {imgContent.RegistryId} is null. Skipping");
+              return null;
+            }
 
-          var imgFilePath = img.GetFilePath();
+            var imgFilePath = img.GetFilePath();
 
-          if (File.Exists(imgFilePath) == false)
-          {
-            LogTo.Error("Error while building XamlControlImage: IImage {0} file {1} does not exist. Skipping",
-                        img,
-                        imgFilePath);
-            return null;
+            if (File.Exists(imgFilePath) == false)
+            {
+              LogTo.Error("Error while building XamlControlImage: IImage {0} file {1} does not exist. Skipping",
+                          img,
+                          imgFilePath);
+              return null;
+            }
           }
 
           return new XamlControlImage(id, img, content.DisplayAt);
@@ -85,20 +88,24 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Content
           var soundContent = (SoundContent)content;
           var sound        = Svc.SMA.Registry.Sound[soundContent.RegistryId];
 
-          if (sound == null) // || imgMember.Empty) // TODO: Why is Empty always true ?
+          // Display mode
+          if (id != int.MinValue)
           {
-            LogTo.Error($"Error while building XamlControlSound: ISound {soundContent.RegistryId} is null. Skipping");
-            return null;
-          }
+            if (sound == null) // || imgMember.Empty) // TODO: Why is Empty always true ?
+            {
+              LogTo.Error($"Error while building XamlControlSound: ISound {soundContent.RegistryId} is null. Skipping");
+              return null;
+            }
 
-          var soundFilePath = sound.GetFilePath();
+            var soundFilePath = sound.GetFilePath();
 
-          if (File.Exists(soundFilePath) == false)
-          {
-            LogTo.Error("Error while building XamlControlSound: ISound {0} file {1} does not exist. Skipping",
-                        sound,
-                        soundFilePath);
-            return null;
+            if (File.Exists(soundFilePath) == false)
+            {
+              LogTo.Error("Error while building XamlControlSound: ISound {0} file {1} does not exist. Skipping",
+                          sound,
+                          soundFilePath);
+              return null;
+            }
           }
 
           return new XamlControlSound(id, sound,
@@ -111,7 +118,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Content
           throw new NotImplementedException($"Content type {content.ContentType} not handled");
       }
     }
-    
+
     public static Brush GetColorBrush(this ContentTypeFlag contentFlag)
     {
       List<Color> colors = new List<Color>();

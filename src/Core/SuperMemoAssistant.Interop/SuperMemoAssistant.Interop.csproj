@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\..\packages\PropertyChanged.Fody.2.6.0\build\PropertyChanged.Fody.props" Condition="Exists('..\..\..\packages\PropertyChanged.Fody.2.6.0\build\PropertyChanged.Fody.props')" />
   <Import Project="..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props" Condition="Exists('..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props')" />
   <Import Project="..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props" Condition="Exists('..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -13,6 +14,7 @@
     <AssemblyName>SuperMemoAssistant.Interop</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <AssemblyVersion>0.1.133</AssemblyVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -114,6 +116,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="PropertyChanged, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\PropertyChanged.Fody.2.6.0\lib\net452\PropertyChanged.dll</HintPath>
+    </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Serilog.2.8.0\lib\net46\Serilog.dll</HintPath>
     </Reference>
@@ -190,13 +195,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Services\IO\Devices\IKeyboardHookService.cs" />
-    <Compile Include="Services\IO\Devices\IKeyboardHotKeyService.cs" />
-    <Compile Include="Services\IO\Devices\KeyboardHook.cs" />
-    <Compile Include="Services\IO\Devices\KeyboardHook.Win32.cs" />
-    <Compile Include="Services\IO\Devices\KeyboardHook.EventArgs.cs" />
-    <Compile Include="Services\IO\Devices\KeyboardHotKeyService.cs" />
+    <Compile Include="Services\IO\HotKeys\HotKeyCfg.cs" />
+    <Compile Include="Services\IO\HotKeys\HotKeyData.cs" />
+    <Compile Include="Services\IO\Keyboard\IKeyboardHookService.cs" />
+    <Compile Include="Services\IO\Keyboard\IKeyboardHotKeyService.cs" />
+    <Compile Include="Services\IO\Keyboard\KeyboardHook.cs" />
+    <Compile Include="Services\IO\Keyboard\KeyboardHook.Win32.cs" />
+    <Compile Include="Services\IO\Keyboard\KeyboardHook.EventArgs.cs" />
+    <Compile Include="Services\IO\Keyboard\KeyboardHotKeyService.cs" />
     <Compile Include="Extensions\AsyncEx.cs" />
+    <Compile Include="Services\IO\HotKeys\HotKeyManager.cs" />
+    <Compile Include="Sys\Collections\ConcurrentBiDictionary.cs" />
     <Compile Include="Sys\Collections\BiDictionary.cs" />
     <Compile Include="Sys\EmptyDisposable.cs" />
     <Compile Include="Sys\ForceAssemblyReference.cs" />
@@ -209,13 +218,11 @@
     <Compile Include="Sys\Windows\Data\NegateBooleanConverter.cs" />
     <Compile Include="Sys\Windows\Data\BooleanToVisiblityConverterEx.cs" />
     <Compile Include="Sys\Windows\Data\OneWayValueConverter.cs" />
+    <Compile Include="Sys\Windows\Data\TypeCastConverter.cs" />
     <Compile Include="Sys\Windows\Input\AsyncRelayCommand.cs" />
     <Compile Include="Sys\Windows\Input\IAsyncCommand.cs" />
     <Compile Include="Sys\Windows\KeyboardEx.cs" />
     <Compile Include="Sys\Windows\Input\RelayCommand.cs" />
-    <Compile Include="UI\ElementPicker.xaml.cs">
-      <DependentUpon>ElementPicker.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Extensions\AssemblyEx.cs" />
     <Compile Include="Extensions\BinaryReaderEx.cs" />
     <Compile Include="Extensions\DelegateEx.cs" />
@@ -335,10 +342,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\ElementPicker.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -372,6 +375,7 @@
     <Error Condition="!Exists('..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Fody.4.0.2\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.4.0.2\build\Fody.targets'))" />
     <Error Condition="!Exists('..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\PropertyChanged.Fody.2.6.0\build\PropertyChanged.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\PropertyChanged.Fody.2.6.0\build\PropertyChanged.Fody.props'))" />
   </Target>
   <Import Project="..\..\..\packages\Fody.4.0.2\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.4.0.2\build\Fody.targets')" />
   <Import Project="..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

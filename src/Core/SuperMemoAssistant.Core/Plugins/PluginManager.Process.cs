@@ -48,7 +48,7 @@ namespace SuperMemoAssistant.Plugins
     private const int PluginStopTimeout = 3000;
 
 #if DEBUG
-    private const int PluginConnectTimeout = 5000;
+    private const int PluginConnectTimeout = 30000;
 #else
     private const int PluginConnectTimeout = 5000;
 #endif

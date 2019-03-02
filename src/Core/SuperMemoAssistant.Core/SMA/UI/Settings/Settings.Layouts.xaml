@@ -8,6 +8,7 @@
              xmlns:xamlLayouts="clr-namespace:SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts"
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:xamlControls="clr-namespace:SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -146,7 +147,7 @@
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>
-    
+
     <GridSplitter Grid.Column="1"
                   Width="7"
                   ResizeDirection="Columns"
@@ -154,9 +155,60 @@
                   HorizontalAlignment="Stretch"
                   ShowsPreview="False"
                   Background="#ABABAB" />
-    
-    <xamlControls:XamlControlGroup x:Name="CtrlGroup"
-                                   Grid.Column="2" />
+
+    <Grid Grid.Column="2">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+      
+      <StackPanel Grid.Row="0"
+                  Orientation="Horizontal"
+                  Margin="4">
+        <mah:NumericUpDown Name="nudTexts"
+                           NumericInputMode="Numbers"
+                           Value="1"
+                           Minimum="0"
+                           Maximum="10" />
+        <TextBlock VerticalAlignment="Center"
+                   Margin="8 0 0 0"
+                   FontSize="14"
+                   Text="Text(s)" />
+        
+        <mah:NumericUpDown Name="nudImages"
+                           Margin="24 0 0 0"
+                           NumericInputMode="Numbers"
+                           Value="1"
+                           Minimum="0"
+                           Maximum="10" />
+        <TextBlock VerticalAlignment="Center"
+                   Margin="8 0 0 0"
+                   FontSize="14"
+                   Text="Images(s)" />
+        
+        <mah:NumericUpDown Name="nudSounds"
+                           Margin="24 0 0 0"
+                           NumericInputMode="Numbers"
+                           Value="1"
+                           Minimum="0"
+                           Maximum="10" />
+        <TextBlock VerticalAlignment="Center"
+                   Margin="8 0 0 0"
+                   FontSize="14"
+                   Text="Sound(s)" />
+      </StackPanel>
+
+      <Grid Grid.Row="1">
+        <Grid
+          MaxWidth="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=Grid}}"
+          MaxHeight="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=Grid}}">
+          <xamlControls:XamlControlGroup x:Name="CtrlGroup"
+                                         TextContentCount="{Binding Path=Value, ElementName=nudTexts, Mode=OneWay}"
+                                         ImageContentCount="{Binding Path=Value, ElementName=nudImages, Mode=OneWay}"
+                                         SoundContentCount="{Binding Path=Value, ElementName=nudSounds, Mode=OneWay}" />
+        </Grid>
+      </Grid>
+    </Grid>
 
   </Grid>
 </UserControl>

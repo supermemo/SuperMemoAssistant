@@ -39,6 +39,12 @@ namespace SuperMemoAssistant.Extensions
   {
     #region Methods
 
+    public static void ShowAndActivate(this Window wdw)
+    {
+      wdw.Show();
+      wdw.ForceActivate();
+    }
+
     public static bool IsWindowOpen<T>(string name = "") where T : Window
     {
       return string.IsNullOrEmpty(name)

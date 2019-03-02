@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/01 14:25
-// Modified On:  2018/11/24 17:40
+// Modified On:  2019/02/28 22:18
 // Modified By:  Alexis
 
 #endregion
@@ -149,6 +149,18 @@ namespace SuperMemoAssistant.Sys.IO.Devices
         modifiers.Add(Key.LWin);
 
       return modifiers;
+    }
+
+
+    public static implicit operator Keys(HotKey hotKey)
+    {
+      return new Keys(
+        hotKey.Ctrl,
+        hotKey.Alt,
+        hotKey.Shift,
+        hotKey.Win,
+        hotKey.Key
+      );
     }
 
     #endregion

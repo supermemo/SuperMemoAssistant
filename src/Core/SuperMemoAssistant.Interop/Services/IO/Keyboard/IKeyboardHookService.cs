@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/31 10:44
-// Modified On:  2018/05/31 10:45
+// Created On:   2018/12/21 02:18
+// Modified On:  2018/12/31 00:43
 // Modified By:  Alexis
 
 #endregion
@@ -33,11 +33,15 @@
 using System;
 using SuperMemoAssistant.Sys.IO.Devices;
 
-namespace SuperMemoAssistant.Services.IO.Devices
+namespace SuperMemoAssistant.Services.IO.Keyboard
 {
-  public interface IKeyboardHotKeyService
+  public interface IKeyboardHookService
   {
-    (bool success, HotKey usedBy) RegisterHotKey(HotKey   hotKey, Action callback);
-    bool                          UnregisterHotKey(HotKey hotKey);
+    event EventHandler<KeyboardHookEventArgs> KeyboardPressed;
+
+    void RegisterHotKey(HotKey hotkey,
+                        Action callback);
+
+    bool UnregisterHotKey(HotKey hotkey);
   }
 }

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/21 19:06
-// Modified On:  2019/02/22 13:03
+// Created On:   2019/02/25 22:02
+// Modified On:  2019/02/27 22:34
 // Modified By:  Alexis
 
 #endregion
@@ -44,7 +44,7 @@ using SuperMemoAssistant.Sys.IO.Devices;
 
 // ReSharper disable InconsistentNaming
 
-namespace SuperMemoAssistant.Services.IO.Devices
+namespace SuperMemoAssistant.Services.IO.Keyboard
 {
   // https://stackoverflow.com/questions/604410/global-keyboard-capture-in-c-sharp-application
   // Based on https://gist.github.com/Stasonix
@@ -62,8 +62,12 @@ namespace SuperMemoAssistant.Services.IO.Devices
     #region Properties & Fields - Non-Public
 
     private HookProc _hookProc;
+    private bool     _isDisposed;
     private IntPtr   _windowsHookHandle;
-    private bool _isDisposed;
+
+    private ConcurrentDictionary<HotKey, Action> HotKeys            { get; } = new ConcurrentDictionary<HotKey, Action>();
+    private ConcurrentQueue<Action>              TriggeredCallbacks { get; } = new ConcurrentQueue<Action>();
+    private AutoResetEvent                       TriggeredEvent     { get; } = new AutoResetEvent(false);
 
     #endregion
 
@@ -123,17 +127,6 @@ namespace SuperMemoAssistant.Services.IO.Devices
 
 
 
-    #region Properties & Fields - Public
-
-    private ConcurrentDictionary<HotKey, Action> HotKeys { get; } = new ConcurrentDictionary<HotKey, Action>();
-    private ConcurrentQueue<Action> TriggeredCallbacks { get; } = new ConcurrentQueue<Action>();
-    private AutoResetEvent TriggeredEvent { get; } = new AutoResetEvent(false);
-
-    #endregion
-
-
-
-
     #region Methods Impl
 
     public void RegisterHotKey(HotKey hotkey,
@@ -158,7 +151,6 @@ namespace SuperMemoAssistant.Services.IO.Devices
     private void ExecuteCallbacks()
     {
       while (_isDisposed == false)
-      {
         try
         {
           TriggeredEvent.WaitOne();
@@ -170,7 +162,6 @@ namespace SuperMemoAssistant.Services.IO.Devices
         {
           LogTo.Error(ex, "An exception was thrown while executing Keyboard HotKey callback");
         }
-      }
     }
 
     private IntPtr LowLevelKeyboardProc(int    nCode,
@@ -196,19 +187,17 @@ namespace SuperMemoAssistant.Services.IO.Devices
 
         if (kbState == KeyboardState.KeyDown || kbState == KeyboardState.SysKeyDown)
         {
-          var callback = HotKeys.SafeGet(new HotKey(GetCtrlPressed(),
-                                                GetAltPressed(),
-                                                GetShiftPressed(),
-                                                GetMetaPressed(),
-                                                kbEvent.Key,
-                                                null)
+          var callback = HotKeys.SafeGet(
+            new HotKey(
+              kbEvent.Key,
+              GetCtrlPressed(), GetAltPressed(), GetShiftPressed(), GetMetaPressed())
           );
 
           if (callback != null)
           {
             TriggeredCallbacks.Enqueue(callback);
             TriggeredEvent.Set();
-            
+
             return (IntPtr)1;
           }
         }

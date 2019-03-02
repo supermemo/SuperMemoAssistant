@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/02/26 23:18
-// Modified On:  2019/02/27 20:47
+// Modified On:  2019/03/01 21:47
 // Modified By:  Alexis
 
 #endregion
@@ -43,6 +43,37 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
   /// <summary>Interaction logic for XamlControlGroup.xaml</summary>
   public partial class XamlControlGroup : UserControl, INotifyPropertyChanged
   {
+    #region Constants & Statics
+
+    // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
+    public static readonly DependencyProperty TextContentCountProperty =
+      DependencyProperty.Register("TextContentCount", typeof(double), typeof(XamlControlGroup), new PropertyMetadata
+      {
+        DefaultValue            = 1.0,
+        PropertyChangedCallback = OnContentCountChanged
+      });
+
+    // Using a DependencyProperty as the backing store for ImageContentCount.  This enables animation, styling, binding, etc...
+    public static readonly DependencyProperty ImageContentCountProperty =
+      DependencyProperty.Register("ImageContentCount", typeof(double), typeof(XamlControlGroup), new PropertyMetadata
+      {
+        DefaultValue            = 1.0,
+        PropertyChangedCallback = OnContentCountChanged
+      });
+
+    // Using a DependencyProperty as the backing store for SoundContentCount.  This enables animation, styling, binding, etc...
+    public static readonly DependencyProperty SoundContentCountProperty =
+      DependencyProperty.Register("SoundContentCount", typeof(double), typeof(XamlControlGroup), new PropertyMetadata
+      {
+        DefaultValue            = 1.0,
+        PropertyChangedCallback = OnContentCountChanged
+      });
+
+    #endregion
+
+
+
+
     #region Properties & Fields - Non-Public
 
     private readonly bool _displayMode;
@@ -77,13 +108,43 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
     #endregion
 
 
-    
+
+
+    #region Properties & Fields - Public
+
+    public double TextContentCount { get => (double)GetValue(TextContentCountProperty); set => SetValue(TextContentCountProperty, value); }
+
+
+    public double ImageContentCount
+    {
+      get => (double)GetValue(ImageContentCountProperty);
+      set => SetValue(ImageContentCountProperty, value);
+    }
+
+
+    public double SoundContentCount
+    {
+      get => (double)GetValue(SoundContentCountProperty);
+      set => SetValue(SoundContentCountProperty, value);
+    }
+
+
     public double ScaleX { get; set; } = 1.0;
     public double ScaleY { get; set; } = 1.0;
+
+    #endregion
+
 
 
 
     #region Methods
+
+    private static void OnContentCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+      var xcg = (XamlControlGroup)d;
+
+      xcg.GenerateDemoContent();
+    }
 
     private void OnSizeChanged(object sender, SizeChangedEventArgs e)
     {

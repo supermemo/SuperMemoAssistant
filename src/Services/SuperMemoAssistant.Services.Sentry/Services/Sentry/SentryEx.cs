@@ -31,6 +31,7 @@
 
 
 using System;
+using Anotar.Serilog;
 using DeviceId;
 using Sentry;
 using Sentry.Protocol;
@@ -59,19 +60,27 @@ namespace SuperMemoAssistant.Services.Sentry
 
     public static IDisposable Initialize()
     {
-      var ret = SentrySdk.Init(Id);
+      try
+      {
+        var ret = SentrySdk.Init(Id);
 
-      SentrySdk.ConfigureScope(s =>
-        {
-          s.User = new User
+        SentrySdk.ConfigureScope(s =>
           {
-            Username = System.Security.Principal.WindowsIdentity.GetCurrent().Name,
-            Id       = GetSystemFingerprint()
-          };
-        }
-      );
+            s.User = new User
+            {
+              Username = System.Security.Principal.WindowsIdentity.GetCurrent().Name,
+              Id = GetSystemFingerprint()
+            };
+          }
+        );
 
-      return ret;
+        return ret;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "Exception while initializing Sentry");
+        return null;
+      }
     }
 
     private static string GetSystemFingerprint()

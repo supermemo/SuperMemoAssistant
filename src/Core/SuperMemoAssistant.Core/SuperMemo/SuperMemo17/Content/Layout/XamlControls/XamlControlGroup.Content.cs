@@ -88,7 +88,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
 
     public void AddContent(List<ContentBase> contents)
     {
-      if (!IsValid)
+      if (!IsValid && _displayMode == false)
         return;
 
       int id = 0;
@@ -100,7 +100,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
         if (panel == null)
           continue;
 
-        var uiElement = content.ToUIElement(id++);
+        var uiElement = content.ToUIElement(_displayMode ? int.MinValue : id++);
 
         if (uiElement == null)
           continue;
@@ -108,6 +108,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
         panel.Children.Add(uiElement);
         _contentUIElements.Add(uiElement);
       }
+
+      _collapsableGrids.ForEach(cg => cg.Refresh());
     }
 
     public void ClearContent()
@@ -116,6 +118,31 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
         pc.panel.Children.Clear();
 
       _contentUIElements.Clear();
+    }
+
+    public void GenerateDemoContent()
+    {
+      ClearContent();
+
+      if (_displayMode)
+      {
+        var demoContents = new List<ContentBase>();
+
+        for (int i = 0; i < TextContentCount; i++)
+          demoContents.Add(
+            new TextContent(
+              false,
+              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard ...")
+          );
+        
+        for (int i = 0; i < ImageContentCount; i++)
+          demoContents.Add(new ImageContent(0));
+
+        for (int i = 0; i < SoundContentCount; i++)
+          demoContents.Add(new SoundContent(0, "Sound caption text"));
+
+        AddContent(demoContents);
+      }
     }
 
     #endregion

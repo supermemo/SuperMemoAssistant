@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/01 16:47
-// Modified On:  2019/01/01 17:35
+// Created On:   2018/05/31 10:44
+// Modified On:  2018/05/31 10:45
 // Modified By:  Alexis
 
 #endregion
@@ -30,36 +30,14 @@
 
 
 
-using Forge.Forms;
-using SuperMemoAssistant.UI;
+using System;
+using SuperMemoAssistant.Sys.IO.Devices;
 
-namespace SuperMemoAssistant.SMA.UI.Interceptors
+namespace SuperMemoAssistant.Services.IO.Keyboard
 {
-  internal class ElementPickerInterceptor : IActionInterceptor
+  public interface IKeyboardHotKeyService
   {
-    #region Methods Impl
-
-    /// <inheritdoc />
-    public IActionContext InterceptAction(IActionContext ctxt)
-    {
-      if (ctxt.Action is ElementPicker.ElementPickerAction == false
-        || ctxt.Model is IElementPickerCallback == false)
-        return null;
-
-      var m = (IElementPickerCallback)ctxt.Model;
-
-      var elemPicker = new ElementPicker();
-
-      if (elemPicker.ShowDialog() ?? false)
-      {
-        m.SetElement(elemPicker.SelectedElement);
-
-        return ctxt;
-      }
-
-      return null;
-    }
-
-    #endregion
+    (bool success, HotKey usedBy) RegisterHotKey(HotKey   hotKey, Action callback);
+    bool                          UnregisterHotKey(HotKey hotKey);
   }
 }

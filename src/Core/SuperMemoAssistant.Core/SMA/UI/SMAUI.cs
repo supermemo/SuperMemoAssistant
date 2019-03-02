@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/21 21:00
-// Modified On:  2019/02/21 21:03
+// Created On:   2019/02/25 22:02
+// Modified On:  2019/03/01 01:54
 // Modified By:  Alexis
 
 #endregion
@@ -31,10 +31,10 @@
 
 
 using System.Windows;
-using Forge.Forms.FormBuilding.Defaults;
+using System.Windows.Input;
 using SuperMemoAssistant.Services;
-using SuperMemoAssistant.SMA.UI.Interceptors;
 using SuperMemoAssistant.SMA.UI.Settings;
+using SuperMemoAssistant.Sys.IO.Devices;
 
 namespace SuperMemoAssistant.SMA.UI
 {
@@ -45,26 +45,20 @@ namespace SuperMemoAssistant.SMA.UI
 
     public static void Initialize()
     {
-      ActionElement.InterceptorChain.Add(new ElementPickerInterceptor());
+      //ActionElement.InterceptorChain.Add(new ElementPickerInterceptor());
 
-      Svc.KeyboardHotKey.RegisterHotKey(
-        new Sys.IO.Devices.HotKey(true,
-                                  true,
-                                  false,
-                                  false,
-                                  System.Windows.Input.Key.O,
-                                  "Global Settings"),
+      Svc.HotKeyManager.RegisterGlobal(
+        "Settings",
+        "Show settings window",
+        new HotKey(Key.O, KeyModifiers.CtrlAlt),
         ShowGlobalSettings
       );
 
 #if DEBUG
-      Svc.KeyboardHotKey.RegisterHotKey(
-        new Sys.IO.Devices.HotKey(true,
-                                  false,
-                                  true,
-                                  true,
-                                  System.Windows.Input.Key.D,
-                                  "Debug Inject Lib"),
+      Svc.HotKeyManager.RegisterGlobal(
+        "DebugInjectLib",
+        "Attach debugger to injected lib",
+        new HotKey(Key.D, KeyModifiers.CtrlWinShift),
         DebugInjectLib
       );
 #endif

@@ -1,10 +1,10 @@
-﻿<Window x:Class="SuperMemoAssistant.UI.ElementPicker"
+﻿<Window x:Class="SuperMemoAssistant.Services.UI.Configuration.ElementPicker.ElementPicker"
                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                 xmlns:regTypes="clr-namespace:SuperMemoAssistant.Interop.SuperMemo.Elements.Types"
-                 xmlns:data="clr-namespace:SuperMemoAssistant.Sys.Windows.Data"
+                 xmlns:data1="clr-namespace:SuperMemoAssistant.Sys.Windows.Data;assembly=SuperMemoAssistant.Interop"
+                 xmlns:types="clr-namespace:SuperMemoAssistant.Interop.SuperMemo.Elements.Types;assembly=SuperMemoAssistant.Interop"
                  mc:Ignorable="d"
                  KeyDown="MetroWindow_KeyDown"
                  Title="Element Picker" Height="600" Width="540">
@@ -22,7 +22,7 @@
                   Loaded="TvElements_Loaded"
                   MouseDoubleClick="TvElements_MouseDoubleClick">
             <TreeView.Resources>
-                <data:ElementIconConverter x:Key="ElementIconConverter" />
+                <data1:ElementIconConverter x:Key="ElementIconConverter" />
             </TreeView.Resources>
             
             <TreeView.ItemContainerStyle>
@@ -34,7 +34,7 @@
 
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Children}"
-                                          DataType="regTypes:IElement">
+                                          DataType="types:IElement">
                     <StackPanel Orientation="Horizontal">
                         <Image Width="16"
                                Height="16"

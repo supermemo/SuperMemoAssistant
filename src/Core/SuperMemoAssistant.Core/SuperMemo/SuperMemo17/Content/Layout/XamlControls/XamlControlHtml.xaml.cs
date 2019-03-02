@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/18 03:01
-// Modified On:  2019/01/18 03:38
+// Created On:   2019/02/26 23:18
+// Modified On:  2019/03/01 21:21
 // Modified By:  Alexis
 
 #endregion
@@ -43,7 +43,7 @@ using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
 {
   /// <summary>Interaction logic for XamlControlHtml.xaml</summary>
-  public partial class XamlControlHtml : XamlControlBase, IComponentHtml
+  public partial class XamlControlHtml : XamlControlBase, IComponentHtml, INotifyPropertyChanged
   {
     #region Constants & Statics
 
@@ -63,12 +63,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
     {
       Id        = id;
       DisplayAt = displayAt;
+      Html      = html;
 
-      if (DesignerProperties.GetIsInDesignMode(this) == false)
+      if (DesignerProperties.GetIsInDesignMode(this) == false && id != int.MinValue)
         TextFilePath = WriteToFile(html);
-
-      else
-        Html = html;
 
       InitializeComponent();
     }
@@ -80,11 +78,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
 
     #region Properties & Fields - Public
 
-    public string Html { get; }
-
+    public string Html         { get; set; }
     public string TextFilePath { get; }
-
-    public int Id { get; }
+    public int    Id           { get; }
 
     #endregion
 
@@ -138,6 +134,15 @@ End Component #{Id + 1}";
 
       return filePath;
     }
+
+    #endregion
+
+
+
+
+    #region Events
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
   }

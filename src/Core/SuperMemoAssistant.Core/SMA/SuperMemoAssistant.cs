@@ -150,7 +150,10 @@ namespace SuperMemoAssistant.SMA
     public ISuperMemoUI       UI       => SuperMemoUI.Instance;
     
     /// <inheritdoc />
-    public IEnumerable<string> Layouts => LayoutManager.Instance.Layouts.Select(l => l.Name);
+    public IEnumerable<string> Layouts => LayoutManager.Instance.Layouts
+                                                       .Select(l => l.Name)
+                                                       .OrderBy(n => n)
+                                                       .ToList();
 
     #endregion
 

@@ -31,11 +31,13 @@
 
 
 using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace SuperMemoAssistant.Sys.ComponentModel
 {
   public interface INotifyPropertyChangedEx : INotifyPropertyChanged
   {
-    bool IsChanged { get; }
+    [JsonIgnore]
+    bool IsChanged { get; set; }
   }
 }

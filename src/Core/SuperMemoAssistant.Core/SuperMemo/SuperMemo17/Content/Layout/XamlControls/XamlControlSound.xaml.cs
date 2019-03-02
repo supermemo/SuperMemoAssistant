@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/18 03:00
-// Modified On:  2019/01/18 03:40
+// Created On:   2019/02/26 23:18
+// Modified On:  2019/03/01 20:58
 // Modified By:  Alexis
 
 #endregion
@@ -30,6 +30,7 @@
 
 
 
+using System.ComponentModel;
 using System.Drawing;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Components;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
@@ -39,7 +40,7 @@ using Size = System.Windows.Size;
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
 {
   /// <summary>Interaction logic for XamlControlSound.xaml</summary>
-  public partial class XamlControlSound : XamlControlBase, IComponentSound
+  public partial class XamlControlSound : XamlControlBase, IComponentSound, INotifyPropertyChanged
   {
     #region Constants & Statics
 
@@ -80,16 +81,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
     #region Properties & Fields - Public
 
     public int    Id   { get; }
-    public string Text { get; }
-
-    public ISound         Sound         { get; set; }
-    public AtFlags        PlayAt        { get; set; }
-    public uint           ExtractStart  { get; set; }
-    public uint           ExtractStop   { get; set; }
-    public bool           IsContinuous  { get; set; }
-    public MediaPanelType Panel         { get; set; }
-    public Color          Color         { get; set; }
-    public TextAlignment  TextAlignment { get; set; }
+    public string Text { get; set; }
 
     #endregion
 
@@ -99,6 +91,15 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
     #region Properties Impl - Public
 
     public override AtFlags DisplayAt { get; }
+
+    public ISound         Sound         { get; set; }
+    public AtFlags        PlayAt        { get; set; }
+    public uint           ExtractStart  { get; set; }
+    public uint           ExtractStop   { get; set; }
+    public bool           IsContinuous  { get; set; }
+    public MediaPanelType Panel         { get; set; }
+    public Color          Color         { get; set; }
+    public TextAlignment  TextAlignment { get; set; }
 
     #endregion
 
@@ -127,6 +128,15 @@ Continuous=0
 Transparent=0
 End Component #{Id + 1}";
     }
+
+    #endregion
+
+
+
+
+    #region Events
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
   }

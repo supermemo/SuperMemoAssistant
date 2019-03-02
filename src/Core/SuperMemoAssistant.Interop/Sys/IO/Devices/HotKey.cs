@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/31 08:56
-// Modified On:  2018/05/31 09:41
+// Created On:   2018/06/01 14:25
+// Modified On:  2019/02/28 22:16
 // Modified By:  Alexis
 
 #endregion
@@ -32,6 +32,8 @@
 
 using System;
 using System.Windows.Input;
+using Newtonsoft.Json;
+// ReSharper disable NonReadonlyMemberInGetHashCode
 
 namespace SuperMemoAssistant.Sys.IO.Devices
 {
@@ -39,15 +41,16 @@ namespace SuperMemoAssistant.Sys.IO.Devices
   public class HotKey : IEquatable<HotKey>
   {
     #region Constructors
+    
+    public HotKey() { }
 
-    public HotKey(bool ctrl, bool alt, bool shift, bool win, Key key, string description)
-      : this(MakeModifier(ctrl, alt, shift, win), key, description) { }
+    public HotKey(Key key, bool ctrl = false, bool alt = false, bool shift = false, bool win = false)
+      : this(key, MakeModifier(ctrl, alt, shift, win)) { }
 
-    public HotKey(KeyModifiers modifiers, Key key, string description)
+    public HotKey(Key key, KeyModifiers modifiers)
     {
-      Modifiers   = modifiers;
-      Key         = key;
-      Description = description;
+      Key       = key;
+      Modifiers = modifiers;
     }
 
     #endregion
@@ -57,10 +60,19 @@ namespace SuperMemoAssistant.Sys.IO.Devices
 
     #region Properties & Fields - Public
 
-    public String       Description { get; }
-    public KeyModifiers Modifiers   { get; }
-    public Key          Key         { get; }
-    public VKey         VKey        => (VKey)KeyInterop.VirtualKeyFromKey(Key);
+    public Key  Key  { get; set; }
+    [JsonIgnore]
+    public VKey VKey => (VKey)KeyInterop.VirtualKeyFromKey(Key);
+
+    public KeyModifiers Modifiers { get; set; }
+    [JsonIgnore]
+    public bool         Ctrl      => Modifiers.HasFlag(KeyModifiers.Ctrl);
+    [JsonIgnore]
+    public bool         Alt       => Modifiers.HasFlag(KeyModifiers.Alt);
+    [JsonIgnore]
+    public bool         Shift     => Modifiers.HasFlag(KeyModifiers.Shift);
+    [JsonIgnore]
+    public bool         Win       => Modifiers.HasFlag(KeyModifiers.Win);
 
     #endregion
 
@@ -95,6 +107,16 @@ namespace SuperMemoAssistant.Sys.IO.Devices
 
 
     #region Methods
+
+    public static bool operator ==(HotKey left, HotKey right)
+    {
+      return Equals(left, right);
+    }
+
+    public static bool operator !=(HotKey left, HotKey right)
+    {
+      return !Equals(left, right);
+    }
 
     public static KeyModifiers MakeModifier(bool ctrl, bool alt, bool shift, bool win)
     {

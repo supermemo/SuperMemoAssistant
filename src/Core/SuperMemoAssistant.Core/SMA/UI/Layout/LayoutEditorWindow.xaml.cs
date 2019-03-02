@@ -83,7 +83,7 @@ namespace SuperMemoAssistant.SMA.UI.Layout
       if (NewLayout.IsValid == false)
       {
         var dialog = Forge.Forms.Show
-                          .Dialog()
+                          .Window()
                           .For(new Confirmation("Invalid XAML markup. Save anyway ?", "Warning"));
 
         if (dialog.Result.Model.Confirmed == false)

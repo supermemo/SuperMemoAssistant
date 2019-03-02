@@ -33,6 +33,7 @@
 using System;
 using System.Windows;
 using MahApps.Metro.Controls;
+using SuperMemoAssistant.Extensions;
 
 namespace SuperMemoAssistant.SMA.UI.Settings
 {
@@ -87,7 +88,7 @@ namespace SuperMemoAssistant.SMA.UI.Settings
       }
 
       _instance = new SettingsWindow();
-      _instance.Show();
+      _instance.ShowAndActivate();
     }
 
     private void BtnCancel_Click(object          sender,

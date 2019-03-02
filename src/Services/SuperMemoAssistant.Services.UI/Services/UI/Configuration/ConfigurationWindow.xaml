@@ -1,0 +1,87 @@
+﻿<Window x:Class="SuperMemoAssistant.Services.UI.Configuration.ConfigurationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:Forge.Forms.Controls;assembly=Forge.Forms"
+        xmlns:configuration="clr-namespace:SuperMemoAssistant.Services.UI.Configuration"
+        xmlns:componentModel="clr-namespace:SuperMemoAssistant.Sys.ComponentModel;assembly=SuperMemoAssistant.Interop"
+        xmlns:hotKeys="clr-namespace:SuperMemoAssistant.Services.IO.HotKeys;assembly=SuperMemoAssistant.Interop"
+        xmlns:uiHotKeys="clr-namespace:SuperMemoAssistant.Services.UI.Configuration.HotKeys"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        Title="ConfigurationWindow" Height="550" Width="800"
+        KeyDown="Window_KeyDown"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        d:DataContext="{d:DesignInstance configuration:ConfigurationWindow}">
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+        <!-- Accent and AppTheme setting -->
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Clean/Clean.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Olive.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+      </ResourceDictionary.MergedDictionaries>  
+      
+      <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MetroButton}">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="DemiBold" />
+      </Style>
+      
+      <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource MetroTabItem}">
+        <Setter Property="mah:ControlsHelper.HeaderFontSize" Value="18" />
+      </Style>
+
+      <configuration:ConfigurationTemplateSelector x:Key="ConfigurationTemplateSelector"/>
+    </ResourceDictionary>
+  </Window.Resources>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*" />
+      <RowDefinition Height="auto" />
+    </Grid.RowDefinitions>
+
+    <TabControl x:Name="tcSettings"
+                mah:TabControlHelper.Underlined="TabPanel"
+                Grid.Row="0"
+                ItemsSource="{Binding Models}"
+                ContentTemplateSelector="{StaticResource ConfigurationTemplateSelector}">
+      <TabControl.Resources>
+        <DataTemplate x:Key="ConfigModelTemplate" DataType="{x:Type componentModel:INotifyPropertyChangedEx}">
+          <ScrollViewer>
+            <controls:DynamicForm Model="{Binding}" />
+          </ScrollViewer>
+        </DataTemplate>
+        <DataTemplate x:Key="HotKeyManagerTemplate" DataType="{x:Type hotKeys:HotKeyManager}">
+          <!--<uiHotKeys:HotKeySettings HotKeyManager="{Binding Path=.}" />-->
+          <uiHotKeys:HotKeySettings HotKeyManager="{Binding Path=DataContext.HotKeyManager, ElementName=tcSettings}" />
+        </DataTemplate>
+      </TabControl.Resources>
+    </TabControl>
+
+    <Grid Grid.Row="1" Margin="6">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="auto" />
+        <ColumnDefinition Width="auto" />
+      </Grid.ColumnDefinitions>
+
+      <!--<Button Grid.Column="1"
+              VerticalAlignment="Center"
+              Margin="6 0 6 0"
+              Content="Cancel"
+              Click="BtnCancel_Click" />-->
+
+      <Button Grid.Column="2"
+              VerticalAlignment="Center"
+              Content="Ok"
+              Click="BtnOk_Click" />
+
+    </Grid>
+  </Grid>
+</Window>

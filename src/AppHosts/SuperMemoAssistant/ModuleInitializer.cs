@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/08 16:29
-// Modified On:  2019/01/25 23:41
+// Created On:   2019/02/25 22:02
+// Modified On:  2019/02/28 20:42
 // Modified By:  Alexis
 
 #endregion
@@ -36,7 +36,8 @@ using SuperMemoAssistant.Plugins;
 using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO;
-using SuperMemoAssistant.Services.IO.Devices;
+using SuperMemoAssistant.Services.IO.HotKeys;
+using SuperMemoAssistant.Services.IO.Keyboard;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Content;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
@@ -63,12 +64,13 @@ namespace SuperMemoAssistant
     public static void Initialize()
     {
       //InitOnLoad.Initialize();
-      
-      SentryInstance = Services.Sentry.SentryEx.Initialize();
+
       Logger.Instance.Initialize(SMAConst.Name, Services.Sentry.SentryEx.LogToSentry);
-      
-      Svc.Configuration = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
+      SentryInstance = Services.Sentry.SentryEx.Initialize();
+
+      Svc.Configuration  = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
       Svc.KeyboardHotKey = KeyboardHookService.Instance;
+      Svc.HotKeyManager  = HotKeyManager.Instance.Initialize();
 
       // ReSharper disable once NotAccessedVariable
       // ReSharper disable once JoinDeclarationAndInitializer
@@ -86,6 +88,8 @@ namespace SuperMemoAssistant
       tmp = LayoutManager.Instance;
       tmp = PluginManager.Instance;
       tmp = SMA.SMA.Instance;
+
+      Svc.SMA = SMA.SMA.Instance;
     }
 
     #endregion

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/18 03:01
-// Modified On:  2019/01/18 03:32
+// Created On:   2019/02/26 23:18
+// Modified On:  2019/03/01 20:57
 // Modified By:  Alexis
 
 #endregion
@@ -30,6 +30,7 @@
 
 
 
+using System.ComponentModel;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Components;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
@@ -37,7 +38,7 @@ using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
 {
   /// <summary>Interaction logic for XamlControlImage.xaml</summary>
-  public partial class XamlControlImage : XamlControlBase, IComponentImage
+  public partial class XamlControlImage : XamlControlBase, IComponentImage, INotifyPropertyChanged
   {
     #region Constructors
 
@@ -69,7 +70,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
     #region Properties Impl - Public
 
     public override AtFlags DisplayAt { get; }
-    
+
     public IImage           Image   { get; }
     public ImageStretchMode Stretch { get; set; } = ImageStretchMode.Proportional;
 
@@ -96,6 +97,15 @@ Transparent=0
 Zoom=[0,0,0,0]
 End Component #{Id + 1}";
     }
+
+    #endregion
+
+
+
+
+    #region Events
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
   }

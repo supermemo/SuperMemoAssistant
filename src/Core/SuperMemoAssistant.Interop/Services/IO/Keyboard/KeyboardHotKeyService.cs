@@ -40,7 +40,7 @@ using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.Sys.IO.Devices;
 using Message = SuperMemoAssistant.Sys.IO.Devices.Message;
 
-namespace SuperMemoAssistant.Services.IO.Devices
+namespace SuperMemoAssistant.Services.IO.Keyboard
 {
   /// <summary>https://stackoverflow.com/questions/1153009/how-can-i-convert-system-windows-input-key-to-system-windows-forms-keys</summary>
   public class KeyboardHotKeyService 
@@ -149,7 +149,7 @@ namespace SuperMemoAssistant.Services.IO.Devices
 
     private void OnHotKeyPressed(HotKeyEventArgs e)
     {
-      HotKey hk = new HotKey(e.Modifiers, KeyInterop.KeyFromVirtualKey((int)e.VKey), null);
+      HotKey hk = new HotKey(KeyInterop.KeyFromVirtualKey((int)e.VKey), e.Modifiers);
 
       RegisteredHotKeys.TryGetValue(hk, out var hkData);
 

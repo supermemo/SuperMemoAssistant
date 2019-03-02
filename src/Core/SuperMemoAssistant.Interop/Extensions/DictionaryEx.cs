@@ -85,15 +85,15 @@ namespace SuperMemoAssistant.Extensions
       return defaultRet;
     }
 
-    public static T SafeGet<TKey, T>(this IDictionary<TKey, T> dic,
-                                     TKey                      key,
-                                     T                         defaultRet = default)
-    {
-      if (dic.ContainsKey(key))
-        return dic[key];
+    //public static T SafeGet<TKey, T>(this IDictionary<TKey, T> dic,
+    //                                 TKey                      key,
+    //                                 T                         defaultRet = default)
+    //{
+    //  if (dic.ContainsKey(key))
+    //    return dic[key];
 
-      return defaultRet;
-    }
+    //  return defaultRet;
+    //}
 
     public static ConcurrentDictionary<TKey, TValue> ToConcurrentDictionary<TKey, TValue>(
       this IEnumerable<KeyValuePair<TKey, TValue>> source)

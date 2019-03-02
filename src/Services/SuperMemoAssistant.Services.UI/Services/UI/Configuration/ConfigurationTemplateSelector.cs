@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/12/21 02:18
-// Modified On:  2018/12/31 00:43
+// Created On:   2019/03/01 12:43
+// Modified On:  2019/03/01 12:46
 // Modified By:  Alexis
 
 #endregion
@@ -30,18 +30,33 @@
 
 
 
-using System;
-using SuperMemoAssistant.Sys.IO.Devices;
+using System.Windows;
+using System.Windows.Controls;
+using SuperMemoAssistant.Services.IO.HotKeys;
+using SuperMemoAssistant.Sys.ComponentModel;
 
-namespace SuperMemoAssistant.Services.IO.Devices
+namespace SuperMemoAssistant.Services.UI.Configuration
 {
-  public interface IKeyboardHookService
+  internal class ConfigurationTemplateSelector : DataTemplateSelector
   {
-    event EventHandler<KeyboardHookEventArgs> KeyboardPressed;
+    #region Methods Impl
 
-    void RegisterHotKey(HotKey hotkey,
-                        Action callback);
+    public override DataTemplate SelectTemplate(
+      object item,
+      DependencyObject container)
+    {
+      if (container is FrameworkElement element)
+      {
+        if (item is INotifyPropertyChangedEx)
+          return element.FindResource("ConfigModelTemplate") as DataTemplate;
 
-    bool UnregisterHotKey(HotKey hotkey);
+        if (item is HotKeyManager)
+          return element.FindResource("HotKeyManagerTemplate") as DataTemplate;
+      }
+
+      return null;
+    }
+
+    #endregion
   }
 }

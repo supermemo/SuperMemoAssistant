@@ -52,7 +52,7 @@ namespace SuperMemoAssistant
       _taskbarIcon.Dispose();
 
       Logger.Instance.Shutdown();
-      ModuleInitializer.SentryInstance.Dispose();
+      ModuleInitializer.SentryInstance?.Dispose();
 
       base.OnExit(e);
     }

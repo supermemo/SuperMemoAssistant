@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\packages\LoadAssembliesOnStartup.Fody.3.0.3\build\LoadAssembliesOnStartup.Fody.props" Condition="Exists('..\..\..\packages\LoadAssembliesOnStartup.Fody.3.0.3\build\LoadAssembliesOnStartup.Fody.props')" />
+  <Import Project="..\..\..\packages\LoadAssembliesOnStartup.Fody.3.0.5\build\LoadAssembliesOnStartup.Fody.props" Condition="Exists('..\..\..\packages\LoadAssembliesOnStartup.Fody.3.0.5\build\LoadAssembliesOnStartup.Fody.props')" />
   <Import Project="..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props" Condition="Exists('..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props')" />
   <Import Project="..\..\..\packages\PropertyChanged.Fody.2.6.0\build\PropertyChanged.Fody.props" Condition="Exists('..\..\..\packages\PropertyChanged.Fody.2.6.0\build\PropertyChanged.Fody.props')" />
   <Import Project="..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props" Condition="Exists('..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props')" />
@@ -15,6 +15,7 @@
     <AssemblyName>SuperMemoAssistant.Core</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <AssemblyVersion>0.1.572</AssemblyVersion>
@@ -120,8 +121,8 @@
     <Reference Include="JetBrains.Annotations, Version=2018.3.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\JetBrains.Annotations.2018.3.0\lib\net20\JetBrains.Annotations.dll</HintPath>
     </Reference>
-    <Reference Include="LoadAssembliesOnStartup.Fody, Version=3.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\LoadAssembliesOnStartup.Fody.3.0.3\lib\net46\LoadAssembliesOnStartup.Fody.dll</HintPath>
+    <Reference Include="LoadAssembliesOnStartup.Fody, Version=3.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\LoadAssembliesOnStartup.Fody.3.0.5\lib\net46\LoadAssembliesOnStartup.Fody.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\MahApps.Metro.1.6.5\lib\net47\MahApps.Metro.dll</HintPath>
@@ -257,7 +258,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SMA\Configs\LayoutsCfg.cs" />
-    <Compile Include="SMA\UI\Interceptors\ElementPickerInterceptor.cs" />
     <Compile Include="SMA\UI\Layout\TextEditorEx.cs" />
     <Compile Include="SMA\UI\Settings\Settings.Layouts.xaml.cs">
       <DependentUpon>Settings.Layouts.xaml</DependentUpon>
@@ -279,7 +279,9 @@
     <Compile Include="SuperMemo\SuperMemo17\Content\Content\ContentEx.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Content\Layout\LayoutManager.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\AutoGrid.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\Container.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\Attached.Grids.Collapsable.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\Attached.Panels.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\Attached.Grids.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\XamlControlBase.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\XamlControlGroup.Content.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\XamlControlGroup.Layout.cs" />
@@ -391,6 +393,10 @@
       <Project>{FD0E1BE8-BED3-4AB0-A9C8-022A2DBC8450}</Project>
       <Name>SuperMemoAssistant.Interop</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Services\SuperMemoAssistant.Services.UI\SuperMemoAssistant.Services.UI.csproj">
+      <Project>{7f7b4a1f-01e1-440e-89db-08f7d1d5a128}</Project>
+      <Name>SuperMemoAssistant.Services.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SuperMemoAssistant.Hooks.Common\SuperMemoAssistant.Hooks.Common.csproj">
       <Project>{cc5b9485-9ef1-4133-9242-719d263700ae}</Project>
       <Name>SuperMemoAssistant.Hooks.Common</Name>
@@ -476,7 +482,7 @@
     <Error Condition="!Exists('..\..\..\packages\PropertyChanged.Fody.2.6.0\build\PropertyChanged.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\PropertyChanged.Fody.2.6.0\build\PropertyChanged.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Fody.4.0.2\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.4.0.2\build\Fody.targets'))" />
-    <Error Condition="!Exists('..\..\..\packages\LoadAssembliesOnStartup.Fody.3.0.3\build\LoadAssembliesOnStartup.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\LoadAssembliesOnStartup.Fody.3.0.3\build\LoadAssembliesOnStartup.Fody.props'))" />
+    <Error Condition="!Exists('..\..\..\packages\LoadAssembliesOnStartup.Fody.3.0.5\build\LoadAssembliesOnStartup.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\LoadAssembliesOnStartup.Fody.3.0.5\build\LoadAssembliesOnStartup.Fody.props'))" />
   </Target>
   <Import Project="..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Import Project="..\..\..\packages\Fody.4.0.2\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.4.0.2\build\Fody.targets')" />

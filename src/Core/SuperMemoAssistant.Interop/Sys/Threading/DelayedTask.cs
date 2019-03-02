@@ -87,7 +87,10 @@ namespace SuperMemoAssistant.Sys.Threading
     public void Cancel()
     {
       lock (_lock)
+      {
+        _next = DateTime.Now;
         _task = null;
+      }
     }
 
     private void HandleAsync()
@@ -102,7 +105,7 @@ namespace SuperMemoAssistant.Sys.Threading
           if (DateTime.Now < _next)
             continue;
 
-          if (_task == null)
+          if (_task == null || _task.Id != Task.CurrentId)
             return;
 
           _task = null;

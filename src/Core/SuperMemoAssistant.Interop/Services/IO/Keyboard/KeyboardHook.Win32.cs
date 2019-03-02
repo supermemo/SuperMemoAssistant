@@ -33,7 +33,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace SuperMemoAssistant.Services.IO.Devices
+namespace SuperMemoAssistant.Services.IO.Keyboard
 {
   public partial class KeyboardHookService
   {

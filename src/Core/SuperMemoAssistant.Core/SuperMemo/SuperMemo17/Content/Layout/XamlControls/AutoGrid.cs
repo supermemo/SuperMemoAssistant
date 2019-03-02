@@ -110,7 +110,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
         return;
       }
 
-      colCount = rowCount = (int)Math.Ceiling(Math.Log(count, 2));
+      colCount = rowCount = (int)Math.Ceiling(Math.Sqrt(count));
     }
 
     #endregion

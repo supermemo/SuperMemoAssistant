@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/13 13:55
-// Modified On:  2019/02/24 21:21
+// Created On:   2019/02/25 22:02
+// Modified On:  2019/02/28 20:41
 // Modified By:  Alexis
 
 #endregion
@@ -44,7 +44,8 @@ using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO;
-using SuperMemoAssistant.Services.IO.Devices;
+using SuperMemoAssistant.Services.IO.HotKeys;
+using SuperMemoAssistant.Services.IO.Keyboard;
 using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.Interop.Plugins
@@ -85,24 +86,37 @@ namespace SuperMemoAssistant.Interop.Plugins
       Logger.Instance.Initialize(AssemblyName, ConfigureLogger);
 
       AppDomain.CurrentDomain.UnhandledException += (_, e) => LogException((Exception)e.ExceptionObject, e.IsTerminating);
-      
-      if (startApplication)
+      try
       {
-        App = new PluginApp();
-        App.DispatcherUnhandledException += (_, e) =>
+
+        if (startApplication)
         {
+          App = new PluginApp();
+          App.DispatcherUnhandledException += (_, e) =>
+          {
 #if !DEBUG
           e.Handled = true;
 #endif
           LogException(e.Exception, !e.Handled);
-        };
-      }
+          };
+        }
 
-      // Create Plugin's IPC Server
-      _channelName = RemotingServicesEx.GenerateIpcServerChannelName();
-      RemotingServicesEx.CreateIpcServer<ISMAPlugin, SMAPluginBase<TPlugin>>(
-        this,
-        _channelName);
+        Svc.KeyboardHotKey = KeyboardHookService.Instance;
+        Svc.KeyboardHotKeyLegacy = KeyboardHotKeyService.Instance;
+        Svc.Configuration = new PluginConfigurationService(this);
+        Svc.HotKeyManager = HotKeyManager.Instance.Initialize();
+
+        // Create Plugin's IPC Server
+        _channelName = RemotingServicesEx.GenerateIpcServerChannelName();
+        RemotingServicesEx.CreateIpcServer<ISMAPlugin, SMAPluginBase<TPlugin>>(
+          this,
+          _channelName);
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, $"Exception while initializing {GetType().Name}");
+        throw;
+      }
     }
 
     /// <inheritdoc />
@@ -182,11 +196,8 @@ namespace SuperMemoAssistant.Interop.Plugins
       if (SMAPluginMgr == null)
         throw new NullReferenceException($"{nameof(SMAPluginMgr)} is null");
 
-      Svc.Plugin               = this;
-      Svc.SMA                  = SMA;
-      Svc.KeyboardHotKey       = KeyboardHookService.Instance;
-      Svc.KeyboardHotKeyLegacy = KeyboardHotKeyService.Instance;
-      Svc.Configuration        = new PluginConfigurationService(this);
+      Svc.Plugin = this;
+      Svc.SMA    = SMA;
 
       PluginInit();
     }

@@ -1,15 +1,27 @@
-﻿<xamlControls:XamlControlBase x:Class="SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls.XamlControlImage"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:xamlControls="clr-namespace:SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls"
-             mc:Ignorable="d">
-    <Border BorderThickness="1"
-            BorderBrush="#E3E3E3">
-        <Border BorderThickness="6"
-                BorderBrush="#F4F7FC">
-            
-        </Border>        
+﻿<xamlControls:XamlControlBase
+  x:Class="SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls.XamlControlImage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:xamlControls="clr-namespace:SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls"
+  xmlns:fa5="http://schemas.fontawesome.com/icons/"
+  mc:Ignorable="d">
+  <Border BorderThickness="1"
+          BorderBrush="#E3E3E3">
+    <Border BorderThickness="6"
+            BorderBrush="#F4F7FC">
+      <Grid>
+        <StackPanel VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Orientation="Vertical">
+          <fa5:SvgAwesome Width="500"
+                          Height="500"
+                          Icon="Solid_Images" />
+          <TextBlock FontSize="450"
+                     Text="Image" />
+        </StackPanel>
+      </Grid>
     </Border>
+  </Border>
 </xamlControls:XamlControlBase>

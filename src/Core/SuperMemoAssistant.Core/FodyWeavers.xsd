@@ -6,6 +6,18 @@
       <xs:all>
         <xs:element name="LoadAssembliesOnStartup" minOccurs="0" maxOccurs="1">
           <xs:complexType>
+            <xs:all>
+              <xs:element minOccurs="0" maxOccurs="1" name="ExcludeAssemblies" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation>A list of assembly names to exclude from loading at startup, delimited with line breaks. This will process all assemblies except these assemblies.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" maxOccurs="1" name="IncludeAssemblies" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation>A list of assembly names to include from loading at startup, delimited with line breaks. This will process only these these assemblies.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:all>
             <xs:attribute name="ExcludeAssemblies" type="xs:string">
               <xs:annotation>
                 <xs:documentation>A list of assembly names to exclude from loading at startup, delimited with line breaks. This will process all assemblies except these assemblies.</xs:documentation>

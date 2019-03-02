@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/13 13:55
-// Modified On:  2019/02/22 14:07
+// Created On:   2019/02/25 22:02
+// Modified On:  2019/03/01 12:14
 // Modified By:  Alexis
 
 #endregion
@@ -57,7 +57,7 @@ namespace SuperMemoAssistant.Services.Configuration
     public PluginConfigurationService(ISMAPlugin plugin)
     {
       Plugin = plugin;
-      
+
       EnsureFolderExists();
     }
 
@@ -135,14 +135,21 @@ namespace SuperMemoAssistant.Services.Configuration
       }
     }
 
-    public async Task<bool> Save<T>(T             config,
-                                    DirectoryPath dirPath = null)
+    public Task<bool> Save<T>(T             config,
+                              DirectoryPath dirPath = null)
+    {
+      return Save(config, config.GetType(), dirPath);
+    }
+
+    public async Task<bool> Save(object        config,
+                                 Type          configType,
+                                 DirectoryPath dirPath = null)
     {
       dirPath = dirPath ?? GetDefaultConfigDirectoryPath();
 
       try
       {
-        using (var stream = OpenConf(dirPath.FullPath, typeof(T), FileAccess.Write))
+        using (var stream = OpenConf(dirPath.FullPath, configType, FileAccess.Write))
         using (var writer = new StreamWriter(stream))
           await writer.WriteAsync(JsonConvert.SerializeObject(config, Formatting.Indented)).ConfigureAwait(false);
 
@@ -150,7 +157,7 @@ namespace SuperMemoAssistant.Services.Configuration
       }
       catch (Exception ex)
       {
-        var filePath = GetConfigFilePath(dirPath, typeof(T));
+        var filePath = GetConfigFilePath(dirPath, configType);
         LogTo.Warning(ex, $"Failed to save config {filePath}");
 
         throw;

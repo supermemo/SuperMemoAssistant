@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/02/27 02:33
-// Modified On:  2019/02/27 20:37
+// Modified On:  2019/03/01 23:50
 // Modified By:  Alexis
 
 #endregion
@@ -30,6 +30,7 @@
 
 
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -46,6 +47,16 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
     #region Constants & Statics
 
     public static readonly Size SuperMemoFrameSize = new Size(10000, 10000);
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Non-Public
+
+    //private List<CollapsableGrid> _collapsableGrids = new List<CollapsableGrid>();
+    private readonly List<CollapsableGridAttachedProperty> _collapsableGrids = new List<CollapsableGridAttachedProperty>();
 
     #endregion
 
@@ -85,6 +96,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
 
       ComputeAcceptedContent();
 
+      GenerateDemoContent();
+
       return IsValid;
     }
 
@@ -97,6 +110,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
 
       AcceptedContent = ContentTypeFlag.None;
       IsValid         = true;
+
+      _collapsableGrids.Clear();
 
       Content = null;
     }
@@ -124,15 +139,25 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
         if (!(child is Panel panel))
           continue;
 
-        var acceptedContent = child.ReadLocalValue(Container.AcceptedContentProperty);
+        //if (panel is CollapsableGrid collapsableGrid)
+        //  _collapsableGrids.Add(collapsableGrid);
 
-        if (acceptedContent == DependencyProperty.UnsetValue || acceptedContent.GetType() != Container.AcceptedContentProperty.PropertyType)
+        // Collapsable grids
+        var collapsableGrid = child.ReadLocalValue(Grids.CollapsableProperty);
+
+        if (collapsableGrid != DependencyProperty.UnsetValue && collapsableGrid.GetType() == Grids.CollapsableProperty.PropertyType)
+          _collapsableGrids.Add((CollapsableGridAttachedProperty)collapsableGrid);
+
+        // Accepted contents
+        var acceptedContent = child.ReadLocalValue(Panels.AcceptedContentProperty);
+
+        if (acceptedContent == DependencyProperty.UnsetValue || acceptedContent.GetType() != Panels.AcceptedContentProperty.PropertyType)
           continue;
 
         _panelAcceptedContents.Add((panel, (ContentTypeFlag)acceptedContent));
       }
 
-      if (_contentPanelMap.Count == 0)
+      if (_panelAcceptedContents.Count == 0)
         IsValid = false;
     }
 

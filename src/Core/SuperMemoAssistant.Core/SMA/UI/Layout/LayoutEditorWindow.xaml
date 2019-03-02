@@ -29,12 +29,29 @@
 
   <Grid>
     <Grid.RowDefinitions>
+      <RowDefinition Height="auto" />
       <RowDefinition Height="*" />
       <RowDefinition Height="auto" />
     </Grid.RowDefinitions>
 
+    <Border Grid.Row="0"
+            BorderThickness="0 0 0 1"
+            BorderBrush="{DynamicResource GrayBrush8}">
+      <StackPanel Orientation="Horizontal"
+                  Margin="8">
+        <TextBlock VerticalAlignment="Center"
+                   FontSize="16"
+                   FontWeight="DemiBold"
+                   Text="Name" />
+        <TextBox Width="300"
+                 Margin="12 0 0 0"
+                 FontSize="16"
+                 Text="{Binding NewLayout.Name}" />
+      </StackPanel>
+    </Border>
+
     <TabControl x:Name="tcLayout"
-                Grid.Row="0"
+                Grid.Row="1"
                 SelectionChanged="TcLayout_SelectionChanged">
       <TabItem Header="Editor">
         <layout:TextEditorEx x:Name="XamlEditor"
@@ -48,18 +65,18 @@
 
           <Grid Background="#44FF0000"
                 Visibility="{Binding NewLayout.IsValid, Converter={StaticResource BoolToVis}, ConverterParameter=True}">
-          <TextBlock HorizontalAlignment="Center"
-                     VerticalAlignment="Center"
-                     Text="Invalid XAML"
-                     Foreground="White"
-                     FontSize="28"
-                     FontWeight="Bold" />
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Text="Invalid XAML"
+                       Foreground="White"
+                       FontSize="28"
+                       FontWeight="Bold" />
           </Grid>
         </Grid>
       </TabItem>
     </TabControl>
 
-    <Grid Grid.Row="1" Margin="6">
+    <Grid Grid.Row="2" Margin="6">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*" />
         <ColumnDefinition Width="auto" />

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/13 13:55
-// Modified On:  2019/02/21 19:03
+// Created On:   2019/02/25 22:02
+// Modified On:  2019/02/28 20:40
 // Modified By:  Alexis
 
 #endregion
@@ -33,7 +33,8 @@
 using SuperMemoAssistant.Interop.Plugins;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Services.Configuration;
-using SuperMemoAssistant.Services.IO.Devices;
+using SuperMemoAssistant.Services.IO.HotKeys;
+using SuperMemoAssistant.Services.IO.Keyboard;
 
 // ReSharper disable StaticMemberInGenericType
 // ReSharper disable UnusedTypeParameter
@@ -49,6 +50,7 @@ namespace SuperMemoAssistant.Services
 
     public static IKeyboardHotKeyService KeyboardHotKeyLegacy { get; set; }
     public static IKeyboardHookService   KeyboardHotKey       { get; set; }
+    public static HotKeyManager          HotKeyManager        { get; set; }
 
     public static ConfigurationServiceBase Configuration { get; set; }
 

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/22 13:14
-// Modified On:  2019/02/22 13:14
+// Created On:   2019/03/01 15:33
+// Modified On:  2019/03/01 15:35
 // Modified By:  Alexis
 
 #endregion
@@ -30,44 +30,23 @@
 
 
 
-using System.ComponentModel;
+using System;
+using System.Globalization;
 
-namespace SuperMemoAssistant.Services.IO.Devices
+namespace SuperMemoAssistant.Sys.Windows.Data
 {
-  public class KeyboardHookEventArgs : HandledEventArgs
+  public class TypeCastConverter : OneWayValueConverter
   {
-    #region Constructors
+    #region Methods Impl
 
-    public KeyboardHookEventArgs(
-      LowLevelKeyboardInputEvent keyboardData,
-      KeyboardState              keyboardState,
-      bool                       ctrl,
-      bool                       alt,
-      bool                       shift,
-      bool                       meta)
+    /// <inheritdoc />
+    public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-      KeyboardData  = keyboardData;
-      KeyboardState = keyboardState;
-      Ctrl          = ctrl;
-      Alt           = alt;
-      Shift         = shift;
-      Meta          = meta;
+      if (!(parameter is Type castType))
+        throw new ArgumentException($"{nameof(parameter)} must be of type Type");
+
+      return System.Convert.ChangeType(value, castType);
     }
-
-    #endregion
-
-
-
-
-    #region Properties & Fields - Public
-
-    public KeyboardState              KeyboardState { get; private set; }
-    public LowLevelKeyboardInputEvent KeyboardData  { get; private set; }
-
-    public bool Alt   { get; }
-    public bool Ctrl  { get; }
-    public bool Shift { get; }
-    public bool Meta  { get; }
 
     #endregion
   }

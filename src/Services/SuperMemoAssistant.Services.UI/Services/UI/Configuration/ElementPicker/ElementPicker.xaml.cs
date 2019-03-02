@@ -35,9 +35,8 @@ using System.Windows;
 using System.Windows.Controls;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
-using SuperMemoAssistant.Services;
 
-namespace SuperMemoAssistant.UI
+namespace SuperMemoAssistant.Services.UI.Configuration.ElementPicker
 {
   /// <summary>Interaction logic for ElementPicker.xaml</summary>
   public partial class ElementPicker : Window
@@ -173,10 +172,5 @@ namespace SuperMemoAssistant.UI
     }
 
     #endregion
-  }
-
-  public interface IElementPickerCallback
-  {
-    void SetElement(IElement elem);
   }
 }

@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Markup;
+using Anotar.Serilog;
 using Newtonsoft.Json;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Contents;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls;
@@ -122,16 +123,24 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts
 
     public static DependencyObject ParseLayout(string xaml)
     {
-      var context = new ParserContext { XamlTypeMapper = new XamlTypeMapper(new string[] { }) };
+      try
+      {
+        var context = new ParserContext { XamlTypeMapper = new XamlTypeMapper(new string[] { }) };
 
-      var @namespace   = typeof(XamlControlBase).Namespace;
-      var assemblyName = typeof(XamlControlBase).Assembly.GetName().Name;
+        var @namespace = typeof(XamlControlBase).Namespace;
+        var assemblyName = typeof(XamlControlBase).Assembly.GetName().Name;
 
-      context.XmlnsDictionary.Add("sma", $"clr-namespace:{@namespace}");
-      // ReSharper disable once AssignNullToNotNullAttribute
-      context.XamlTypeMapper.AddMappingProcessingInstruction($"clr-namespace:{@namespace}", @namespace, assemblyName);
+        context.XmlnsDictionary.Add("sma", $"clr-namespace:{@namespace}");
+        // ReSharper disable once AssignNullToNotNullAttribute
+        context.XamlTypeMapper.AddMappingProcessingInstruction($"clr-namespace:{@namespace}", @namespace, assemblyName);
 
-      return XamlReader.Parse(xaml, context) as DependencyObject;
+        return XamlReader.Parse(xaml, context) as DependencyObject;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "Exception while parsing layout");
+        return null;
+      }
     }
 
     public void ValidateXaml()
@@ -165,6 +174,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts
       var restore = AutoValidationSuspended;
       AutoValidationSuspended = copyValidation;
 
+      Name = other.Name;
       Xaml = other.Xaml;
 
       if (copyValidation)

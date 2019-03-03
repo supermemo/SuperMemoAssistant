@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/26 23:19
-// Modified On:  2019/02/27 13:39
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/03/03 15:38
 // Modified By:  Alexis
 
 #endregion
@@ -39,6 +39,7 @@ using Anotar.Serilog;
 using Newtonsoft.Json;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Contents;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls;
+using SuperMemoAssistant.Sys.ComponentModel;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts
 {
@@ -54,8 +55,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts
       IsBuiltIn               = isBuiltIn;
       AutoValidationSuspended = autoValidationSuspended;
 
-      Name      = name;
-      Xaml      = xaml;
+      Name = name;
+      Xaml = xaml;
     }
 
     public XamlLayout(XamlLayout other, string newName = null, bool isBuiltIn = false, bool autoValidationSuspended = false)
@@ -80,9 +81,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts
 
     [JsonIgnore]
     public bool IsBuiltIn { get; }
-    
+
     [JsonIgnore]
-    public bool IsDefault => ReferenceEquals(LayoutManager.Instance.Default, this);
+    public bool IsDefault { get; set; }
 
     [JsonIgnore]
     public ContentTypeFlag AcceptedContent { get; private set; }
@@ -115,18 +116,20 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts
       );
     }
 
-    public DependencyObject ParseLayout()
+    public DependencyObject ParseLayout(out Exception xamlParsingException)
     {
-      return ParseLayout(Xaml);
+      return ParseLayout(Xaml, out xamlParsingException);
     }
 
-    public static DependencyObject ParseLayout(string xaml)
+    public static DependencyObject ParseLayout(string xaml, out Exception xamlParsingException)
     {
+      xamlParsingException = null;
+
       try
       {
         var context = new ParserContext { XamlTypeMapper = new XamlTypeMapper(new string[] { }) };
 
-        var @namespace = typeof(XamlControlBase).Namespace;
+        var @namespace   = typeof(XamlControlBase).Namespace;
         var assemblyName = typeof(XamlControlBase).Assembly.GetName().Name;
 
         context.XmlnsDictionary.Add("sma", $"clr-namespace:{@namespace}");
@@ -137,7 +140,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts
       }
       catch (Exception ex)
       {
+        xamlParsingException = ex;
         LogTo.Error(ex, "Exception while parsing layout");
+
         return null;
       }
     }
@@ -158,16 +163,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts
       IsValidationRequired = false;
     }
 
-    public void OnXamlChanged()
-    {
-      IsValidationRequired = true;
-
-      if (AutoValidationSuspended)
-        return;
-
-      ValidateXaml();
-    }
-
     public void CopyFrom(XamlLayout other, bool copyValidation = true)
     {
       var restore = AutoValidationSuspended;
@@ -182,6 +177,21 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts
       AutoValidationSuspended = restore;
     }
 
+    public void OnXamlChanged(object before, object after)
+    {
+      IsValidationRequired = true;
+
+      if (AutoValidationSuspended == false)
+        ValidateXaml();
+
+      XamlChanged?.Invoke(this, (string)before, (string)after);
+    }
+
+    public void OnNameChanged(object before, object after)
+    {
+      NameChanged?.Invoke(this, (string)before, (string)after);
+    }
+
     #endregion
 
 
@@ -189,7 +199,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts
 
     #region Events
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedDelegate<XamlLayout, string> NameChanged;
+
+    public event PropertyChangedEventHandler                 PropertyChanged;
+    public event PropertyChangedDelegate<XamlLayout, string> XamlChanged;
 
     #endregion
   }

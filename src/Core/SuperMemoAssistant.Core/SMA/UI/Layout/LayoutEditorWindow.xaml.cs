@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 22:02
-// Modified On:  2019/02/27 13:11
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/03/03 15:34
 // Modified By:  Alexis
 
 #endregion
@@ -30,23 +30,42 @@
 
 
 
+using System;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Forge.Forms;
 using MahApps.Metro.Controls;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts;
+using SuperMemoAssistant.Sys.Threading;
 
 namespace SuperMemoAssistant.SMA.UI.Layout
 {
   /// <summary>Interaction logic for LayoutEditorWindow.xaml</summary>
-  public partial class LayoutEditorWindow : MetroWindow
+  public partial class LayoutEditorWindow : MetroWindow, INotifyPropertyChanged
   {
+    #region Properties & Fields - Non-Public
+
+    private readonly DelayedTask _parseXamlTask;
+
+    #endregion
+
+
+
+
     #region Constructors
 
     public LayoutEditorWindow(XamlLayout xamlLayout)
     {
-      OriginalLayout = xamlLayout;
-      NewLayout      = new XamlLayout(xamlLayout, autoValidationSuspended: true);
+      OriginalLayout        =  xamlLayout;
+      NewLayout             =  new XamlLayout(xamlLayout, autoValidationSuspended: true);
+      NewLayout.XamlChanged += OnXamlChanged;
+
+      IsDefault = OriginalLayout.IsDefault;
+
+      _parseXamlTask = new DelayedTask(ParseXaml);
 
       InitializeComponent();
     }
@@ -60,6 +79,8 @@ namespace SuperMemoAssistant.SMA.UI.Layout
 
     public XamlLayout NewLayout      { get; }
     public XamlLayout OriginalLayout { get; }
+    public bool       IsDefault      { get; set; }
+    public string     Errors         { get; set; } = string.Empty;
 
     #endregion
 
@@ -67,6 +88,37 @@ namespace SuperMemoAssistant.SMA.UI.Layout
 
 
     #region Methods
+
+    private void OnXamlChanged(XamlLayout xamlLayout, string before, string after)
+    {
+      _parseXamlTask.Trigger(500);
+    }
+
+    private void ParseXaml()
+    {
+      Dispatcher.Invoke(
+        () =>
+        {
+          XamlLayout.ParseLayout(NewLayout.Xaml, out var parsingEx);
+
+          switch (parsingEx)
+          {
+            case AggregateException aggEx:
+              var messages = aggEx.InnerExceptions.Select(e => e.Message);
+              Errors = string.Join("\r\n", messages);
+              break;
+
+            case Exception ex:
+              Errors = ex.Message;
+              break;
+
+            case null:
+              Errors = string.Empty;
+              break;
+          }
+        }
+      );
+    }
 
     private void BtnCancel_Click(object          sender,
                                  RoutedEventArgs e)
@@ -78,19 +130,31 @@ namespace SuperMemoAssistant.SMA.UI.Layout
     private void BtnOk_Click(object          sender,
                              RoutedEventArgs e)
     {
+      if (NewLayout.Name != OriginalLayout.Name && LayoutManager.Instance.LayoutExists(NewLayout.Name))
+      {
+        Forge.Forms.Show.Window().For(new Alert($"'{NewLayout.Name}' is already in use"));
+        return;
+      }
+
       NewLayout.ValidateXaml();
 
       if (NewLayout.IsValid == false)
       {
         var dialog = Forge.Forms.Show
                           .Window()
-                          .For(new Confirmation("Invalid XAML markup. Save anyway ?", "Warning"));
+                          .For(new Confirmation("Invalid XAML markup. Save changes anyway ?", "Warning"));
 
         if (dialog.Result.Model.Confirmed == false)
           return;
       }
 
       OriginalLayout.CopyFrom(NewLayout);
+
+      if (IsDefault)
+        LayoutManager.Instance.SetDefault(OriginalLayout.Name);
+      
+      else if (OriginalLayout.IsDefault)
+        LayoutManager.Instance.SetDefault(LayoutManager.GenericLayoutName);
 
       DialogResult = true;
       Close();
@@ -113,8 +177,8 @@ namespace SuperMemoAssistant.SMA.UI.Layout
       }
     }
 
-    private void TcLayout_SelectionChanged(object                    sender,
-                                           SelectionChangedEventArgs e)
+    private void OnTabSelectionChanged(object                    sender,
+                                       SelectionChangedEventArgs e)
     {
       if (tcLayout.SelectedIndex == 1)
       {
@@ -123,6 +187,15 @@ namespace SuperMemoAssistant.SMA.UI.Layout
         CtrlGroup.SetXamlLayout(NewLayout);
       }
     }
+
+    #endregion
+
+
+
+
+    #region Events
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
   }

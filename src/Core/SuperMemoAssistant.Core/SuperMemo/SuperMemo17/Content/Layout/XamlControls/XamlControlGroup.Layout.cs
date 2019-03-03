@@ -79,9 +79,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
     {
       Reset();
 
-      var rootObject = xamlLayout.ParseLayout();
+      var rootObject = xamlLayout.ParseLayout(out var ex);
 
-      if (!(rootObject is UIElement rootUIElement))
+      if (ex != null || !(rootObject is UIElement rootUIElement))
         return IsValid = false;
 
       Content = rootUIElement;

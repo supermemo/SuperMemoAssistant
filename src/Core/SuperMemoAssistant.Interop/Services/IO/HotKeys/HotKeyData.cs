@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/28 00:04
-// Modified On:  2019/03/01 02:18
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/03/03 14:51
 // Modified By:  Alexis
 
 #endregion
@@ -32,14 +32,11 @@
 
 using System;
 using System.ComponentModel;
+using SuperMemoAssistant.Sys.ComponentModel;
 using SuperMemoAssistant.Sys.IO.Devices;
 
 namespace SuperMemoAssistant.Services.IO.HotKeys
 {
-  public delegate void HotKeyChangedDelegate(HotKeyData hkData,
-                                             HotKey     actualBefore,
-                                             HotKey     actualAfter);
-
   public class HotKeyData : INotifyPropertyChanged
   {
     #region Constructors
@@ -95,7 +92,7 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
       HotKeyChanged?.Invoke(
         this,
         before as HotKey, after as HotKey
-        );
+      );
     }
 
     #endregion
@@ -105,8 +102,8 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
 
     #region Events
 
-    public event HotKeyChangedDelegate       HotKeyChanged;
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedDelegate<HotKeyData, HotKey> HotKeyChanged;
+    public event PropertyChangedEventHandler                 PropertyChanged;
 
     #endregion
   }

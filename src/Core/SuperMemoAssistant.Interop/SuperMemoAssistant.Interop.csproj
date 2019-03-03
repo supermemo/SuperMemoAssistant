@@ -208,6 +208,7 @@
     <Compile Include="Services\IO\Logger\LoggerCfg.cs" />
     <Compile Include="Sys\Collections\ConcurrentBiDictionary.cs" />
     <Compile Include="Sys\Collections\BiDictionary.cs" />
+    <Compile Include="Sys\ComponentModel\PropertyChangedDelegate.cs" />
     <Compile Include="Sys\EmptyDisposable.cs" />
     <Compile Include="Sys\ForceAssemblyReference.cs" />
     <Compile Include="Sys\Index2D.cs" />

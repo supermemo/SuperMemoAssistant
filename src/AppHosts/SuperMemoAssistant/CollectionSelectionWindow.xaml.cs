@@ -36,6 +36,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using Forge.Forms;
 using MahApps.Metro.Controls;
 using Microsoft.Win32;
 using SuperMemoAssistant.Extensions;
@@ -148,6 +149,15 @@ namespace SuperMemoAssistant
                                RoutedEventArgs e)
     {
       Collection          = (SMCollection)lbCollections.SelectedItem;
+
+      if (File.Exists(Collection.GetKnoFilePath()) == false
+        || Directory.Exists(Collection.GetRootDirPath()) == false)
+      {
+        Forge.Forms.Show.Window().For(new Alert("Collection doesn't exist anymore.", "Error"));
+
+        return;
+      }
+
       Collection.LastOpen = DateTime.Now;
 
       SaveConfig();

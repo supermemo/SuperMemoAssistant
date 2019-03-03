@@ -38,6 +38,11 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
   {
     #region Methods
 
+    public static string GetRootDirPath(this SMCollection collection)
+    {
+      return Path.Combine(collection.Path, collection.Name);
+    }
+
     public static string GetFilePath(
       this   SMCollection collection,
       params string[]     paths)

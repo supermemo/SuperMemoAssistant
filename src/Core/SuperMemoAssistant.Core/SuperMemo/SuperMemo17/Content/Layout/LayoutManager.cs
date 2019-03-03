@@ -53,6 +53,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout
     public static XamlLayout GenericLayout => Instance._layoutMap[GenericLayoutName];
     public const  string     GenericLayoutName = "Generic";
 
+    public static XamlLayout DefaultOrGenericLayout => Instance.Default.IsValid ? Instance.Default : GenericLayout;
+
     #endregion
 
 
@@ -106,6 +108,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout
 
       _layoutMap[layout.Name] = layout;
       _layouts.Add(layout);
+
+      layout.NameChanged += OnLayoutNameChanged;
     }
 
     public void DeleteLayout(XamlLayout layout)
@@ -115,6 +119,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout
 
       _layoutMap.Remove(layout.Name);
       _layouts.Remove(layout);
+
+      layout.NameChanged -= OnLayoutNameChanged;
 
       SetDefault(Default.Name);
     }
@@ -133,13 +139,25 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout
 
     public void SetDefault(string layoutName)
     {
-      if (layoutName == null || _layoutMap.ContainsKey(layoutName) == false)
-      {
-        Default = GenericLayout;
-        return;
-      }
+      var prevDefault = Default;
 
-      Default = _layoutMap[layoutName];
+      try
+      {
+        if (layoutName == null || _layoutMap.ContainsKey(layoutName) == false)
+        {
+          Default = GenericLayout;
+          return;
+        }
+
+        Default = _layoutMap[layoutName];
+      }
+      finally
+      {
+        if (prevDefault != null)
+          prevDefault.IsDefault = false;
+
+        Default.IsDefault = true;
+      }
     }
 
     public void SaveConfig()
@@ -148,6 +166,18 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout
       _config.Layouts = new List<XamlLayout>(Layouts.Where(l => l.IsBuiltIn == false));
 
       Svc.Configuration.Save(_config).RunAsync();
+    }
+
+    private void OnLayoutNameChanged(XamlLayout xamlLayout, string before, string after)
+    {
+      if (_layoutMap.ContainsKey(before) == false)
+        throw new ArgumentException($"Layout name changed event called, but layout can't be found: {before}");
+
+      if (_layoutMap.ContainsKey(after))
+        throw new ArgumentException($"A layout already exists with that name: {after}");
+
+      _layoutMap.Remove(before);
+      _layoutMap[after] = xamlLayout;
     }
 
     private async Task OnSMStarted(object sender, Interop.SuperMemo.Core.SMProcessArgs eventArgs)

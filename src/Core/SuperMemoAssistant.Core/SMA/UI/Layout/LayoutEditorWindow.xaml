@@ -32,13 +32,20 @@
       <RowDefinition Height="auto" />
       <RowDefinition Height="*" />
       <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
     </Grid.RowDefinitions>
 
-    <Border Grid.Row="0"
-            BorderThickness="0 0 0 1"
-            BorderBrush="{DynamicResource GrayBrush8}">
-      <StackPanel Orientation="Horizontal"
-                  Margin="8">
+    <Grid Grid.Row="0"
+          Margin="8">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="auto" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="auto" />
+      </Grid.ColumnDefinitions>
+
+      <StackPanel Grid.Column="0"
+                  Orientation="Horizontal">
         <TextBlock VerticalAlignment="Center"
                    FontSize="16"
                    FontWeight="DemiBold"
@@ -48,20 +55,34 @@
                  FontSize="16"
                  Text="{Binding NewLayout.Name}" />
       </StackPanel>
-    </Border>
+
+      <CheckBox Grid.Column="2"
+                FontSize="16"
+                Content="Is default"
+                IsChecked="{Binding IsDefault}" />
+    </Grid>
 
     <TabControl x:Name="tcLayout"
                 Grid.Row="1"
-                SelectionChanged="TcLayout_SelectionChanged">
-      <TabItem Header="Editor">
+                mah:TabControlHelper.Underlined="TabPanel"
+                SelectionChanged="OnTabSelectionChanged">
+      <TabItem Header="Editor" mah:ControlsHelper.HeaderFontSize="18">
         <layout:TextEditorEx x:Name="XamlEditor"
                              SyntaxHighlighting="XML"
                              ShowLineNumbers="True"
                              Text="{Binding NewLayout.Xaml}" />
       </TabItem>
-      <TabItem Header="Preview">
+      <TabItem Header="Preview" mah:ControlsHelper.HeaderFontSize="18">
         <Grid>
-          <xamlControls:XamlControlGroup x:Name="CtrlGroup" />
+          <Grid
+            MaxWidth="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=Grid}}"
+            MaxHeight="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=Grid}}">
+            <Border 
+              BorderThickness="1"
+              BorderBrush="DarkRed" >
+            <xamlControls:XamlControlGroup x:Name="CtrlGroup" />
+              </Border>
+          </Grid>
 
           <Grid Background="#44FF0000"
                 Visibility="{Binding NewLayout.IsValid, Converter={StaticResource BoolToVis}, ConverterParameter=True}">
@@ -76,7 +97,22 @@
       </TabItem>
     </TabControl>
 
-    <Grid Grid.Row="2" Margin="6">
+    <GridSplitter Grid.Row="2"
+                  Height="7"
+                  ResizeDirection="Rows"
+                  ResizeBehavior="PreviousAndCurrent"
+                  HorizontalAlignment="Stretch"
+                  ShowsPreview="False"
+                  Background="#ABABAB" />
+
+    <TextBox Grid.Row="3"
+             Height="120"
+             IsReadOnly="True"
+             FontSize="14"
+             Foreground="DarkRed"
+             Text="{Binding Errors}" />
+
+    <Grid Grid.Row="4" Margin="6">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*" />
         <ColumnDefinition Width="auto" />

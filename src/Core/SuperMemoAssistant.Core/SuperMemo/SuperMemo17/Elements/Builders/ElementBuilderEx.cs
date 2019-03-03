@@ -118,10 +118,8 @@ End Element #1";
           throw new NotImplementedException();
       }
 
-      XamlLayout layout = LayoutManager.Instance.GetLayout(elemBuilder.Layout);
-
-      if (layout == null)
-        layout = LayoutManager.GenericLayout;
+      XamlLayout layout = LayoutManager.Instance.GetLayout(elemBuilder.Layout)
+        ?? LayoutManager.DefaultOrGenericLayout;
 
       return string.Format(CultureInfo.InvariantCulture,
                            ElementFmt,

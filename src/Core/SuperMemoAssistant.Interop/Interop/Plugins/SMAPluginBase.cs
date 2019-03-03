@@ -43,9 +43,9 @@ using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.Configuration;
-using SuperMemoAssistant.Services.IO;
 using SuperMemoAssistant.Services.IO.HotKeys;
 using SuperMemoAssistant.Services.IO.Keyboard;
+using SuperMemoAssistant.Services.IO.Logger;
 using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.Interop.Plugins
@@ -82,24 +82,13 @@ namespace SuperMemoAssistant.Interop.Plugins
           AttachDebuggerIfDebug();
           break;
       }
-
-      Logger.Instance.Initialize(AssemblyName, ConfigureLogger);
-
-      AppDomain.CurrentDomain.UnhandledException += (_, e) => LogException((Exception)e.ExceptionObject, e.IsTerminating);
+      
       try
       {
-
         if (startApplication)
-        {
           App = new PluginApp();
-          App.DispatcherUnhandledException += (_, e) =>
-          {
-#if !DEBUG
-          e.Handled = true;
-#endif
-          LogException(e.Exception, !e.Handled);
-          };
-        }
+
+        Logger.Instance.Initialize(AssemblyName, ConfigureLogger);
 
         Svc.KeyboardHotKey = KeyboardHookService.Instance;
         Svc.KeyboardHotKeyLegacy = KeyboardHotKeyService.Instance;
@@ -185,6 +174,7 @@ namespace SuperMemoAssistant.Interop.Plugins
     #region Methods Impl
 
     /// <inheritdoc />
+    [LogToErrorOnException]
     public void OnInjected()
     {
       if (SessionGuid == Guid.Empty)
@@ -197,7 +187,7 @@ namespace SuperMemoAssistant.Interop.Plugins
         throw new NullReferenceException($"{nameof(SMAPluginMgr)} is null");
 
       Svc.Plugin = this;
-      Svc.SMA    = SMA;
+      Svc.SMA = SMA;
 
       PluginInit();
     }
@@ -226,12 +216,6 @@ namespace SuperMemoAssistant.Interop.Plugins
 
 
     #region Methods
-
-    private void LogException(Exception ex,
-                              bool      terminating)
-    {
-      LogTo.Error(ex, $"Unhandled exception, terminating: {terminating}");
-    }
 
     [Conditional("DEBUG")]
     [Conditional("DEBUG_IN_PROD")]

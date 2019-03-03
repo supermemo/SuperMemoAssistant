@@ -23,7 +23,7 @@
                  d:DataContext="{d:DesignInstance layout:LayoutEditorWindow}">
   <Window.Resources>
     <ResourceDictionary>
-      <data:BooleanToVisiblityConverterEx x:Key="BoolToVis" />
+      <data:BooleanToVisibilityConverterEx x:Key="BoolToVis" />
     </ResourceDictionary>
   </Window.Resources>
 

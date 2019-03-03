@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 22:02
-// Modified On:  2019/02/27 03:06
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/03/02 21:14
 // Modified By:  Alexis
 
 #endregion
@@ -98,12 +98,7 @@ namespace SuperMemoAssistant.SMA
     ///   Create an instance of the wrapper that will start a SM instance and attach the
     ///   management engine.
     /// </summary>
-    protected SMA()
-    {
-      Svc.SMA = this;
-
-      SMAUI.Initialize();
-    }
+    protected SMA() { }
 
     /// <inheritdoc />
     public virtual void Dispose()
@@ -134,6 +129,10 @@ namespace SuperMemoAssistant.SMA
     public SMCollection Collection { get => SMMgmt?.Collection; private set => throw new InvalidOperationException(); }
     /// <inheritdoc />
     public virtual SMAppVersion AppVersion => SMMgmt?.AppVersion ?? SMConst.Versions.vInvalid;
+
+    /// <inheritdoc />
+    public int ProcessId => NativeProcess?.Id ?? -1;
+
     /// <inheritdoc />
     public bool IgnoreUserConfirmation
     {
@@ -143,12 +142,12 @@ namespace SuperMemoAssistant.SMA
         if (SMMgmt != null) SMMgmt.IgnoreUserConfirmation = value;
       }
     }
-    
+
     /// <inheritdoc />
     public ISuperMemoRegistry Registry => SuperMemoRegistry.Instance;
     /// <inheritdoc />
-    public ISuperMemoUI       UI       => SuperMemoUI.Instance;
-    
+    public ISuperMemoUI UI => SuperMemoUI.Instance;
+
     /// <inheritdoc />
     public IEnumerable<string> Layouts => LayoutManager.Instance.Layouts
                                                        .Select(l => l.Name)
@@ -222,52 +221,47 @@ namespace SuperMemoAssistant.SMA
 
       return task;
     }
-
+    
     public async Task OnSMStarting()
     {
       try
       {
         await OnSMStartingEvent.InvokeAsync(this,
-                                            new SMEventArgs(this));
+                                    new SMEventArgs(this));
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "Error while notifying OnSMStartingEvent");
+        LogTo.Error(ex, "Exception while notifying starting");
+        throw;
       }
     }
-
+    
     public async Task OnSMStarted()
     {
-      await SaveConfig(false);
-
       try
       {
+        await SaveConfig(false);
+
+        SMAUI.Initialize();
+
         await OnSMStartedEvent.InvokeAsync(this,
                                            new SMProcessArgs(this,
                                                              SMProcess.Native));
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "Error while notifying OnSMStartedEvent");
+        LogTo.Error(ex, "Exception while notifying started");
+
+        throw;
       }
     }
-
+    
     public async Task OnSMStopped()
     {
       SMMgmt = null;
 
-      try
-      {
-        await OnSMStoppedEvent.InvokeAsync(this,
-                                           null);
-      }
-      catch (Exception ex)
-      {
-        LogTo.Error(ex,
-                    "Error while notifying plugins OnSMStoppedEvent");
-      }
+      await OnSMStoppedEvent.InvokeAsync(this,
+                                         null);
     }
 
     #endregion

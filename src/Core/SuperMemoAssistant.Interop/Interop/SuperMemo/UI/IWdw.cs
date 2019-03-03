@@ -37,5 +37,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.UI
   public interface IWdw
   {
     IntPtr Handle { get; }
+
+    event Action OnAvailable;
   }
 }

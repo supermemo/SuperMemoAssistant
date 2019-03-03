@@ -123,7 +123,7 @@ End Element #1";
       if (layout == null)
         layout = LayoutManager.GenericLayout;
 
-      return String.Format(CultureInfo.InvariantCulture,
+      return string.Format(CultureInfo.InvariantCulture,
                            ElementFmt,
                            collectionPath,
                            parentId,

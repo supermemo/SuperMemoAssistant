@@ -126,7 +126,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
       else
       {
         Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-        ApplyTemplate();
+        Arrange(new Rect(RenderSize));
+        //ApplyTemplate();
       }
 
       UpdateLayout();
@@ -211,8 +212,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls
 
     private void ComputeAcceptedContent()
     {
-      //if (_panelAcceptedContents.Count == 0)
-      //  return;
+      if (_panelAcceptedContents.Count == 0)
+        return;
 
       AcceptedContent = _panelAcceptedContents
                         .Select(pc => pc.content)

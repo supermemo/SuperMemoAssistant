@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/24 13:30
-// Modified On:  2019/01/19 05:07
+// Created On:   2019/02/25 22:02
+// Modified On:  2019/03/02 03:28
 // Modified By:  Alexis
 
 #endregion
@@ -91,6 +91,16 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     // Inheritance
 
     public abstract string WindowClass { get; }
+
+    #endregion
+
+
+
+
+    #region Events
+
+    /// <inheritdoc />
+    public abstract event Action OnAvailable;
 
     #endregion
   }

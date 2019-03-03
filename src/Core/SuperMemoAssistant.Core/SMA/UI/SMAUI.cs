@@ -33,6 +33,7 @@
 using System.Windows;
 using System.Windows.Input;
 using SuperMemoAssistant.Services;
+using SuperMemoAssistant.Services.IO.Keyboard;
 using SuperMemoAssistant.SMA.UI.Settings;
 using SuperMemoAssistant.Sys.IO.Devices;
 
@@ -50,7 +51,8 @@ namespace SuperMemoAssistant.SMA.UI
       Svc.HotKeyManager.RegisterGlobal(
         "Settings",
         "Show settings window",
-        new HotKey(Key.O, KeyModifiers.CtrlAlt),
+        HotKeyScope.Global,
+        new HotKey(Key.O, KeyModifiers.CtrlAltShift),
         ShowGlobalSettings
       );
 
@@ -58,6 +60,7 @@ namespace SuperMemoAssistant.SMA.UI
       Svc.HotKeyManager.RegisterGlobal(
         "DebugInjectLib",
         "Attach debugger to injected lib",
+        HotKeyScope.Global,
         new HotKey(Key.D, KeyModifiers.CtrlWinShift),
         DebugInjectLib
       );

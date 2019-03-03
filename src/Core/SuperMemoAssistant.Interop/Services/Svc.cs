@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/02/25 22:02
-// Modified On:  2019/02/28 20:40
+// Modified On:  2019/03/02 04:11
 // Modified By:  Alexis
 
 #endregion
@@ -30,6 +30,7 @@
 
 
 
+using System;
 using SuperMemoAssistant.Interop.Plugins;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Services.Configuration;
@@ -45,14 +46,33 @@ namespace SuperMemoAssistant.Services
   {
     #region Constants & Statics
 
-    public static ISuperMemoAssistant SMA    { get; set; }
-    public static ISMAPlugin          Plugin { get; set; }
+    private static ISuperMemoAssistant _sma;
+
+    public static ISuperMemoAssistant SMA
+    {
+      get => _sma;
+      set
+      {
+        _sma = value;
+        OnSMAAvailable?.Invoke(value);
+      }
+    }
+    public static ISMAPlugin Plugin { get; set; }
 
     public static IKeyboardHotKeyService KeyboardHotKeyLegacy { get; set; }
     public static IKeyboardHookService   KeyboardHotKey       { get; set; }
     public static HotKeyManager          HotKeyManager        { get; set; }
 
     public static ConfigurationServiceBase Configuration { get; set; }
+
+    #endregion
+
+
+
+
+    #region Events
+
+    public static event Action<ISuperMemoAssistant> OnSMAAvailable;
 
     #endregion
   }

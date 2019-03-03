@@ -17,12 +17,18 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
 
         <ResourceDictionary Source="SMATaskbarIcon.xaml" />
-      </ResourceDictionary.MergedDictionaries>      
+      </ResourceDictionary.MergedDictionaries>
       
       <Style TargetType="{x:Type ListBoxItem}">
         <Setter Property="mah:ItemHelper.ActiveSelectionBackgroundBrush" Value="{DynamicResource AccentColorBrush3}" />
         <Setter Property="mah:ItemHelper.HoverBackgroundBrush" Value="{DynamicResource AccentColorBrush4}" />
         <Setter Property="Focusable" Value="True" />
+      </Style>
+      
+      <Style x:Key="UnfocusableListBoxItem" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="mah:ItemHelper.ActiveSelectionBackgroundBrush" Value="{DynamicResource AccentColorBrush3}" />
+        <Setter Property="mah:ItemHelper.HoverBackgroundBrush" Value="{DynamicResource AccentColorBrush4}" />
+        <Setter Property="Focusable" Value="False" />
       </Style>
       
       <Style x:Key="SMAButton" TargetType="{x:Type Button}" BasedOn="{StaticResource MetroButton}">

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/26 23:18
-// Modified On:  2019/02/27 15:09
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/03/02 23:43
 // Modified By:  Alexis
 
 #endregion
@@ -121,7 +121,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout
 
     public XamlLayout GetLayout(string layoutName)
     {
-      return _layoutMap.SafeGet(layoutName);
+      return string.IsNullOrWhiteSpace(layoutName)
+        ? null
+        : _layoutMap.SafeGet(layoutName);
     }
 
     public bool LayoutExists(string layoutName)

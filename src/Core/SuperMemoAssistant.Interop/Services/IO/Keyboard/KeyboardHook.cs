@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/02/25 22:02
-// Modified On:  2019/02/27 22:34
+// Modified On:  2019/03/02 03:48
 // Modified By:  Alexis
 
 #endregion
@@ -37,10 +37,10 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Anotar.Serilog;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Sys.IO.Devices;
+using SuperMemoAssistant.Sys.Remoting;
 
 // ReSharper disable InconsistentNaming
 
@@ -64,10 +64,13 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
     private HookProc _hookProc;
     private bool     _isDisposed;
     private IntPtr   _windowsHookHandle;
+    private IntPtr   _elWdwHandle;
+    private int _smProcessId;
 
-    private ConcurrentDictionary<HotKey, Action> HotKeys            { get; } = new ConcurrentDictionary<HotKey, Action>();
-    private ConcurrentQueue<Action>              TriggeredCallbacks { get; } = new ConcurrentQueue<Action>();
-    private AutoResetEvent                       TriggeredEvent     { get; } = new AutoResetEvent(false);
+    private ConcurrentDictionary<HotKey, RegisteredHotKey> HotKeys { get; } =
+      new ConcurrentDictionary<HotKey, RegisteredHotKey>();
+    private ConcurrentQueue<Action> TriggeredCallbacks { get; } = new ConcurrentQueue<Action>();
+    private AutoResetEvent          TriggeredEvent     { get; } = new AutoResetEvent(false);
 
     #endregion
 
@@ -97,6 +100,8 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
         throw new Win32Exception(errorCode,
                                  $"Failed to adjust keyboard hooks for '{Process.GetCurrentProcess().ProcessName}'. Error {errorCode}: {new Win32Exception(Marshal.GetLastWin32Error()).Message}.");
       }
+
+      Svc.OnSMAAvailable += OnSMAAvailable;
     }
 
     public void Dispose()
@@ -129,12 +134,6 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
 
     #region Methods Impl
 
-    public void RegisterHotKey(HotKey hotkey,
-                               Action callback)
-    {
-      HotKeys[hotkey] = callback;
-    }
-
     public bool UnregisterHotKey(HotKey hotkey)
     {
       return HotKeys.TryRemove(hotkey,
@@ -147,6 +146,13 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
 
 
     #region Methods
+
+    public void RegisterHotKey(HotKey      hotkey,
+                               Action      callback,
+                               HotKeyScope scope = HotKeyScope.SM)
+    {
+      HotKeys[hotkey] = new RegisteredHotKey(callback, scope);
+    }
 
     private void ExecuteCallbacks()
     {
@@ -163,7 +169,8 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
           LogTo.Error(ex, "An exception was thrown while executing Keyboard HotKey callback");
         }
     }
-
+    
+    [LogToErrorOnException]
     private IntPtr LowLevelKeyboardProc(int    nCode,
                                         IntPtr wParam,
                                         IntPtr lParam)
@@ -187,18 +194,43 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
 
         if (kbState == KeyboardState.KeyDown || kbState == KeyboardState.SysKeyDown)
         {
-          var callback = HotKeys.SafeGet(
+          var hkReg = HotKeys.SafeGet(
             new HotKey(
               kbEvent.Key,
               GetCtrlPressed(), GetAltPressed(), GetShiftPressed(), GetMetaPressed())
           );
 
-          if (callback != null)
+          if (hkReg != null)
           {
-            TriggeredCallbacks.Enqueue(callback);
-            TriggeredEvent.Set();
+            bool scopeMatches = true;
 
-            return (IntPtr)1;
+            if (hkReg.Scope != HotKeyScope.Global)
+            {
+              var foregroundWdwHandle = GetForegroundWindow();
+
+              // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+              if (foregroundWdwHandle == null || foregroundWdwHandle == IntPtr.Zero)
+                scopeMatches = false;
+              
+              else if (hkReg.Scope == HotKeyScope.SMBrowser && foregroundWdwHandle != _elWdwHandle)
+                scopeMatches = false;
+
+              else if (hkReg.Scope == HotKeyScope.SM )
+              {
+                GetWindowThreadProcessId(foregroundWdwHandle, out var foregroundProcId);
+
+                if (foregroundProcId != _smProcessId)
+                  scopeMatches = false;
+              }
+            }
+
+            if (scopeMatches)
+            {
+              TriggeredCallbacks.Enqueue(hkReg.Callback);
+              TriggeredEvent.Set();
+
+              return (IntPtr)1;
+            }
           }
         }
       }
@@ -207,6 +239,17 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
                             nCode,
                             wParam,
                             lParam);
+    }
+
+    private void OnSMAAvailable(Interop.SuperMemo.ISuperMemoAssistant sma)
+    {
+      sma.UI.ElementWindow.OnAvailable += new ActionProxy(OnElementWindowAvailable);
+    }
+
+    private void OnElementWindowAvailable()
+    {
+      _elWdwHandle = Svc.SMA.UI.ElementWindow.Handle;
+      _smProcessId = Svc.SMA.ProcessId;
     }
 
     #endregion
@@ -219,43 +262,41 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
     public event EventHandler<KeyboardHookEventArgs> KeyboardPressed;
 
     #endregion
+
+
+
+
+    private class RegisteredHotKey
+    {
+      #region Constructors
+
+      /// <inheritdoc />
+      public RegisteredHotKey(Action callback, HotKeyScope scope)
+      {
+        Callback = callback;
+        Scope    = scope;
+      }
+
+      #endregion
+
+
+
+
+      #region Properties & Fields - Public
+
+      public Action      Callback { get; }
+      public HotKeyScope Scope    { get; }
+
+      #endregion
+    }
   }
 
-  public enum KeyboardState
+  [Flags]
+  public enum HotKeyScope
   {
-    KeyDown    = 0x0100,
-    KeyUp      = 0x0101,
-    SysKeyDown = 0x0104,
-    SysKeyUp   = 0x0105
-  }
+    SMBrowser = 1,
+    SM        = 0xFFFF,
 
-  [StructLayout(LayoutKind.Sequential)]
-  public struct LowLevelKeyboardInputEvent
-  {
-    /// <summary>A virtual-key code. The code must be a value in the range 1 to 254.</summary>
-    public readonly int VirtualCode;
-
-    /// <summary>A hardware scan code for the key.</summary>
-    public readonly int HardwareScanCode;
-
-    /// <summary>
-    ///   The extended-key flag, event-injected Flags, context code, and transition-state flag.
-    ///   This member is specified as follows. An application can use the following values to test the
-    ///   keystroke Flags. Testing LLKHF_INJECTED (bit 4) will tell you whether the event was
-    ///   injected. If it was, then testing LLKHF_LOWER_IL_INJECTED (bit 1) will tell you whether or
-    ///   not the event was injected from a process running at lower integrity level.
-    /// </summary>
-    public readonly int Flags;
-
-    /// <summary>
-    ///   The time stamp stamp for this message, equivalent to what GetMessageTime would return
-    ///   for this message.
-    /// </summary>
-    public readonly int TimeStamp;
-
-    /// <summary>Additional information associated with the message.</summary>
-    public readonly IntPtr AdditionalInformation;
-
-    public Key Key => KeyInterop.KeyFromVirtualKey(VirtualCode);
+    Global = 0xFFFFFFF
   }
 }

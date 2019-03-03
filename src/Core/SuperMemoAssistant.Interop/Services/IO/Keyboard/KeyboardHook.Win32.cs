@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/22 12:59
-// Modified On:  2019/02/22 12:59
+// Created On:   2019/02/25 22:02
+// Modified On:  2019/03/02 03:33
 // Modified By:  Alexis
 
 #endregion
@@ -32,6 +32,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Windows.Input;
 
 namespace SuperMemoAssistant.Services.IO.Keyboard
 {
@@ -48,6 +49,32 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
 
 
     #region Methods
+
+    /// <summary>
+    ///     Retrieves a handle to the foreground window (the window with which the user is currently working).
+    ///     The system assigns a slightly higher priority to the thread that creates the foreground window than it does to
+    ///     other threads.
+    /// </summary>
+    /// <returns>
+    ///     The return value is a handle to the foreground window. The foreground window can be NULL in certain
+    ///     circumstances, such as when a window is losing activation.
+    /// </returns>
+    [DllImport("user32.dll")]
+    public static extern IntPtr GetForegroundWindow();
+    
+    /// <summary>
+    ///     Retrieves the identifier of the thread that created the specified window and, optionally, the identifier of the
+    ///     process that created the window.
+    /// </summary>
+    /// <param name="hWnd">A handle to the window.</param>
+    /// <param name="lpdwProcessId">
+    ///     [Out] A pointer to a variable that receives the process identifier.
+    ///     If this parameter is not <c>NULL</c>, <see cref="GetWindowThreadProcessId" /> copies the identifier of the process
+    ///     to the variable; otherwise, it does not.
+    /// </param>
+    /// <returns>The return value is the identifier of the thread that created the window.</returns>
+    [DllImport("user32.dll")]
+    public static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
     [DllImport("kernel32.dll",
       CharSet      = CharSet.Auto,
@@ -164,5 +191,44 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
     private delegate IntPtr HookProc(int    nCode,
                                      IntPtr wParam,
                                      IntPtr lParam);
+  }
+
+  public enum KeyboardState
+  {
+    KeyDown    = 0x0100,
+    KeyUp      = 0x0101,
+    SysKeyDown = 0x0104,
+    SysKeyUp   = 0x0105
+  }
+
+
+  [StructLayout(LayoutKind.Sequential)]
+  public struct LowLevelKeyboardInputEvent
+  {
+    /// <summary>A virtual-key code. The code must be a value in the range 1 to 254.</summary>
+    public readonly int VirtualCode;
+
+    /// <summary>A hardware scan code for the key.</summary>
+    public readonly int HardwareScanCode;
+
+    /// <summary>
+    ///   The extended-key flag, event-injected Flags, context code, and transition-state flag.
+    ///   This member is specified as follows. An application can use the following values to test the
+    ///   keystroke Flags. Testing LLKHF_INJECTED (bit 4) will tell you whether the event was
+    ///   injected. If it was, then testing LLKHF_LOWER_IL_INJECTED (bit 1) will tell you whether or
+    ///   not the event was injected from a process running at lower integrity level.
+    /// </summary>
+    public readonly int Flags;
+
+    /// <summary>
+    ///   The time stamp stamp for this message, equivalent to what GetMessageTime would return
+    ///   for this message.
+    /// </summary>
+    public readonly int TimeStamp;
+
+    /// <summary>Additional information associated with the message.</summary>
+    public readonly IntPtr AdditionalInformation;
+
+    public Key Key => KeyInterop.KeyFromVirtualKey(VirtualCode);
   }
 }

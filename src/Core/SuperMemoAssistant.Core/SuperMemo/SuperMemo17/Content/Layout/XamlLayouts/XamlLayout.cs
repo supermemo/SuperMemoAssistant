@@ -56,7 +56,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts
 
       Name      = name;
       Xaml      = xaml;
-      IsBuiltIn = isBuiltIn;
     }
 
     public XamlLayout(XamlLayout other, string newName = null, bool isBuiltIn = false, bool autoValidationSuspended = false)
@@ -65,8 +64,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts
       AutoValidationSuspended = autoValidationSuspended;
 
       Name    = newName ?? other.Name;
-      Xaml    = other.Xaml;
       IsValid = other.IsValid;
+      Xaml    = other.Xaml;
     }
 
     #endregion

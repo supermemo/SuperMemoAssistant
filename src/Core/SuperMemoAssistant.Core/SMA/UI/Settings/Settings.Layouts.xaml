@@ -9,6 +9,7 @@
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:xamlControls="clr-namespace:SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:data="clr-namespace:SuperMemoAssistant.Sys.Windows.Data;assembly=SuperMemoAssistant.Interop"
              mc:Ignorable="d"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -21,7 +22,7 @@
         </CollectionViewSource.SortDescriptions>
       </CollectionViewSource>
 
-      <BooleanToVisibilityConverter x:Key="BoolToVis" />
+      <data:BooleanToVisibilityConverterEx x:Key="BoolToVis" />
     </ResourceDictionary>
   </UserControl.Resources>
 

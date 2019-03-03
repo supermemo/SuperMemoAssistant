@@ -40,7 +40,8 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
     event EventHandler<KeyboardHookEventArgs> KeyboardPressed;
 
     void RegisterHotKey(HotKey hotkey,
-                        Action callback);
+                        Action callback,
+                        HotKeyScope scope = HotKeyScope.SM);
 
     bool UnregisterHotKey(HotKey hotkey);
   }

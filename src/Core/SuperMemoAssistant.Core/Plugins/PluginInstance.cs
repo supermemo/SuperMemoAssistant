@@ -145,6 +145,8 @@ namespace SuperMemoAssistant.Plugins
 
     public void OnStopped()
     {
+      ConnectedEvent.Set();
+
       Status  = PluginStatus.Stopped;
       Process = null;
       Plugin  = null;

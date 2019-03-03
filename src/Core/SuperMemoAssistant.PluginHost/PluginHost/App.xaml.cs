@@ -37,6 +37,8 @@ using CommandLine;
 
 // ReSharper disable HeuristicUnreachableCode
 
+//[assembly: AssemblyKeyFile("SuperMemoAssistant.PluginHost.snk")]
+//[assembly: AllowPartiallyTrustedCallers]
 namespace SuperMemoAssistant.PluginHost
 {
   /// <summary>Interaction logic for App.xaml</summary>

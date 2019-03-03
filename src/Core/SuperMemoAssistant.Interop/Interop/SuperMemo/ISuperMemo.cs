@@ -43,6 +43,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo
     SMAppVersion AppVersion { get; }
     SMCollection Collection { get; }
 
+    int ProcessId { get; }
+
     bool IgnoreUserConfirmation { get; set; }
 
     ISuperMemoRegistry Registry { get; }

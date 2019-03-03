@@ -35,9 +35,9 @@ using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Plugins;
 using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.Configuration;
-using SuperMemoAssistant.Services.IO;
 using SuperMemoAssistant.Services.IO.HotKeys;
 using SuperMemoAssistant.Services.IO.Keyboard;
+using SuperMemoAssistant.Services.IO.Logger;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Content;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
@@ -87,7 +87,6 @@ namespace SuperMemoAssistant
       tmp = ElementWdw.Instance;
       tmp = LayoutManager.Instance;
       tmp = PluginManager.Instance;
-      tmp = SMA.SMA.Instance;
 
       Svc.SMA = SMA.SMA.Instance;
     }

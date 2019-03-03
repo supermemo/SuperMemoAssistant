@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/13 13:55
-// Modified On:  2019/02/24 23:11
+// Created On:   2019/02/25 22:02
+// Modified On:  2019/03/02 03:58
 // Modified By:  Alexis
 
 #endregion
@@ -122,6 +122,7 @@ namespace SuperMemoAssistant.SuperMemo
     #region Properties Impl - Public
 
     public SMCollection Collection { get; }
+    public int          ProcessId  => NativeProcess?.Id ?? -1;
     public bool IgnoreUserConfirmation
     {
       get => _ignoreUserConfirmationPtr.Read<bool>();
@@ -143,7 +144,6 @@ namespace SuperMemoAssistant.SuperMemo
 
     public virtual void OnException(Exception ex)
     {
-      // TODO: Notify ?
       LogTo.Error(ex,
                   "Exception caught in InjectLib.");
     }

@@ -1,4 +1,5 @@
-<!--CollapsableGrid collapses empty rows or columns-->
+<!--sma:Grids.Collapse="True" enables collapsing empty rows and columns-->
+<!--sma:Panels.AcceptedContent defines the positioning of extracted contents-->
 <Grid
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:sma="clr-namespace:SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls"

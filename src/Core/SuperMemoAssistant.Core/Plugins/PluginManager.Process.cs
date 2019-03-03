@@ -116,6 +116,7 @@ namespace SuperMemoAssistant.Plugins
         if (pluginInstance.Status == PluginStatus.Stopped)
         {
           LogTo.Error($"{pluginInstance.Denomination.CapitalizeFirst()} {packageName} stopped unexpectedly.");
+          pluginInstance.ConnectedEvent.Set();
           return;
         }
       }

@@ -56,6 +56,9 @@ namespace SuperMemoAssistant.Interop
     public static DirectoryPath ConfigDir =>
       AppRootDir.Combine("Configs");
 
+    public static DirectoryPath SharedConfigDir =>
+      ConfigDir.Combine("Shared");
+
     public static DirectoryPath DataDir =>
       AppRootDir.Combine("Data");
 

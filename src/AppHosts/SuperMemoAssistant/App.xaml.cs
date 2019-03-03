@@ -32,8 +32,9 @@
 
 using System.Threading.Tasks;
 using System.Windows;
+using Anotar.Serilog;
 using Hardcodet.Wpf.TaskbarNotification;
-using SuperMemoAssistant.Services.IO;
+using SuperMemoAssistant.Services.IO.Logger;
 
 namespace SuperMemoAssistant
 {
@@ -64,9 +65,11 @@ namespace SuperMemoAssistant
 
     #region Methods
 
-    private void Application_Startup(object           sender,
-                                     StartupEventArgs e)
+    private void Application_Startup(object           o1,
+                                     StartupEventArgs e1)
     {
+      DispatcherUnhandledException += (o2, e2) => LogTo.Error(e2.Exception, "Unhandled exception");
+
       _taskbarIcon = (TaskbarIcon)FindResource("TbIcon");
 
       var selectionWdw = new CollectionSelectionWindow();

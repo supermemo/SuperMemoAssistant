@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/26 02:03
-// Modified On:  2019/02/27 13:15
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/03/02 19:56
 // Modified By:  Alexis
 
 #endregion
@@ -30,37 +30,16 @@
 
 
 
-using System;
-using System.Windows.Data;
+using Serilog.Events;
 
-namespace SuperMemoAssistant.Sys.Windows.Data
+namespace SuperMemoAssistant.Services.IO.Logger
 {
-  [ValueConversion(typeof(bool), typeof(bool))]
-  public class BooleanToVisiblityConverterEx : IValueConverter
+  public class LoggerCfg
   {
-    #region IValueConverter Members
+    #region Properties & Fields - Public
 
-    public object Convert(object                           value,
-                          Type                             targetType,
-                          object                           parameter,
-                          System.Globalization.CultureInfo culture)
-    {
-      if (!(value is bool show))
-        throw new InvalidOperationException("Value must be of type bool");
-
-      if (!(parameter is bool negate))
-        negate = false;
-
-      return negate ? !show : show;
-    }
-
-    public object ConvertBack(object                           value,
-                              Type                             targetType,
-                              object                           parameter,
-                              System.Globalization.CultureInfo culture)
-    {
-      throw new NotSupportedException();
-    }
+    public LogEventLevel LogLevel                 { get; set; } = LogEventLevel.Debug;
+    public bool          LogFirstChanceExceptions { get; set; }
 
     #endregion
   }

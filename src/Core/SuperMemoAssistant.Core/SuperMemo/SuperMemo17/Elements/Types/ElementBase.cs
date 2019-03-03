@@ -99,7 +99,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
       TitleTextId = SetValue(elElem._elem.titleTextId,
                              nameof(TitleTextId));
-      Deleted = SetValue(cttElem.deleted != 0,
+      Deleted = SetValue(cttElem != null && cttElem.deleted != 0,
                          nameof(Deleted));
 
       TemplateId = SetValue(elElem._elem.templateId,
@@ -113,21 +113,24 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
                             ComponentPos);
       //AFactor = SetDbg(elElem._elem.AFactor, nameof(AFactor));
 
-      ParentId = SetValue(cttElem.parentId,
-                          nameof(ParentId));
-      FirstChildId = SetValue(cttElem.firstChildId,
-                              nameof(FirstChildId));
-      LastChildId = SetValue(cttElem.lastChildId,
-                             nameof(LastChildId));
-      NextSiblingId = SetValue(cttElem.nextSiblingId,
-                               nameof(NextSiblingId));
-      PrevSiblingId = SetValue(cttElem.prevSiblingId,
-                               nameof(PrevSiblingId));
+      if (cttElem != null)
+      {
+        ParentId = SetValue(cttElem.parentId,
+                            nameof(ParentId));
+        FirstChildId = SetValue(cttElem.firstChildId,
+                                nameof(FirstChildId));
+        LastChildId = SetValue(cttElem.lastChildId,
+                               nameof(LastChildId));
+        NextSiblingId = SetValue(cttElem.nextSiblingId,
+                                 nameof(NextSiblingId));
+        PrevSiblingId = SetValue(cttElem.prevSiblingId,
+                                 nameof(PrevSiblingId));
 
-      DescendantCount = SetValue(cttElem.descendantCount,
-                                 nameof(DescendantCount));
-      ChildrenCount = SetValue(cttElem.childrenCount,
-                               nameof(ChildrenCount));
+        DescendantCount = SetValue(cttElem.descendantCount,
+                                   nameof(DescendantCount));
+        ChildrenCount = SetValue(cttElem.childrenCount,
+                                 nameof(ChildrenCount));
+      }
     }
 
     public void Dispose()

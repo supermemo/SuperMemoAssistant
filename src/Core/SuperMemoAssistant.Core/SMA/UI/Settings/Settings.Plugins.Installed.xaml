@@ -21,6 +21,7 @@
 
   <Grid>
     <ListBox x:Name="lbPlugins"
+             ItemContainerStyle="{DynamicResource UnfocusableListBoxItem}"
              ItemsSource="{Binding Plugins}">
       <ListBox.ItemTemplate>
         <DataTemplate DataType="plugins:PluginInstance">

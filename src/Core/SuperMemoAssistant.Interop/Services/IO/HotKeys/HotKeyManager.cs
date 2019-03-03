@@ -34,6 +34,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using SuperMemoAssistant.Extensions;
+using SuperMemoAssistant.Services.IO.Keyboard;
 using SuperMemoAssistant.Sys.Collections;
 using SuperMemoAssistant.Sys.IO.Devices;
 using SuperMemoAssistant.Sys.Threading;
@@ -121,16 +122,16 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
       return this;
     }
 
-    public HotKeyManager RegisterGlobal(string id, string description, HotKey defaultHotKey, Action callback, bool enabled = true)
+    public HotKeyManager RegisterGlobal(string id, string description, HotKeyScope scope, HotKey defaultHotKey, Action callback, bool enabled = true)
     {
-      Register(id, description, true, defaultHotKey, callback, enabled);
+      Register(id, description, scope, defaultHotKey, callback, enabled);
 
       return this;
     }
 
     public HotKeyManager RegisterLocal(string id, string description, HotKey defaultHotKey, Action callback = null, bool enabled = true)
     {
-      Register(id, description, false, defaultHotKey, callback, enabled);
+      Register(id, description, null, defaultHotKey, callback, enabled);
 
       return this;
     }
@@ -215,7 +216,7 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
     private void Register(
       string id,
       string description,
-      bool   global,
+      HotKeyScope? scope,
       HotKey defaultHotKey,
       Action callback,
       bool   enabled)
@@ -229,7 +230,7 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
       if (_defaultHotKeys.Reverse.ContainsKey(defaultHotKey))
         throw new ArgumentException($"Default hotkey for {id} is already used by {_defaultHotKeys.Reverse[defaultHotKey]}");
 
-      var hkData = CreateHotKeyData(id, description, true, defaultHotKey, callback, enabled);
+      var hkData = CreateHotKeyData(id, description, scope != null, defaultHotKey, callback, enabled);
 
       _idDataMap[id]      = hkData;
       _defaultHotKeys[id] = defaultHotKey;
@@ -237,8 +238,8 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
       if (hkData.ActualHotKey != null)
         _hotKeyDataMap[hkData.ActualHotKey] = hkData;
 
-      if (enabled && global)
-        Svc.KeyboardHotKey.RegisterHotKey(hkData.ActualHotKey, callback);
+      if (enabled && scope != null)
+        Svc.KeyboardHotKey.RegisterHotKey(hkData.ActualHotKey, callback, scope.Value);
     }
 
     private HotKeyData CreateHotKeyData(

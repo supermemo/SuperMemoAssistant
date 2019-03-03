@@ -75,7 +75,7 @@ namespace SuperMemoAssistant.PluginHost
         PrivateBinPath  = GetAppDomainBinPath(homeDir),
       };
 
-      var permissions = GetAppDomainPermissions(packageName, isDev);
+      var permissions = GetAppDomainPermissions(packageName, homeDir, isDev);
 
       var appDomain = AppDomain.CreateDomain(
         HostConst.AppDomainName,
@@ -100,9 +100,10 @@ namespace SuperMemoAssistant.PluginHost
     }
 
     private static PermissionSet GetAppDomainPermissions(string packageName,
-                                                         bool   isDev)
+                                                         string homeDir,
+                                                         bool isDev)
     {
-      // TODO: Switch back to restricted
+      // TODO: Switch back to PermissionState.None
       var permissions = new PermissionSet(PermissionState.Unrestricted);
 
       //permissions.SetPermission(new EnvironmentPermission(PermissionState.Unrestricted));
@@ -110,11 +111,13 @@ namespace SuperMemoAssistant.PluginHost
       //permissions.SetPermission(new FileDialogPermission(PermissionState.Unrestricted));
       //permissions.SetPermission(new MediaPermission(PermissionState.Unrestricted));
       //permissions.SetPermission(new ReflectionPermission(PermissionState.Unrestricted));
+      //permissions.SetPermission(new GacIdentityPermission(PermissionState.Unrestricted));
 
-      /*permissions.SetPermission(
-        new SecurityPermission(SecurityPermissionFlag.AllFlags));
-          SecurityPermissionFlag.Execution | SecurityPermissionFlag.UnmanagedCode | SecurityPermissionFlag.BindingRedirects
-          | SecurityPermissionFlag.Assertion | SecurityPermissionFlag.RemotingConfiguration | SecurityPermissionFlag.ControlThread));*/
+      //System.Security.Permissions.
+      //permissions.SetPermission(
+      //  new SecurityPermission(SecurityPermissionFlag.AllFlags));
+      //SecurityPermissionFlag.Execution | SecurityPermissionFlag.UnmanagedCode | SecurityPermissionFlag.BindingRedirects
+      //| SecurityPermissionFlag.Assertion | SecurityPermissionFlag.RemotingConfiguration | SecurityPermissionFlag.ControlThread));
 
       //
       // IO
@@ -138,9 +141,13 @@ namespace SuperMemoAssistant.PluginHost
                                     FileIOPermissionAccess.PathDiscovery | FileIOPermissionAccess.Read,
                                     SMAFileSystem.PluginPackageDir.FullPath));
 
-      // Config
+      // Plugin config
       permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess,
                                                      SMAFileSystem.ConfigDir.Combine(packageName).FullPath));
+
+      // Shared config
+      permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess,
+                                                     SMAFileSystem.SharedConfigDir.FullPath));
 
       // Data
       permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess,
@@ -148,8 +155,8 @@ namespace SuperMemoAssistant.PluginHost
 
       // Home
       permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess,
-                                                     AppDomain.CurrentDomain.BaseDirectory));
-
+                                                     homeDir)); //AppDomain.CurrentDomain.BaseDirectory));
+      
       return permissions;
     }
 

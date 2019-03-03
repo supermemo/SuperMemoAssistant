@@ -30,6 +30,7 @@
 
 
 
+using Anotar.Serilog;
 using Forge.Forms;
 using SuperMemoAssistant.Services.UI.Configuration.ElementPicker;
 
@@ -40,6 +41,7 @@ namespace SuperMemoAssistant.Services.UI.Interceptors
     #region Methods Impl
 
     /// <inheritdoc />
+    [LogToErrorOnException]
     public IActionContext InterceptAction(IActionContext ctxt)
     {
       if (ctxt.Action is ElementPicker.ElementPickerAction == false

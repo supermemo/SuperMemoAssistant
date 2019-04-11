@@ -31,6 +31,7 @@
 
 
 using System;
+using System.Linq;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
@@ -39,6 +40,7 @@ using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
+using Anotar.Serilog;
 using JetBrains.Annotations;
 
 namespace SuperMemoAssistant.Extensions
@@ -128,6 +130,29 @@ namespace SuperMemoAssistant.Extensions
 
       return builder.ToString();
     }
+
+    public static void InvokeRemote<TParam1>(
+      this Action<TParam1> @event,
+      string eventName,
+      TParam1 p1,
+      Action<Action<TParam1>> unsubscribeDelegate)
+    {
+      foreach (var handler in @event.GetInvocationList().Cast<Action<TParam1>>())
+        try
+        {
+          handler(p1);
+        }
+        catch (RemotingException remoteEx)
+        {
+          LogTo.Error(remoteEx, $"{eventName}: Remoting exception while notifying remote service - forcing unsubscribe");
+          unsubscribeDelegate?.Invoke(handler);
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, $"{eventName}: Exception while notifying remote service");
+        }
+    }
+    
 
     #endregion
   }

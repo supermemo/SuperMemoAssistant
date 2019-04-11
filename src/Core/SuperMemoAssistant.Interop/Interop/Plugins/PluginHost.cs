@@ -33,7 +33,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
+using System.Threading;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.PluginHost;
 using SuperMemoAssistant.Sys;
@@ -148,9 +148,9 @@ namespace SuperMemoAssistant.Interop.Plugins
       if (smaProc.HasExited)
         return false;
 
-      Task.Factory.StartNew(MonitorSMAProcess,
-                            smaProc,
-                            TaskCreationOptions.LongRunning);
+      //Task.Factory.StartNew(MonitorSMAProcess,
+      //                      smaProc,
+      //                      TaskCreationOptions.LongRunning);
 
       smaProc.Exited += (o,
                          ev) => OnSMAStopped();
@@ -163,7 +163,11 @@ namespace SuperMemoAssistant.Interop.Plugins
       Process smaProc = (Process)param;
 
       while (_hasExited == false && smaProc.HasExited == false)
+      {
         smaProc.Refresh();
+
+        Thread.Sleep(500);
+      }
 
       if (smaProc.HasExited)
         OnSMAStopped();

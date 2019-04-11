@@ -54,9 +54,8 @@ namespace SuperMemoAssistant.Services.Sentry
 
     /// <inheritdoc />
     protected SentrySMAPluginBase(
-      bool                   startApplication       = true,
       DebuggerAttachStrategy debuggerAttachStrategy = DebuggerAttachStrategy.Never)
-      : base(startApplication, debuggerAttachStrategy)
+      : base(debuggerAttachStrategy)
     {
       _sentry = SentryEx.Initialize();
     }

@@ -127,7 +127,7 @@ namespace SuperMemoAssistant.Sys.Windows.Input
 
     bool ICommand.CanExecute(object parameter)
     {
-      return parameter != null && CanExecute();
+      return CanExecute();
     }
 
     void ICommand.Execute(object parameter)

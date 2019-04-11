@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 23:56
-// Modified On:  2019/02/26 02:49
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/04/10 21:06
 // Modified By:  Alexis
 
 #endregion
@@ -35,6 +35,71 @@ using System.Windows.Input;
 
 namespace SuperMemoAssistant.Sys.Windows.Input
 {
+  public class RelayCommand : ICommand
+  {
+    #region Constructors
+
+    /// <summary>Creates a new command.</summary>
+    /// <param name="execute">The execution logic.</param>
+    /// <param name="canExecute">The execution status logic.</param>
+    public RelayCommand(Action     execute,
+                        Func<bool> canExecute = null)
+    {
+      _execute    = execute ?? throw new ArgumentNullException(nameof(execute));
+      _canExecute = canExecute;
+    }
+
+    #endregion
+
+
+
+
+    #region Fields
+
+    private readonly Action     _execute    = null;
+    private readonly Func<bool> _canExecute = null;
+
+    #endregion
+
+
+
+
+    #region ICommand Members
+
+    /// <summary>
+    ///   Defines the method that determines whether the command can execute in its current
+    ///   state.
+    /// </summary>
+    /// <param name="parameter">
+    ///   Data used by the command.  If the command does not require data to be
+    ///   passed, this object can be set to null.
+    /// </param>
+    /// <returns>true if this command can be executed; otherwise, false.</returns>
+    public bool CanExecute(object parameter)
+    {
+      return parameter != null && (_canExecute?.Invoke() ?? true);
+    }
+
+    /// <summary>Occurs when changes occur that affect whether or not the command should execute.</summary>
+    public event EventHandler CanExecuteChanged
+    {
+      add => CommandManager.RequerySuggested += value;
+      remove => CommandManager.RequerySuggested -= value;
+    }
+
+    /// <summary>Defines the method to be called when the command is invoked.</summary>
+    /// <param name="parameter">
+    ///   Data used by the command. If the command does not require data to be
+    ///   passed, this object can be set to <see langword="null" />.
+    /// </param>
+    public void Execute(object parameter)
+    {
+      _execute();
+    }
+
+    #endregion
+  }
+
   public class RelayCommand<T> : ICommand
   {
     #region Constructors

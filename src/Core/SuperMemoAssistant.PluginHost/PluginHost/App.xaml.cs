@@ -34,6 +34,7 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using CommandLine;
+using SuperMemoAssistant.Sys.IO;
 
 // ReSharper disable HeuristicUnreachableCode
 
@@ -88,6 +89,9 @@ namespace SuperMemoAssistant.PluginHost
     private void LoadPlugin(PluginHostParameters args)
     {
       Process smaProcess;
+      
+      if (new DirectoryPath(args.HomePath).CombineFile("debugger").Exists())
+        Debugger.Launch();
         
       try
       {

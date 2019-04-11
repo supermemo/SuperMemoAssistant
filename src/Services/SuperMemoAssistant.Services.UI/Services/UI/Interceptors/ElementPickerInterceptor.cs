@@ -46,7 +46,7 @@ namespace SuperMemoAssistant.Services.UI.Interceptors
     {
       if (ctxt.Action is ElementPicker.ElementPickerAction == false
         || ctxt.Model is IElementPickerCallback == false)
-        return null;
+        return ctxt;
 
       var m = (IElementPickerCallback)ctxt.Model;
 
@@ -56,7 +56,7 @@ namespace SuperMemoAssistant.Services.UI.Interceptors
       {
         m.SetElement(elemPicker.SelectedElement);
 
-        return ctxt;
+        return null;
       }
 
       return null;

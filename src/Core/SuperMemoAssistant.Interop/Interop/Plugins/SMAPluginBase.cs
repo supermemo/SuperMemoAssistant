@@ -69,8 +69,7 @@ namespace SuperMemoAssistant.Interop.Plugins
 
     #region Constructors
 
-    protected SMAPluginBase(bool                   startApplication       = true,
-                            DebuggerAttachStrategy debuggerAttachStrategy = DebuggerAttachStrategy.Never)
+    protected SMAPluginBase(DebuggerAttachStrategy debuggerAttachStrategy = DebuggerAttachStrategy.Never)
     {
       switch (debuggerAttachStrategy)
       {
@@ -85,8 +84,7 @@ namespace SuperMemoAssistant.Interop.Plugins
       
       try
       {
-        if (startApplication)
-          App = new PluginApp();
+        App = CreateApplication();
 
         Logger.Instance.Initialize(AssemblyName, ConfigureLogger);
 
@@ -229,6 +227,11 @@ namespace SuperMemoAssistant.Interop.Plugins
       return loggerConfiguration;
     }
 
+    protected virtual Application CreateApplication()
+    {
+      return new PluginApp();
+    }
+
     public IService GetService<IService>()
       where IService : class
     {
@@ -282,7 +285,7 @@ namespace SuperMemoAssistant.Interop.Plugins
       if (RegisteredServicesMap.ContainsKey(svcTypeName))
         throw new ArgumentException($"Service {svcTypeName} already registered");
 
-      LogTo.Information($"Publishing service {svcTypeName}");
+      LogTo.Debug($"Publishing service {svcTypeName}");
 
       var channelName = RemotingServicesEx.GenerateIpcServerChannelName();
       var ipcServer   = RemotingServicesEx.CreateIpcServer<IService, TService>(service, channelName);

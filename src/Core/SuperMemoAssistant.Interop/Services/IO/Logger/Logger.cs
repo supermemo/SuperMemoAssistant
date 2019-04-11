@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 22:02
-// Modified On:  2019/03/02 12:59
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/03/22 16:00
 // Modified By:  Alexis
 
 #endregion
@@ -55,10 +55,8 @@ namespace SuperMemoAssistant.Services.IO.Logger
 
 
     private static Logger _instance;
-    private readonly ConfigurationService _configSvc;
-    private LoggerCfg _config;
 
-    public static  Logger Instance => _instance ?? (_instance = new Logger());
+    public static Logger Instance => _instance ?? (_instance = new Logger());
 
     #endregion
 
@@ -66,6 +64,9 @@ namespace SuperMemoAssistant.Services.IO.Logger
 
 
     #region Properties & Fields - Non-Public
+
+    private readonly ConfigurationService _configSvc;
+    private          LoggerCfg            _config;
 
     protected LoggingLevelSwitch LevelSwitch { get; set; }
 
@@ -92,7 +93,7 @@ namespace SuperMemoAssistant.Services.IO.Logger
       string                appName,
       LoggerConfigPredicate configPredicate = null)
     {
-      _config = LoadConfig();
+      _config     = LoadConfig();
       LevelSwitch = new LoggingLevelSwitch(_config.LogLevel);
 
       var config = new LoggerConfiguration()
@@ -100,14 +101,22 @@ namespace SuperMemoAssistant.Services.IO.Logger
                    .Enrich.WithExceptionDetails()
                    .Enrich.WithDemystifiedStackTraces()
                    .WriteTo.Debug(outputTemplate: OutputFormat)
-                   .WriteTo.Async(a =>
-                                    a.RollingFile(
-                                      GetLogFilePath(appName).FullPath,
-                                      fileSizeLimitBytes: 5242880, // Math.Min(ConfigMgr.AppConfig.LogMaxSize, 26214400),
-                                      retainedFileCountLimit: 7,
-                                      shared: true,
-                                      outputTemplate: OutputFormat
-                                    ));
+                   //.WriteTo.RollingFile(
+                   //  GetLogFilePath(appName).FullPath,
+                   //  fileSizeLimitBytes: 5242880,
+                   //  retainedFileCountLimit: 7,
+                   //  shared: false,
+                   //  outputTemplate: OutputFormat
+                   //);
+                   .WriteTo.Async(
+                     a =>
+                       a.RollingFile(
+                         GetLogFilePath(appName).FullPath,
+                         fileSizeLimitBytes: 5242880, // Math.Max(ConfigMgr.AppConfig.LogMaxSize, 5242880),
+                         retainedFileCountLimit: 7,
+                         shared: false,
+                         outputTemplate: OutputFormat
+                       ));
 
       if (configPredicate != null)
         config = configPredicate(config);
@@ -186,8 +195,12 @@ namespace SuperMemoAssistant.Services.IO.Logger
       if (e.ExceptionObject is Exception ex)
       {
         var msg = "Unhandled exception" + (e.IsTerminating ? ", terminating" : string.Empty);
-        
-        LogTo.Error(ex, msg);
+
+        if (e.IsTerminating)
+          LogTo.Fatal(ex, msg);
+
+        else
+          LogTo.Error(ex, msg);
       }
 
       if (e.IsTerminating)
@@ -196,7 +209,10 @@ namespace SuperMemoAssistant.Services.IO.Logger
 
     private void LogDispatcherUnhandledException(object _, DispatcherUnhandledExceptionEventArgs e)
     {
-      LogTo.Error(e.Exception, "Unhandled exception");
+      LogTo.Fatal(e.Exception, "Unhandled exception");
+
+      if (e.Handled == false)
+        Shutdown();
     }
 
     private void LogFirstChanceException(object _, FirstChanceExceptionEventArgs e)
@@ -225,7 +241,9 @@ namespace SuperMemoAssistant.Services.IO.Logger
       if (logDir.Exists() == false)
         logDir.Create();
 
-      return logDir.CombineFile($"{appName}-{{Date}}.log");
+      var filePath = logDir.CombineFile($"{appName}-{{Date}}.log");
+
+      return filePath;
     }
 
     #endregion

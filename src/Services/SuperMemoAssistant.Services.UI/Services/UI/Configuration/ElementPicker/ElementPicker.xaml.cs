@@ -75,7 +75,7 @@ namespace SuperMemoAssistant.Services.UI.Configuration.ElementPicker
 
     #region Properties & Fields - Public
 
-    public ObservableCollection<IElement> RootElement => new ObservableCollection<IElement> { Svc.SMA.Registry.Element.Root };
+    public ObservableCollection<IElement> RootElement => new ObservableCollection<IElement> { new ElementWrapper(Svc.SMA.Registry.Element.Root) };
 
     public IElement SelectedElement { get; set; }
 
@@ -104,7 +104,7 @@ namespace SuperMemoAssistant.Services.UI.Configuration.ElementPicker
     private void BtnOk_Click(object          sender,
                              RoutedEventArgs e)
     {
-      SelectedElement = (IElement)TvElements.SelectedItem;
+      SelectedElement = ((ElementWrapper)TvElements.SelectedItem)?.Original;
       DialogResult    = true;
       Close();
     }

@@ -35,7 +35,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Markup;
-using Anotar.Serilog;
 using Newtonsoft.Json;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Contents;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls;
@@ -141,7 +140,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts
       catch (Exception ex)
       {
         xamlParsingException = ex;
-        LogTo.Error(ex, "Exception while parsing layout");
+        //LogTo.Error(ex, "Exception while parsing layout");
 
         return null;
       }

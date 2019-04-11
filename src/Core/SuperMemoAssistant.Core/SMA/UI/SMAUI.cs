@@ -46,8 +46,6 @@ namespace SuperMemoAssistant.SMA.UI
 
     public static void Initialize()
     {
-      //ActionElement.InterceptorChain.Add(new ElementPickerInterceptor());
-
       Svc.HotKeyManager.RegisterGlobal(
         "Settings",
         "Show settings window",

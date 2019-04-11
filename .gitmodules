@@ -25,3 +25,6 @@
 [submodule "src/Plugins/SuperMemoAssistant.Plugins.Dictionary.Interop"]
 	path = src/Plugins/SuperMemoAssistant.Plugins.Dictionary.Interop
 	url = https://github.com/supermemo/SuperMemoAssistant.Plugins.Dictionary.Interop.git
+[submodule "src/Plugins/SuperMemoAssistant.Plugins.Feeds"]
+	path = src/Plugins/SuperMemoAssistant.Plugins.Feeds
+	url = https://github.com/supermemo/SuperMemoAssistant.Plugins.Feeds.git

@@ -190,7 +190,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
     public IEnumerable<IMember> FindByName(Regex regex)
     {
-      return Members.Values.Where(m => m.Empty == false && regex.IsMatch(m.Name)).ToList();
+      return Members.Values.Where(m => m.Empty == false && regex.IsMatch(m.Name)).Cast<IMember>().ToList();
     }
 
     public IMember FirstOrDefaultByName(string exactName)

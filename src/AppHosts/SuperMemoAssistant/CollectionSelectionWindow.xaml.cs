@@ -63,7 +63,7 @@ namespace SuperMemoAssistant
 
     public CollectionSelectionWindow()
     {
-      _config          = Svc.Configuration.Load<StartupCfg>().Result;
+      _config          = Svc.Configuration.Load<StartupCfg>().Result ?? new StartupCfg();
       SavedCollections = _config.Collections;
 
       InitializeComponent();
@@ -105,8 +105,11 @@ namespace SuperMemoAssistant
 
     private void DeleteCollection(SMCollection collection)
     {
-      SavedCollections.Remove(collection);
-      SaveConfig();
+      if (Forge.Forms.Show.Window().For(new Confirmation("Are you sure ?")).Result.Model.Confirmed)
+      {
+        SavedCollections.Remove(collection);
+        SaveConfig();
+      }
     }
 
     private void SaveConfig()

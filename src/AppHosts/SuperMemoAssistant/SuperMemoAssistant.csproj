@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\..\packages\Anotar.Serilog.Fody.4.8.1\build\Anotar.Serilog.Fody.props" Condition="Exists('..\..\..\packages\Anotar.Serilog.Fody.4.8.1\build\Anotar.Serilog.Fody.props')" />
   <Import Project="..\..\..\packages\ModuleInit.Fody.1.9.0\build\ModuleInit.Fody.props" Condition="Exists('..\..\..\packages\ModuleInit.Fody.1.9.0\build\ModuleInit.Fody.props')" />
-  <Import Project="..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props" Condition="Exists('..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -86,8 +86,8 @@
     <ApplicationIcon>robot-24.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Anotar.Serilog, Version=4.6.7.0, Culture=neutral, PublicKeyToken=9d5b24f0733c26f7, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Anotar.Serilog.Fody.4.6.7\lib\net452\Anotar.Serilog.dll</HintPath>
+    <Reference Include="Anotar.Serilog, Version=4.8.1.0, Culture=neutral, PublicKeyToken=9d5b24f0733c26f7, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Anotar.Serilog.Fody.4.8.1\lib\net452\Anotar.Serilog.dll</HintPath>
     </Reference>
     <Reference Include="AsyncEvent, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\AsyncEvent.0.2.0\lib\netstandard2.0\AsyncEvent.dll</HintPath>
@@ -99,10 +99,10 @@
       <HintPath>..\..\..\packages\DeviceId.4.2.0\lib\net40\DeviceId.dll</HintPath>
     </Reference>
     <Reference Include="FontAwesome5, Version=1.0.0.0, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FontAwesome5.1.0.10\lib\net40\FontAwesome5.dll</HintPath>
+      <HintPath>..\..\..\packages\FontAwesome5.1.0.11\lib\net40\FontAwesome5.dll</HintPath>
     </Reference>
-    <Reference Include="FontAwesome5.WPF, Version=1.0.10.89, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FontAwesome5.1.0.10\lib\net40\FontAwesome5.WPF.dll</HintPath>
+    <Reference Include="FontAwesome5.WPF, Version=1.0.11.91, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FontAwesome5.1.0.11\lib\net40\FontAwesome5.WPF.dll</HintPath>
     </Reference>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
@@ -172,7 +172,8 @@
     </Compile>
     <Page Include="SMATaskbarIcon.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+      <DependentUpon>SMATaskbarIcon.cs</DependentUpon>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -243,9 +244,9 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\ModuleInit.Fody.1.9.0\build\ModuleInit.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\ModuleInit.Fody.1.9.0\build\ModuleInit.Fody.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\Fody.4.0.2\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.4.0.2\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\Fody.4.2.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.4.2.1\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.4.8.1\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.4.8.1\build\Anotar.Serilog.Fody.props'))" />
   </Target>
-  <Import Project="..\..\..\packages\Fody.4.0.2\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.4.0.2\build\Fody.targets')" />
+  <Import Project="..\..\..\packages\Fody.4.2.1\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.4.2.1\build\Fody.targets')" />
 </Project>

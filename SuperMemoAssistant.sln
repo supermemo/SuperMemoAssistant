@@ -16,6 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMemoAssistant", "src\A
 		{AA97C5AA-CA1A-4988-AE2E-E5A292B63C12} = {AA97C5AA-CA1A-4988-AE2E-E5A292B63C12}
 		{FAECF9BB-9FD5-4FB1-A3A8-9F7CAA57A1FE} = {FAECF9BB-9FD5-4FB1-A3A8-9F7CAA57A1FE}
 		{CD2988DA-B610-40AD-995A-AA5A28FBBBFE} = {CD2988DA-B610-40AD-995A-AA5A28FBBBFE}
+		{6CC298FD-29E9-4453-934C-6E30C52E4497} = {6CC298FD-29E9-4453-934C-6E30C52E4497}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{DF29F7E8-943F-4EC9-9EB5-5C4E27BA9AB2}"
@@ -59,7 +60,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMemoAssistant.Plugins.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMemoAssistant.Hooks.Common", "src\Core\SuperMemoAssistant.Hooks.Common\SuperMemoAssistant.Hooks.Common.csproj", "{CC5B9485-9EF1-4133-9242-719D263700AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMemoAssistant.Plugins.RSS", "src\Plugins\SuperMemoAssistant.Plugins.RSS\SuperMemoAssistant.Plugins.RSS.csproj", "{6CC298FD-29E9-4453-934C-6E30C52E4497}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMemoAssistant.Plugins.Feeds", "src\Plugins\SuperMemoAssistant.Plugins.Feeds\SuperMemoAssistant.Plugins.Feeds.csproj", "{6CC298FD-29E9-4453-934C-6E30C52E4497}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMemoAssistant.PluginHost", "src\Core\SuperMemoAssistant.PluginHost\SuperMemoAssistant.PluginHost.csproj", "{149C5A9B-0588-41B9-8F77-C5D17A1CDFBE}"
 EndProject
@@ -79,6 +80,7 @@ Global
 		src\Core\SuperMemoAssistant.PluginHost.Shared\SuperMemoAssistant.PluginHost.Shared.projitems*{149c5a9b-0588-41b9-8f77-c5d17a1cdfbe}*SharedItemsImports = 4
 		libs\pngcs\pngcs.projitems*{4f65145f-6f0c-49cd-830a-a51a2a9c5f75}*SharedItemsImports = 13
 		libs\pngcs\pngcs.projitems*{677647e4-f052-41d0-915a-ad76da72463e}*SharedItemsImports = 4
+		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{6cc298fd-29e9-4453-934c-6e30c52e4497}*SharedItemsImports = 4
 		src\Core\SuperMemoAssistant.PluginHost.Shared\SuperMemoAssistant.PluginHost.Shared.projitems*{7550628d-0630-4a42-b0b7-55d26f981365}*SharedItemsImports = 4
 		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{77605834-e425-4f69-8b27-dca82a04eb07}*SharedItemsImports = 13
 		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{c57d9489-0a27-4b18-818c-7cbb379acfd8}*SharedItemsImports = 4
@@ -229,16 +231,16 @@ Global
 		{501257D3-F788-4A5D-B990-16C01FF71926}.Release|x86.Build.0 = Release|x86
 		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug|x86.ActiveCfg = Debug|x86
-		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug|x86.Build.0 = Debug|x86
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug|x86.Build.0 = Debug|Any CPU
 		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug-InProd|Any CPU.ActiveCfg = Debug|Any CPU
 		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug-InProd|Any CPU.Build.0 = Debug|Any CPU
-		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug-InProd|x86.ActiveCfg = Debug|x86
-		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug-InProd|x86.Build.0 = Debug|x86
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug-InProd|x86.ActiveCfg = Debug|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Debug-InProd|x86.Build.0 = Debug|Any CPU
 		{4E0C323D-5AFC-4105-815F-587346AA5321}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E0C323D-5AFC-4105-815F-587346AA5321}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4E0C323D-5AFC-4105-815F-587346AA5321}.Release|x86.ActiveCfg = Release|x86
-		{4E0C323D-5AFC-4105-815F-587346AA5321}.Release|x86.Build.0 = Release|x86
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Release|x86.ActiveCfg = Release|Any CPU
+		{4E0C323D-5AFC-4105-815F-587346AA5321}.Release|x86.Build.0 = Release|Any CPU
 		{C76CFA78-F820-4F05-9429-4A3A3C9C1414}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C76CFA78-F820-4F05-9429-4A3A3C9C1414}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C76CFA78-F820-4F05-9429-4A3A3C9C1414}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -281,8 +283,8 @@ Global
 		{6CC298FD-29E9-4453-934C-6E30C52E4497}.Debug|x86.Build.0 = Debug|Any CPU
 		{6CC298FD-29E9-4453-934C-6E30C52E4497}.Debug-InProd|Any CPU.ActiveCfg = Debug|Any CPU
 		{6CC298FD-29E9-4453-934C-6E30C52E4497}.Debug-InProd|Any CPU.Build.0 = Debug|Any CPU
-		{6CC298FD-29E9-4453-934C-6E30C52E4497}.Debug-InProd|x86.ActiveCfg = Debug|x86
-		{6CC298FD-29E9-4453-934C-6E30C52E4497}.Debug-InProd|x86.Build.0 = Debug|x86
+		{6CC298FD-29E9-4453-934C-6E30C52E4497}.Debug-InProd|x86.ActiveCfg = Debug-InProd|x86
+		{6CC298FD-29E9-4453-934C-6E30C52E4497}.Debug-InProd|x86.Build.0 = Debug-InProd|x86
 		{6CC298FD-29E9-4453-934C-6E30C52E4497}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CC298FD-29E9-4453-934C-6E30C52E4497}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6CC298FD-29E9-4453-934C-6E30C52E4497}.Release|x86.ActiveCfg = Release|Any CPU
@@ -317,8 +319,8 @@ Global
 		{7F7B4A1F-01E1-440E-89DB-08F7D1D5A128}.Debug|x86.Build.0 = Debug|Any CPU
 		{7F7B4A1F-01E1-440E-89DB-08F7D1D5A128}.Debug-InProd|Any CPU.ActiveCfg = Debug|Any CPU
 		{7F7B4A1F-01E1-440E-89DB-08F7D1D5A128}.Debug-InProd|Any CPU.Build.0 = Debug|Any CPU
-		{7F7B4A1F-01E1-440E-89DB-08F7D1D5A128}.Debug-InProd|x86.ActiveCfg = Debug|Any CPU
-		{7F7B4A1F-01E1-440E-89DB-08F7D1D5A128}.Debug-InProd|x86.Build.0 = Debug|Any CPU
+		{7F7B4A1F-01E1-440E-89DB-08F7D1D5A128}.Debug-InProd|x86.ActiveCfg = Debug-InProd|x86
+		{7F7B4A1F-01E1-440E-89DB-08F7D1D5A128}.Debug-InProd|x86.Build.0 = Debug-InProd|x86
 		{7F7B4A1F-01E1-440E-89DB-08F7D1D5A128}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F7B4A1F-01E1-440E-89DB-08F7D1D5A128}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7F7B4A1F-01E1-440E-89DB-08F7D1D5A128}.Release|x86.ActiveCfg = Release|Any CPU

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\packages\PropertyChanged.Fody.2.6.0\build\PropertyChanged.Fody.props" Condition="Exists('..\..\..\packages\PropertyChanged.Fody.2.6.0\build\PropertyChanged.Fody.props')" />
+  <Import Project="..\..\..\packages\Anotar.Serilog.Fody.4.8.1\build\Anotar.Serilog.Fody.props" Condition="Exists('..\..\..\packages\Anotar.Serilog.Fody.4.8.1\build\Anotar.Serilog.Fody.props')" />
+  <Import Project="..\..\..\packages\PropertyChanged.Fody.2.6.1\build\PropertyChanged.Fody.props" Condition="Exists('..\..\..\packages\PropertyChanged.Fody.2.6.1\build\PropertyChanged.Fody.props')" />
   <Import Project="..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props" Condition="Exists('..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props')" />
-  <Import Project="..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props" Condition="Exists('..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -84,8 +84,8 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Anotar.Serilog, Version=4.6.7.0, Culture=neutral, PublicKeyToken=9d5b24f0733c26f7, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Anotar.Serilog.Fody.4.6.7\lib\net452\Anotar.Serilog.dll</HintPath>
+    <Reference Include="Anotar.Serilog, Version=4.8.1.0, Culture=neutral, PublicKeyToken=9d5b24f0733c26f7, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Anotar.Serilog.Fody.4.8.1\lib\net452\Anotar.Serilog.dll</HintPath>
     </Reference>
     <Reference Include="Ben.Demystifier, Version=0.1.0.0, Culture=neutral, PublicKeyToken=a6d206e05440431a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Ben.Demystifier.0.1.4\lib\net45\Ben.Demystifier.dll</HintPath>
@@ -116,8 +116,8 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="PropertyChanged, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\PropertyChanged.Fody.2.6.0\lib\net452\PropertyChanged.dll</HintPath>
+    <Reference Include="PropertyChanged, Version=2.6.1.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\PropertyChanged.Fody.2.6.1\lib\net452\PropertyChanged.dll</HintPath>
     </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Serilog.2.8.0\lib\net46\Serilog.dll</HintPath>
@@ -188,6 +188,7 @@
     <Compile Include="Interop\SuperMemo\Content\Contents\SoundContent.cs" />
     <Compile Include="Interop\SuperMemo\Content\Contents\TextContent.cs" />
     <Compile Include="Interop\SuperMemo\Elements\Models\ElementStatus.cs" />
+    <Compile Include="Interop\SuperMemo\Elements\Types\ElementWrapper.cs" />
     <Compile Include="Interop\SuperMemo\Learning\LearningMode.cs" />
     <Compile Include="Interop\SuperMemo\UI\Element\DisplayState.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -373,12 +374,12 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.4.6.7\build\Anotar.Serilog.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\Fody.4.0.2\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.4.0.2\build\Fody.targets'))" />
     <Error Condition="!Exists('..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
-    <Error Condition="!Exists('..\..\..\packages\PropertyChanged.Fody.2.6.0\build\PropertyChanged.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\PropertyChanged.Fody.2.6.0\build\PropertyChanged.Fody.props'))" />
+    <Error Condition="!Exists('..\..\..\packages\Fody.4.2.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.4.2.1\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\PropertyChanged.Fody.2.6.1\build\PropertyChanged.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\PropertyChanged.Fody.2.6.1\build\PropertyChanged.Fody.props'))" />
+    <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.4.8.1\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.4.8.1\build\Anotar.Serilog.Fody.props'))" />
   </Target>
-  <Import Project="..\..\..\packages\Fody.4.0.2\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.4.0.2\build\Fody.targets')" />
   <Import Project="..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
+  <Import Project="..\..\..\packages\Fody.4.2.1\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.4.2.1\build\Fody.targets')" />
 </Project>

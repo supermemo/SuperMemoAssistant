@@ -36,6 +36,7 @@ using Anotar.Serilog;
 using Nito.AsyncEx;
 using Process.NET.Memory;
 using Process.NET.Types;
+using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
@@ -572,11 +573,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
           && (LastElementId > 0 && lastElement == null || currentElement == null));
 
         LastElementId = newElementId;
-
-        OnElementChanged?.Invoke(
+        
+        OnElementChanged?.InvokeRemote(
+          nameof(OnElementChanged),
           new SMDisplayedElementChangedArgs(SMA.SMA.Instance,
                                             currentElement,
-                                            lastElement)
+                                            lastElement),
+          h => OnElementChanged -= h
         );
       }
       catch (Exception ex)

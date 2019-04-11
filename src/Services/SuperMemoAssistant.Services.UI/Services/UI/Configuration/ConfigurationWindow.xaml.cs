@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/01 11:36
-// Modified On:  2019/03/01 18:44
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/04/10 23:11
 // Modified By:  Alexis
 
 #endregion
@@ -69,8 +69,9 @@ namespace SuperMemoAssistant.Services.UI.Configuration
 
     #region Properties & Fields - Public
 
-    public ObservableCollection<object> Models        { get; } = new ObservableCollection<object>();
-    public HotKeyManager                HotKeyManager { get; }
+    public ObservableCollection<object>     Models        { get; } = new ObservableCollection<object>();
+    public HotKeyManager                    HotKeyManager { get; }
+    public Action<INotifyPropertyChangedEx> SaveMethod    { get; set; }
 
     #endregion
 
@@ -82,17 +83,25 @@ namespace SuperMemoAssistant.Services.UI.Configuration
     protected override void OnClosed(EventArgs e)
     {
       base.OnClosed(e);
-      
+
       foreach (var m in Models)
-        if (m is INotifyPropertyChangedEx config && config.IsChanged)
+        if (m is INotifyPropertyChangedEx config)
         {
-          config.IsChanged = false;
-          Svc.Configuration.Save(m, m.GetType()).RunAsync();
+          if (SaveMethod != null)
+          {
+            SaveMethod(config);
+          }
+
+          else if (config.IsChanged)
+          {
+            config.IsChanged = false;
+            Svc.Configuration.Save(m, m.GetType()).RunAsync();
+          }
         }
     }
 
     #endregion
-    
+
 
 
 

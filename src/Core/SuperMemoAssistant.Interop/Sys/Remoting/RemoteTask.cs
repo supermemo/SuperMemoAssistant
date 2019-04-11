@@ -68,11 +68,6 @@ namespace SuperMemoAssistant.Sys.Remoting
       return remoteTask.GetTask().GetAwaiter();
     }
 
-    public static T GetResult<T>(this RemoteTask<T> remoteTask)
-    {
-      return remoteTask.GetAwaiter().GetResult();
-    }
-
     public static Task<T> GetTask<T>(this RemoteTask<T> remoteTask)
     {
       AsyncManualResetEvent taskCompletedEvent = new AsyncManualResetEvent();
@@ -103,6 +98,11 @@ namespace SuperMemoAssistant.Sys.Remoting
     public static TaskAwaiter<T> GetAwaiter<T>(this RemoteTask<T> remoteTask)
     {
       return remoteTask.GetTask().GetAwaiter();
+    }
+
+    public static T GetResult<T>(this RemoteTask<T> remoteTask)
+    {
+      return remoteTask.GetAwaiter().GetResult();
     }
 
     #endregion

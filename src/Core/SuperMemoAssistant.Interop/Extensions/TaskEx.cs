@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 23:58
-// Modified On:  2019/02/25 23:59
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/04/11 18:13
 // Modified By:  Alexis
 
 #endregion
@@ -41,7 +41,7 @@ namespace SuperMemoAssistant.Extensions
 
 #pragma warning disable RECS0165 // Asynchronous methods should return a Task instead of void
     public static async void RunAsync(this Task         task,
-                                                    Action<Exception> handler = null)
+                                      Action<Exception> handler = null)
 #pragma warning restore RECS0165 // Asynchronous methods should return a Task instead of void
     {
       try

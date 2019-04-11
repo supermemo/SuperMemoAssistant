@@ -54,8 +54,9 @@ namespace SuperMemoAssistant.Interop
     public static class Stylesheet
     {
       public static readonly Color ExtractClozedColor = (Color)ColorConverter.ConvertFromString("#E67300"); // ColorTranslator.FromHtml("#E67300");
-      public static readonly Color ExtractColor = (Color)ColorConverter.ConvertFromString("#44C2FF"); // ColorTranslator.FromHtml("#44C2FF");
-      public static readonly Color IgnoreColor = (Color)ColorConverter.ConvertFromString("#DAB6B6"); // ColorTranslator.FromHtml("#");
+      public static readonly Color ExtractColor = (Color)ColorConverter.ConvertFromString("#44C2FF");
+      public static readonly Color ExtractTransparentColor = (Color)ColorConverter.ConvertFromString("#8044C2FF");
+      public static readonly Color IgnoreColor = (Color)ColorConverter.ConvertFromString("#DAB6B6");
     }
 
 

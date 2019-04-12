@@ -31,6 +31,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Builders;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
@@ -42,7 +43,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
   {
     IElement Root { get; }
 
-    bool Add(ElementBuilder builder);
+    HashSet<ElementBuilder> Add(params ElementBuilder[] builders);
     bool Delete(IElement    element);
 
     event Action<SMElementArgs>        OnElementCreated;

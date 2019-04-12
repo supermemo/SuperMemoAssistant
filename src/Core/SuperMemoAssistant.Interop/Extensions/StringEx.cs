@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/03 03:18
-// Modified On:  2018/12/13 13:04
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/04/12 14:14
 // Modified By:  Alexis
 
 #endregion
@@ -32,6 +32,9 @@
 
 using System;
 using System.Linq;
+using System.Net;
+using System.Text;
+
 // ReSharper disable LocalizableElement
 
 namespace SuperMemoAssistant.Extensions
@@ -91,7 +94,7 @@ namespace SuperMemoAssistant.Extensions
 
     public static string ToBase64(this string plainText)
     {
-      var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+      var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
 
       return Convert.ToBase64String(plainTextBytes);
     }
@@ -100,7 +103,7 @@ namespace SuperMemoAssistant.Extensions
     {
       var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
 
-      return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+      return Encoding.UTF8.GetString(base64EncodedBytes);
     }
 
     public static string CapitalizeFirst(this string str)
@@ -111,6 +114,28 @@ namespace SuperMemoAssistant.Extensions
         case "":   throw new ArgumentException($"{nameof(str)} cannot be empty", nameof(str));
         default:   return str.First().ToString().ToUpper() + str.Substring(1);
       }
+    }
+
+    public static string HtmlEncode(this string text)
+    {
+      // call the normal HtmlEncode first
+      char[]        chars       = WebUtility.HtmlEncode(text).ToCharArray();
+      StringBuilder encodedText = new StringBuilder();
+
+      foreach (char c in chars)
+        if (c > 127) // above normal ASCII
+          encodedText.Append("&#" + (int)c + ";");
+        else
+          encodedText.Append(c);
+
+      return encodedText.Replace("&#65534;",
+                                 "-\r\n")
+                        .ToString();
+    }
+
+    public static string UrlEncode(this string text)
+    {
+      return WebUtility.UrlDecode(text);
     }
 
     #endregion

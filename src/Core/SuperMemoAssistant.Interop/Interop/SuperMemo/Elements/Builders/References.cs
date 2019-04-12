@@ -33,6 +33,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SuperMemoAssistant.Extensions;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Elements.Builders
 {
@@ -60,43 +61,43 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements.Builders
     {
       List<string> refParts = new List<string>();
 
-      if (String.IsNullOrWhiteSpace(Title) == false)
-        refParts.Add($"#Title: {Title}");
+      if (string.IsNullOrWhiteSpace(Title) == false)
+        refParts.Add($"#Title: {Title.HtmlEncode()}");
 
-      if (String.IsNullOrWhiteSpace(Author) == false)
+      if (string.IsNullOrWhiteSpace(Author) == false)
         refParts.Add(
-          String.IsNullOrWhiteSpace(Email)
-            ? $"#Author: {Author}"
-            : $"#Author: {Author} [mailto:{Email}]"
+          string.IsNullOrWhiteSpace(Email)
+            ? $"#Author: {Author.HtmlEncode()}"
+            : $"#Author: {Author.HtmlEncode()} [mailto:{Email.HtmlEncode()}]"
         );
 
       if (Dates != null && Dates.Any())
       {
-        var dateStrs = Dates.Select(d => String.Format(d.Item1,
+        var dateStrs = Dates.Select(d => string.Format(d.Item1,
                                                        d.Item2?.ToString("MMM dd, yyyy, hh:mm:ss")));
-        var dateStr = String.Join(" ; ",
+        var dateStr = string.Join(" ; ",
                                   dateStrs);
 
-        refParts.Add($"#Date: {dateStr}");
+        refParts.Add($"#Date: {dateStr.HtmlEncode()}");
       }
 
-      if (String.IsNullOrWhiteSpace(Source) == false)
-        refParts.Add($"#Source: {Source}");
+      if (string.IsNullOrWhiteSpace(Source) == false)
+        refParts.Add($"#Source: {Source.HtmlEncode()}");
 
-      if (String.IsNullOrWhiteSpace(Link) == false)
-        refParts.Add($"#Link: <a href=\"{Link}\">{Link}</a>");
+      if (string.IsNullOrWhiteSpace(Link) == false)
+        refParts.Add($"#Link: <a href=\"{Link.UrlEncode()}\">{Link.HtmlEncode()}</a>");
 
-      if (String.IsNullOrWhiteSpace(Email) == false)
-        refParts.Add($"#E-mail: {Email}");
+      if (string.IsNullOrWhiteSpace(Email) == false)
+        refParts.Add($"#E-mail: {Email.HtmlEncode()}");
 
-      if (String.IsNullOrWhiteSpace(Comment) == false)
-        refParts.Add($"#Comment: {Comment}");
+      if (string.IsNullOrWhiteSpace(Comment) == false)
+        refParts.Add($"#Comment: {Comment.HtmlEncode()}");
 
       if (refParts.Any() == false)
-        return String.Empty;
+        return string.Empty;
 
-      return String.Format(SMConst.Elements.ReferenceFormat,
-                           String.Join("<br>",
+      return string.Format(SMConst.Elements.ReferenceFormat,
+                           string.Join("<br>",
                                        refParts));
     }
 

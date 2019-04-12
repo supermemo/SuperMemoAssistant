@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/26 23:21
-// Modified On:  2019/02/27 00:03
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/04/12 15:19
 // Modified By:  Alexis
 
 #endregion
@@ -32,6 +32,9 @@
 
 using System;
 using System.Globalization;
+using System.Linq;
+using HtmlAgilityPack;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Contents;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Builders;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Services;
@@ -93,7 +96,6 @@ End Element #1";
       DateTime now            = DateTime.Now;
       string   collectionPath = Svc.SMA.Collection.Path;
       int      parentId       = elemBuilder.Parent?.Id ?? 1;
-      string   title          = elemBuilder.Title ?? String.Empty; /*Content.Substring(0, 10);*/
       string lastRepDate1 = DateTime.Today.ToString("dd.MM.yy",
                                                     CultureInfo.InvariantCulture);
       string lastRepDate2 = DateTime.Today.ToString("dd.MM.yyyy",
@@ -126,13 +128,37 @@ End Element #1";
                            collectionPath,
                            parentId,
                            elemBuilder.Priority,
-                           title,
+                           GuessTitle(elemBuilder),
                            type,
                            lastRepDate1,
                            elemBuilder.Reference?.ToString() ?? string.Empty,
                            layout.Build(elemBuilder.Contents),
                            lastRepDate2,
                            lastRepTime);
+    }
+
+    private static string GuessTitle(ElementBuilder elemBuilder)
+    {
+      string title = elemBuilder.Title ?? elemBuilder.Reference?.Title ?? string.Empty;
+
+      if (string.IsNullOrWhiteSpace(title))
+      {
+        var txtContent = (TextContent)elemBuilder
+                                      .Contents
+                                      .FirstOrDefault(c => (c.ContentType & ContentTypeFlag.Text) != ContentTypeFlag.None);
+
+        if (txtContent != null)
+        {
+
+          HtmlDocument doc = new HtmlDocument();
+          doc.LoadHtml(txtContent.Text);
+
+          return string.Join(" ", doc.DocumentNode.SelectNodes("//text()").Select(n => n.InnerText))
+                        .Substring(0, 128);
+        }
+      }
+
+      return title;
     }
 
     #endregion

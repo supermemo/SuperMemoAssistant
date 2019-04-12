@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/01 14:12
-// Modified On:  2018/12/09 15:59
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/04/12 03:57
 // Modified By:  Alexis
 
 #endregion
@@ -134,7 +134,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 
     protected override void CommitFromMemory()
     {
-      Dictionary<int, InfContentsElem> cttElems = new Dictionary<int, InfContentsElem>();
+      Dictionary<int, InfContentsElem>          cttElems = new Dictionary<int, InfContentsElem>();
       Dictionary<int, InfElementsElemContainer> elElems  = new Dictionary<int, InfElementsElemContainer>();
 
       foreach (SegmentStream cttStream in ContentsSCA.GetStreams())
@@ -190,16 +190,21 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
     //
     // 
 
-    public bool Add(ElementBuilder builder)
+    public HashSet<ElementBuilder> Add(params ElementBuilder[] builders)
     {
-      bool              success             = false;
-      bool              inSMUpdateLockMode  = false;
-      bool              inSMAUpdateLockMode = false;
-      List<IDisposable> toDispose           = new List<IDisposable>();
+      if (builders == null || builders.Length == 0)
+        return new HashSet<ElementBuilder>();
+
+      bool                    inSMUpdateLockMode  = false;
+      bool                    inSMAUpdateLockMode = false;
+      bool                    singleMode          = builders.Length == 1;
+      List<IDisposable>       toDispose           = new List<IDisposable>();
+      HashSet<ElementBuilder> failedBuilders      = new HashSet<ElementBuilder>(builders);
 
       try
       {
-        int lastElementId = -1;
+        int restoreElementId = ElementWdw.Instance.CurrentElementId;
+        int restoreHookId = ElementWdw.Instance.CurrentHookId;
 
         //
         // Enter critical section
@@ -212,134 +217,79 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
         inSMAUpdateLockMode = ElementWdw.Instance.EnterSMAUpdateLock();
 
         //
+        // Save states
+
+        toDispose.Add(new HookSnapshot());
+        //toDispose.Add(new ConceptSnapshot());
+
+        //
         // Freeze element window if we want to insert the element without displaying it immediatly
 
-        if (builder.ShouldDisplay == false)
-        {
+        if (singleMode == false || builders[0].ShouldDisplay == false)
           inSMUpdateLockMode = ElementWdw.Instance.EnterSMUpdateLock(); // TODO: Pass in EnterUpdateLock
 
-          lastElementId = ElementWdw.Instance.CurrentElementId;
-        }
-
-        //
-        // Has a parent been specified for the new element ?
-
-        if (builder.Parent != null)
+        foreach (var builder in builders)
         {
-          toDispose.Add(new HookSnapshot());
-          ElementWdw.Instance.CurrentHookId = builder.Parent.Id;
-        }
+          bool success = false;
 
-        //
-        // Has a concept been specified for the new element ?
+          //
+          // Has a parent been specified for the new element ?
 
-        if (builder.Concept != null)
-        {
-          toDispose.Add(new ConceptSnapshot());
-          ElementWdw.Instance.SetCurrentConcept(builder.Concept.Id);
-        }
+          ElementWdw.Instance.CurrentHookId = builder.Parent?.Id ?? restoreHookId;
 
-        //
-        // Focus
+          //
+          // Has a concept been specified for the new element ?
 
-        // toDispose.Add(new FocusSnapshot(true)); // TODO: Only if inserting 1 element
+          //if (builder.Concept != null)
+            //ElementWdw.Instance.SetCurrentConcept(builder.Concept.Id);
 
-        //
-        // Select appropriate insertion method, depending on element type and content
+          //
+          // Focus
 
-        ElementCreationMethod creationMethod;
+          // toDispose.Add(new FocusSnapshot(true)); // TODO: Only if inserting 1 element
 
-#if false
-        switch (builder.ContentType)
-        {
-        case ElementBuilder.ContentTypeFlag.RawText:
-          creationMethod = ElementCreationMethod.ClipboardContent;
+          //
+          // Select appropriate insertion method, depending on element type and content
 
-          if (!(builder.Contents[0] is ElementBuilder.TextContent rawTextContent))
-            throw new InvalidCastException("ContentTypeFlag.RawText contained a non-text IContent");
+          var creationMethod = ElementCreationMethod.AddElement;
 
-          Clipboard.SetText(rawTextContent.Text,
-                            rawTextContent.Encoding.EncodingName == Encoding.Unicode.EncodingName
-                              ? TextDataFormat.UnicodeText
-                              : TextDataFormat.Text);
-          break;
+          //
+          // Insert the element
 
-        case ElementBuilder.ContentTypeFlag.Html:
-          creationMethod = ElementCreationMethod.ClipboardContent;
+          switch (creationMethod)
+          {
+            case ElementCreationMethod.ClipboardContent:
+              if (builder.Type != ElementType.Topic)
+                throw new InvalidOperationException("ElementCreationMethod.ClipboardContent can only create Topics.");
 
-          if (!(builder.Contents[0] is ElementBuilder.TextContent htmlTextContent))
-            throw new InvalidCastException("ContentTypeFlag.RawText contained a non-text IContent");
+              success = ElementWdw.Instance.PasteArticle();
 
-          ClipboardHelper.CopyToClipboard(htmlTextContent.Text,
-                                          htmlTextContent.Text);
-          break;
-        }
+              break;
 
-        switch (builder.ContentType)
-        {
-          // TODO: Handle multiple content
+            case ElementCreationMethod.ClipboardElement:
+              success = ElementWdw.Instance.PasteElement();
 
-          case ElementBuilder.ContentTypeFlag.RawText:
-          case ElementBuilder.ContentTypeFlag.Html:
-            creationMethod = ElementCreationMethod.AddElement;
+              break;
 
-            if (!(builder.Contents[0] is ElementBuilder.TextContent))
-              throw new InvalidCastException("ContentTypeFlag.RawText contained a non-text IContent");
+            case ElementCreationMethod.AddElement:
+              string elementDesc = builder.ToElementString();
+              success = ElementWdw.Instance.AppendAndAddElementFromText(builder.Type, elementDesc) > 0;
 
-            break;
+              break;
+          }
 
-
-          case ElementBuilder.ContentTypeFlag.Image:
-            creationMethod = ElementCreationMethod.AddElement;
-            
-            if (!(builder.Contents[0] is ElementBuilder.ImageContent))
-              throw new InvalidCastException("ContentTypeFlag.Image contained a non-image IContent");
-
-            break;
-
-
-          default:
-            throw new NotImplementedException();
-        }
-#endif
-
-        creationMethod = ElementCreationMethod.AddElement;
-
-        //
-        // Insert the element
-
-        switch (creationMethod)
-        {
-          case ElementCreationMethod.ClipboardContent:
-            if (builder.Type != ElementType.Topic)
-              throw new InvalidOperationException("ElementCreationMethod.ClipboardContent can only create Topics.");
-
-            success = ElementWdw.Instance.PasteArticle();
-
-            break;
-
-          case ElementCreationMethod.ClipboardElement:
-            success = ElementWdw.Instance.PasteElement();
-
-            break;
-
-          case ElementCreationMethod.AddElement:
-            string elementDesc = builder.ToElementString();
-
-            success = ElementWdw.Instance.AppendAndAddElementFromText(builder.Type, elementDesc) > 0;
-
-            break;
+          if (success)
+            failedBuilders.Remove(builder);
         }
 
         //
         // Display original element, and unfreeze window -- or simply resume element changed monitoring
 
-        if (builder.ShouldDisplay == false)
+        if (inSMUpdateLockMode)
         {
           inSMUpdateLockMode = ElementWdw.Instance.QuitSMUpdateLock() == false;
-
-          if (success)
-            ElementWdw.Instance.GoToElement(lastElementId);
+          
+          ElementWdw.Instance.GoToElement(restoreElementId);
 
           inSMAUpdateLockMode = ElementWdw.Instance.QuitSMAUpdateLock(true);
         }
@@ -349,13 +299,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
           inSMAUpdateLockMode = ElementWdw.Instance.QuitSMAUpdateLock();
         }
 
-        return success;
+        return failedBuilders;
       }
       catch (Exception ex)
       {
         LogTo.Error(ex,
                     "An exception was thrown while creating a new element in SM.");
-        return false;
+        return failedBuilders;
       }
       finally
       {
@@ -454,8 +404,8 @@ Exception: {ex}",
 
     #region Methods
 
-    protected virtual ElementBase CreateInternal(int             id,
-                                                 InfContentsElem cttElem,
+    protected virtual ElementBase CreateInternal(int                      id,
+                                                 InfContentsElem          cttElem,
                                                  InfElementsElemContainer elElem)
     {
       switch ((ElementType)elElem._elem.elementType)
@@ -512,8 +462,8 @@ Exception: {ex}",
       }
     }
 
-    protected virtual void Commit(int              id,
-                                  InfContentsElem cttElem,
+    protected virtual void Commit(int                      id,
+                                  InfContentsElem          cttElem,
                                   InfElementsElemContainer elElem)
     {
       var el = Elements.SafeGet(id);

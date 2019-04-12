@@ -34,6 +34,8 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Text;
+using HtmlAgilityPack;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Components;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
@@ -129,8 +131,11 @@ End Component #{Id + 1}";
       var filePath = Path.Combine(Path.GetTempPath(),
                                   $"sm_element_{Id}.htm");
 
+      html = HtmlEntity.Entitize(html);
+
       File.WriteAllText(filePath,
-                        html + "\r\n<span />");
+                        html + "\r\n<span />",
+                        Encoding.UTF8);
 
       return filePath;
     }

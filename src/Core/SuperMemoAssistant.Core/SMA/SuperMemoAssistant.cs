@@ -32,6 +32,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -48,6 +49,7 @@ using SuperMemoAssistant.SuperMemo;
 using SuperMemoAssistant.SuperMemo.SuperMemo17;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout;
 using SuperMemoAssistant.Sys;
+using SuperMemoAssistant.Sys.IO;
 
 namespace SuperMemoAssistant.SMA
 {
@@ -172,6 +174,9 @@ namespace SuperMemoAssistant.SMA
       try
       {
         Config = LoadConfig();
+
+        if (new FilePath(Config.SMBinPath).Exists() == false)
+          throw new FileNotFoundException($"Invalid file path for sm executable file: '{Config.SMBinPath}' could not be found.");
 
         // TODO: Look at PE version and select Management Engine version
         SMMgmt = new SM17(collection,

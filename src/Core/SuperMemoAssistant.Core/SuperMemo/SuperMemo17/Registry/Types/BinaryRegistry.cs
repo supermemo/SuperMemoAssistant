@@ -54,13 +54,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
     #region Properties & Fields - Non-Public
 
-    protected override bool IsOptional => true;
-
     protected override string MemFileName => SMConst.Files.BinaryMemFileName;
     protected override string RtxFileName => SMConst.Files.BinaryRtxFileName;
     protected override string RtfFileName => null;
     protected override IntPtr RegistryPtr =>
       new IntPtr(SM17Natives.TRegistry.BinaryRegistryInstance.Read<int>(SMA.SMA.Instance.SMProcess.Memory));
+    
+    protected override bool IsOptional => true;
 
     #endregion
 

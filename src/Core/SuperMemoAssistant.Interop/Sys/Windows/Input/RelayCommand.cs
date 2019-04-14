@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/03/02 18:29
-// Modified On:  2019/04/10 21:06
+// Modified On:  2019/04/14 00:53
 // Modified By:  Alexis
 
 #endregion
@@ -54,6 +54,20 @@ namespace SuperMemoAssistant.Sys.Windows.Input
 
 
 
+    #region Events
+
+    /// <summary>Occurs when changes occur that affect whether or not the command should execute.</summary>
+    public event EventHandler CanExecuteChanged
+    {
+      add => CommandManager.RequerySuggested += value;
+      remove => CommandManager.RequerySuggested -= value;
+    }
+
+    #endregion
+
+
+
+
     #region Fields
 
     private readonly Action     _execute    = null;
@@ -78,13 +92,6 @@ namespace SuperMemoAssistant.Sys.Windows.Input
     public bool CanExecute(object parameter)
     {
       return parameter != null && (_canExecute?.Invoke() ?? true);
-    }
-
-    /// <summary>Occurs when changes occur that affect whether or not the command should execute.</summary>
-    public event EventHandler CanExecuteChanged
-    {
-      add => CommandManager.RequerySuggested += value;
-      remove => CommandManager.RequerySuggested -= value;
     }
 
     /// <summary>Defines the method to be called when the command is invoked.</summary>
@@ -119,6 +126,20 @@ namespace SuperMemoAssistant.Sys.Windows.Input
 
 
 
+    #region Events
+
+    /// <summary>Occurs when changes occur that affect whether or not the command should execute.</summary>
+    public event EventHandler CanExecuteChanged
+    {
+      add => CommandManager.RequerySuggested += value;
+      remove => CommandManager.RequerySuggested -= value;
+    }
+
+    #endregion
+
+
+
+
     #region Fields
 
     private readonly Action<T>    _execute    = null;
@@ -143,13 +164,6 @@ namespace SuperMemoAssistant.Sys.Windows.Input
     public bool CanExecute(object parameter)
     {
       return parameter != null && (_canExecute?.Invoke((T)parameter) ?? true);
-    }
-
-    /// <summary>Occurs when changes occur that affect whether or not the command should execute.</summary>
-    public event EventHandler CanExecuteChanged
-    {
-      add => CommandManager.RequerySuggested += value;
-      remove => CommandManager.RequerySuggested -= value;
     }
 
     /// <summary>Defines the method to be called when the command is invoked.</summary>

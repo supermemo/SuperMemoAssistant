@@ -33,7 +33,9 @@
 using System.Threading.Tasks;
 using System.Windows;
 using Anotar.Serilog;
+using Forge.Forms;
 using Hardcodet.Wpf.TaskbarNotification;
+using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Services.IO.Logger;
 
 namespace SuperMemoAssistant
@@ -65,7 +67,7 @@ namespace SuperMemoAssistant
 
     #region Methods
 
-    private void Application_Startup(object           o1,
+    private async void Application_Startup(object           o1,
                                      StartupEventArgs e1)
     {
       DispatcherUnhandledException += (o2, e2) => LogTo.Error(e2.Exception, "Unhandled exception");
@@ -81,7 +83,16 @@ namespace SuperMemoAssistant
       if (selectionWdw.Collection != null)
       {
         SMA.SMA.Instance.OnSMStoppedEvent += Instance_OnSMStoppedEvent;
-        SMA.SMA.Instance.Start(selectedCol).ConfigureAwait(false);
+
+        if (await SMA.SMA.Instance.Start(selectedCol).ConfigureAwait(true) == false)
+        {
+          await Show.Window().For(
+            new Alert(
+              $"SMA failed to start. Please check the logs in '{SMAFileSystem.LogDir.FullPath}' for details.",
+              "Error")
+          );
+          Shutdown();
+        }
       }
       else
       {

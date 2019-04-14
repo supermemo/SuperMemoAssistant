@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/03/02 18:29
-// Modified On:  2019/04/12 14:14
+// Modified On:  2019/04/14 03:03
 // Modified By:  Alexis
 
 #endregion
@@ -31,6 +31,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -114,6 +115,18 @@ namespace SuperMemoAssistant.Extensions
         case "":   throw new ArgumentException($"{nameof(str)} cannot be empty", nameof(str));
         default:   return str.First().ToString().ToUpper() + str.Substring(1);
       }
+    }
+
+    public static string Join<T>(string separator, IEnumerable<T> values, string defaultRet = null)
+    {
+      // ReSharper disable PossibleMultipleEnumeration
+      if (values == null || values.Any() == false)
+        return defaultRet;
+
+      separator = separator ?? string.Empty;
+
+      return string.Join(separator, values);
+      // ReSharper restore PossibleMultipleEnumeration
     }
 
     public static string HtmlEncode(this string text)

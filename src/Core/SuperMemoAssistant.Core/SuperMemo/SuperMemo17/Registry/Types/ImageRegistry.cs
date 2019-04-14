@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/01 14:13
-// Modified On:  2019/01/24 13:56
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/04/14 21:26
 // Modified By:  Alexis
 
 #endregion
@@ -62,6 +62,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override string RtfFileName => null;
     protected override IntPtr RegistryPtr =>
       new IntPtr(SM17Natives.TRegistry.ImageRegistryInstance.Read<int>(SMA.SMA.Instance.SMProcess.Memory));
+
+    protected override bool IsOptional => true;
 
     #endregion
 

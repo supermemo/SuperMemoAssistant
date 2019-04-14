@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/03/02 18:29
-// Modified On:  2019/04/12 15:19
+// Modified On:  2019/04/15 00:09
 // Modified By:  Alexis
 
 #endregion
@@ -120,42 +120,45 @@ End Element #1";
           throw new NotImplementedException();
       }
 
+      string title = (GuessTitle(elemBuilder) ?? string.Empty).Replace("\n", "").Replace("\r", "");
       XamlLayout layout = LayoutManager.Instance.GetLayout(elemBuilder.Layout)
         ?? LayoutManager.DefaultOrGenericLayout;
 
-      return string.Format(CultureInfo.InvariantCulture,
-                           ElementFmt,
-                           collectionPath,
-                           parentId,
-                           elemBuilder.Priority,
-                           GuessTitle(elemBuilder),
-                           type,
-                           lastRepDate1,
-                           elemBuilder.Reference?.ToString() ?? string.Empty,
-                           layout.Build(elemBuilder.Contents),
-                           lastRepDate2,
-                           lastRepTime);
+      var ret = string.Format(CultureInfo.InvariantCulture,
+                              ElementFmt,
+                              collectionPath,
+                              parentId,
+                              elemBuilder.Priority,
+                              title,
+                              type,
+                              lastRepDate1,
+                              elemBuilder.Reference?.ToString() ?? string.Empty,
+                              layout.Build(elemBuilder.Contents),
+                              lastRepDate2,
+                              lastRepTime);
+
+
+      return ret;
     }
 
     private static string GuessTitle(ElementBuilder elemBuilder)
     {
-      string title = elemBuilder.Title ?? elemBuilder.Reference?.Title ?? string.Empty;
+      var title = elemBuilder.Title ?? elemBuilder.Reference?.Title ?? string.Empty;
 
-      if (string.IsNullOrWhiteSpace(title))
+      if (!elemBuilder.ForceGenerateTitle && !string.IsNullOrWhiteSpace(title))
+        return title;
+
+      var txtContent = (TextContent)elemBuilder
+                                    .Contents
+                                    .FirstOrDefault(c => (c.ContentType & ContentTypeFlag.Text) != ContentTypeFlag.None);
+
+      if (txtContent != null)
       {
-        var txtContent = (TextContent)elemBuilder
-                                      .Contents
-                                      .FirstOrDefault(c => (c.ContentType & ContentTypeFlag.Text) != ContentTypeFlag.None);
+        HtmlDocument doc = new HtmlDocument();
+        doc.LoadHtml(txtContent.Text);
 
-        if (txtContent != null)
-        {
-
-          HtmlDocument doc = new HtmlDocument();
-          doc.LoadHtml(txtContent.Text);
-
-          return string.Join(" ", doc.DocumentNode.SelectNodes("//text()").Select(n => n.InnerText))
-                        .Substring(0, 128);
-        }
+        title = string.Join(" ", doc.DocumentNode.SelectNodes("//text()").Select(n => n.InnerText));
+        return title.Substring(0, Math.Min(title.Length, 80));
       }
 
       return title;

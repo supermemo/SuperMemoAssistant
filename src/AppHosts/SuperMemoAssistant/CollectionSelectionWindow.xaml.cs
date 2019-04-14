@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 22:02
-// Modified On:  2019/02/27 13:24
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/04/14 21:33
 // Modified By:  Alexis
 
 #endregion
@@ -43,6 +43,7 @@ using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Services;
 using SuperMemoAssistant.SMA.Configs;
+using SuperMemoAssistant.Sys.IO;
 using SuperMemoAssistant.Sys.Windows.Input;
 
 namespace SuperMemoAssistant
@@ -151,7 +152,19 @@ namespace SuperMemoAssistant
     private void btnOpen_Click(object          sender,
                                RoutedEventArgs e)
     {
-      Collection          = (SMCollection)lbCollections.SelectedItem;
+      // Check sm executable exists
+      if (new FilePath(_config.SMBinPath).Exists() == false)
+      {
+        Forge.Forms.Show.Window().For(
+          new Alert(
+            $"Invalid file path for sm executable file: '{_config.SMBinPath}' could not be found.",
+            "Error")
+        );
+        return;
+      }
+      
+      // Check collection exists
+      Collection = (SMCollection)lbCollections.SelectedItem;
 
       if (File.Exists(Collection.GetKnoFilePath()) == false
         || Directory.Exists(Collection.GetRootDirPath()) == false)
@@ -161,10 +174,12 @@ namespace SuperMemoAssistant
         return;
       }
 
+      // Set last collection usage to now
       Collection.LastOpen = DateTime.Now;
 
       SaveConfig();
 
+      // Close the collection selection window
       Close();
     }
 

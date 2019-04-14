@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/15 22:12
-// Modified On:  2019/02/26 23:25
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/04/14 22:45
 // Modified By:  Alexis
 
 #endregion
@@ -97,17 +97,18 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements.Builders
 
     #region Properties & Fields - Public
 
-    public ElementType       Type           { get; }
-    public List<ContentBase> Contents       { get; } = new List<ContentBase>();
-    public ContentTypeFlag   ContentType    { get; }
-    public string            Layout         { get; private set; }
-    public string            Title          { get; private set; }
-    public References        Reference      { get; private set; }
-    public bool              ShouldDisplay  { get; private set; }
-    public double            Priority       { get; private set; }
-    public IElement          Parent         { get; private set; }
-    public IConcept          Concept        { get; private set; }
-    public List<IConcept>    LinkedConcepts { get; } = new List<IConcept>();
+    public ElementType       Type               { get; }
+    public List<ContentBase> Contents           { get; } = new List<ContentBase>();
+    public ContentTypeFlag   ContentType        { get; }
+    public string            Layout             { get; private set; }
+    public string            Title              { get; private set; }
+    public References        Reference          { get; private set; }
+    public bool              ShouldDisplay      { get; private set; }
+    public double            Priority           { get; private set; }
+    public IElement          Parent             { get; private set; }
+    public IConcept          Concept            { get; private set; }
+    public bool              ForceGenerateTitle { get; private set; }
+    public List<IConcept>    LinkedConcepts     { get; } = new List<IConcept>();
 
     #endregion
 
@@ -161,6 +162,12 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements.Builders
     public ElementBuilder WithConcept(IConcept concept)
     {
       Concept = concept;
+      return this;
+    }
+
+    public ElementBuilder WithForcedGeneratedTitle()
+    {
+      ForceGenerateTitle = true;
       return this;
     }
 

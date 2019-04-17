@@ -167,12 +167,12 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     public override Dictionary<string, int> GetPatternsHintAddresses()
     {
-      return SMA.SMA.Instance.Config.PatternsHintAddresses;
+      return SMA.SMA.Instance.StartupConfig.PatternsHintAddresses;
     }
 
     public override void SetPatternsHintAddresses(Dictionary<string, int> hintAddrs)
     {
-      SMA.SMA.Instance.Config.PatternsHintAddresses = hintAddrs;
+      SMA.SMA.Instance.StartupConfig.PatternsHintAddresses = hintAddrs;
       SMA.SMA.Instance.SaveConfig(false);
     }
 
@@ -288,7 +288,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
         pId,
         Process.NET.Memory.MemoryType.Remote,
         true,
-        SMA.SMA.Instance.Config.PatternsHintAddresses);
+        SMA.SMA.Instance.StartupConfig.PatternsHintAddresses);
     }
 
     public void CleanupHooks()

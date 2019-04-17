@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/04/16 16:31
+// Created On:   2019/04/16 14:03
+// Modified On:  2019/04/16 17:50
 // Modified By:  Alexis
 
 #endregion
@@ -30,25 +30,47 @@
 
 
 
-using System;
-using System.Collections.Generic;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Builders;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
+using System.ComponentModel;
+using Forge.Forms.Annotations;
+using SuperMemoAssistant.Interop;
+using SuperMemoAssistant.Sys.ComponentModel;
 
-namespace SuperMemoAssistant.Interop.SuperMemo.Elements
+namespace SuperMemoAssistant.SMA.Configs
 {
-  public interface IElementRegistry : IRegistry<IElement>
+  [Form(Mode = DefaultFields.None)]
+  public class CollectionCfg : INotifyPropertyChangedEx
   {
-    IElement Root { get; }
+    #region Properties & Fields - Public
 
-    bool Add(out List<ElemCreationResult> failed, ElemCreationFlags options, params ElementBuilder[] builders);
-    bool Delete(IElement                  element);
+    [Field(Name = "Children per branch")]
+    [Value(Must.BeGreaterThanOrEqualTo,
+      5,
+      StrictValidation = true)]
+    [Value(Must.BeLessThanOrEqualTo,
+      500,
+      StrictValidation = true)]
+    public int ChildrenPerBranch { get; set; } = SMConst.Elements.DefaultChildrenPerNode;
 
-    event Action<SMElementArgs>        OnElementCreated;
-    event Action<SMElementChangedArgs> OnElementModified;
-    event Action<SMElementArgs>        OnElementDeleted;
+    #endregion
+
+
+
+
+    #region Properties Impl - Public
+
+    /// <inheritdoc />
+    public bool IsChanged { get; set; }
+
+    #endregion
+
+
+
+
+    #region Events
+
+    /// <inheritdoc />
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    #endregion
   }
 }

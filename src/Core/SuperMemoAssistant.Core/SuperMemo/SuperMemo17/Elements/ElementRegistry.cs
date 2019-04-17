@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/03/02 18:29
-// Modified On:  2019/04/12 03:57
+// Modified On:  2019/04/17 00:21
 // Modified By:  Alexis
 
 #endregion
@@ -40,6 +40,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using Anotar.Serilog;
+using MoreLinq;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
@@ -73,6 +74,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 
 
     #region Properties & Fields - Non-Public
+
+    private readonly ManualResetEventSlim _waitForElementEvent = new ManualResetEventSlim();
+    private          int                  _waitForElementId    = -1;
 
     protected ConcurrentDictionary<int, ElementBase> Elements { get; set; } =
       new ConcurrentDictionary<int, ElementBase>();
@@ -126,7 +130,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
     /// <inheritdoc />
     protected override void Cleanup()
     {
-      Elements.Values.ForEach(e => e.Dispose());
+      IEnumerableEx.ForEach(Elements.Values, e => e.Dispose());
       Elements.Clear();
       ElementsSCA.Clear();
       ContentsSCA.Clear();
@@ -187,24 +191,39 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
           return null;
       }
     }
-    //
-    // 
 
-    public HashSet<ElementBuilder> Add(params ElementBuilder[] builders)
+    public bool Delete(IElement element)
+    {
+      throw new NotImplementedException();
+    }
+
+    public bool Add(out List<ElemCreationResult> results,
+                    ElemCreationFlags            options,
+                    params ElementBuilder[]      builders)
     {
       if (builders == null || builders.Length == 0)
-        return new HashSet<ElementBuilder>();
+      {
+        results = new List<ElemCreationResult>();
+        return false;
+      }
 
-      bool                    inSMUpdateLockMode  = false;
-      bool                    inSMAUpdateLockMode = false;
-      bool                    singleMode          = builders.Length == 1;
-      List<IDisposable>       toDispose           = new List<IDisposable>();
-      HashSet<ElementBuilder> failedBuilders      = new HashSet<ElementBuilder>(builders);
+      var inSMUpdateLockMode  = false;
+      var inSMAUpdateLockMode = false;
+      var singleMode          = builders.Length == 1;
+      var toDispose           = new List<IDisposable>();
+
+      results = new List<ElemCreationResult>(
+        builders.Select(
+          b => new ElemCreationResult(
+            ElemCreationResultCode.UnknownError,
+            b))
+      );
 
       try
       {
-        int restoreElementId = ElementWdw.Instance.CurrentElementId;
-        int restoreHookId = ElementWdw.Instance.CurrentHookId;
+        bool success          = true;
+        int  restoreElementId = ElementWdw.Instance.CurrentElementId;
+        int  restoreHookId    = ElementWdw.Instance.CurrentHookId;
 
         //
         // Enter critical section
@@ -223,63 +242,22 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
         //toDispose.Add(new ConceptSnapshot());
 
         //
+        // Focus
+
+        // toDispose.Add(new FocusSnapshot(true)); // TODO: Only if inserting 1 element
+
+        //
         // Freeze element window if we want to insert the element without displaying it immediatly
 
         if (singleMode == false || builders[0].ShouldDisplay == false)
           inSMUpdateLockMode = ElementWdw.Instance.EnterSMUpdateLock(); // TODO: Pass in EnterUpdateLock
 
-        foreach (var builder in builders)
+        foreach (var result in results)
         {
-          bool success = false;
+          result.Result    = AddElement(result.Builder, options, restoreHookId, out int elemId);
+          result.ElementId = elemId;
 
-          //
-          // Has a parent been specified for the new element ?
-
-          ElementWdw.Instance.CurrentHookId = builder.Parent?.Id ?? restoreHookId;
-
-          //
-          // Has a concept been specified for the new element ?
-
-          //if (builder.Concept != null)
-            //ElementWdw.Instance.SetCurrentConcept(builder.Concept.Id);
-
-          //
-          // Focus
-
-          // toDispose.Add(new FocusSnapshot(true)); // TODO: Only if inserting 1 element
-
-          //
-          // Select appropriate insertion method, depending on element type and content
-
-          var creationMethod = ElementCreationMethod.AddElement;
-
-          //
-          // Insert the element
-
-          switch (creationMethod)
-          {
-            case ElementCreationMethod.ClipboardContent:
-              if (builder.Type != ElementType.Topic)
-                throw new InvalidOperationException("ElementCreationMethod.ClipboardContent can only create Topics.");
-
-              success = ElementWdw.Instance.PasteArticle();
-
-              break;
-
-            case ElementCreationMethod.ClipboardElement:
-              success = ElementWdw.Instance.PasteElement();
-
-              break;
-
-            case ElementCreationMethod.AddElement:
-              string elementDesc = builder.ToElementString();
-              success = ElementWdw.Instance.AppendAndAddElementFromText(builder.Type, elementDesc) > 0;
-
-              break;
-          }
-
-          if (success)
-            failedBuilders.Remove(builder);
+          success = success && result.Result == ElemCreationResultCode.Success;
         }
 
         //
@@ -288,7 +266,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
         if (inSMUpdateLockMode)
         {
           inSMUpdateLockMode = ElementWdw.Instance.QuitSMUpdateLock() == false;
-          
+
           ElementWdw.Instance.GoToElement(restoreElementId);
 
           inSMAUpdateLockMode = ElementWdw.Instance.QuitSMAUpdateLock(true);
@@ -299,13 +277,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
           inSMAUpdateLockMode = ElementWdw.Instance.QuitSMAUpdateLock();
         }
 
-        return failedBuilders;
+        return true;
       }
       catch (Exception ex)
       {
         LogTo.Error(ex,
                     "An exception was thrown while creating a new element in SM.");
-        return failedBuilders;
+        return false;
       }
       finally
       {
@@ -361,11 +339,6 @@ Exception: {ex}",
       }
     }
 
-    public bool Delete(IElement element)
-    {
-      throw new NotImplementedException();
-    }
-
 
     //
     // Enumerable
@@ -403,6 +376,147 @@ Exception: {ex}",
 
 
     #region Methods
+
+    //
+    // 
+
+    private bool CanAddElement(IElement          parent,
+                               ElemCreationFlags options)
+    {
+      if (options.HasFlag(ElemCreationFlags.ForceCreate))
+        return true;
+
+      return parent.ChildrenCount < SMA.SMA.Instance.CollectionConfig.ChildrenPerBranch;
+    }
+
+    private int CreateAutoSubfolders(IElement parent,
+                                     int      subFolderNo)
+    {
+      string title = $"[{subFolderNo}] {parent.Title}";
+
+      AddElement(
+        new ElementBuilder(ElementType.Topic)
+          .WithParent(parent)
+          .WithTitle(title)
+          .WithStatus(ElementStatus.Dismissed)
+          .WithPriority(100.0)
+          .DoNotDisplay(),
+        ElemCreationFlags.ForceCreate,
+        parent.Id,
+        out int elemId
+      );
+
+      if (WaitForElement(elemId, title) == false)
+        return -1;
+
+      return elemId;
+    }
+
+    private int FindDestinationBranch(IElement          parent,
+                                      ElemCreationFlags options)
+    {
+      if (options.HasFlag(ElemCreationFlags.CreateSubfolders) == false)
+        return CanAddElement(parent, options) ? parent.Id : -1;
+
+      var regExSubfolders = new Regex($"\\[([0-9]+)\\] {Regex.Escape(parent.Title)}");
+
+      var subFolders = parent.Children
+                             .Select(child => (child, regExSubfolders.Match(child.Title)))
+                             .Where(p => p.Item2.Success)
+                             .ToList();
+
+      if (subFolders.Any() == false)
+        return CreateAutoSubfolders(parent, 1);
+
+      var subFolder = subFolders.MaxBy(p => int.Parse(p.Item2.Groups[1].Value))
+                                .First();
+
+      if (subFolder.child == null || CanAddElement(subFolder.child, ElemCreationFlags.None) == false)
+        return CreateAutoSubfolders(
+          parent,
+          subFolder.child == null
+            ? 1
+            : int.Parse(subFolder.Item2.Groups[1].Value) + 1
+        );
+
+      return subFolder.child.Id;
+    }
+
+    private bool AddElement(ElementBuilder builder, out int elemId)
+    {
+      elemId = -1;
+
+      //
+      // Select appropriate insertion method, depending on element type and content
+
+      var creationMethod = ElementCreationMethod.AddElement;
+
+      //
+      // Insert the element
+
+      switch (creationMethod)
+      {
+        case ElementCreationMethod.ClipboardContent:
+          if (builder.Type != ElementType.Topic)
+            throw new InvalidOperationException("ElementCreationMethod.ClipboardContent can only create Topics.");
+
+          return ElementWdw.Instance.PasteArticle();
+
+        case ElementCreationMethod.ClipboardElement:
+          return ElementWdw.Instance.PasteElement();
+
+        case ElementCreationMethod.AddElement:
+          elemId = ElementWdw.Instance.AppendAndAddElementFromText(
+            builder.Type,
+            builder.ToElementString());
+
+          return elemId > 0;
+
+        default:
+          throw new NotImplementedException();
+      }
+    }
+
+    private ElemCreationResultCode AddElement(ElementBuilder    builder,
+                                              ElemCreationFlags options,
+                                              int               originalHookId,
+                                              out int           elemId)
+    {
+      elemId = -1;
+
+      try
+      {
+        //
+        // Has a parent been specified for the new element ?
+
+        var parentId = builder.Parent?.Id ?? originalHookId;
+
+        //
+        // Create or use auto subfolder, if requested
+
+        parentId = FindDestinationBranch(this[parentId], options);
+
+        if (parentId <= 0)
+          return ElemCreationResultCode.TooManyChildrenError;
+
+        ElementWdw.Instance.CurrentHookId = parentId;
+
+        //
+        // Has a concept been specified for the new element ?
+
+        //if (builder.Concept != null)
+        //ElementWdw.Instance.SetCurrentConcept(builder.Concept.Id);
+
+        return AddElement(builder, out elemId)
+          ? ElemCreationResultCode.Success
+          : ElemCreationResultCode.UnknownError;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "Exception caught while adding new element");
+        return ElemCreationResultCode.UnknownError;
+      }
+    }
 
     protected virtual ElementBase CreateInternal(int                      id,
                                                  InfContentsElem          cttElem,
@@ -466,57 +580,81 @@ Exception: {ex}",
                                   InfContentsElem          cttElem,
                                   InfElementsElemContainer elElem)
     {
-      var el = Elements.SafeGet(id);
-
-      if (el != null)
+      try
       {
-        var flags = el.Update(cttElem,
-                              elElem);
+        var el = Elements.SafeGet(id);
 
-        if (flags.HasFlag(ElementFieldFlags.Deleted))
+        if (el != null)
+        {
+          var flags = el.Update(cttElem,
+                                elElem);
+
+          if (flags.HasFlag(ElementFieldFlags.Deleted))
+            try
+            {
+              OnElementDeleted?.Invoke(new SMElementArgs(SMA.SMA.Instance,
+                                                         el));
+            }
+            catch (Exception ex)
+            {
+              LogTo.Error(ex,
+                          "Error while signaling Element Deleted event");
+            }
+
+          else
+            try
+            {
+              OnElementModified?.Invoke(new SMElementChangedArgs(SMA.SMA.Instance,
+                                                                 el,
+                                                                 flags));
+            }
+            catch (Exception ex)
+            {
+              LogTo.Error(ex,
+                          "Error while signaling Element Modified event");
+            }
+        }
+
+        else
+        {
+          el = CreateInternal(id,
+                              cttElem,
+                              elElem);
+          Elements[id] = el;
+
           try
           {
-            OnElementDeleted?.Invoke(new SMElementArgs(SMA.SMA.Instance,
+            OnElementCreated?.Invoke(new SMElementArgs(SMA.SMA.Instance,
                                                        el));
           }
           catch (Exception ex)
           {
             LogTo.Error(ex,
-                        "Error while signaling Element Deleted event");
+                        "Error while signaling Element Created event");
           }
-
-        else
-          try
-          {
-            OnElementModified?.Invoke(new SMElementChangedArgs(SMA.SMA.Instance,
-                                                               el,
-                                                               flags));
-          }
-          catch (Exception ex)
-          {
-            LogTo.Error(ex,
-                        "Error while signaling Element Modified event");
-          }
+        }
       }
-
-      else
+      finally
       {
-        el = CreateInternal(id,
-                            cttElem,
-                            elElem);
-        Elements[id] = el;
-
-        try
+        if (id == _waitForElementId)
         {
-          OnElementCreated?.Invoke(new SMElementArgs(SMA.SMA.Instance,
-                                                     el));
-        }
-        catch (Exception ex)
-        {
-          LogTo.Error(ex,
-                      "Error while signaling Element Created event");
+          _waitForElementId = -1;
+          _waitForElementEvent.Set();
         }
       }
+    }
+
+    private bool WaitForElement(int elemId, string title)
+    {
+      _waitForElementEvent.Reset();
+      _waitForElementId = elemId;
+
+      var elem = this[elemId];
+
+      if (elem == null || elem.Title != title)
+        return _waitForElementEvent.Wait(3000);
+
+      return true;
     }
 
     #endregion

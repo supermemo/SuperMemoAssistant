@@ -165,6 +165,7 @@
   <ItemGroup>
     <Compile Include="Extensions\ButtonEx.cs" />
     <Compile Include="Extensions\DependencyObjectEx.cs" />
+    <Compile Include="Extensions\ElemCreationResultEx.cs" />
     <Compile Include="Extensions\ImageEx.cs" />
     <Compile Include="Extensions\JsonEx.cs" />
     <Compile Include="Extensions\ListBoxEx.cs" />
@@ -189,6 +190,9 @@
     <Compile Include="Interop\SuperMemo\Elements\Builders\References.cs" />
     <Compile Include="Interop\SuperMemo\Content\Contents\SoundContent.cs" />
     <Compile Include="Interop\SuperMemo\Content\Contents\TextContent.cs" />
+    <Compile Include="Interop\SuperMemo\Elements\Models\ElemCreationResult.cs" />
+    <Compile Include="Interop\SuperMemo\Elements\Models\ElemCreationFlags.cs" />
+    <Compile Include="Interop\SuperMemo\Elements\Models\ElemCreationResultCode.cs" />
     <Compile Include="Interop\SuperMemo\Elements\Models\ElementStatus.cs" />
     <Compile Include="Interop\SuperMemo\Elements\Types\ElementWrapper.cs" />
     <Compile Include="Interop\SuperMemo\Learning\LearningMode.cs" />

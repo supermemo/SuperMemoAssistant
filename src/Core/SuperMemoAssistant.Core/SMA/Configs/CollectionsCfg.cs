@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/04/16 16:31
+// Created On:   2019/04/16 14:00
+// Modified On:  2019/04/16 14:04
 // Modified By:  Alexis
 
 #endregion
@@ -30,25 +30,18 @@
 
 
 
-using System;
 using System.Collections.Generic;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Builders;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
+using Forge.Forms.Annotations;
 
-namespace SuperMemoAssistant.Interop.SuperMemo.Elements
+namespace SuperMemoAssistant.SMA.Configs
 {
-  public interface IElementRegistry : IRegistry<IElement>
+  [Form(Mode = DefaultFields.None)]
+  public class CollectionsCfg
   {
-    IElement Root { get; }
+    #region Properties & Fields - Public
 
-    bool Add(out List<ElemCreationResult> failed, ElemCreationFlags options, params ElementBuilder[] builders);
-    bool Delete(IElement                  element);
+    public Dictionary<string, CollectionCfg> CollectionsConfig { get; set; } = new Dictionary<string, CollectionCfg>();
 
-    event Action<SMElementArgs>        OnElementCreated;
-    event Action<SMElementChangedArgs> OnElementModified;
-    event Action<SMElementArgs>        OnElementDeleted;
+    #endregion
   }
 }

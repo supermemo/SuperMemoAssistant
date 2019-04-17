@@ -44,6 +44,32 @@ namespace SuperMemoAssistant.Extensions
   {
     #region Methods
 
+    public static string TrimStart(this string str, params string[] starts)
+    {
+      var start = starts.FirstOrDefault(str.StartsWith);
+
+      return start != null
+        ? (start == str ? string.Empty : str.Substring(start.Length))
+        : str;
+    }
+
+    public static string TrimEnd(this string str, params string[] ends)
+    {
+      var end = ends.FirstOrDefault(str.EndsWith);
+
+      return end != null
+        ? (end == str ? string.Empty : str.Substring(0, str.Length - end.Length))
+        : str;
+    }
+
+    public static string Truncate(this string text, int maxLength)
+    {
+      if (string.IsNullOrEmpty(text))
+        return text;
+
+      return text.Length <= maxLength ? text : text.Substring(0, maxLength); 
+    }
+
     public static string Quotify(this string text, bool escapeQuotes = false)
     {
       if (escapeQuotes)

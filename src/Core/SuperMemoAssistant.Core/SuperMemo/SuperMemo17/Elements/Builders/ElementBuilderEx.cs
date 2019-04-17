@@ -55,7 +55,7 @@ Priority={2}
 Begin ElementInfo #1
 Title={3}
 Type={4}
-Status=Memorized
+Status={10}
 FirstGrade=8
 Ordinal=10004.000000
 Repetitions=1
@@ -120,7 +120,7 @@ End Element #1";
           throw new NotImplementedException();
       }
 
-      string title = (GuessTitle(elemBuilder) ?? string.Empty).Replace("\n", "").Replace("\r", "");
+      string title = (elemBuilder.GuessTitle() ?? string.Empty).Replace("\n", "").Replace("\r", "");
       XamlLayout layout = LayoutManager.Instance.GetLayout(elemBuilder.Layout)
         ?? LayoutManager.DefaultOrGenericLayout;
 
@@ -135,13 +135,14 @@ End Element #1";
                               elemBuilder.Reference?.ToString() ?? string.Empty,
                               layout.Build(elemBuilder.Contents),
                               lastRepDate2,
-                              lastRepTime);
+                              lastRepTime,
+                              elemBuilder.Status);
 
 
       return ret;
     }
 
-    private static string GuessTitle(ElementBuilder elemBuilder)
+    private static string GuessTitle(this ElementBuilder elemBuilder)
     {
       var title = elemBuilder.Title ?? elemBuilder.Reference?.Title ?? string.Empty;
 

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/04/16 16:31
+// Created On:   2019/04/16 14:43
+// Modified On:  2019/04/17 00:22
 // Modified By:  Alexis
 
 #endregion
@@ -31,24 +31,33 @@
 
 
 using System;
-using System.Collections.Generic;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Builders;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
 
-namespace SuperMemoAssistant.Interop.SuperMemo.Elements
+namespace SuperMemoAssistant.Interop.SuperMemo.Elements.Models
 {
-  public interface IElementRegistry : IRegistry<IElement>
+  [Serializable]
+  public class ElemCreationResult
   {
-    IElement Root { get; }
+    #region Constructors
 
-    bool Add(out List<ElemCreationResult> failed, ElemCreationFlags options, params ElementBuilder[] builders);
-    bool Delete(IElement                  element);
+    /// <inheritdoc />
+    public ElemCreationResult(ElemCreationResultCode result, ElementBuilder builder)
+    {
+      Result  = result;
+      Builder = builder;
+    }
 
-    event Action<SMElementArgs>        OnElementCreated;
-    event Action<SMElementChangedArgs> OnElementModified;
-    event Action<SMElementArgs>        OnElementDeleted;
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public ElemCreationResultCode Result    { get; set; }
+    public ElementBuilder         Builder   { get; }
+    public int                    ElementId { get; set; } = -1;
+
+    #endregion
   }
 }

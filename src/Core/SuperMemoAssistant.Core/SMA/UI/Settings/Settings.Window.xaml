@@ -5,6 +5,7 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:settings="clr-namespace:SuperMemoAssistant.SMA.UI.Settings"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                 xmlns:controls="clr-namespace:Forge.Forms.Controls;assembly=Forge.Forms"
                  mc:Ignorable="d"
                  KeyDown="Window_KeyDown"
                  Height="768" Width="1024"
@@ -69,6 +70,11 @@
       </TabItem>
       
       <TabItem Header="Browse Plugins" Padding="4, 4" mah:ControlsHelper.HeaderFontSize="18">
+      </TabItem>
+      
+      <TabItem Header="General" Padding="4, 4" mah:ControlsHelper.HeaderFontSize="18">
+        <controls:DynamicForm Model="{Binding CollectionConfig}"
+                              MaxWidth="250" />
       </TabItem>
       
       <TabItem Header="Layouts" Padding="4, 4" mah:ControlsHelper.HeaderFontSize="18">

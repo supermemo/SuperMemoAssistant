@@ -34,6 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.PluginHost;
 using SuperMemoAssistant.Sys;
@@ -148,9 +149,9 @@ namespace SuperMemoAssistant.Interop.Plugins
       if (smaProc.HasExited)
         return false;
 
-      //Task.Factory.StartNew(MonitorSMAProcess,
-      //                      smaProc,
-      //                      TaskCreationOptions.LongRunning);
+      Task.Factory.StartNew(MonitorSMAProcess,
+                            smaProc,
+                            TaskCreationOptions.LongRunning);
 
       smaProc.Exited += (o,
                          ev) => OnSMAStopped();

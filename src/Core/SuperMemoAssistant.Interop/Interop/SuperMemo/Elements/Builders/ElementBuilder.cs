@@ -64,6 +64,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements.Builders
          content) => typeAcc | content.ContentType
       );
 
+      Status = ElementStatus.Memorized;
       ShouldDisplay = true;
       Title         = null;
     }
@@ -107,6 +108,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements.Builders
     public double            Priority           { get; private set; }
     public IElement          Parent             { get; private set; }
     public IConcept          Concept            { get; private set; }
+    public ElementStatus Status {get; private set;}
     public bool              ForceGenerateTitle { get; private set; }
     public List<IConcept>    LinkedConcepts     { get; } = new List<IConcept>();
 
@@ -162,6 +164,15 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements.Builders
     public ElementBuilder WithConcept(IConcept concept)
     {
       Concept = concept;
+      return this;
+    }
+
+    public ElementBuilder WithStatus(ElementStatus status)
+    {
+      if (status == ElementStatus.Deleted)
+        throw new ArgumentException("New element can't be deleted");
+
+      Status = status;
       return this;
     }
 

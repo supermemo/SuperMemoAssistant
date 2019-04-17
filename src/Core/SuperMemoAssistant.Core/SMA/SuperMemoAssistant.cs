@@ -39,6 +39,7 @@ using System.Threading.Tasks;
 using Anotar.Serilog;
 using AsyncEvent;
 using Process.NET;
+using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
@@ -76,6 +77,7 @@ namespace SuperMemoAssistant.SMA
                             b)
           }
         };
+    private CollectionsCfg _collectionsCfg;
 
 
     public static SMA Instance { get; } = new SMA();
@@ -115,7 +117,8 @@ namespace SuperMemoAssistant.SMA
 
     #region Properties & Fields - Public
 
-    public StartupCfg Config    { get; set; }
+    public StartupCfg StartupConfig    { get; set; }
+    public CollectionCfg CollectionConfig {get;set;}
     public IProcess   SMProcess => SMMgmt?.SMProcess;
 
     public System.Diagnostics.Process NativeProcess => SMProcess.Native;
@@ -173,14 +176,14 @@ namespace SuperMemoAssistant.SMA
 
       try
       {
-        Config = LoadConfig();
+        LoadConfig(collection);
 
-        if (new FilePath(Config.SMBinPath).Exists() == false)
-          throw new FileNotFoundException($"Invalid file path for sm executable file: '{Config.SMBinPath}' could not be found.");
+        if (new FilePath(StartupConfig.SMBinPath).Exists() == false)
+          throw new FileNotFoundException($"Invalid file path for sm executable file: '{StartupConfig.SMBinPath}' could not be found.");
 
         // TODO: Look at PE version and select Management Engine version
         SMMgmt = new SM17(collection,
-                          Config.SMBinPath);
+                          StartupConfig.SMBinPath);
 
         await SMMgmt.Start();
         // TODO: Ensure opened collection (windows title) matches parameter
@@ -212,14 +215,33 @@ namespace SuperMemoAssistant.SMA
       return true;
     }
 
-    public StartupCfg LoadConfig()
+    public void LoadConfig(SMCollection collection)
     {
-      return Svc.Configuration.Load<StartupCfg>().Result ?? new StartupCfg();
+      // StartupCfg
+
+      StartupConfig = Svc.Configuration.Load<StartupCfg>().Result ?? new StartupCfg();
+
+      // CollectionsCfg
+
+      _collectionsCfg = Svc.Configuration.Load<CollectionsCfg>().Result ?? new CollectionsCfg();
+      CollectionConfig = _collectionsCfg.CollectionsConfig.SafeGet(collection.GetKnoFilePath());
+
+      if (CollectionConfig == null)
+      {
+        CollectionConfig = new CollectionCfg();
+        _collectionsCfg.CollectionsConfig[collection.GetKnoFilePath()] = CollectionConfig;
+      }
     }
 
     public Task SaveConfig(bool sync)
     {
-      var task = Svc.Configuration.Save<StartupCfg>(Config);
+      var tasks = new[]
+      {
+        Svc.Configuration.Save<StartupCfg>(StartupConfig),
+        Svc.Configuration.Save<CollectionsCfg>(_collectionsCfg),
+      };
+
+      var task = Task.WhenAll(tasks);
 
       if (sync)
         task.Wait();

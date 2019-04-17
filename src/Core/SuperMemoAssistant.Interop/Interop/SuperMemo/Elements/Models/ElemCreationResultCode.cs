@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/04/16 16:31
+// Created On:   2019/04/16 13:29
+// Modified On:  2019/04/16 13:31
 // Modified By:  Alexis
 
 #endregion
@@ -31,24 +31,14 @@
 
 
 using System;
-using System.Collections.Generic;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Builders;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
 
-namespace SuperMemoAssistant.Interop.SuperMemo.Elements
+namespace SuperMemoAssistant.Interop.SuperMemo.Elements.Models
 {
-  public interface IElementRegistry : IRegistry<IElement>
+  [Serializable]
+  public enum ElemCreationResultCode
   {
-    IElement Root { get; }
-
-    bool Add(out List<ElemCreationResult> failed, ElemCreationFlags options, params ElementBuilder[] builders);
-    bool Delete(IElement                  element);
-
-    event Action<SMElementArgs>        OnElementCreated;
-    event Action<SMElementChangedArgs> OnElementModified;
-    event Action<SMElementArgs>        OnElementDeleted;
+    Success,
+    TooManyChildrenError,
+    UnknownError
   }
 }

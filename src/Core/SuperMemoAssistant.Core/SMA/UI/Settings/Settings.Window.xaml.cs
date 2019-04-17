@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 14:12
-// Modified On:  2019/02/25 17:46
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/04/16 17:25
 // Modified By:  Alexis
 
 #endregion
@@ -34,6 +34,7 @@ using System;
 using System.Windows;
 using MahApps.Metro.Controls;
 using SuperMemoAssistant.Extensions;
+using SuperMemoAssistant.SMA.Configs;
 
 namespace SuperMemoAssistant.SMA.UI.Settings
 {
@@ -63,11 +64,23 @@ namespace SuperMemoAssistant.SMA.UI.Settings
 
 
 
+    #region Properties & Fields - Public
+
+    public CollectionCfg CollectionConfig => SMA.Instance.CollectionConfig;
+
+    #endregion
+
+
+
+
     #region Methods Impl
 
     protected override void OnClosed(EventArgs e)
     {
       _instance = null;
+
+      if (CollectionConfig.IsChanged)
+        SMA.Instance.SaveConfig(false);
 
       base.OnClosed(e);
     }

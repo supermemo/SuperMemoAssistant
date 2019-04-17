@@ -257,6 +257,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SMA\Configs\CollectionCfg.cs" />
+    <Compile Include="SMA\Configs\CollectionsCfg.cs" />
     <Compile Include="SMA\Configs\LayoutsCfg.cs" />
     <Compile Include="SMA\UI\Layout\TextEditorEx.cs" />
     <Compile Include="SMA\UI\Settings\Settings.Layouts.xaml.cs">

@@ -64,6 +64,8 @@ namespace SuperMemoAssistant.Interop
     {
       #region Constants & Statics
 
+      public const int DefaultChildrenPerNode = 100;
+
       public const string ReferenceFormat =
         @"<br><br><hr SuperMemo><SuperMemoReference><H5 dir=ltr align=left><FONT style=""COLOR: transparent"" size=1>#SuperMemo Reference:</FONT><BR><FONT class=reference>{0}</FONT></SuperMemoReference>";
 

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/04/16 16:31
+// Created On:   2019/04/16 13:38
+// Modified On:  2019/04/16 17:28
 // Modified By:  Alexis
 
 #endregion
@@ -31,24 +31,22 @@
 
 
 using System;
-using System.Collections.Generic;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Builders;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
 
-namespace SuperMemoAssistant.Interop.SuperMemo.Elements
+namespace SuperMemoAssistant.Interop.SuperMemo.Elements.Models
 {
-  public interface IElementRegistry : IRegistry<IElement>
+  [Flags]
+  [Serializable]
+  public enum ElemCreationFlags
   {
-    IElement Root { get; }
+    None = 0,
 
-    bool Add(out List<ElemCreationResult> failed, ElemCreationFlags options, params ElementBuilder[] builders);
-    bool Delete(IElement                  element);
+    /// <summary>
+    ///   This will insert new elements, even if their parent branch has reached max. children
+    ///   capacity
+    /// </summary>
+    ForceCreate = 1,
 
-    event Action<SMElementArgs>        OnElementCreated;
-    event Action<SMElementChangedArgs> OnElementModified;
-    event Action<SMElementArgs>        OnElementDeleted;
+    /// <summary>Automatically create a folder hierarchy to prevent children overflow in a branch</summary>
+    CreateSubfolders = 2,
   }
 }

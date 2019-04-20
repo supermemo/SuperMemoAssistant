@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/04/16 14:03
-// Modified On:  2019/04/16 17:50
+// Modified On:  2019/04/19 14:17
 // Modified By:  Alexis
 
 #endregion
@@ -50,6 +50,11 @@ namespace SuperMemoAssistant.SMA.Configs
       500,
       StrictValidation = true)]
     public int ChildrenPerBranch { get; set; } = SMConst.Elements.DefaultChildrenPerNode;
+
+    [Field(Name = "Collapse Element window Title bar")]
+    public bool CollapseElementWdwTitleBar { get; set; }
+    [Field(Name = "Collapse KT window Title bar")]
+    public bool CollapseKnowledgeTreeWdwTitleBar { get; set; }
 
     #endregion
 

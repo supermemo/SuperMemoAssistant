@@ -39,6 +39,7 @@ using System.Threading.Tasks;
 using Anotar.Serilog;
 using AsyncEvent;
 using Process.NET;
+using Process.NET.Windows;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo;
@@ -49,6 +50,7 @@ using SuperMemoAssistant.SMA.UI;
 using SuperMemoAssistant.SuperMemo;
 using SuperMemoAssistant.SuperMemo.SuperMemo17;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
 using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.Sys.IO;
 
@@ -185,6 +187,9 @@ namespace SuperMemoAssistant.SMA
         SMMgmt = new SM17(collection,
                           StartupConfig.SMBinPath);
 
+        // TODO: Move somewhere else
+        ElementWdw.Instance.OnAvailable += OnSuperMemoWindowsAvailable;
+
         await SMMgmt.Start();
         // TODO: Ensure opened collection (windows title) matches parameter
       }
@@ -213,6 +218,12 @@ namespace SuperMemoAssistant.SMA
       }
 
       return true;
+    }
+
+    public void ApplySuperMemoWindowStyles()
+    {
+      if (CollectionConfig.CollapseElementWdwTitleBar)
+        WindowStyling.MakeWindowTitleless(ElementWdw.Instance.Handle);
     }
 
     public void LoadConfig(SMCollection collection)
@@ -289,6 +300,11 @@ namespace SuperMemoAssistant.SMA
 
       await OnSMStoppedEvent.InvokeAsync(this,
                                          null);
+    }
+
+    private void OnSuperMemoWindowsAvailable()
+    {
+      ApplySuperMemoWindowStyles();
     }
 
     #endregion

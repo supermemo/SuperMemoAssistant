@@ -159,6 +159,8 @@ End Element #1";
         doc.LoadHtml(txtContent.Text);
 
         title = string.Join(" ", doc.DocumentNode.SelectNodes("//text()").Select(n => n.InnerText));
+        title = HtmlEntity.DeEntitize(title);
+
         return title.Substring(0, Math.Min(title.Length, 80));
       }
 

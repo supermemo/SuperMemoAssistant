@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/04/22 20:58
+// Created On:   2019/04/22 17:20
+// Modified On:  2019/04/22 20:52
 // Modified By:  Alexis
 
 #endregion
@@ -30,31 +30,47 @@
 
 
 
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
-using SuperMemoAssistant.Services.IO.HotKeys;
+using SuperMemoAssistant.Extensions;
+using SuperMemoAssistant.Services;
+using SuperMemoAssistant.Services.Sentry;
 
-namespace SuperMemoAssistant.Services.UI.Configuration
+namespace SuperMemoAssistant.Plugins.Template
 {
-  internal class ConfigurationTemplateSelector : DataTemplateSelector
+  // ReSharper disable once UnusedMember.Global
+  // ReSharper disable once ClassNeverInstantiated.Global
+  public class TemplatePlugin : SentrySMAPluginBase<TemplatePlugin>
   {
+    #region Constructors
+
+    public TemplatePlugin() { }
+
+    #endregion
+
+
+
+
+    #region Properties Impl - Public
+
+    /// <inheritdoc />
+    public override string Name => "Template";
+
+    public override bool HasSettings => false;
+
+    #endregion
+
+
+
+
     #region Methods Impl
 
-    public override DataTemplate SelectTemplate(
-      object           item,
-      DependencyObject container)
+    /// <inheritdoc />
+    protected override void PluginInit()
     {
-      if (container is FrameworkElement element)
-      {
-        if (item is INotifyPropertyChanged)
-          return element.FindResource("ConfigModelTemplate") as DataTemplate;
-
-        if (item is HotKeyManager)
-          return element.FindResource("HotKeyManagerTemplate") as DataTemplate;
-      }
-
-      return null;
+    }
+    
+    /// <inheritdoc />
+    public override void ShowSettings()
+    {
     }
 
     #endregion

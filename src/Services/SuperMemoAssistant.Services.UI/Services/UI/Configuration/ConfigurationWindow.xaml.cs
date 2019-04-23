@@ -46,10 +46,10 @@ namespace SuperMemoAssistant.Services.UI.Configuration
   {
     #region Constructors
 
-    public ConfigurationWindow(params INotifyPropertyChangedEx[] configModels)
+    public ConfigurationWindow(params INotifyPropertyChanged[] configModels)
       : this(null, configModels) { }
 
-    public ConfigurationWindow(HotKeyManager hotKeyManager, params INotifyPropertyChangedEx[] configModels)
+    public ConfigurationWindow(HotKeyManager hotKeyManager, params INotifyPropertyChanged[] configModels)
     {
       InitializeComponent();
 
@@ -85,18 +85,22 @@ namespace SuperMemoAssistant.Services.UI.Configuration
       base.OnClosed(e);
 
       foreach (var m in Models)
-        if (m is INotifyPropertyChangedEx config)
-        {
-          if (SaveMethod != null)
-          {
+        switch (m) {
+          case INotifyPropertyChangedEx config when SaveMethod != null:
             SaveMethod(config);
-          }
+            break;
 
-          else if (config.IsChanged)
-          {
-            config.IsChanged = false;
+          case INotifyPropertyChangedEx config:
+            if (config.IsChanged)
+            {
+              config.IsChanged = false;
+              Svc.Configuration.Save(m, m.GetType()).RunAsync();
+            }
+            break;
+
+          case INotifyPropertyChanged _:
             Svc.Configuration.Save(m, m.GetType()).RunAsync();
-          }
+            break;
         }
     }
 

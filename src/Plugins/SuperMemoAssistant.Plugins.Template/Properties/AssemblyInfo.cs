@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SuperMemoAssistant.Interop")]
-[assembly: AssemblyDescription("Enables interactions with SuperMemo Assistant for Plugin developers")]
+[assembly: AssemblyTitle("SuperMemoAssistant.Plugins.Template")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Alex Incogito")]
-[assembly: AssemblyProduct("SuperMemoAssistant.Interop")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("SuperMemoAssistant.Plugins.Template")]
+[assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("fd0e1be8-bed3-4ab0-a9c8-022a2dbc8450")]
+[assembly: Guid("cd2989cb-b610-40ad-995a-aa5a28fbbbfe")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -31,7 +31,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.150.133")]
-[assembly: AssemblyFileVersion("0.1.148.133")]
+[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyFileVersion("0.1.0.0")]
 
-[assembly: AssemblyInformationalVersion("0.1.282")]
+[assembly: AssemblyInformationalVersion("0.1.0")]

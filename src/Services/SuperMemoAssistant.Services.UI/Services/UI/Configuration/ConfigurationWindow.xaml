@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:Forge.Forms.Controls;assembly=Forge.Forms"
         xmlns:configuration="clr-namespace:SuperMemoAssistant.Services.UI.Configuration"
-        xmlns:componentModel="clr-namespace:SuperMemoAssistant.Sys.ComponentModel;assembly=SuperMemoAssistant.Interop"
         xmlns:hotKeys="clr-namespace:SuperMemoAssistant.Services.IO.HotKeys;assembly=SuperMemoAssistant.Interop"
         xmlns:uiHotKeys="clr-namespace:SuperMemoAssistant.Services.UI.Configuration.HotKeys"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System"
         mc:Ignorable="d"
         Title="ConfigurationWindow" Height="550" Width="800"
         KeyDown="Window_KeyDown"
@@ -25,18 +25,18 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Clean/Clean.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Olive.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
-      </ResourceDictionary.MergedDictionaries>  
-      
+      </ResourceDictionary.MergedDictionaries>
+
       <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MetroButton}">
         <Setter Property="FontSize" Value="13" />
         <Setter Property="FontWeight" Value="DemiBold" />
       </Style>
-      
+
       <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource MetroTabItem}">
         <Setter Property="mah:ControlsHelper.HeaderFontSize" Value="18" />
       </Style>
 
-      <configuration:ConfigurationTemplateSelector x:Key="ConfigurationTemplateSelector"/>
+      <configuration:ConfigurationTemplateSelector x:Key="ConfigurationTemplateSelector" />
     </ResourceDictionary>
   </Window.Resources>
 
@@ -52,14 +52,14 @@
                 ItemsSource="{Binding Models}"
                 ContentTemplateSelector="{StaticResource ConfigurationTemplateSelector}">
       <TabControl.Resources>
-        <DataTemplate x:Key="ConfigModelTemplate" DataType="{x:Type componentModel:INotifyPropertyChangedEx}">
-          <ScrollViewer>
-            <controls:DynamicForm Model="{Binding}" />
-          </ScrollViewer>
-        </DataTemplate>
         <DataTemplate x:Key="HotKeyManagerTemplate" DataType="{x:Type hotKeys:HotKeyManager}">
           <!--<uiHotKeys:HotKeySettings HotKeyManager="{Binding Path=.}" />-->
           <uiHotKeys:HotKeySettings HotKeyManager="{Binding Path=DataContext.HotKeyManager, ElementName=tcSettings}" />
+        </DataTemplate>
+        <DataTemplate x:Key="ConfigModelTemplate" DataType="{x:Type componentModel:INotifyPropertyChanged}">
+          <ScrollViewer>
+            <controls:DynamicForm Model="{Binding}" />
+          </ScrollViewer>
         </DataTemplate>
       </TabControl.Resources>
     </TabControl>

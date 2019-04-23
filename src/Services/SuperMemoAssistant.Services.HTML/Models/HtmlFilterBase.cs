@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/04/22 20:58
+// Created On:   2019/04/17 13:41
+// Modified On:  2019/04/17 13:43
 // Modified By:  Alexis
 
 #endregion
@@ -30,31 +30,51 @@
 
 
 
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
-using SuperMemoAssistant.Services.IO.HotKeys;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Forge.Forms;
+using Newtonsoft.Json;
+using SuperMemoAssistant.Sys.Windows.Input;
 
-namespace SuperMemoAssistant.Services.UI.Configuration
+namespace SuperMemoAssistant.Services.HTML.Models
 {
-  internal class ConfigurationTemplateSelector : DataTemplateSelector
+  public abstract class HtmlFilterBase
   {
-    #region Methods Impl
+    #region Properties & Fields - Public
 
-    public override DataTemplate SelectTemplate(
-      object           item,
-      DependencyObject container)
+    public ObservableCollection<HtmlFilter> Children { get; set; } = new ObservableCollection<HtmlFilter>();
+
+    [JsonIgnore]
+    public ICommand NewCommand => new AsyncRelayCommand(NewFilter);
+
+    [JsonIgnore]
+    public ICommand DeleteCommand => new AsyncRelayCommand<HtmlFilter>(DeleteFilter);
+
+    #endregion
+
+
+
+
+    #region Methods
+
+    private async Task NewFilter()
     {
-      if (container is FrameworkElement element)
-      {
-        if (item is INotifyPropertyChanged)
-          return element.FindResource("ConfigModelTemplate") as DataTemplate;
+      var filter = new HtmlFilter();
+      var res    = await Show.Window().For<HtmlFilter>(filter);
 
-        if (item is HotKeyManager)
-          return element.FindResource("HotKeyManagerTemplate") as DataTemplate;
-      }
+      if (res.Action is "cancel")
+        return;
 
-      return null;
+      Children.Add(filter);
+    }
+
+    private async Task DeleteFilter(HtmlFilter filter)
+    {
+      var res = await Show.Window().For(new Confirmation("Are you sure ?"));
+
+      if (res.Model.Confirmed)
+        Children.Remove(filter);
     }
 
     #endregion

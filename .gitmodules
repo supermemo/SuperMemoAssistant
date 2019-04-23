@@ -28,3 +28,6 @@
 [submodule "src/Plugins/SuperMemoAssistant.Plugins.Feeds"]
 	path = src/Plugins/SuperMemoAssistant.Plugins.Feeds
 	url = https://github.com/supermemo/SuperMemoAssistant.Plugins.Feeds.git
+[submodule "src/Plugins/SuperMemoAssistant.Plugins.Import"]
+	path = src/Plugins/SuperMemoAssistant.Plugins.Import
+	url = https://github.com/supermemo/SuperMemoAssistant.Plugins.Import.git

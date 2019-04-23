@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/04/22 20:58
+// Created On:   2019/04/13 18:49
+// Modified On:  2019/04/13 18:49
 // Modified By:  Alexis
 
 #endregion
@@ -30,33 +30,11 @@
 
 
 
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
-using SuperMemoAssistant.Services.IO.HotKeys;
-
-namespace SuperMemoAssistant.Services.UI.Configuration
+namespace SuperMemoAssistant.Services.HTML.Models
 {
-  internal class ConfigurationTemplateSelector : DataTemplateSelector
+  public enum HtmlFilterType
   {
-    #region Methods Impl
-
-    public override DataTemplate SelectTemplate(
-      object           item,
-      DependencyObject container)
-    {
-      if (container is FrameworkElement element)
-      {
-        if (item is INotifyPropertyChanged)
-          return element.FindResource("ConfigModelTemplate") as DataTemplate;
-
-        if (item is HotKeyManager)
-          return element.FindResource("HotKeyManagerTemplate") as DataTemplate;
-      }
-
-      return null;
-    }
-
-    #endregion
+    Regex,
+    XPath,
   }
 }

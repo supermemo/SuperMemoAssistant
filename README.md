@@ -9,6 +9,7 @@ Did you ever wish you could use **PDF** documents ? Or integrate **LaTeX** right
 - [How does it work ?](#how-does-it-work-)
 - [Downloads](#downloads)
 - [Installation and Usage](#installation-and-usage)
+- [Plugins](#plugins)
 - [Feature requests](#feature-requests)
 
 ### What can it do ?
@@ -36,6 +37,13 @@ In short, SMA is an interface to programmatically **interact with SuperMemo**.
 ### Installation and Usage
 
 *SMA* will be announced soon.
+
+### Plugins
+
+- [Incremental PDF](https://github.com/supermemo/SuperMemoAssistant.Plugins.PDF) unlocks the power of SuperMemo for PDF files.
+- [LaTeX](https://github.com/supermemo/SuperMemoAssistant.Plugins.LateX) integrates LaTeX in your SuperMemo elements.
+- [Feeds](https://github.com/supermemo/SuperMemoAssistant.Plugins.Feeds) automatically imports your favourite RSS/Atom feeds in your collection.
+- [Dictionary](https://github.com/supermemo/SuperMemoAssistant.Plugins.Dictionary) lookups words definitions, and inserts them in your collection if desired.
 
 ### Feature requests
 

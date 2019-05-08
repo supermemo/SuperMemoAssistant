@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/03/02 18:29
-// Modified On:  2019/04/10 23:11
+// Modified On:  2019/04/26 01:55
 // Modified By:  Alexis
 
 #endregion
@@ -69,9 +69,9 @@ namespace SuperMemoAssistant.Services.UI.Configuration
 
     #region Properties & Fields - Public
 
-    public ObservableCollection<object>     Models        { get; } = new ObservableCollection<object>();
-    public HotKeyManager                    HotKeyManager { get; }
-    public Action<INotifyPropertyChangedEx> SaveMethod    { get; set; }
+    public ObservableCollection<object>   Models        { get; } = new ObservableCollection<object>();
+    public HotKeyManager                  HotKeyManager { get; }
+    public Action<INotifyPropertyChanged> SaveMethod    { get; set; }
 
     #endregion
 
@@ -85,8 +85,9 @@ namespace SuperMemoAssistant.Services.UI.Configuration
       base.OnClosed(e);
 
       foreach (var m in Models)
-        switch (m) {
-          case INotifyPropertyChangedEx config when SaveMethod != null:
+        switch (m)
+        {
+          case INotifyPropertyChanged config when SaveMethod != null:
             SaveMethod(config);
             break;
 
@@ -96,6 +97,7 @@ namespace SuperMemoAssistant.Services.UI.Configuration
               config.IsChanged = false;
               Svc.Configuration.Save(m, m.GetType()).RunAsync();
             }
+
             break;
 
           case INotifyPropertyChanged _:

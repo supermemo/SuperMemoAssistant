@@ -45,7 +45,7 @@ using SuperMemoAssistant.SMA.Hooks;
 using SuperMemoAssistant.SuperMemo.Hooks;
 using SuperMemoAssistant.SuperMemo.SuperMemo17;
 
-namespace SuperMemoAssistant.SuperMemo
+namespace SuperMemoAssistant.SuperMemo.Common
 {
   /// <summary>Convenience class that implements helpers</summary>
   public abstract class SuperMemoBase

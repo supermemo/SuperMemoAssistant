@@ -33,6 +33,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using HtmlAgilityPack;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Contents;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Builders;
@@ -139,7 +140,30 @@ End Element #1";
                               elemBuilder.Status);
 
 
+      ret = EncodeForSupermemo(ret);
+
       return ret;
+    }
+
+    private static string EncodeForSupermemo(string elemDesc)
+    {
+      StringBuilder encodedElemDesc = new StringBuilder();
+
+      foreach (var c in elemDesc.ToCharArray())
+      {
+        if (c <= 127)
+        {
+          encodedElemDesc.Append(c);
+          continue;
+        }
+
+        var utfBytes = Encoding.UTF8.GetBytes(new[] { c });
+
+        foreach (var utfByte in utfBytes)
+          encodedElemDesc.Append(Encoding.Default.GetChars(new[] { utfByte }));
+      }
+
+      return encodedElemDesc.ToString();
     }
 
     private static string GuessTitle(this ElementBuilder elemBuilder)

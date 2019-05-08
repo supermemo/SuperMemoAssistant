@@ -29,6 +29,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -38,6 +39,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -48,7 +50,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
-    <LangVersion>default</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>C:\Users\Lila\AppData\Roaming\SuperMemoAssistant\</OutputPath>
@@ -59,7 +61,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
-    <LangVersion>default</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-InProd|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -70,6 +72,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-InProd|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -80,7 +83,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
-    <LangVersion>default</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>robot-24.ico</ApplicationIcon>
@@ -98,18 +101,34 @@
     <Reference Include="DeviceId, Version=4.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\DeviceId.4.2.0\lib\net40\DeviceId.dll</HintPath>
     </Reference>
+    <Reference Include="FastMember, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FastMember.1.4.1\lib\net461\FastMember.dll</HintPath>
+    </Reference>
     <Reference Include="FontAwesome5, Version=1.0.0.0, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\FontAwesome5.1.0.11\lib\net40\FontAwesome5.dll</HintPath>
     </Reference>
     <Reference Include="FontAwesome5.WPF, Version=1.0.11.91, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\FontAwesome5.1.0.11\lib\net40\FontAwesome5.WPF.dll</HintPath>
     </Reference>
+    <Reference Include="Forge.Forms, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Forge.Forms.1.1.0\lib\net461\Forge.Forms.dll</HintPath>
+    </Reference>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer, Version=2.4.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Humanizer.Core.2.4.2\lib\netstandard2.0\Humanizer.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\MahApps.Metro.1.6.5\lib\net47\MahApps.Metro.dll</HintPath>
     </Reference>
+    <Reference Include="MaterialDesignColors, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\MaterialDesignColors.1.1.3\lib\net45\MaterialDesignColors.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=2.5.0.1205, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\MaterialDesignThemes.2.5.0.1205\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Web.XmlTransform, Version=3.0.0.34420, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Microsoft.Web.Xdt.3.0.0\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
     </Reference>
@@ -209,17 +228,9 @@
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\libs\Forge.Forms\Forge.Forms\src\Forge.Forms\Forge.Forms.csproj">
-      <Project>{4e0c323d-5afc-4105-815f-587346aa5321}</Project>
-      <Name>Forge.Forms</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\src\Core\SuperMemoAssistant.Core\SuperMemoAssistant.Core.csproj">
       <Project>{7550628d-0630-4a42-b0b7-55d26f981365}</Project>
       <Name>SuperMemoAssistant.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\SuperMemoAssistant.Hooks.InjectLib\SuperMemoAssistant.Hooks.InjectLib.csproj">
-      <Project>{d5086d5e-84a6-4c0d-b6f2-d1b82c5fb487}</Project>
-      <Name>SuperMemoAssistant.Hooks.InjectLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\SuperMemoAssistant.Interop\SuperMemoAssistant.Interop.csproj">
       <Project>{fd0e1be8-bed3-4ab0-a9c8-022a2dbc8450}</Project>

@@ -98,6 +98,9 @@ namespace SuperMemoAssistant.Interop.Plugins
         return;
       }
 
+      // Setup assembly resolution
+      AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
+
       // Load & create plugin
       _plugin = LoadAssembliesAndCreatePluginInstance(
         dependenciesAssemblies,
@@ -129,7 +132,6 @@ namespace SuperMemoAssistant.Interop.Plugins
       if (StartMonitoringSMAProcess(smaProcess) == false)
         Exit(HostConst.ExitParentExited);
     }
-
 
     /// <inheritdoc />
     public void Dispose()

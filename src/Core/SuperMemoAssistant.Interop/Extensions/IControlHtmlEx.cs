@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/04/22 15:16
-// Modified On:  2019/04/22 17:39
+// Created On:   2019/04/24 14:57
+// Modified On:  2019/04/24 14:59
 // Modified By:  Alexis
 
 #endregion
@@ -30,17 +30,25 @@
 
 
 
-using System;
+using mshtml;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
+using SuperMemoAssistant.Sys.COM.InternetExplorer;
 
-namespace SuperMemoAssistant.Services.HTML.Models
+namespace SuperMemoAssistant.Extensions
 {
-  [Serializable]
-  public enum UrlPatternType
+  public static class IControlHtmlEx
   {
-    Hostname,
-    StartWith,
-    Contains,
-    EndWith,
-    Regex,
+    #region Methods
+
+    public static IHTMLDocument2 GetDocument(this IControlHtml ctrlHtml)
+    {
+      var hwnd = ctrlHtml.DocumentHwnd;
+
+      return hwnd != null
+        ? IEComHelper.GetDocumentFromHwnd(hwnd.Value)
+        : null;
+    }
+
+    #endregion
   }
 }

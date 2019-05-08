@@ -2,7 +2,6 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\..\..\packages\Anotar.Serilog.Fody.4.8.1\build\Anotar.Serilog.Fody.props" Condition="Exists('..\..\..\packages\Anotar.Serilog.Fody.4.8.1\build\Anotar.Serilog.Fody.props')" />
   <Import Project="..\..\..\packages\PropertyChanged.Fody.2.6.1\build\PropertyChanged.Fody.props" Condition="Exists('..\..\..\packages\PropertyChanged.Fody.2.6.1\build\PropertyChanged.Fody.props')" />
-  <Import Project="..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props" Condition="Exists('..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props')" />
   <Import Project="..\..\..\packages\ModuleInit.Fody.1.9.0\build\ModuleInit.Fody.props" Condition="Exists('..\..\..\packages\ModuleInit.Fody.1.9.0\build\ModuleInit.Fody.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -81,14 +80,29 @@
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
+    <Reference Include="FastMember, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FastMember.1.4.1\lib\net461\FastMember.dll</HintPath>
+    </Reference>
     <Reference Include="FontAwesome5, Version=1.0.0.0, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\FontAwesome5.1.0.11\lib\net40\FontAwesome5.dll</HintPath>
     </Reference>
     <Reference Include="FontAwesome5.WPF, Version=1.0.11.91, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\FontAwesome5.1.0.11\lib\net40\FontAwesome5.WPF.dll</HintPath>
     </Reference>
+    <Reference Include="Forge.Forms, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Forge.Forms.1.1.0\lib\net461\Forge.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer, Version=2.4.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Humanizer.Core.2.4.2\lib\netstandard2.0\Humanizer.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\MahApps.Metro.1.6.5\lib\net47\MahApps.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesignColors, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\MaterialDesignColors.1.1.3\lib\net45\MaterialDesignColors.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=2.5.0.1205, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\MaterialDesignThemes.2.5.0.1205\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="ModuleInit, Version=1.9.0.0, Culture=neutral, PublicKeyToken=409b3227471b0f0d, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\ModuleInit.Fody.1.9.0\lib\net452\ModuleInit.dll</HintPath>
@@ -116,9 +130,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Visualize, Version=1.1.4.0, Culture=neutral, PublicKeyToken=409b3227471b0f0d, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Visualize.Fody.1.1.4\lib\net452\Visualize.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -145,10 +156,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\libs\Forge.Forms\Forge.Forms\src\Forge.Forms\Forge.Forms.csproj">
-      <Project>{4e0c323d-5afc-4105-815f-587346aa5321}</Project>
-      <Name>Forge.Forms</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\SuperMemoAssistant.Interop\SuperMemoAssistant.Interop.csproj">
       <Project>{fd0e1be8-bed3-4ab0-a9c8-022a2dbc8450}</Project>
       <Name>SuperMemoAssistant.Interop</Name>
@@ -183,7 +190,6 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\..\..\packages\ModuleInit.Fody.1.9.0\build\ModuleInit.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\ModuleInit.Fody.1.9.0\build\ModuleInit.Fody.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Visualize.Fody.1.1.4\build\Visualize.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Fody.4.2.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.4.2.1\build\Fody.targets'))" />
     <Error Condition="!Exists('..\..\..\packages\PropertyChanged.Fody.2.6.1\build\PropertyChanged.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\PropertyChanged.Fody.2.6.1\build\PropertyChanged.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.4.8.1\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.4.8.1\build\Anotar.Serilog.Fody.props'))" />

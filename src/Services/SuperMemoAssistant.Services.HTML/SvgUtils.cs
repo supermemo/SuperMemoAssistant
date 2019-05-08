@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 22:02
-// Modified On:  2019/03/02 03:28
+// Created On:   2019/04/26 13:42
+// Modified On:  2019/04/26 13:57
 // Modified By:  Alexis
 
 #endregion
@@ -31,76 +31,34 @@
 
 
 using System;
-using Process.NET;
-using Process.NET.Windows;
-using SuperMemoAssistant.Interop.SuperMemo.UI;
+using System.Drawing;
+using Anotar.Serilog;
+using HtmlAgilityPack;
+using Svg;
 
-namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
+namespace SuperMemoAssistant.Services.HTML
 {
-  public abstract class WdwBase : /*UIAutomationBase,*/MarshalByRefObject, IWdw
+  public static class SvgUtils
   {
-    #region Properties & Fields - Non-Public
-
-    private IWindow _window = null;
-
-    protected abstract IntPtr WindowHandle { get; }
-
-
-    protected IProcess SMProcess => SMA.SMA.Instance.SMProcess;
-
-    #endregion
-
-
-
-
-    #region Properties & Fields - Public
-
-    public IWindow Window => _window ?? (_window = GetWindow());
-
-    #endregion
-
-
-
-
-    #region Properties Impl - Public
-
-    /// <inheritdoc />
-    public IntPtr Handle => WindowHandle;
-
-    #endregion
-
-
-
-
     #region Methods
 
-    private IWindow GetWindow()
+    public static Image ToImage(this HtmlNode svgNode)
     {
-      return new RemoteWindow(SMProcess,
-                              WindowHandle);
+      if (svgNode.Name.ToLower() != "svg")
+        return null;
+
+      try
+      {
+        var svgDoc = SvgDocument.FromSvg<SvgDocument>(svgNode.OuterHtml);
+
+        return svgDoc.Draw();
+      }
+      catch (Exception ex)
+      {
+        LogTo.Warning(ex, "Exception while converting html svg to image");
+        return null;
+      }
     }
-
-    #endregion
-
-
-
-
-    #region Methods Abs
-
-    //
-    // Inheritance
-
-    public abstract string WindowClass { get; }
-
-    #endregion
-
-
-
-
-    #region Events
-
-    /// <inheritdoc />
-    public abstract event Action OnAvailable;
 
     #endregion
   }

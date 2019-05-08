@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/04/22 14:09
-// Modified On:  2019/04/22 14:14
+// Modified On:  2019/04/29 01:39
 // Modified By:  Alexis
 
 #endregion
@@ -37,7 +37,9 @@ using System.Text.RegularExpressions;
 using System.Xml.XPath;
 using Anotar.Serilog;
 using HtmlAgilityPack;
+using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Services.HTML.Models;
+using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.Services.HTML.Extensions
 {
@@ -50,9 +52,9 @@ namespace SuperMemoAssistant.Services.HTML.Extensions
       switch (filter.Type)
       {
         case HtmlFilterType.Regex:
-          var filteredContents = new List<string>();
-          var regex            = new Regex(filter.Filter, RegexOptions.Singleline);
-          var matches          = regex.Matches(content);
+          var filteredGroups = new List<Group>();
+          var regex          = new Regex(filter.Filter, RegexOptions.Singleline);
+          var matches        = regex.Matches(content);
 
           for (int i = 0; i < matches.Count; i++)
           {
@@ -62,13 +64,50 @@ namespace SuperMemoAssistant.Services.HTML.Extensions
               continue;
 
             for (int j = 1; j < match.Groups.Count; j++)
-              filteredContents.Add(match.Groups[j].Value);
+              filteredGroups.Add(match.Groups[j]);
           }
 
-          if (filteredContents.Any() == false)
-            return null;
+          if (filteredGroups.None())
+            return filter.Excluding ? content : null;
 
-          content = string.Join("\r\n", filteredContents);
+          if (filter.Excluding)
+          {
+            var spans = new List<Span>();
+            var tmpSpans = filteredGroups.Select(g => new Span(g.Index, g.Index + g.Length - 1))
+                                         .OrderBy(s => s.StartIdx)
+                                         .ToList();
+
+            var lastSpan = tmpSpans[0];
+
+            for (int i = 1; i < tmpSpans.Count; i++)
+            {
+              var itSpan = tmpSpans[1];
+
+              if (lastSpan.Overlaps(itSpan, out _))
+              {
+                lastSpan += itSpan;
+              }
+
+              else
+              {
+                spans.Add(lastSpan);
+                lastSpan = itSpan;
+              }
+            }
+
+            spans.Add(lastSpan);
+
+            foreach (var span in spans.OrderByDescending(s => s.StartIdx))
+              content = content.Remove(span.StartIdx, span.Length);
+
+            return content;
+          }
+
+          else
+          {
+            content = string.Join("\r\n", filteredGroups.Select(g => g.Value));
+          }
+
           break;
 
         case HtmlFilterType.XPath:
@@ -77,22 +116,28 @@ namespace SuperMemoAssistant.Services.HTML.Extensions
             HtmlDocument htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(content);
 
-            filteredContents = htmlDoc.DocumentNode
-                                      .SelectNodes(filter.Filter)
-                                      ?.Select(n => n.OuterHtml)
-                                      .ToList();
+            var filteredNodes = htmlDoc.DocumentNode
+                                       .SelectNodes(filter.Filter);
 
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (filteredContents == null || filteredContents.Any() == false)
-              return null;
+            if (filteredNodes == null || filteredNodes.None())
+              return filter.Excluding ? content : null;
 
-            content = string.Join("\r\n", filteredContents);
+            if (filter.Excluding)
+            {
+              foreach (var node in filteredNodes)
+                node.Remove();
+
+              return htmlDoc.ToHtml();
+            }
+
+            content = string.Join("\r\n", filteredNodes.Select(n => n.OuterHtml));
           }
           catch (Exception ex)
           {
             LogTo.Error(ex, $"Invalid XPath filter '{filter}'");
             throw;
           }
+
           break;
 
         default:
@@ -101,9 +146,26 @@ namespace SuperMemoAssistant.Services.HTML.Extensions
 
       if (filter.Children.Any())
       {
-        var subContents = filter.Children.Select(f => f.Filter(content)).ToList();
+        var excSubFilters = filter.Children
+                                  .Where(f => f.Excluding)
+                                  .ToList();
+        var incSubFilters = filter.Children
+                                  .Where(f => f.Excluding == false)
+                                  .ToList();
 
-        if (subContents.Any() == false)
+        // Exclude
+        foreach (var excludingFilter in excSubFilters)
+          content = excludingFilter.Filter(content);
+        
+        // Subfilters pass
+        if (incSubFilters.None())
+          return content;
+
+        var subContents = incSubFilters.Select(f => f.Filter(content))
+                                       .Where(c => string.IsNullOrWhiteSpace(c) == false)
+                                       .ToList();
+
+        if (subContents.None())
           return null;
 
         return string.Join("\r\n", subContents);

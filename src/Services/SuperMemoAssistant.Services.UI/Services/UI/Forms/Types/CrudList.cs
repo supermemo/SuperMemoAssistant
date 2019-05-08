@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/04/22 16:16
-// Modified On:  2019/04/22 17:37
+// Modified On:  2019/04/29 12:32
 // Modified By:  Alexis
 
 #endregion
@@ -37,10 +37,10 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using Forge.Forms;
-using Newtonsoft.Json;
 using PropertyChanged;
 using SuperMemoAssistant.Sys.Windows.Input;
 
@@ -51,28 +51,12 @@ namespace SuperMemoAssistant.Services.UI.Forms.Types
   {
     #region Constructors
 
-    public CrudList() { }
-
-    public CrudList(string title)
-      : base(title) { }
-
-    public CrudList(string title, List<T> list)
-      : base(title)
-    {
-      BackingCollection = new ObservableCollection<T>(list);
-    }
-
-    public CrudList(string title, IEnumerable<T> collection)
-      : base(title)
-    {
-      BackingCollection = new ObservableCollection<T>(collection);
-    }
-
     /// <inheritdoc />
     public CrudList(string title, ObservableCollection<T> backingCollection)
       : base(title)
     {
       BackingCollection = backingCollection;
+      CollectionView = CollectionViewSource.GetDefaultView(this);
     }
 
     #endregion
@@ -82,13 +66,10 @@ namespace SuperMemoAssistant.Services.UI.Forms.Types
 
     #region Properties & Fields - Public
 
-    public ObservableCollection<T> BackingCollection { get; set; } = new ObservableCollection<T>();
+    public ObservableCollection<T> BackingCollection { get; set; }
 
-    [JsonIgnore]
-    public Func<CrudList<T>, Task> NewFunc { get; set; }
-    [JsonIgnore]
-    public Func<CrudList<T>, T, Task> EditFunc { get; set; }
-    [JsonIgnore]
+    public Func<CrudList<T>, Task>    NewFunc    { get; set; }
+    public Func<CrudList<T>, T, Task> EditFunc   { get; set; }
     public Func<CrudList<T>, T, Task> DeleteFunc { get; set; }
 
     #endregion
@@ -197,24 +178,24 @@ namespace SuperMemoAssistant.Services.UI.Forms.Types
       if (res.Action is "cancel")
         return;
 
-      Add(item);
+      Application.Current.Dispatcher.Invoke(() => Add(item));
     }
 
     protected virtual Task DeleteItem(T item)
     {
-      if (EditFunc != null)
-        return EditFunc(this, item);
+      if (DeleteFunc != null)
+        return DeleteFunc(this, item);
 
       if (Show.Window().For(new Confirmation("Are you sure ?")).Result.Model.Confirmed)
-        Remove(item);
+        Application.Current.Dispatcher.Invoke(() => Remove(item));
 
       return Task.CompletedTask;
     }
 
     protected virtual Task EditItem(T item)
     {
-      if (DeleteFunc != null)
-        return DeleteFunc(this, item);
+      if (EditFunc != null)
+        return EditFunc(this, item);
 
       return Show.Window().For<T>(item);
     }
@@ -251,14 +232,21 @@ namespace SuperMemoAssistant.Services.UI.Forms.Types
   [DoNotNotify]
   public abstract class CrudList : IEnumerable, INotifyCollectionChanged, INotifyPropertyChanged
   {
-    #region Constructors
+    #region Properties & Fields - Non-Public
 
-    protected CrudList() { }
+    private string            _sortingPropertyName;
+    private ListSortDirection _sortingDirection = ListSortDirection.Ascending;
+
+    #endregion
+
+
+
+
+    #region Constructors
 
     protected CrudList(string title)
     {
-      Title = title;
-      CollectionView = CollectionViewSource.GetDefaultView(this);
+      Title          = title;
     }
 
     #endregion
@@ -268,9 +256,43 @@ namespace SuperMemoAssistant.Services.UI.Forms.Types
 
     #region Properties & Fields - Public
 
-    public string            Title               { get; set; }
-    public string            SortingPropertyName { get; set; }
-    public ListSortDirection SortingDirection    { get; set; } = ListSortDirection.Ascending;
+    public string     Title  { get; set; }
+    public GridLength Height { get; set; } = new GridLength(1, GridUnitType.Star);
+    public string SortingPropertyName
+    {
+      get => _sortingPropertyName;
+      set
+      {
+        _sortingPropertyName = value;
+        UpdateSortDescriptions();
+      }
+    }
+    public ListSortDirection SortingDirection
+    {
+      get => _sortingDirection;
+      set
+      {
+        _sortingDirection = value;
+        UpdateSortDescriptions();
+      }
+    }
+
+
+    public ICollectionView CollectionView { get; protected set; }
+
+    #endregion
+
+
+
+
+    #region Methods
+
+    private void UpdateSortDescriptions()
+    {
+      CollectionView.SortDescriptions.Clear();
+      CollectionView.SortDescriptions.Add(new SortDescription(SortingPropertyName, SortingDirection));
+      CollectionView.Refresh();
+    }
 
     #endregion
 
@@ -290,24 +312,6 @@ namespace SuperMemoAssistant.Services.UI.Forms.Types
 
 
 
-
-    public ICollectionView CollectionView { get; }
-
-    private void UpdateSortDescriptions()
-    {
-      CollectionView.SortDescriptions.Clear();
-      CollectionView.SortDescriptions.Add(new SortDescription(SortingPropertyName, SortingDirection));
-      CollectionView.Refresh();
-    }
-    
-    public void OnSortingPropertyNameChanged(object before, object after)
-    {
-      UpdateSortDescriptions();
-    }
-    public void OnSortingDirectionChanged(object before, object after)
-    {
-      UpdateSortDescriptions();
-    }
 
     #region Events
 

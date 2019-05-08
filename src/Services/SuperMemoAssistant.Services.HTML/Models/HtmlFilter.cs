@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/04/22 14:31
-// Modified On:  2019/04/22 15:43
+// Modified On:  2019/04/29 01:15
 // Modified By:  Alexis
 
 #endregion
@@ -64,6 +64,9 @@ namespace SuperMemoAssistant.Services.HTML.Models
 
 
     #region Properties & Fields - Public
+
+    [Field(Name = "Exclude matches ?")]
+    public bool Excluding { get; set; } = false;
 
     [Field(Name = "Filter type")]
     [SelectFrom(typeof(HtmlFilterType),

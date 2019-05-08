@@ -38,10 +38,10 @@ namespace SuperMemoAssistant.Extensions
   {
     #region Methods
 
-    public static Group SafeGet(this GroupCollection col, int i)
+    public static string SafeGet(this GroupCollection col, int i)
     {
       return col.Count >= i + 1
-        ? col[i]
+        ? col[i].Value
         : null;
     }
 

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/04/22 15:16
-// Modified On:  2019/04/22 17:39
+// Created On:   2019/02/25 22:02
+// Modified On:  2019/03/02 03:28
 // Modified By:  Alexis
 
 #endregion
@@ -31,16 +31,77 @@
 
 
 using System;
+using Process.NET;
+using Process.NET.Windows;
+using SuperMemoAssistant.Interop.SuperMemo.UI;
 
-namespace SuperMemoAssistant.Services.HTML.Models
+namespace SuperMemoAssistant.SuperMemo.Common.UI
 {
-  [Serializable]
-  public enum UrlPatternType
+  public abstract class WdwBase : /*UIAutomationBase,*/MarshalByRefObject, IWdw
   {
-    Hostname,
-    StartWith,
-    Contains,
-    EndWith,
-    Regex,
+    #region Properties & Fields - Non-Public
+
+    private IWindow _window = null;
+
+    protected abstract IntPtr WindowHandle { get; }
+
+
+    protected IProcess SMProcess => SMA.SMA.Instance.SMProcess;
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public IWindow Window => _window ?? (_window = GetWindow());
+
+    #endregion
+
+
+
+
+    #region Properties Impl - Public
+
+    /// <inheritdoc />
+    public IntPtr Handle => WindowHandle;
+
+    #endregion
+
+
+
+
+    #region Methods
+
+    private IWindow GetWindow()
+    {
+      return new RemoteWindow(SMProcess,
+                              WindowHandle);
+    }
+
+    #endregion
+
+
+
+
+    #region Methods Abs
+
+    //
+    // Inheritance
+
+    public abstract string WindowClass { get; }
+
+    #endregion
+
+
+
+
+    #region Events
+
+    /// <inheritdoc />
+    public abstract event Action OnAvailable;
+
+    #endregion
   }
 }

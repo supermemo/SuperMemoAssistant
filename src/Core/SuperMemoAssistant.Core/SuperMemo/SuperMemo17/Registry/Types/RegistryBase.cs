@@ -216,7 +216,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
       {
         return SM17Natives.Instance.Registry.AddMember.Invoke(
           RegistryPtr,
-          new DelphiUString(textOrPath));
+          new DelphiUTF16String(textOrPath));
       }
       catch (Exception ex)
       {
@@ -237,8 +237,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
         int ret = SM17Natives.Instance.Registry.ImportFile.Invoke(
           RegistryPtr,
-          new DelphiUString(textOrPath),
-          new DelphiUString(registryName));
+          new DelphiUTF16String(textOrPath),
+          new DelphiUTF16String(registryName));
 
         if (ret > 0)
         {

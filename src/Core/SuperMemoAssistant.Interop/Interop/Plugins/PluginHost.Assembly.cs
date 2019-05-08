@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/22 19:04
-// Modified On:  2019/02/24 21:21
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/04/26 00:52
 // Modified By:  Alexis
 
 #endregion
@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using SuperMemoAssistant.Interop.SuperMemo;
+using SuperMemoAssistant.Sys.IO;
 
 namespace SuperMemoAssistant.Interop.Plugins
 {
@@ -130,6 +131,24 @@ namespace SuperMemoAssistant.Interop.Plugins
       }
 
       return smaSet && mgrSet && guidSet;
+    }
+
+    private Assembly AssemblyResolve(object sender, ResolveEventArgs e)
+    {
+      var assembly = AppDomain.CurrentDomain
+                              .GetAssemblies()
+                              .FirstOrDefault(a => a.FullName == e.Name);
+
+      if (assembly != null)
+        return assembly;
+
+      var assemblyName = e.Name.Split(',').First() + ".dll";
+      var homePath     = new DirectoryPath(AppDomain.CurrentDomain.BaseDirectory);
+      var assemblyPath = homePath.CombineFile(assemblyName);
+
+      return assemblyPath.Exists() == false
+        ? null
+        : Assembly.LoadFrom(assemblyPath.FullPath);
     }
 
     #endregion

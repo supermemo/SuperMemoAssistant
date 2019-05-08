@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/03/02 18:29
-// Modified On:  2019/03/02 21:14
+// Modified On:  2019/05/08 17:16
 // Modified By:  Alexis
 
 #endregion
@@ -34,7 +34,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Anotar.Serilog;
 using AsyncEvent;
@@ -67,21 +66,6 @@ namespace SuperMemoAssistant.SMA
   {
     #region Constants & Statics
 
-    protected static readonly Dictionary<Regex, Func<SMCollection, string, SuperMemoBase>>
-      SMTitleFactoryMap =
-        new Dictionary<Regex, Func<SMCollection, string, SuperMemoBase>>
-        {
-          {
-            new Regex(SM17.RE_WindowTitle,
-                      RegexOptions.Compiled | RegexOptions.IgnoreCase),
-            (c,
-             b) => new SM17(c,
-                            b)
-          }
-        };
-    private CollectionsCfg _collectionsCfg;
-
-
     public static SMA Instance { get; } = new SMA();
 
     #endregion
@@ -90,6 +74,8 @@ namespace SuperMemoAssistant.SMA
 
 
     #region Properties & Fields - Non-Public
+
+    private CollectionsCfg _collectionsCfg;
 
     internal SuperMemoBase SMMgmt { get; set; }
 
@@ -119,11 +105,11 @@ namespace SuperMemoAssistant.SMA
 
     #region Properties & Fields - Public
 
-    public StartupCfg StartupConfig    { get; set; }
-    public CollectionCfg CollectionConfig {get;set;}
-    public IProcess   SMProcess => SMMgmt?.SMProcess;
+    public StartupCfg    StartupConfig    { get; set; }
+    public CollectionCfg CollectionConfig { get; set; }
 
-    public System.Diagnostics.Process NativeProcess => SMProcess.Native;
+    public IProcess                   SMProcess     => SMMgmt?.SMProcess;
+    public System.Diagnostics.Process NativeProcess => SMProcess?.Native;
 
     #endregion
 
@@ -133,9 +119,9 @@ namespace SuperMemoAssistant.SMA
     #region Properties Impl - Public
 
     /// <inheritdoc />
-    public SMCollection Collection { get => SMMgmt?.Collection; private set => throw new InvalidOperationException(); }
+    public SMCollection Collection => SMMgmt?.Collection;
     /// <inheritdoc />
-    public virtual SMAppVersion AppVersion => SMMgmt?.AppVersion ?? SMConst.Versions.vInvalid;
+    public SMAppVersion AppVersion => SMMgmt?.AppVersion ?? SMConst.Versions.vInvalid;
 
     /// <inheritdoc />
     public int ProcessId => NativeProcess?.Id ?? -1;
@@ -228,19 +214,21 @@ namespace SuperMemoAssistant.SMA
 
     public void LoadConfig(SMCollection collection)
     {
+      var knoPath = collection.GetKnoFilePath();
+
       // StartupCfg
 
       StartupConfig = Svc.Configuration.Load<StartupCfg>().Result ?? new StartupCfg();
 
       // CollectionsCfg
 
-      _collectionsCfg = Svc.Configuration.Load<CollectionsCfg>().Result ?? new CollectionsCfg();
-      CollectionConfig = _collectionsCfg.CollectionsConfig.SafeGet(collection.GetKnoFilePath());
+      _collectionsCfg  = Svc.Configuration.Load<CollectionsCfg>().Result ?? new CollectionsCfg();
+      CollectionConfig = _collectionsCfg.CollectionsConfig.SafeGet(knoPath);
 
       if (CollectionConfig == null)
       {
-        CollectionConfig = new CollectionCfg();
-        _collectionsCfg.CollectionsConfig[collection.GetKnoFilePath()] = CollectionConfig;
+        CollectionConfig                           = new CollectionCfg();
+        _collectionsCfg.CollectionsConfig[knoPath] = CollectionConfig;
       }
     }
 
@@ -259,13 +247,13 @@ namespace SuperMemoAssistant.SMA
 
       return task;
     }
-    
+
     public async Task OnSMStarting()
     {
       try
       {
         await OnSMStartingEvent.InvokeAsync(this,
-                                    new SMEventArgs(this));
+                                            new SMEventArgs(this));
       }
       catch (Exception ex)
       {
@@ -273,7 +261,7 @@ namespace SuperMemoAssistant.SMA
         throw;
       }
     }
-    
+
     public async Task OnSMStarted()
     {
       try
@@ -293,7 +281,7 @@ namespace SuperMemoAssistant.SMA
         throw;
       }
     }
-    
+
     public async Task OnSMStopped()
     {
       SMMgmt = null;

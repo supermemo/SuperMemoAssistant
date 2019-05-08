@@ -9,7 +9,7 @@
 
       <Grid.RowDefinitions>
         <RowDefinition Height="auto" />
-        <RowDefinition Height="300" />
+        <RowDefinition Height="{Binding Height}" />
       </Grid.RowDefinitions>
 
       <Grid Grid.Row="0"
@@ -37,7 +37,7 @@
       <ListBox Name="lbItems"
                Grid.Row="1"
                Margin="0 20 0 0"
-               ItemsSource="{Binding}">
+               ItemsSource="{Binding CollectionView}">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <Grid Margin="4">

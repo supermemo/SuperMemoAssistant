@@ -45,6 +45,16 @@ namespace SuperMemoAssistant.Services.HTML.Extensions
     {
       switch (urlPattern.Type)
       {
+        case UrlPatternType.Hostname:
+          try
+          {
+            return new Uri(url).Host == urlPattern.Pattern;
+          }
+          catch
+          {
+            return false;
+          }
+
         case UrlPatternType.StartWith:
           return url.StartsWith(urlPattern.Pattern);
 

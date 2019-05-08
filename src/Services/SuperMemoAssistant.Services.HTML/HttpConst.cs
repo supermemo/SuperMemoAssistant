@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/04/22 15:16
-// Modified On:  2019/04/22 17:39
+// Created On:   2019/04/25 17:44
+// Modified On:  2019/04/25 17:45
 // Modified By:  Alexis
 
 #endregion
@@ -30,17 +30,15 @@
 
 
 
-using System;
-
-namespace SuperMemoAssistant.Services.HTML.Models
+namespace SuperMemoAssistant.Services.HTML
 {
-  [Serializable]
-  public enum UrlPatternType
+  public static class HttpConst
   {
-    Hostname,
-    StartWith,
-    Contains,
-    EndWith,
-    Regex,
+    #region Constants & Statics
+
+    public const string UserAgentField = "User-Agent";
+    public const string UserAgentIE11  = "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko";
+
+    #endregion
   }
 }

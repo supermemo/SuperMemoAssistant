@@ -304,7 +304,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Controls
       return SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.TCompDataSetText,
                                                      new IntPtr(_componentDataAddr),
                                                      control.Id + 1,
-                                                     new DelphiUString(text)) == 1;
+                                                     new DelphiUTF16String(text)) == 1;
     }
 
     public int GetTextRegMember(IControl control)

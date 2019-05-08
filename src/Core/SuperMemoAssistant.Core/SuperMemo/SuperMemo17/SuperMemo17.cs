@@ -34,6 +34,7 @@ using System.Collections.Generic;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SMA.Hooks;
+using SuperMemoAssistant.SuperMemo.Common;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Content;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types;

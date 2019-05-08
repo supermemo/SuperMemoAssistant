@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/21 12:26
-// Modified On:  2019/01/19 04:39
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/04/24 14:56
 // Modified By:  Alexis
 
 #endregion
@@ -41,7 +41,7 @@ using mshtml;
 using Process.NET.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.UI;
 using SuperMemoAssistant.Sys.COM.InternetExplorer;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Controls
@@ -59,6 +59,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Controls
 
     #region Properties & Fields - Non-Public
 
+    private IntPtr?        _documentHwnd;
     private IHTMLDocument2 _document;
 
     private int NativeControlAddr =>
@@ -84,10 +85,19 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Controls
 
 
 
+    #region Properties & Fields - Public
+
+    public IHTMLDocument2 Document => _document ?? (_document = GetDocument());
+
+    #endregion
+
+
+
+
     #region Properties Impl - Public
 
     /// <inheritdoc />
-    public IHTMLDocument2 Document => _document ?? (_document = GetDocument());
+    public IntPtr? DocumentHwnd => _documentHwnd ?? (_documentHwnd = GetDocumentHwnd());
 
     public override string Text
     {
@@ -118,6 +128,16 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Controls
     #region Methods
 
     private IHTMLDocument2 GetDocument()
+    {
+      if (_documentHwnd == null)
+        _documentHwnd = GetDocumentHwnd();
+
+      return _documentHwnd == null
+        ? null
+        : IEComHelper.GetDocumentFromHwnd(_documentHwnd.Value);
+    }
+
+    private IntPtr? GetDocumentHwnd()
     {
       AutomationElement ieSrvFrame = null;
       DateTime          start      = DateTime.Now;
@@ -152,9 +172,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Controls
         return null;
       }
 
-      IntPtr hwnd = ieSrvFrame.FrameworkAutomationElement.NativeWindowHandle.Value;
-
-      return IEComHelper.GetDocumentFromHwnd(hwnd);
+      return ieSrvFrame.FrameworkAutomationElement.NativeWindowHandle.Value;
     }
 
     #endregion

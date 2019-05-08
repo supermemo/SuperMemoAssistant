@@ -48,9 +48,16 @@ namespace SuperMemoAssistant.Extensions
       if (invokeProv == null)
         return false;
 
-      invokeProv.Invoke();
+      try
+      {
+        invokeProv.Invoke();
 
-      return true;
+        return true;
+      }
+      catch
+      {
+        return false;
+      }
     }
 
     #endregion

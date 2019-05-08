@@ -163,8 +163,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
                                    dynamic[]    parameters)
     {
       var marshalledParameters =
-        parameters.Select(p => MarshalValue.Marshal(_smProcess,
-                                                    p))
+        parameters.Select(p => MarshalValue.Marshal(_smProcess, p))
                   .Cast<IMarshalledValue>().ToArray();
 
       try
@@ -191,7 +190,6 @@ namespace SuperMemoAssistant.Hooks.InjectLib
                                            elDesc);
 
             return res > 0 ? elemId : -1;
-
 
           case NativeMethod.PostponeRepetition:
             elWdw = marshalledParameters[0].Reference.ToInt32();

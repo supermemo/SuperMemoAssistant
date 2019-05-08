@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/04/22 15:16
-// Modified On:  2019/04/22 17:39
+// Created On:   2019/04/26 13:32
+// Modified On:  2019/04/26 13:33
 // Modified By:  Alexis
 
 #endregion
@@ -30,17 +30,29 @@
 
 
 
-using System;
+using System.IO;
+using HtmlAgilityPack;
 
-namespace SuperMemoAssistant.Services.HTML.Models
+namespace SuperMemoAssistant.Services.HTML.Extensions
 {
-  [Serializable]
-  public enum UrlPatternType
+  public static class HtmlDocumentEx
   {
-    Hostname,
-    StartWith,
-    Contains,
-    EndWith,
-    Regex,
+    #region Methods
+
+    public static string ToHtml(this HtmlDocument doc)
+    {
+      var writer = new StringWriter();
+
+      doc.Save(writer);
+
+      return writer.ToString();
+    }
+
+    public static bool HasAttribute(this HtmlNode node, string attr)
+    {
+      return string.IsNullOrWhiteSpace(node.Attributes[attr]?.Value) == false;
+    }
+
+    #endregion
   }
 }

@@ -227,7 +227,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
       );
       */
       // TElWind.EnterUpdateLock
-      public Procedure<Action<IntPtr, bool, DelphiUString>> EnterUpdateLock { get; } = new Procedure<Action<IntPtr, bool, DelphiUString>>(
+      public Procedure<Action<IntPtr, bool, DelphiUTF16String>> EnterUpdateLock { get; } = new Procedure<Action<IntPtr, bool, DelphiUTF16String>>(
         "EnterUpdateLock",
         CallingConventions.Register,
         EnterUpdateLockCallSig
@@ -440,13 +440,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
 
       #region Properties & Fields - Public
 
-      public Procedure<Func<IntPtr, DelphiUString, int>> AddMember { get; } = new Procedure<Func<IntPtr, DelphiUString, int>>(
+      public Procedure<Func<IntPtr, DelphiUTF16String, int>> AddMember { get; } = new Procedure<Func<IntPtr, DelphiUTF16String, int>>(
         "AddMember",
         CallingConventions.Register,
         AddMemberCallSig
       );
-      public Procedure<Func<IntPtr, DelphiUString, DelphiUString, int>> ImportFile { get; } =
-        new Procedure<Func<IntPtr, DelphiUString, DelphiUString, int>>(
+      public Procedure<Func<IntPtr, DelphiUTF16String, DelphiUTF16String, int>> ImportFile { get; } =
+        new Procedure<Func<IntPtr, DelphiUTF16String, DelphiUTF16String, int>>(
           "ImportFile",
           CallingConventions.Register,
           ImportFileCallSig

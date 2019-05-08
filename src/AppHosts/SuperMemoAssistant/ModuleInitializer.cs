@@ -42,7 +42,7 @@ using SuperMemoAssistant.SuperMemo.SuperMemo17.Content;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.UI;
 
 // ReSharper disable RedundantAssignment
 

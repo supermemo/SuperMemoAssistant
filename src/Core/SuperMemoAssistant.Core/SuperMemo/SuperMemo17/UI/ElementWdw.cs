@@ -43,11 +43,12 @@ using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Interop.SuperMemo.UI.Element;
+using SuperMemoAssistant.SuperMemo.Common.UI;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Controls;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
 using SuperMemoAssistant.Sys;
 
-namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
+namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 {
   [InitOnLoad]
   public class ElementWdw : WdwBase, IElementWdw
@@ -221,7 +222,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
 
         return SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwAddElementFromText,
                                                            ElementWdwPtr.Read<IntPtr>(),
-                                                           new DelphiUString(elementDesc)) > 0;
+                                                           new DelphiUTF16String(elementDesc)) > 0;
       }
       catch (Exception ex)
       {
@@ -375,7 +376,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
         return SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.AppendAndAddElementFromText,
                                                            ElementWdwPtr.Read<IntPtr>(),
                                                            (byte)elementType,
-                                                           new DelphiUString(elementDesc));
+                                                           new DelphiUTF16String(elementDesc));
       }
       catch (Exception ex)
       {
@@ -399,7 +400,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
         return SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwSetText,
                                                            ElementWdwPtr.Read<IntPtr>(),
                                                            control.Id + 1,
-                                                           new DelphiUString(text)) == 1;
+                                                           new DelphiUTF16String(text)) == 1;
       }
       catch (Exception ex)
       {
@@ -437,7 +438,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
         SM17Natives.Instance.ElWind.EnterUpdateLock.Invoke(
           ElementWdwPtr.Read<IntPtr>(),
           true,
-          new DelphiUString(1));
+          new DelphiUTF16String(1));
 
         return true;
       }
@@ -622,14 +623,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element
     public int CurrentRootId
     {
       get => CurrentRootIdPtr.Read<int>();
-      set => CurrentRootIdPtr.Write<int>(0,
-                                         value);
+      set => CurrentRootIdPtr.Write<int>(0, value);
     }
     public int CurrentHookId
     {
       get => CurrentHookIdPtr.Read<int>();
-      set => CurrentHookIdPtr.Write<int>(0,
-                                         value);
+      set => CurrentHookIdPtr.Write<int>(0, value);
     }
 
     /// <inheritdoc />

@@ -52,7 +52,7 @@ using SuperMemoAssistant.SuperMemo.Hooks;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Builders;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.UI;
 using SuperMemoAssistant.Sys.SparseClusteredArray;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
@@ -421,6 +421,7 @@ Exception: {ex}",
       var regExSubfolders = new Regex($"\\[([0-9]+)\\] {Regex.Escape(parent.Title)}");
 
       var subFolders = parent.Children
+                             .Where(child => child.Deleted == false && child.Title != null)
                              .Select(child => (child, regExSubfolders.Match(child.Title)))
                              .Where(p => p.Item2.Success)
                              .ToList();

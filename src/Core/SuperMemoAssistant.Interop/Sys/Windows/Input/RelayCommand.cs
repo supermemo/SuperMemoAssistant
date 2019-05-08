@@ -91,7 +91,7 @@ namespace SuperMemoAssistant.Sys.Windows.Input
     /// <returns>true if this command can be executed; otherwise, false.</returns>
     public bool CanExecute(object parameter)
     {
-      return parameter != null && (_canExecute?.Invoke() ?? true);
+      return _canExecute?.Invoke() ?? true;
     }
 
     /// <summary>Defines the method to be called when the command is invoked.</summary>

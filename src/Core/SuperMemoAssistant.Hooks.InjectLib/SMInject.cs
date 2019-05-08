@@ -31,10 +31,14 @@
 
 
 using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.Remoting;
 using System.Threading.Tasks;
 using EasyHook;
 using Sentry;
+using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.SMA.Hooks;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -62,13 +66,14 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     public SMInject(RemoteHooking.IContext context,
                     string                 channelName)
     {
+      AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+      AppDomain.CurrentDomain.AssemblyResolve    += CurrentDomain_AssemblyResolve;
+
       SentryInstance = SentrySdk.Init("https://a63c3dad9552434598dae869d2026696@sentry.io/1362046");
 
       // TODO: Switch to WCF DuplexClientBase
       SMA = (SMAHookCallback)RemoteHooking.IpcConnectClient<MarshalByRefObject>(channelName);
       Task.Factory.StartNew(KeepAlive, TaskCreationOptions.LongRunning);
-
-      AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
     }
 
     #endregion
@@ -140,6 +145,24 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       {
         // ignored
       }
+    }
+
+    private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs e)
+    {
+      var assembly = AppDomain.CurrentDomain
+                              .GetAssemblies()
+                              .FirstOrDefault(a => a.FullName == e.Name);
+
+      if (assembly != null)
+        return assembly;
+
+      var assemblyName = e.Name.Split(',').First() + ".dll";
+      var assemblyPath = SMAFileSystem.AppRootDir
+                                      .CombineFile(assemblyName);
+
+      return assemblyPath.Exists() == false
+        ? null
+        : Assembly.LoadFrom(assemblyPath.FullPath);
     }
 
     #endregion

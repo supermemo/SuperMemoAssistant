@@ -30,12 +30,12 @@
 
 
 
-using mshtml;
+using System;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Content.Controls
 {
   public interface IControlHtml : IControlTextBase
   {
-    IHTMLDocument2 Document { get; }
+    IntPtr? DocumentHwnd { get; }
   }
 }

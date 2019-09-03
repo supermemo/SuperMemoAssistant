@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 22:02
-// Modified On:  2019/03/02 03:58
+// Created On:   2019/05/08 17:40
+// Modified On:  2019/08/09 11:58
 // Modified By:  Alexis
 
 #endregion
@@ -32,35 +32,57 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Anotar.Serilog;
 using Process.NET;
-using Process.NET.Assembly;
 using Process.NET.Memory;
-using Process.NET.Utilities;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Hooks;
 using SuperMemoAssistant.SuperMemo.Hooks;
 using SuperMemoAssistant.SuperMemo.SuperMemo17;
 
 namespace SuperMemoAssistant.SuperMemo.Common
 {
-  /// <summary>Convenience class that implements helpers</summary>
+  public abstract class SuperMemoCore : SuperMemoBase
+  {
+    #region Constructors
+
+    /// <inheritdoc />
+    protected SuperMemoCore(SMCollection collection, string binPath)
+      : base(collection, binPath)
+    {
+      Core.SM = this;
+    }
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public new SuperMemoRegistryCore Registry => _registry;
+    public new SuperMemoUICore       UI       => _ui;
+
+    #endregion
+  }
+
+  /// <summary>Convenience class that implements shared code</summary>
   public abstract class SuperMemoBase
     : IDisposable,
-      ISuperMemo,
-      ISMAHookSystem
+      ISuperMemo
   {
     #region Properties & Fields - Non-Public
 
-    private readonly   string           _binPath;
-    protected readonly ExecutionContext _execCtxt = new ExecutionContext();
+    private readonly string _binPath;
+
+    protected readonly SuperMemoRegistryCore _registry;
+    protected readonly SuperMemoUICore       _ui;
+    protected readonly SMHookEngine          _hook;
 
     private IPointer _ignoreUserConfirmationPtr;
-
-    private int _wndProcHookAddr;
 
     #endregion
 
@@ -74,6 +96,10 @@ namespace SuperMemoAssistant.SuperMemo.Common
     {
       Collection = collection;
       _binPath   = binPath;
+
+      _registry = new SuperMemoRegistryCore();
+      _ui       = new SuperMemoUICore();
+      _hook     = new SMHookEngine();
     }
 
     public virtual void Dispose()
@@ -84,7 +110,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
       try
       {
-        SMHookEngine.Instance.CleanupHooks();
+        _hook.CleanupHooks();
       }
       catch (Exception ex)
       {
@@ -94,7 +120,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
       try
       {
-        SMA.SMA.Instance.OnSMStopped().Wait();
+        Core.SMA.OnSMStopped().Wait();
       }
       catch (Exception ex)
       {
@@ -110,9 +136,8 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
     #region Properties & Fields - Public
 
-    public ManualResetEvent           MainThreadReady { get; } = new ManualResetEvent(false);
-    public IProcess                   SMProcess       { get; private set; }
-    public System.Diagnostics.Process NativeProcess   => SMProcess.Native;
+    public IProcess                   SMProcess     { get; private set; }
+    public System.Diagnostics.Process NativeProcess => SMProcess.Native;
 
     #endregion
 
@@ -129,67 +154,8 @@ namespace SuperMemoAssistant.SuperMemo.Common
       set => _ignoreUserConfirmationPtr.Write<bool>(0,
                                                     value);
     }
-    public ISuperMemoRegistry Registry => SuperMemoRegistry.Instance;
-    public ISuperMemoUI       UI       => SuperMemoUI.Instance;
-
-    #endregion
-
-
-
-
-    #region Methods Impl
-
-    //
-    // SM Hook
-
-    public virtual void OnException(Exception ex)
-    {
-      LogTo.Error(ex,
-                  "Exception caught in InjectLib.");
-    }
-
-    /// <inheritdoc />
-    public void SetWndProcHookAddr(int addr)
-    {
-      _wndProcHookAddr = addr;
-    }
-
-    /// <param name="wParam"></param>
-    public bool OnUserMessage(int wParam)
-    {
-      switch ((InjectLibMessages)wParam)
-      {
-        case InjectLibMessages.ExecuteOnMainThread:
-          //MainThreadReady.Set();
-
-          return true;
-      }
-
-      return false;
-    }
-
-    public void GetExecutionParameters(out int       method,
-                                       out dynamic[] parameters)
-    {
-      method     = (int)_execCtxt.ExecutionMethod;
-      parameters = _execCtxt.ExecutionParameters;
-    }
-
-    public void SetExecutionResult(int result)
-    {
-      _execCtxt.ExecutionResult = result;
-      MainThreadReady.Set();
-    }
-
-    public Dictionary<string, int> GetPatternsHintAddresses()
-    {
-      throw new NotImplementedException();
-    }
-
-    public void SetPatternsHintAddresses(Dictionary<string, int> hintAddrs)
-    {
-      throw new NotImplementedException();
-    }
+    public ISuperMemoRegistry Registry => _registry;
+    public ISuperMemoUI       UI       => _ui;
 
     #endregion
 
@@ -198,38 +164,6 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
     #region Methods
 
-    // TODO: Not thread safe & ugly overall...
-    public int ExecuteOnMainThread(NativeMethod     method,
-                                   params dynamic[] parameters)
-    {
-      MainThreadReady.Reset();
-
-      _execCtxt.ExecutionResult     = 0;
-      _execCtxt.ExecutionMethod     = method;
-      _execCtxt.ExecutionParameters = parameters;
-
-      var smMain = SMProcess.Memory.Read<int>(SM17Natives.TSMMain.InstancePtr);
-      var handle = SMProcess.Memory.Read<IntPtr>(new IntPtr(smMain + SM17Natives.TControl.HandleOffset));
-
-      var restoreWndProcAddr = SM17Natives.TApplication.TApplicationOnMessagePtr.Read<int>(SMProcess.Memory);
-      SM17Natives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
-                                                                   _wndProcHookAddr);
-
-      WindowHelper.PostMessage(handle,
-                               2345,
-                               new IntPtr((int)InjectLibMessages.ExecuteOnMainThread),
-                               new IntPtr(0));
-
-      SMA.SMA.Instance.SMMgmt.MainThreadReady.WaitOne(AssemblyFactory.ExecutionTimeout);
-
-      SM17Natives.TApplication.TApplicationOnMessagePtr.Write<int>(SMProcess.Memory,
-                                                                   restoreWndProcAddr);
-
-      _execCtxt.ExecutionParameters = null;
-
-      return _execCtxt.ExecutionResult;
-    }
-
     //
     // SM-App Lifecycle
 
@@ -237,10 +171,9 @@ namespace SuperMemoAssistant.SuperMemo.Common
     {
       await OnPreInit();
 
-      SMProcess = await SMHookEngine.Instance.CreateAndHook(
+      SMProcess = await _hook.CreateAndHook(
         Collection,
         _binPath,
-        this,
         GetIOCallbacks()
       );
 
@@ -248,25 +181,41 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
       await OnPostInit();
 
-      SMHookEngine.Instance.SignalWakeUp();
+      _hook.SignalWakeUp();
     }
 
     protected virtual Task OnPreInit()
     {
-      return SMA.SMA.Instance.OnSMStarting();
+      return Core.SMA.OnSMStarting();
     }
 
     protected virtual Task OnPostInit()
     {
       _ignoreUserConfirmationPtr = SMProcess[SM17Natives.Globals.IgnoreUserConfirmationPtr];
 
-      return SMA.SMA.Instance.OnSMStarted();
+      return Core.SMA.OnSMStarted();
     }
 
     protected virtual void OnSMExited(object    called,
                                       EventArgs args)
     {
       Dispose();
+    }
+
+    protected virtual IEnumerable<ISMAHookIO> GetIOCallbacks()
+    {
+      return new ISMAHookIO[]
+      {
+        _registry.Element,
+        _registry.Component,
+        _registry.Text,
+        _registry.Binary,
+        _registry.Concept,
+        _registry.Image,
+        _registry.Template,
+        _registry.Sound,
+        _registry.Video
+      };
     }
 
     #endregion
@@ -276,28 +225,11 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
     #region Methods Abs
 
-    protected abstract IEnumerable<ISMAHookIO> GetIOCallbacks();
-
-
     //
     // ISuperMemo Methods
 
     public abstract SMAppVersion AppVersion { get; }
 
     #endregion
-
-
-
-
-    protected class ExecutionContext
-    {
-      #region Properties & Fields - Public
-
-      public NativeMethod ExecutionMethod     { get; set; }
-      public dynamic[]    ExecutionParameters { get; set; }
-      public int          ExecutionResult     { get; set; }
-
-      #endregion
-    }
   }
 }

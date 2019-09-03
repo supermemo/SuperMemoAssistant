@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/19 19:42
-// Modified On:  2019/01/24 13:51
+// Created On:   2019/08/07 14:44
+// Modified On:  2019/08/07 14:46
 // Modified By:  Alexis
 
 #endregion
@@ -36,7 +36,8 @@ using System.Drawing;
 using System.Threading.Tasks;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
+using SuperMemoAssistant.SuperMemo.Common.Registry;
+using SuperMemoAssistant.SuperMemo.Common.Registry.Models;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 {
@@ -44,12 +45,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
   {
     #region Constructors
 
-    public Image(int        id,
-                 RegMemElem mem,
-                 RegRtElem  rt)
-      : base(id,
-             mem,
-             rt) { }
+    public Image(int id)
+      : base(id) { }
 
     #endregion
 

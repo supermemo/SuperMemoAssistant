@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/13 13:55
-// Modified On:  2019/02/24 22:45
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/08/08 11:23
 // Modified By:  Alexis
 
 #endregion
@@ -34,22 +34,25 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Anotar.Serilog;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Hooks;
 using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.Sys.SparseClusteredArray;
 
 namespace SuperMemoAssistant.SuperMemo.Hooks
 {
-  public abstract class SMHookIOBase : PerpetualMarshalByRefObject, ISMAHookIO, IDisposable
+  public abstract class SMHookIOBase
+    : PerpetualMarshalByRefObject,
+      ISMAHookIO,
+      IDisposable
   {
     #region Properties & Fields - Non-Public
 
-    protected SMCollection Collection => SMA.SMA.Instance.Collection;
+    protected SMCollection Collection => Core.SM.Collection;
 
     protected ConcurrentDictionary<IntPtr, (UInt32 position, SparseClusteredArray<byte> sca)> FileHandles { get; } =
       new ConcurrentDictionary<IntPtr, (UInt32 position, SparseClusteredArray<byte> sca)>();
@@ -63,8 +66,8 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     protected SMHookIOBase()
     {
-      SMA.SMA.Instance.OnSMStartingEvent += OnSMStarting;
-      SMA.SMA.Instance.OnSMStoppedEvent  += OnSMStopped;
+      Core.SMA.OnSMStartingEvent += OnSMStarting;
+      Core.SMA.OnSMStoppedEvent  += OnSMStopped;
     }
 
     public virtual void Dispose()
@@ -130,8 +133,13 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     #region Methods
 
+    protected virtual void Initialize()
+    {
+      CommitFromFiles();
+    }
+
     private async Task OnSMStarting(object      sender,
-                              SMEventArgs e)
+                                    SMEventArgs e)
     {
       LogTo.Debug($"Initializing {GetType().Name}");
 
@@ -139,38 +147,13 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     }
 
     private async Task OnSMStopped(object        sender,
-                             SMProcessArgs e)
+                                   SMProcessArgs e)
     {
       LogTo.Debug($"Cleaning up {GetType().Name}");
 
       FileHandles.Clear();
-      
+
       await Task.Run((Action)Cleanup);
-    }
-
-    protected static Dictionary<int, TContainer> StreamToStruct<TContainer, TStruct>(
-      Stream                      structStream,
-      int                         sizeOfStruct,
-      Func<TStruct, TContainer>   wrapperFunc,
-      Dictionary<int, TContainer> dict = null)
-    {
-      var ret = dict ?? new Dictionary<int, TContainer>();
-
-      if (structStream.Position % sizeOfStruct != 0 || structStream.Length % sizeOfStruct != 0)
-        throw new InvalidDataException("Invalid Position or Length for struct Stream");
-
-      int elemId    = (int)(structStream.Position / sizeOfStruct) + 1;
-      int elemCount = (int)(structStream.Length / sizeOfStruct);
-
-      using (BinaryReader binStream = new BinaryReader(structStream, Encoding.Default, true))
-        for (int i = 0; i < elemCount; i++)
-        {
-          var elem = binStream.ReadStruct<TStruct>();
-
-          ret[elemId++] = wrapperFunc(elem);
-        }
-
-      return ret;
     }
 
     #endregion
@@ -186,9 +169,9 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     public abstract    IEnumerable<string>        GetTargetFilePaths();
     protected abstract SparseClusteredArray<byte> GetSCAForFileName(string fileName);
 
-    protected abstract void Initialize();
     protected abstract void Cleanup();
     protected abstract void CommitFromMemory();
+    protected abstract void CommitFromFiles();
 
     #endregion
   }

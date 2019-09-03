@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/01 14:12
-// Modified On:  2019/01/16 15:05
+// Created On:   2019/08/07 15:17
+// Modified On:  2019/08/08 11:10
 // Modified By:  Alexis
 
 #endregion
@@ -32,41 +32,40 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Anotar.Serilog;
-using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Content;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
+using SuperMemoAssistant.SMA;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 {
-  public abstract class ElementBase : MarshalByRefObject, IElement, IDisposable
+  public abstract class ElementBase : MarshalByRefObject, IElement, INotifyPropertyChanged, IDisposable
   {
     #region Constants & Statics
 
     //
     // Internal helpers
 
-    protected static IReadOnlyDictionary<string, ElementFieldFlags> FieldFlagMapping { get; } = new Dictionary<string, ElementFieldFlags>()
+    public static IReadOnlyDictionary<string, ElementFieldFlags> FieldFlagMapping { get; } = new Dictionary<string, ElementFieldFlags>()
     {
-      { "TextId", ElementFieldFlags.Name },
-      { "Deleted", ElementFieldFlags.Deleted },
-      { "TemplateId", ElementFieldFlags.Template },
-      { "ConceptId", ElementFieldFlags.Concept },
-      { "ComponentPos", ElementFieldFlags.Components },
-      { "AFactor", ElementFieldFlags.AFactor },
-      { "ParentId", ElementFieldFlags.Parent },
-      { "FirstChildId", ElementFieldFlags.FirstChild },
-      { "LastChildId", ElementFieldFlags.LastChild },
-      { "NextSiblingId", ElementFieldFlags.NextSibling },
-      { "PrevSiblingId", ElementFieldFlags.PrevSibling },
-      { "DescendantCount", ElementFieldFlags.DescendantCount },
-      { "ChildrenCount", ElementFieldFlags.ChildrenCount },
+      { nameof(TitleTextId), ElementFieldFlags.Name },
+      { nameof(Deleted), ElementFieldFlags.Deleted },
+      { nameof(TemplateId), ElementFieldFlags.Template },
+      { nameof(ConceptId), ElementFieldFlags.Concept },
+      { nameof(ComponentPos), ElementFieldFlags.Components },
+      { nameof(AFactor), ElementFieldFlags.AFactor },
+      { nameof(ParentId), ElementFieldFlags.Parent },
+      { nameof(FirstChildId), ElementFieldFlags.FirstChild },
+      { nameof(LastChildId), ElementFieldFlags.LastChild },
+      { nameof(NextSiblingId), ElementFieldFlags.NextSibling },
+      { nameof(PrevSiblingId), ElementFieldFlags.PrevSibling },
+      { nameof(DescendantCount), ElementFieldFlags.DescendantCount },
+      { nameof(ChildrenCount), ElementFieldFlags.ChildrenCount },
     };
 
     #endregion
@@ -85,9 +84,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
     #region Constructors
 
-    protected ElementBase(int             id,
-                          InfContentsElem cttElem,
-                          InfElementsElemContainer elElem)
+    protected ElementBase(int id)
     {
       Id = id;
 
@@ -96,41 +93,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
                   GetType().Name,
                   Id);
 #endif
-
-      TitleTextId = SetValue(elElem._elem.titleTextId,
-                             nameof(TitleTextId));
-      Deleted = SetValue(cttElem != null && cttElem.deleted != 0,
-                         nameof(Deleted));
-
-      TemplateId = SetValue(elElem._elem.templateId,
-                            nameof(TemplateId));
-      ConceptId = SetValue(elElem._elem.conceptId,
-                           nameof(ConceptId));
-
-      ComponentPos = SetValue(elElem._elem.componPos,
-                              nameof(ComponentPos));
-      OnComponentPosChanged(-1,
-                            ComponentPos);
-      //AFactor = SetDbg(elElem._elem.AFactor, nameof(AFactor));
-
-      if (cttElem != null)
-      {
-        ParentId = SetValue(cttElem.parentId,
-                            nameof(ParentId));
-        FirstChildId = SetValue(cttElem.firstChildId,
-                                nameof(FirstChildId));
-        LastChildId = SetValue(cttElem.lastChildId,
-                               nameof(LastChildId));
-        NextSiblingId = SetValue(cttElem.nextSiblingId,
-                                 nameof(NextSiblingId));
-        PrevSiblingId = SetValue(cttElem.prevSiblingId,
-                                 nameof(PrevSiblingId));
-
-        DescendantCount = SetValue(cttElem.descendantCount,
-                                   nameof(DescendantCount));
-        ChildrenCount = SetValue(cttElem.childrenCount,
-                                 nameof(ChildrenCount));
-      }
     }
 
     public void Dispose()
@@ -138,8 +100,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
       // TODO: Clear events handlers
       // TODO: Call this method appropriately
 
-      OnComponentPosChanged(ComponentPos,
-                            -1);
+      // OnComponentPosChanged(ComponentPos, -1);
+      ComponentPos = -1;
     }
 
     #endregion
@@ -149,19 +111,19 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
     #region Properties & Fields - Public
 
-    public int TitleTextId { get; protected set; }
+    public int TitleTextId { get; set; }
 
-    public int TemplateId { get; protected set; }
-    public int ConceptId  { get; protected set; }
+    public int TemplateId { get; set; }
+    public int ConceptId  { get; set; }
 
-    public int    ComponentPos { get; protected set; }
-    public byte[] AFactor      { get; protected set; }
+    public int    ComponentPos { get; set; } = -1;
+    public byte[] AFactor      { get; set; }
 
-    public int ParentId      { get; protected set; }
-    public int FirstChildId  { get; protected set; }
-    public int LastChildId   { get; protected set; }
-    public int NextSiblingId { get; protected set; }
-    public int PrevSiblingId { get; protected set; }
+    public int ParentId      { get; set; }
+    public int FirstChildId  { get; set; }
+    public int LastChildId   { get; set; }
+    public int NextSiblingId { get; set; }
+    public int PrevSiblingId { get; set; }
 
     #endregion
 
@@ -170,23 +132,23 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
     #region Properties Impl - Public
 
-    public int  Id      { get; protected set; }
-    public bool Deleted { get; protected set; }
+    public int  Id      { get; set; }
+    public bool Deleted { get; set; }
 
-    public int DescendantCount { get; protected set; }
-    public int ChildrenCount   { get; protected set; }
+    public int DescendantCount { get; set; }
+    public int ChildrenCount   { get; set; }
 
-    public string Title => SMA.SMA.Instance.Registry.Text?[TitleTextId]?.Name;
+    public string Title => Core.SM.Registry.Text?[TitleTextId]?.Name;
 
-    public IComponentGroup ComponentGroup => SMA.SMA.Instance.Registry.Component?[ComponentPos];
-    public IElement        Template       => SMA.SMA.Instance.Registry.Element?[TemplateId];
-    public IConcept        Concept        => SMA.SMA.Instance.Registry.Concept?[ConceptId];
+    public IComponentGroup ComponentGroup => Core.SM.Registry.Component?[ComponentPos];
+    public IElement        Template       => Core.SM.Registry.Element?[TemplateId];
+    public IConcept        Concept        => Core.SM.Registry.Concept?[ConceptId];
 
-    public IElement Parent      => SMA.SMA.Instance.Registry.Element?[ParentId];
-    public IElement FirstChild  => SMA.SMA.Instance.Registry.Element?[FirstChildId];
-    public IElement LastChild   => SMA.SMA.Instance.Registry.Element?[LastChildId];
-    public IElement NextSibling => SMA.SMA.Instance.Registry.Element?[NextSiblingId];
-    public IElement PrevSibling => SMA.SMA.Instance.Registry.Element?[PrevSiblingId];
+    public IElement Parent      => Core.SM.Registry.Element?[ParentId];
+    public IElement FirstChild  => Core.SM.Registry.Element?[FirstChildId];
+    public IElement LastChild   => Core.SM.Registry.Element?[LastChildId];
+    public IElement NextSibling => Core.SM.Registry.Element?[NextSiblingId];
+    public IElement PrevSibling => Core.SM.Registry.Element?[PrevSiblingId];
 
     public IEnumerable<IElement> Children => EnumerateChildren();
 
@@ -229,83 +191,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
     #region Methods
 
-    public ElementFieldFlags Update(InfContentsElem cttElem,
-                                    InfElementsElemContainer elElem)
+    public void OnUpdated(ElementFieldFlags flags)
     {
-#if DEBUG && !DEBUG_IN_PROD
-      LogTo.Debug("[{0} {1}] Updating",
-                  GetType().Name,
-                  Id);
-#endif
-
-      // TODO: Set/Clear events handlers on component change
-      ElementFieldFlags flags = ElementFieldFlags.None;
-
-      if (elElem != null)
-      {
-        TitleTextId = SetValue(TitleTextId,
-                               elElem._elem.titleTextId,
-                               nameof(TitleTextId),
-                               ref flags);
-
-        TemplateId = SetValue(TemplateId,
-                              elElem._elem.templateId,
-                              nameof(TemplateId),
-                              ref flags);
-        ConceptId = SetValue(ConceptId,
-                             elElem._elem.conceptId,
-                             nameof(ConceptId),
-                             ref flags);
-
-        ComponentPos = SetValue(ComponentPos,
-                                elElem._elem.componPos,
-                                nameof(ComponentPos),
-                                ref flags,
-                                OnComponentPosChanged);
-        //AFactor = SetDbg(elElem._elem.AFactor, nameof(AFactor));
-      }
-
-      if (cttElem != null)
-      {
-        Deleted = SetValue(Deleted,
-                           cttElem.deleted != 0,
-                           nameof(Deleted),
-                           ref flags);
-
-        ParentId = SetValue(ParentId,
-                            cttElem.parentId,
-                            nameof(ParentId),
-                            ref flags);
-        FirstChildId = SetValue(FirstChildId,
-                                cttElem.firstChildId,
-                                nameof(FirstChildId),
-                                ref flags);
-        LastChildId = SetValue(LastChildId,
-                               cttElem.lastChildId,
-                               nameof(LastChildId),
-                               ref flags);
-        NextSiblingId = SetValue(NextSiblingId,
-                                 cttElem.nextSiblingId,
-                                 nameof(NextSiblingId),
-                                 ref flags);
-        PrevSiblingId = SetValue(PrevSiblingId,
-                                 cttElem.prevSiblingId,
-                                 nameof(PrevSiblingId),
-                                 ref flags);
-
-        DescendantCount = SetValue(DescendantCount,
-                                   cttElem.descendantCount,
-                                   nameof(DescendantCount),
-                                   ref flags);
-        ChildrenCount = SetValue(ChildrenCount,
-                                 cttElem.childrenCount,
-                                 nameof(ChildrenCount),
-                                 ref flags);
-      }
-
       try
       {
-        OnChanged?.Invoke(new SMElementChangedArgs(SMA.SMA.Instance,
+        OnChanged?.Invoke(new SMElementChangedArgs(Core.SM,
                                                    (IElement)this,
                                                    flags));
       }
@@ -314,39 +204,37 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
         LogTo.Error(ex,
                     "Error while signaling Element Changed event");
       }
-
-      return flags;
     }
 
     protected void OnComponentPosChanged(int oldCompPos,
                                          int newCompPos)
     {
-      if (SMA.SMA.Instance.Registry.Component == null)
+      if (Id <= 0 || Core.SM.Registry.Component == null)
         return;
 
       if (oldCompPos >= 0)
       {
-        var comp = SMA.SMA.Instance.Registry.Component[oldCompPos];
+        var comp = Core.SM.Registry.Component[oldCompPos];
 
         if (comp != null)
-          comp.OnChanged -= OnComponentChanged;
+          comp.OnChanged -= OnComponentModified;
       }
 
 
       if (newCompPos >= 0)
       {
-        var comp = SMA.SMA.Instance.Registry.Component[newCompPos];
+        var comp = Core.SM.Registry.Component[newCompPos];
 
         if (comp != null)
-          comp.OnChanged += OnComponentChanged;
+          comp.OnChanged += OnComponentModified;
       }
     }
 
-    protected void OnComponentChanged(SMComponentGroupArgs args)
+    protected void OnComponentModified(SMComponentGroupArgs args)
     {
       try
       {
-        OnChanged?.Invoke(new SMElementChangedArgs(SMA.SMA.Instance,
+        OnChanged?.Invoke(new SMElementChangedArgs(Core.SM,
                                                    (IElement)this,
                                                    ElementFieldFlags.Components));
       }
@@ -396,78 +284,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
       */
     }
 
-    protected T SetValue<T>(T                     oldValue,
-                            T                     value,
-                            string                name,
-                            ref ElementFieldFlags flag,
-                            Action<T, T>          onChangedAction = null)
-    {
-      bool changed = Equals(oldValue,
-                            value) == false;
-
-      return SetValue(changed,
-                      oldValue,
-                      value,
-                      name,
-                      ref flag,
-                      onChangedAction);
-    }
-
-    protected char[] SetValue(char[]                 oldValue,
-                              char[]                 value,
-                              string                 name,
-                              ref ElementFieldFlags  flag,
-                              Action<char[], char[]> onChangedAction = null)
-    {
-      bool changed;
-
-      if (oldValue != null && value != null)
-        changed = oldValue.SequenceEqual(value) == false;
-
-      else
-        changed = Equals(oldValue,
-                         value) == false;
-
-      return SetValue(changed,
-                      oldValue,
-                      value,
-                      name,
-                      ref flag,
-                      onChangedAction);
-    }
-
-    protected T SetValue<T>(bool                  changed,
-                            T                     oldValue,
-                            T                     value,
-                            string                name,
-                            ref ElementFieldFlags flag,
-                            Action<T, T>          onChangedAction = null)
-    {
-      if (changed)
-      {
-        ElementFieldFlags newFlag = FieldFlagMapping.SafeGet(name,
-                                                             ElementFieldFlags.None);
-
-        if (newFlag != ElementFieldFlags.None)
-          flag |= newFlag;
-
-        onChangedAction?.Invoke(oldValue,
-                                value);
-
-#if DEBUG && !DEBUG_IN_PROD
-        LogTo.Debug("[{0} {1}] {2}: {3}",
-                    GetType().Name,
-                    Id,
-                    name,
-                    value);
-#endif
-      }
-
-      return value;
-    }
-
-    protected T SetValue<T>(T      value,
-                            string name)
+    protected virtual void OnPropertyChanged(string propertyName, object before, object after)
     {
 #if DEBUG && !DEBUG_IN_PROD
       LogTo.Debug("[{0} {1}] {2}: {3}",
@@ -477,7 +294,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
                   value);
 #endif
 
-      return value;
+      if (propertyName is nameof(ComponentPos))
+        OnComponentPosChanged((int)before, (int)after);
+
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     #endregion
@@ -497,6 +317,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     #region Events
 
     public event Action<SMElementChangedArgs> OnChanged;
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
   }

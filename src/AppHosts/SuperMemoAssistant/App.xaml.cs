@@ -37,6 +37,7 @@ using Forge.Forms;
 using Hardcodet.Wpf.TaskbarNotification;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Services.IO.Logger;
+using SuperMemoAssistant.SMA;
 
 namespace SuperMemoAssistant
 {
@@ -82,9 +83,9 @@ namespace SuperMemoAssistant
 
       if (selectionWdw.Collection != null)
       {
-        SMA.SMA.Instance.OnSMStoppedEvent += Instance_OnSMStoppedEvent;
+        Core.SMA.OnSMStoppedEvent += Instance_OnSMStoppedEvent;
 
-        if (await SMA.SMA.Instance.Start(selectedCol).ConfigureAwait(true) == false)
+        if (await Core.SMA.Start(selectedCol).ConfigureAwait(true) == false)
         {
           await Show.Window().For(
             new Alert(

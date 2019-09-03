@@ -57,6 +57,7 @@ namespace SuperMemoAssistant.Services
         OnSMAAvailable?.Invoke(value);
       }
     }
+    public static ISuperMemo SM => SMA?.SM;
     public static ISMAPlugin Plugin { get; set; }
 
     public static IKeyboardHotKeyService KeyboardHotKeyLegacy { get; set; }

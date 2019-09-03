@@ -38,6 +38,7 @@ using Anotar.Serilog;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.Plugins;
 using SuperMemoAssistant.Interop.SuperMemo;
+using SuperMemoAssistant.SMA;
 
 namespace SuperMemoAssistant.Plugins
 {
@@ -121,7 +122,7 @@ namespace SuperMemoAssistant.Plugins
         using (pluginInstance.Lock.Lock())
           OnPluginConnected(pluginInstance, plugin);
 
-        return SMA.SMA.Instance;
+        return Core.SMA;
       }
       catch (Exception ex)
       {

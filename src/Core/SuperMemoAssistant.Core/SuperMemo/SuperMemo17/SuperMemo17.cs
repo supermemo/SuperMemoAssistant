@@ -35,14 +35,13 @@ using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SMA.Hooks;
 using SuperMemoAssistant.SuperMemo.Common;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Content;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types;
+using SuperMemoAssistant.SuperMemo.Common.Content;
+using SuperMemoAssistant.SuperMemo.Common.Elements;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17
 {
   public class SM17
-    : SuperMemoBase
+    : SuperMemoCore
   {
     #region Constants & Statics
 
@@ -70,34 +69,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
 
     #region Properties Impl - Public
 
-    public override SMAppVersion AppVersion => SMConst.Versions.v17_3;
+    public override SMAppVersion AppVersion => SMConst.Versions.v17_4;
 
     #endregion
 
 
 
-
-    #region Methods Impl
-
-    //
-    // Init/Hooks-related
-
-    protected override IEnumerable<ISMAHookIO> GetIOCallbacks()
-    {
-      return new ISMAHookIO[]
-      {
-        ElementRegistry.Instance,
-        ComponentRegistry.Instance,
-        TextRegistry.Instance,
-        BinaryRegistry.Instance,
-        ConceptRegistry.Instance,
-        ImageRegistry.Instance,
-        TemplateRegistry.Instance,
-        SoundRegistry.Instance,
-        VideoRegistry.Instance
-      };
-    }
-
-    #endregion
   }
 }

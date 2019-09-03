@@ -39,6 +39,7 @@ using Anotar.Serilog;
 using Hardcodet.Wpf.TaskbarNotification;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Plugins;
+using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.UI.Settings;
 
 namespace SuperMemoAssistant
@@ -61,7 +62,7 @@ namespace SuperMemoAssistant
     {
       InitializeComponent();
 
-      SMA.SMA.Instance.OnSMStartedEvent += OnSMStarted;
+      Core.SMA.OnSMStartedEvent += OnSMStarted;
     }
 
     #endregion
@@ -74,7 +75,7 @@ namespace SuperMemoAssistant
     private Task OnSMStarted(object        sender,
                              SMProcessArgs eventArgs)
     {
-      TbIcon.ToolTipText = $"SuperMemoAssistant - {SMA.SMA.Instance.Collection.Name}";
+      TbIcon.ToolTipText = $"SuperMemoAssistant - {Core.SM.Collection.Name}";
       TbIcon.Visibility  = Visibility.Visible;
 
       return Task.CompletedTask;

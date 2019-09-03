@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 22:02
-// Modified On:  2019/02/28 20:42
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/08/08 11:29
 // Modified By:  Alexis
 
 #endregion
@@ -32,17 +32,11 @@
 
 using System;
 using SuperMemoAssistant.Interop;
-using SuperMemoAssistant.Plugins;
-using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.HotKeys;
 using SuperMemoAssistant.Services.IO.Keyboard;
 using SuperMemoAssistant.Services.IO.Logger;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Content;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.UI;
+using SuperMemoAssistant.SMA;
 
 // ReSharper disable RedundantAssignment
 
@@ -63,32 +57,12 @@ namespace SuperMemoAssistant
 
     public static void Initialize()
     {
-      //InitOnLoad.Initialize();
-
       Logger.Instance.Initialize(SMAConst.Name, Services.Sentry.SentryEx.LogToSentry);
       SentryInstance = Services.Sentry.SentryEx.Initialize();
 
-      Svc.Configuration  = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
-      Svc.KeyboardHotKey = KeyboardHookService.Instance;
-      Svc.HotKeyManager  = HotKeyManager.Instance.Initialize();
-
-      // ReSharper disable once NotAccessedVariable
-      // ReSharper disable once JoinDeclarationAndInitializer
-      object tmp;
-      tmp = ComponentRegistry.Instance;
-      tmp = ElementRegistry.Instance;
-      tmp = BinaryRegistry.Instance;
-      tmp = ConceptRegistry.Instance;
-      tmp = ImageRegistry.Instance;
-      tmp = SoundRegistry.Instance;
-      tmp = TemplateRegistry.Instance;
-      tmp = TextRegistry.Instance;
-      tmp = VideoRegistry.Instance;
-      tmp = ElementWdw.Instance;
-      tmp = LayoutManager.Instance;
-      tmp = PluginManager.Instance;
-
-      Svc.SMA = SMA.SMA.Instance;
+      Core.Configuration  = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
+      Core.KeyboardHotKey = KeyboardHookService.Instance;
+      Core.HotKeyManager  = HotKeyManager.Instance.Initialize();
     }
 
     #endregion

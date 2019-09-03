@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/07/27 12:55
-// Modified On:  2019/02/24 19:09
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/07/23 19:54
 // Modified By:  Alexis
 
 #endregion
@@ -34,8 +34,9 @@ using System.Collections.Generic;
 
 namespace SuperMemoAssistant.Interop.SuperMemo
 {
-  public interface ISuperMemoAssistant : ISuperMemo
+  public interface ISuperMemoAssistant
   {
+    ISuperMemo          SM      { get; }
     IEnumerable<string> Layouts { get; }
   }
 }

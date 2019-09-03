@@ -74,8 +74,8 @@ namespace SuperMemoAssistant.SMA.UI
     {
       /*
       Svc.SMA.WindowFactory.MainWindow.PostMessage(
-        2345,
-        new IntPtr((int)InjectLibMessages.AttachDebugger),
+        InjectLibMessageIds.SMA,
+        new IntPtr((int)InjectLibMessageParams.AttachDebugger),
         new IntPtr(0)
       );
       */

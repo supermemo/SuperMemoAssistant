@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/03/02 18:29
-// Modified On:  2019/05/08 17:16
+// Modified On:  2019/08/08 11:01
 // Modified By:  Alexis
 
 #endregion
@@ -40,16 +40,14 @@ using AsyncEvent;
 using Process.NET;
 using Process.NET.Windows;
 using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Services;
 using SuperMemoAssistant.SMA.Configs;
 using SuperMemoAssistant.SMA.UI;
-using SuperMemoAssistant.SuperMemo;
+using SuperMemoAssistant.SuperMemo.Common;
+using SuperMemoAssistant.SuperMemo.Common.Content.Layout;
 using SuperMemoAssistant.SuperMemo.SuperMemo17;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
 using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.Sys.IO;
 
@@ -61,7 +59,7 @@ namespace SuperMemoAssistant.SMA
   /// </summary>
   public class SMA
     : PerpetualMarshalByRefObject,
-      ISuperMemoAssistant, // Proxy for wrapped SMxx object
+      ISuperMemoAssistant,
       IDisposable
   {
     #region Constants & Statics
@@ -77,7 +75,7 @@ namespace SuperMemoAssistant.SMA
 
     private CollectionsCfg _collectionsCfg;
 
-    internal SuperMemoBase SMMgmt { get; set; }
+    protected SuperMemoCore _sm;
 
     #endregion
 
@@ -90,12 +88,16 @@ namespace SuperMemoAssistant.SMA
     ///   Create an instance of the wrapper that will start a SM instance and attach the
     ///   management engine.
     /// </summary>
-    protected SMA() { }
+    protected SMA()
+    {
+      Core.SMA = this;
+    }
+
 
     /// <inheritdoc />
     public virtual void Dispose()
     {
-      SMMgmt?.Dispose();
+      _sm?.Dispose();
     }
 
     #endregion
@@ -108,7 +110,9 @@ namespace SuperMemoAssistant.SMA
     public StartupCfg    StartupConfig    { get; set; }
     public CollectionCfg CollectionConfig { get; set; }
 
-    public IProcess                   SMProcess     => SMMgmt?.SMProcess;
+    public SuperMemoCore SMBase => _sm;
+
+    public IProcess                   SMProcess     => _sm?.SMProcess;
     public System.Diagnostics.Process NativeProcess => SMProcess?.Native;
 
     #endregion
@@ -119,33 +123,12 @@ namespace SuperMemoAssistant.SMA
     #region Properties Impl - Public
 
     /// <inheritdoc />
-    public SMCollection Collection => SMMgmt?.Collection;
-    /// <inheritdoc />
-    public SMAppVersion AppVersion => SMMgmt?.AppVersion ?? SMConst.Versions.vInvalid;
-
-    /// <inheritdoc />
-    public int ProcessId => NativeProcess?.Id ?? -1;
-
-    /// <inheritdoc />
-    public bool IgnoreUserConfirmation
-    {
-      get => SMMgmt?.IgnoreUserConfirmation ?? false;
-      set
-      {
-        if (SMMgmt != null) SMMgmt.IgnoreUserConfirmation = value;
-      }
-    }
-
-    /// <inheritdoc />
-    public ISuperMemoRegistry Registry => SuperMemoRegistry.Instance;
-    /// <inheritdoc />
-    public ISuperMemoUI UI => SuperMemoUI.Instance;
-
-    /// <inheritdoc />
     public IEnumerable<string> Layouts => LayoutManager.Instance.Layouts
                                                        .Select(l => l.Name)
                                                        .OrderBy(n => n)
                                                        .ToList();
+
+    public ISuperMemo SM => _sm;
 
     #endregion
 
@@ -159,38 +142,38 @@ namespace SuperMemoAssistant.SMA
 
     public async Task<bool> Start(SMCollection collection)
     {
-      if (SMMgmt != null)
-        return false;
-
       try
       {
+        if (_sm != null)
+          throw new InvalidOperationException("_sm is already instanciated");
+
         LoadConfig(collection);
 
         if (new FilePath(StartupConfig.SMBinPath).Exists() == false)
           throw new FileNotFoundException($"Invalid file path for sm executable file: '{StartupConfig.SMBinPath}' could not be found.");
 
         // TODO: Look at PE version and select Management Engine version
-        SMMgmt = new SM17(collection,
-                          StartupConfig.SMBinPath);
+        _sm = new SM17(collection,
+                       StartupConfig.SMBinPath);
 
         // TODO: Move somewhere else
-        ElementWdw.Instance.OnAvailable += OnSuperMemoWindowsAvailable;
+        _sm.UI.ElementWdw.OnAvailable += OnSuperMemoWindowsAvailable;
 
-        await SMMgmt.Start();
+        await _sm.Start();
         // TODO: Ensure opened collection (windows title) matches parameter
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "Failed to load SM17.");
+        LogTo.Error(ex, "Failed to start SM.");
 
-        SMMgmt = null;
+        _sm?.Dispose();
+        _sm = null;
 
         try
         {
-          await OnSMStoppedEvent.InvokeAsync(this,
-                                             new SMProcessArgs(this,
-                                                               null));
+          if (OnSMStoppedEvent != null)
+            await OnSMStoppedEvent.InvokeAsync(this,
+                                               new SMProcessArgs(_sm, null));
         }
         catch (Exception pluginEx)
         {
@@ -209,7 +192,7 @@ namespace SuperMemoAssistant.SMA
     public void ApplySuperMemoWindowStyles()
     {
       if (CollectionConfig.CollapseElementWdwTitleBar)
-        WindowStyling.MakeWindowTitleless(ElementWdw.Instance.Handle);
+        WindowStyling.MakeWindowTitleless(_sm.UI.ElementWdw.Handle);
     }
 
     public void LoadConfig(SMCollection collection)
@@ -252,8 +235,9 @@ namespace SuperMemoAssistant.SMA
     {
       try
       {
-        await OnSMStartingEvent.InvokeAsync(this,
-                                            new SMEventArgs(this));
+        if (OnSMStartingEvent != null)
+          await OnSMStartingEvent.InvokeAsync(this,
+                                              new SMEventArgs(_sm));
       }
       catch (Exception ex)
       {
@@ -270,9 +254,10 @@ namespace SuperMemoAssistant.SMA
 
         SMAUI.Initialize();
 
-        await OnSMStartedEvent.InvokeAsync(this,
-                                           new SMProcessArgs(this,
-                                                             SMProcess.Native));
+        if (OnSMStartedEvent != null)
+          await OnSMStartedEvent.InvokeAsync(
+            this,
+            new SMProcessArgs(_sm, SMProcess.Native));
       }
       catch (Exception ex)
       {
@@ -284,10 +269,10 @@ namespace SuperMemoAssistant.SMA
 
     public async Task OnSMStopped()
     {
-      SMMgmt = null;
+      _sm = null;
 
-      await OnSMStoppedEvent.InvokeAsync(this,
-                                         null);
+      if (OnSMStoppedEvent != null)
+        await OnSMStoppedEvent.InvokeAsync(this, null);
     }
 
     private void OnSuperMemoWindowsAvailable()

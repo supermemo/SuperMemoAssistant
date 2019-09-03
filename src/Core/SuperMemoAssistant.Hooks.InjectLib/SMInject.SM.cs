@@ -41,6 +41,7 @@ using Process.NET.Memory;
 using Process.NET.Native.Types;
 using Process.NET.Patterns;
 using SuperMemoAssistant.SMA.Hooks;
+using SuperMemoAssistant.SuperMemo.Common;
 using SuperMemoAssistant.SuperMemo.SuperMemo17;
 using SuperMemoAssistantHooksNativeLib;
 
@@ -111,16 +112,16 @@ namespace SuperMemoAssistant.Hooks.InjectLib
                                 bool*        handled)
     {
       if (msgPtr->msg == (int)WindowsMessages.Quit
-        || msgPtr->msg != 2345)
+        || msgPtr->msg != (int)InjectLibMessageIds.SMA)
         return;
 
       try
       {
         int wParam = msgPtr->wParam;
 
-        switch ((InjectLibMessages)wParam)
+        switch ((InjectLibMessageParams)wParam)
         {
-          case InjectLibMessages.ExecuteOnMainThread:
+          case InjectLibMessageParams.ExecuteOnMainThread:
             int res = int.MinValue;
 
             try
@@ -144,7 +145,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
             *handled = true;
             break;
 
-          case InjectLibMessages.AttachDebugger:
+          case InjectLibMessageParams.AttachDebugger:
             if (Debugger.IsAttached == false)
               Debugger.Launch();
 

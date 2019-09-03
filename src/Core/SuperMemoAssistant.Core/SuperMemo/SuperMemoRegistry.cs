@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/01 22:40
-// Modified On:  2018/12/07 14:14
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/08/08 11:19
 // Modified By:  Alexis
 
 #endregion
@@ -34,24 +34,53 @@ using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Components;
 using SuperMemoAssistant.Interop.SuperMemo.Elements;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Content;
+using SuperMemoAssistant.SuperMemo.Common.Content;
+using SuperMemoAssistant.SuperMemo.Common.Elements;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types;
 using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo
 {
-  public class SuperMemoRegistry : PerpetualMarshalByRefObject, ISuperMemoRegistry
+  public class SuperMemoRegistryCore : SuperMemoRegistry
   {
-    #region Constants & Statics
+    #region Constructors
 
-    public static SuperMemoRegistry Instance { get; } = new SuperMemoRegistry();
+    public SuperMemoRegistryCore()
+    {
+      base.Element   = Element   = new ElementRegistry17();
+      base.Binary    = Binary    = new BinaryRegistry17();
+      base.Component = Component = new ComponentRegistry();
+      base.Concept   = Concept   = new ConceptRegistry17();
+      base.Text      = Text      = new TextRegistry17();
+      base.Image     = Image     = new ImageRegistry17();
+      base.Template  = Template  = new TemplateRegistry17();
+      base.Sound     = Sound     = new SoundRegistry17();
+      base.Video     = Video     = new VideoRegistry17();
+    }
 
     #endregion
 
 
 
 
+    #region Properties & Fields - Public
+
+    public new ElementRegistryBase Element   { get; }
+    public new BinaryRegistry17    Binary    { get; }
+    public new ComponentRegistry   Component { get; }
+    public new ConceptRegistry17   Concept   { get; }
+    public new TextRegistry17      Text      { get; }
+    public new ImageRegistry17     Image     { get; }
+    public new TemplateRegistry17  Template  { get; }
+    public new SoundRegistry17     Sound     { get; }
+    public new VideoRegistry17     Video     { get; }
+
+    #endregion
+  }
+
+  public class SuperMemoRegistry : PerpetualMarshalByRefObject, ISuperMemoRegistry
+  {
     #region Constructors
 
     protected SuperMemoRegistry() { }
@@ -63,15 +92,15 @@ namespace SuperMemoAssistant.SuperMemo
 
     #region Properties Impl - Public
 
-    public IElementRegistry   Element   => ElementRegistry.Instance;
-    public IBinaryRegistry    Binary    => BinaryRegistry.Instance;
-    public IComponentRegistry Component => ComponentRegistry.Instance;
-    public IConceptRegistry   Concept   => ConceptRegistry.Instance;
-    public ITextRegistry      Text      => TextRegistry.Instance;
-    public IImageRegistry     Image     => ImageRegistry.Instance;
-    public ITemplateRegistry  Template  => TemplateRegistry.Instance;
-    public ISoundRegistry     Sound     => SoundRegistry.Instance;
-    public IVideoRegistry     Video     => VideoRegistry.Instance;
+    public IElementRegistry   Element   { get; protected set; }
+    public IBinaryRegistry    Binary    { get; protected set; }
+    public IComponentRegistry Component { get; protected set; }
+    public IConceptRegistry   Concept   { get; protected set; }
+    public ITextRegistry      Text      { get; protected set; }
+    public IImageRegistry     Image     { get; protected set; }
+    public ITemplateRegistry  Template  { get; protected set; }
+    public ISoundRegistry     Sound     { get; protected set; }
+    public IVideoRegistry     Video     { get; protected set; }
 
     #endregion
   }

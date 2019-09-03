@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 22:02
-// Modified On:  2019/03/02 03:29
+// Created On:   2019/05/08 17:40
+// Modified On:  2019/08/09 11:54
 // Modified By:  Alexis
 
 #endregion
@@ -43,25 +43,15 @@ using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Interop.SuperMemo.UI.Element;
+using SuperMemoAssistant.SMA;
+using SuperMemoAssistant.SuperMemo.Common;
+using SuperMemoAssistant.SuperMemo.Common.Content.Controls;
 using SuperMemoAssistant.SuperMemo.Common.UI;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Controls;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
-using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 {
-  [InitOnLoad]
   public class ElementWdw : WdwBase, IElementWdw
   {
-    #region Constants & Statics
-
-    public static ElementWdw Instance { get; } = new ElementWdw();
-
-    #endregion
-
-
-
-
     #region Properties & Fields - Non-Public
 
     protected ControlGroup _controlGroup = null;
@@ -83,8 +73,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
     public ElementWdw()
     {
-      SMA.SMA.Instance.OnSMStartedEvent += OnSMStartedEvent;
-      SMA.SMA.Instance.OnSMStoppedEvent += OnSMStoppedEvent;
+      Core.SMA.OnSMStartedEvent += OnSMStartedEvent;
+      Core.SMA.OnSMStoppedEvent += OnSMStoppedEvent;
     }
 
     #endregion
@@ -112,7 +102,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
     public bool SetCurrentConcept(int conceptId)
     {
-      var elem = SMA.SMA.Instance.Registry.Element[conceptId];
+      var elem = Core.SM.Registry.Element[conceptId];
 
       if (elem == null || elem.Deleted || elem is IConceptGroup == false)
         return false;
@@ -131,18 +121,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
       try
       {
-        var elem = SMA.SMA.Instance.Registry.Element[elementId];
+        var elem = Core.SM.Registry.Element[elementId];
 
         if (elem == null || elem.Deleted)
           return false;
 
-        /*ret = GoToMethod(ElementWdwPtr.Read<IntPtr>(),
-                         elementId,
-                         SMProcess.ThreadFactory.MainThread);*/
-
-        ret = SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwGoToElement,
-                                                          ElementWdwPtr.Read<IntPtr>(),
-                                                          elementId) == 1;
+        ret = Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwGoToElement,
+                                            ElementWdwPtr.Read<IntPtr>(),
+                                            elementId) == 1;
 
         return ret;
       }
@@ -158,11 +144,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        //return PasteArticleFunc(ElementWdwPtr.Read<IntPtr>(),
-        //                        SMProcess.ThreadFactory.MainThread);
-
-        return SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwPasteArticle,
-                                                           ElementWdwPtr.Read<IntPtr>()) == 1;
+        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwPasteArticle,
+                                             ElementWdwPtr.Read<IntPtr>()) == 1;
       }
       catch (Exception ex)
       {
@@ -176,11 +159,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        //return PasteElementFunc(ElementWdwPtr.Read<IntPtr>(),
-        //                        SMProcess.ThreadFactory.MainThread);
-
-        return SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwPasteElement,
-                                                           ElementWdwPtr.Read<IntPtr>()) == 1;
+        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwPasteElement,
+                                             ElementWdwPtr.Read<IntPtr>()) == 1;
       }
       catch (Exception ex)
       {
@@ -194,15 +174,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        //return AppendElementFunc(ElementWdwPtr.Read<IntPtr>(),
-        //                         (byte)elementType,
-        //                         0, // ??
-        //                         SMProcess.ThreadFactory.MainThread);
-
-        return SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwAppendElement,
-                                                           ElementWdwPtr.Read<IntPtr>(),
-                                                           (byte)elementType,
-                                                           0 /* ?? */);
+        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwAppendElement,
+                                             ElementWdwPtr.Read<IntPtr>(),
+                                             (byte)elementType,
+                                             0 /* ?? */);
       }
       catch (Exception ex)
       {
@@ -216,13 +191,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        //return AddElementFromTextFunc(ElementWdwPtr.Read<IntPtr>(),
-        //                              new DelphiUString(elementDesc),
-        //                              SMProcess.ThreadFactory.MainThread) > 0;
-
-        return SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwAddElementFromText,
-                                                           ElementWdwPtr.Read<IntPtr>(),
-                                                           new DelphiUTF16String(elementDesc)) > 0;
+        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwAddElementFromText,
+                                             ElementWdwPtr.Read<IntPtr>(),
+                                             new DelphiUTF16String(elementDesc)) > 0;
       }
       catch (Exception ex)
       {
@@ -236,11 +207,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        //return DeleteMethod(ElementWdwPtr.Read<IntPtr>(),
-        //                    SMProcess.ThreadFactory.MainThread);
-
-        return SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwDeleteCurrentElement,
-                                                           ElementWdwPtr.Read<IntPtr>()) == 1;
+        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwDeleteCurrentElement,
+                                             ElementWdwPtr.Read<IntPtr>()) == 1;
       }
       catch (Exception ex)
       {
@@ -254,11 +222,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        //return DoneMethod(ElementWdwPtr.Read<IntPtr>(),
-        //                  SMProcess.ThreadFactory.MainThread);
-
-        return SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwDone,
-                                                           ElementWdwPtr.Read<IntPtr>()) == 1;
+        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwDone,
+                                             ElementWdwPtr.Read<IntPtr>()) == 1;
       }
       catch (Exception ex)
       {
@@ -272,8 +237,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwNextElementInLearningQueue,
-                                                    ElementWdwPtr.Read<IntPtr>());
+        Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwNextElementInLearningQueue,
+                                      ElementWdwPtr.Read<IntPtr>());
 
         return true;
       }
@@ -289,9 +254,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwSetElementState,
-                                                    ElementWdwPtr.Read<IntPtr>(),
-                                                    state);
+        Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwSetElementState,
+                                      ElementWdwPtr.Read<IntPtr>(),
+                                      state);
 
         return true;
       }
@@ -307,9 +272,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.PostponeRepetition,
-                                                    ElementWdwPtr.Read<IntPtr>(),
-                                                    interval);
+        Core.Hook.ExecuteOnMainThread(NativeMethod.PostponeRepetition,
+                                      ElementWdwPtr.Read<IntPtr>(),
+                                      interval);
 
         return true;
       }
@@ -326,10 +291,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwForceRepetitionExt,
-                                                    ElementWdwPtr.Read<IntPtr>(),
-                                                    interval,
-                                                    adjustPriority);
+        Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwForceRepetitionExt,
+                                      ElementWdwPtr.Read<IntPtr>(),
+                                      interval,
+                                      adjustPriority);
 
         return true;
       }
@@ -346,10 +311,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ForceRepetitionAndResume,
-                                                    ElementWdwPtr.Read<IntPtr>(),
-                                                    interval,
-                                                    adjustPriority);
+        Core.Hook.ExecuteOnMainThread(NativeMethod.ForceRepetitionAndResume,
+                                      ElementWdwPtr.Read<IntPtr>(),
+                                      interval,
+                                      adjustPriority);
 
         return true;
       }
@@ -373,10 +338,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        return SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.AppendAndAddElementFromText,
-                                                           ElementWdwPtr.Read<IntPtr>(),
-                                                           (byte)elementType,
-                                                           new DelphiUTF16String(elementDesc));
+        return Core.Hook.ExecuteOnMainThread(NativeMethod.AppendAndAddElementFromText,
+                                             ElementWdwPtr.Read<IntPtr>(),
+                                             (byte)elementType,
+                                             new DelphiUTF16String(elementDesc));
       }
       catch (Exception ex)
       {
@@ -397,10 +362,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
         //return true;
 
-        return SMA.SMA.Instance.SMMgmt.ExecuteOnMainThread(NativeMethod.ElWdwSetText,
-                                                           ElementWdwPtr.Read<IntPtr>(),
-                                                           control.Id + 1,
-                                                           new DelphiUTF16String(text)) == 1;
+        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwSetText,
+                                             ElementWdwPtr.Read<IntPtr>(),
+                                             control.Id + 1,
+                                             new DelphiUTF16String(text)) == 1;
       }
       catch (Exception ex)
       {
@@ -566,18 +531,18 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
         do
         {
           if (LastElementId > 0 && lastElement == null)
-            lastElement = SMA.SMA.Instance.Registry.Element[LastElementId];
+            lastElement = Core.SM.Registry.Element[LastElementId];
 
           if (currentElement == null)
-            currentElement = ElementRegistry.Instance[newElementId];
+            currentElement = Core.SM.Registry.Element[newElementId];
         } while ((DateTime.Now - startTime).TotalMilliseconds < 800
           && (LastElementId > 0 && lastElement == null || currentElement == null));
 
         LastElementId = newElementId;
-        
+
         OnElementChanged?.InvokeRemote(
           nameof(OnElementChanged),
-          new SMDisplayedElementChangedArgs(SMA.SMA.Instance,
+          new SMDisplayedElementChangedArgs(Core.SM,
                                             currentElement,
                                             lastElement),
           h => OnElementChanged -= h
@@ -617,7 +582,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     /// <inheritdoc />
     public int CurrentElementId => ElementIdPtr?.Read<int>() ?? 0;
     /// <inheritdoc />
-    public IElement CurrentElement => SMA.SMA.Instance.Registry.Element?[CurrentElementId];
+    public IElement CurrentElement => Core.SM.Registry.Element?[CurrentElementId];
 
     public int CurrentConceptId => CurrentConceptIdPtr.Read<int>();
     public int CurrentRootId

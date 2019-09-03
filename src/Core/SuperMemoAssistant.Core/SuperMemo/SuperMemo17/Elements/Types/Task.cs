@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/01 14:12
-// Modified On:  2019/01/24 14:16
+// Created On:   2019/08/07 15:17
+// Modified On:  2019/08/08 10:38
 // Modified By:  Alexis
 
 #endregion
@@ -32,7 +32,6 @@
 
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 {
@@ -50,12 +49,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
     #region Constructors
 
-    public Task(int                      id,
-                InfContentsElem          cttElem,
-                InfElementsElemContainer elElem)
-      : base(id,
-             cttElem,
-             elElem) { }
+    public Task(int id)
+      : base(id) { }
 
     #endregion
 

@@ -4,9 +4,9 @@
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:layout="clr-namespace:SuperMemoAssistant.SMA.UI.Layout"
-                 xmlns:xamlControls="clr-namespace:SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlControls"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:data="clr-namespace:SuperMemoAssistant.Sys.Windows.Data;assembly=SuperMemoAssistant.Interop"
+                 xmlns:xamlControls1="clr-namespace:SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls"
                  mc:Ignorable="d"
                  KeyDown="Window_KeyDown"
                  Height="768" Width="1024"
@@ -80,7 +80,7 @@
             <Border 
               BorderThickness="1"
               BorderBrush="DarkRed" >
-            <xamlControls:XamlControlGroup x:Name="CtrlGroup" />
+            <xamlControls1:XamlControlGroup x:Name="CtrlGroup" />
               </Border>
           </Grid>
 

@@ -43,13 +43,14 @@ using Process.NET;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Hooks;
 using SuperMemoAssistant.SuperMemo.SuperMemo17;
 using SuperMemoAssistant.Sys.Exceptions;
 
 namespace SuperMemoAssistant.SuperMemo.Hooks
 {
-  public class SMHookEngine : SMAHookCallback
+  public partial class SMHookEngine : SMAHookCallback
   {
     #region Constants & Statics
 
@@ -58,9 +59,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 #else
     public const int WaitTimeout = 5000;
 #endif
-
-    public static SMHookEngine Instance { get; } = new SMHookEngine();
-
+    
     #endregion
 
 
@@ -74,9 +73,9 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     protected AutoResetEvent        SMAInitEvent  { get; } = new AutoResetEvent(false);
 
     protected IpcServerChannel ServerChannel     { get; set; }
-    protected ISMAHookSystem   SystemCallback    { get; private set; }
-    protected List<string>     IOTargetFilePaths { get; set; }         = new List<string>();
-    protected List<ISMAHookIO> IOCallbacks       { get; private set; } = new List<ISMAHookIO>();
+
+    protected List<string>     IOTargetFilePaths { get; } = new List<string>();
+    protected List<ISMAHookIO> IOCallbacks       { get; } = new List<ISMAHookIO>();
 
     #endregion
 
@@ -88,7 +87,10 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     //
     // Instance
 
-    protected SMHookEngine() { }
+    public SMHookEngine()
+    {
+      Core.Hook = this;
+    }
 
     #endregion
 
@@ -134,46 +136,6 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     {
       LogTo.Debug(msg,
                   args);
-    }
-
-    public override void OnException(Exception ex)
-    {
-      SystemCallback.OnException(ex);
-
-      StopIPCServer();
-    }
-
-    public override void SetWndProcHookAddr(int addr)
-    {
-      SystemCallback.SetWndProcHookAddr(addr);
-    }
-
-    public override bool OnUserMessage(int wParam)
-    {
-      return SystemCallback.OnUserMessage(wParam);
-    }
-
-    public override void GetExecutionParameters(out int       method,
-                                                out dynamic[] parameters)
-    {
-      SystemCallback.GetExecutionParameters(out method,
-                                            out parameters);
-    }
-
-    public override void SetExecutionResult(int result)
-    {
-      SystemCallback.SetExecutionResult(result);
-    }
-
-    public override Dictionary<string, int> GetPatternsHintAddresses()
-    {
-      return SMA.SMA.Instance.StartupConfig.PatternsHintAddresses;
-    }
-
-    public override void SetPatternsHintAddresses(Dictionary<string, int> hintAddrs)
-    {
-      SMA.SMA.Instance.StartupConfig.PatternsHintAddresses = hintAddrs;
-      SMA.SMA.Instance.SaveConfig(false);
     }
 
 
@@ -232,15 +194,14 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     //
     // Core hook methods
 
-    public async Task<IProcess> CreateAndHook(
+    public async Task<IProcess> CreateAndHook<TSMNatives>(
       SMCollection            collection,
       string                  binPath,
-      ISMAHookSystem          systemCallback,
       IEnumerable<ISMAHookIO> ioCallbacks)
+    where TSMNatives : ISuperMemoNatives
     {
       LogTo.Debug("Starting and injecting SuperMemo");
-
-      SystemCallback = systemCallback;
+      
       IOCallbacks.AddRange(ioCallbacks);
 
       IOTargetFilePaths.AddRange(IOCallbacks.SelectMany(c => c.GetTargetFilePaths()));
@@ -284,18 +245,17 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
       LogTo.Debug($"SuperMemo started and injected, pId: {pId}");
 
-      return new ProcessSharp<SM17Natives>(
+      return new ProcessSharp<TSMNatives>(
         pId,
         Process.NET.Memory.MemoryType.Remote,
         true,
-        SMA.SMA.Instance.StartupConfig.PatternsHintAddresses);
+        Core.SMA.StartupConfig.PatternsHintAddresses);
     }
 
     public void CleanupHooks()
     {
       StopIPCServer();
-
-      SystemCallback = null;
+      
       IOCallbacks.Clear();
       IOTargetFilePaths.Clear();
     }

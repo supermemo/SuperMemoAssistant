@@ -31,7 +31,7 @@
 
 
 using System.Collections.Generic;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts;
+using SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts;
 
 namespace SuperMemoAssistant.SMA.Configs
 {

@@ -50,13 +50,13 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 
     public ConceptSnapshot()
     {
-      ConceptElementId = Svc.SMA.UI.ElementWindow.CurrentConceptId;
+      ConceptElementId = Svc.SM.UI.ElementWdw.CurrentConceptId;
     }
 
     /// <inheritdoc />
     public void Dispose()
     {
-      Svc.SMA.UI.ElementWindow.SetCurrentConcept(ConceptElementId);
+      Svc.SM.UI.ElementWdw.SetCurrentConcept(ConceptElementId);
     }
 
     #endregion

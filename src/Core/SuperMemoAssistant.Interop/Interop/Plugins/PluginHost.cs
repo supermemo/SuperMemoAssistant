@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Anotar.Serilog;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.PluginHost;
 using SuperMemoAssistant.Sys;
@@ -57,6 +58,7 @@ namespace SuperMemoAssistant.Interop.Plugins
 
     #region Constructors
 
+    [LogToFatalOnException]
     public PluginHost(
       string  pluginPackageName,
       Guid    sessionGuid,
@@ -165,15 +167,23 @@ namespace SuperMemoAssistant.Interop.Plugins
     {
       Process smaProc = (Process)param;
 
-      while (_hasExited == false && smaProc.HasExited == false)
+      try
       {
-        smaProc.Refresh();
+        while (_hasExited == false && smaProc.HasExited == false)
+        {
+          smaProc.Refresh();
 
-        Thread.Sleep(500);
+          Thread.Sleep(500);
+        }
+
+        if (smaProc.HasExited)
+          OnSMAStopped();
       }
-
-      if (smaProc.HasExited)
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "Exception thrown while monitoring SMA process. Exiting");
         OnSMAStopped();
+      }
     }
 
     private void OnSMAStopped()

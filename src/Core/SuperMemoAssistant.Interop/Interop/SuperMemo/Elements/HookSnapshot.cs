@@ -50,13 +50,13 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements
 
     public HookSnapshot()
     {
-      HookElementId = Svc.SMA.UI.ElementWindow.CurrentHookId;
+      HookElementId = Svc.SM.UI.ElementWdw.CurrentHookId;
     }
 
     /// <inheritdoc />
     public void Dispose()
     {
-      Svc.SMA.UI.ElementWindow.CurrentHookId = HookElementId;
+      Svc.SM.UI.ElementWdw.CurrentHookId = HookElementId;
     }
 
     #endregion

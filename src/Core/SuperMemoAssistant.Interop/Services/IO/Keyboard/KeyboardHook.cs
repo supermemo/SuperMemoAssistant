@@ -243,13 +243,13 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
 
     private void OnSMAAvailable(Interop.SuperMemo.ISuperMemoAssistant sma)
     {
-      sma.UI.ElementWindow.OnAvailable += new ActionProxy(OnElementWindowAvailable);
+      sma.SM.UI.ElementWdw.OnAvailable += new ActionProxy(OnElementWindowAvailable);
     }
 
     private void OnElementWindowAvailable()
     {
-      _elWdwHandle = Svc.SMA.UI.ElementWindow.Handle;
-      _smProcessId = Svc.SMA.ProcessId;
+      _elWdwHandle = Svc.SM.UI.ElementWdw.Handle;
+      _smProcessId = Svc.SM.ProcessId;
     }
 
     #endregion

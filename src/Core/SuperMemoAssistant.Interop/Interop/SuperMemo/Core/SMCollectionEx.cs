@@ -60,22 +60,6 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
                                     filePath);
     }
 
-    public static string GetInfoFilePath(
-      this SMCollection collection,
-      string            fileName)
-    {
-      return collection.GetFilePath(SMConst.Paths.InfoFolder,
-                                    fileName);
-    }
-
-    public static string GetRegistryFilePath(
-      this SMCollection collection,
-      string            fileName)
-    {
-      return collection.GetFilePath(SMConst.Paths.RegistryFolder,
-                                    fileName);
-    }
-
     public static string GetSMAFolder(
       this SMCollection collection)
     {

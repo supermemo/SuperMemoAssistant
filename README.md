@@ -1,6 +1,6 @@
 ## SuperMemo Assistant
 
-PSA: if you'd like to use SMA before the official release contact @Naess at supermemo discord channel https://discord.gg/pB7jcSK
+PSA: if you'd like to use SMA before the official release, contact @Naess at supermemo discord channel https://discord.gg/pB7jcSK
 
 *SuperMemo Assistant* is a companion app for [SuperMemo 17](https://super-memo.com/supermemo17.html).
 

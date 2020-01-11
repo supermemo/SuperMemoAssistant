@@ -309,6 +309,7 @@
     <Compile Include="SMA\Configs\CollectionsCfg.cs" />
     <Compile Include="SMA\Configs\LayoutsCfg.cs" />
     <Compile Include="SMA\Core.cs" />
+    <Compile Include="SMA\CoreEx.Hook.cs" />
     <Compile Include="SMA\UI\Layout\TextEditorEx.cs" />
     <Compile Include="SMA\UI\Settings\Settings.Layouts.xaml.cs">
       <DependentUpon>Settings.Layouts.xaml</DependentUpon>

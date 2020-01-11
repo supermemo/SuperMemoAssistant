@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/08/08 11:01
+// Created On:   2019/09/03 18:08
+// Modified On:  2019/12/13 16:30
 // Modified By:  Alexis
 
 #endregion
@@ -112,8 +112,7 @@ namespace SuperMemoAssistant.SMA
 
     public SuperMemoCore SMBase => _sm;
 
-    public IProcess                   SMProcess     => _sm?.SMProcess;
-    public System.Diagnostics.Process NativeProcess => SMProcess?.Native;
+    public IProcess SMProcess => _sm?.SMProcess;
 
     #endregion
 

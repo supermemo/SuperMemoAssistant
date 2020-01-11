@@ -177,7 +177,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
             var elDesc = marshalledParameters[2].Reference.ToInt32();
 
             // elWdw.AppendElement(elType, automatic: false); 
-            int elemId = Delphi.registerCall3(_callTable[NativeMethod.ElWdwAppendElement],
+            int elemId = Delphi.registerCall3(_callTable[NativeMethod.ElWdw_AppendElement],
                                               elWdw,
                                               elType,
                                               0);
@@ -186,7 +186,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
               return -1;
 
             // elWdw.AddElementFromText(elDesc);
-            int res = Delphi.registerCall2(_callTable[NativeMethod.ElWdwAddElementFromText],
+            int res = Delphi.registerCall2(_callTable[NativeMethod.ElWdw_AddElementFromText],
                                            elWdw,
                                            elDesc);
 
@@ -196,24 +196,24 @@ namespace SuperMemoAssistant.Hooks.InjectLib
             elWdw = marshalledParameters[0].Reference.ToInt32();
             var interval = marshalledParameters[1].Reference.ToInt32();
 
-            // elWdw.ExecuteUncommitedRepetition(inclTopics: true, forceDisplay: false);
-            Delphi.registerCall3(_callTable[NativeMethod.ElWdwExecuteUncommitedRepetition],
+            // elWdw.ExecuteUncommittedRepetition(inclTopics: true, forceDisplay: false);
+            Delphi.registerCall3(_callTable[NativeMethod.ElWdw_ExecuteUncommitedRepetition],
                                  elWdw,
                                  1,
                                  0);
 
             // elWdw.ScheduleInInterval(interval);
-            Delphi.registerCall2(_callTable[NativeMethod.ElWdwScheduleInInterval],
+            Delphi.registerCall2(_callTable[NativeMethod.ElWdw_ScheduleInInterval],
                                  elWdw,
                                  interval);
 
             // elWdw.SetElementState(DisplayState.Display);
-            //registerCall2(_callTable[NativeMethod.ElWdwSetElementState],
+            //registerCall2(_callTable[NativeMethod.ElWdw_SetElementState],
             //              elWdw,
             //              2);
 
             // elWdw.NextElementInLearningQueue()
-            Delphi.registerCall1(_callTable[NativeMethod.ElWdwNextElementInLearningQueue],
+            Delphi.registerCall1(_callTable[NativeMethod.ElWdw_NextElementInLearningQueue],
                                  elWdw);
 
             return 1;
@@ -224,17 +224,17 @@ namespace SuperMemoAssistant.Hooks.InjectLib
             var adjustPriority = marshalledParameters[2].Reference.ToInt32();
 
             // elWdw.ForceRepetitionExt(interval, adjustPriority);
-            Delphi.registerCall3(_callTable[NativeMethod.ElWdwForceRepetitionExt],
+            Delphi.registerCall3(_callTable[NativeMethod.ElWdw_ForceRepetitionExt],
                                  elWdw,
                                  interval,
                                  adjustPriority);
 
             // elWdw.NextElementInLearningQueue();
-            Delphi.registerCall1(_callTable[NativeMethod.ElWdwNextElementInLearningQueue],
+            Delphi.registerCall1(_callTable[NativeMethod.ElWdw_NextElementInLearningQueue],
                                  elWdw);
 
             // elWdw.RestoreLearningMode();
-            Delphi.registerCall1(_callTable[NativeMethod.ElWdwRestoreLearningMode],
+            Delphi.registerCall1(_callTable[NativeMethod.ElWdw_RestoreLearningMode],
                                  elWdw);
 
             return 1;

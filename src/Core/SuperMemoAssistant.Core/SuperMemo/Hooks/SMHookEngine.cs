@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/13 13:55
-// Modified On:  2019/02/25 01:56
+// Created On:   2019/09/03 18:08
+// Modified On:  2019/12/13 20:34
 // Modified By:  Alexis
 
 #endregion
@@ -45,7 +45,7 @@ using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Hooks;
-using SuperMemoAssistant.SuperMemo.SuperMemo17;
+using SuperMemoAssistant.SuperMemo.Common;
 using SuperMemoAssistant.Sys.Exceptions;
 
 namespace SuperMemoAssistant.SuperMemo.Hooks
@@ -59,7 +59,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 #else
     public const int WaitTimeout = 5000;
 #endif
-    
+
     #endregion
 
 
@@ -72,7 +72,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     protected AsyncManualResetEvent HookInitEvent { get; } = new AsyncManualResetEvent(false);
     protected AutoResetEvent        SMAInitEvent  { get; } = new AutoResetEvent(false);
 
-    protected IpcServerChannel ServerChannel     { get; set; }
+    protected IpcServerChannel ServerChannel { get; set; }
 
     protected List<string>     IOTargetFilePaths { get; } = new List<string>();
     protected List<ISMAHookIO> IOCallbacks       { get; } = new List<ISMAHookIO>();
@@ -198,10 +198,10 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
       SMCollection            collection,
       string                  binPath,
       IEnumerable<ISMAHookIO> ioCallbacks)
-    where TSMNatives : ISuperMemoNatives
+      where TSMNatives : SuperMemoNatives, new()
     {
       LogTo.Debug("Starting and injecting SuperMemo");
-      
+
       IOCallbacks.AddRange(ioCallbacks);
 
       IOTargetFilePaths.AddRange(IOCallbacks.SelectMany(c => c.GetTargetFilePaths()));
@@ -213,7 +213,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
       var channelName = StartIPCServer();
 
       // Start SuperMemo application with given collection as parameter,
-      // and immediatly install hooks
+      // and immediately install hooks
       RemoteHooking.CreateAndInject(
         binPath,
         collection.GetKnoFilePath().Quotify(),
@@ -255,7 +255,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     public void CleanupHooks()
     {
       StopIPCServer();
-      
+
       IOCallbacks.Clear();
       IOTargetFilePaths.Clear();
     }

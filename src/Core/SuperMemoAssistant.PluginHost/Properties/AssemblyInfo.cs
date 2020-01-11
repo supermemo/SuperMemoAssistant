@@ -82,6 +82,6 @@ using System.Windows;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.80.0")]
-[assembly: AssemblyFileVersion("1.0.86.0")]
+[assembly: AssemblyFileVersion("1.0.87.0")]
 
 [assembly: AssemblyInformationalVersion("1.0.80")]

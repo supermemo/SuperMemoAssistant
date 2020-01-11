@@ -137,7 +137,6 @@ namespace SuperMemoAssistant.SuperMemo.Common
     #region Properties & Fields - Public
 
     public IProcess                   SMProcess     { get; private set; }
-    public System.Diagnostics.Process NativeProcess => SMProcess.Native;
 
     #endregion
 
@@ -147,12 +146,11 @@ namespace SuperMemoAssistant.SuperMemo.Common
     #region Properties Impl - Public
 
     public SMCollection Collection { get; }
-    public int          ProcessId  => NativeProcess?.Id ?? -1;
+    public int          ProcessId  => SMProcess.Native?.Id ?? -1;
     public bool IgnoreUserConfirmation
     {
       get => _ignoreUserConfirmationPtr.Read<bool>();
-      set => _ignoreUserConfirmationPtr.Write<bool>(0,
-                                                    value);
+      set => _ignoreUserConfirmationPtr.Write<bool>(0, value);
     }
     public ISuperMemoRegistry Registry => _registry;
     public ISuperMemoUI       UI       => _ui;

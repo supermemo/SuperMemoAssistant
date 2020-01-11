@@ -47,6 +47,7 @@ using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SuperMemo.Common;
 using SuperMemoAssistant.SuperMemo.Common.Content.Controls;
 using SuperMemoAssistant.SuperMemo.Common.UI;
+using static SuperMemoAssistant.Extensions.NativeMethodEx;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 {
@@ -115,7 +116,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       //  SMProcess.ThreadFactory.MainThread);
     }
 
-    public bool GoToElement(int elementId)
+    public async bool GoToElement(int elementId)
     {
       bool ret = false;
 
@@ -126,7 +127,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
         if (elem == null || elem.Deleted)
           return false;
 
-        ret = Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwGoToElement,
+        var test = await NativeMethod.ElWdw_GoToElement;
+
+        ret = Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_GoToElement,
                                             ElementWdwPtr.Read<IntPtr>(),
                                             elementId) == 1;
 
@@ -144,7 +147,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwPasteArticle,
+        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_PasteArticle,
                                              ElementWdwPtr.Read<IntPtr>()) == 1;
       }
       catch (Exception ex)
@@ -159,7 +162,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwPasteElement,
+        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_PasteElement,
                                              ElementWdwPtr.Read<IntPtr>()) == 1;
       }
       catch (Exception ex)
@@ -174,7 +177,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwAppendElement,
+        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_AppendElement,
                                              ElementWdwPtr.Read<IntPtr>(),
                                              (byte)elementType,
                                              0 /* ?? */);
@@ -191,7 +194,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwAddElementFromText,
+        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_AddElementFromText,
                                              ElementWdwPtr.Read<IntPtr>(),
                                              new DelphiUTF16String(elementDesc)) > 0;
       }
@@ -207,7 +210,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwDeleteCurrentElement,
+        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_DeleteCurrentElement,
                                              ElementWdwPtr.Read<IntPtr>()) == 1;
       }
       catch (Exception ex)
@@ -222,7 +225,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwDone,
+        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_Done,
                                              ElementWdwPtr.Read<IntPtr>()) == 1;
       }
       catch (Exception ex)
@@ -237,7 +240,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwNextElementInLearningQueue,
+        Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_NextElementInLearningQueue,
                                       ElementWdwPtr.Read<IntPtr>());
 
         return true;
@@ -254,7 +257,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwSetElementState,
+        Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_SetElementState,
                                       ElementWdwPtr.Read<IntPtr>(),
                                       state);
 
@@ -291,7 +294,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwForceRepetitionExt,
+        Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_ForceRepetitionExt,
                                       ElementWdwPtr.Read<IntPtr>(),
                                       interval,
                                       adjustPriority);
@@ -362,10 +365,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
         //return true;
 
-        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdwSetText,
-                                             ElementWdwPtr.Read<IntPtr>(),
-                                             control.Id + 1,
-                                             new DelphiUTF16String(text)) == 1;
+        return NativeMethod.ElWdw_SetText.ExecuteOnMainThread(
+          ElementWdwPtr.Read<IntPtr>(),
+          control.Id + 1,
+          new DelphiUTF16String(text)) == 1;
       }
       catch (Exception ex)
       {
@@ -451,7 +454,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
       await Task.Run(() =>
       {
-        ElementWdwPtr = SMProcess[SM17Natives.TElWind.InstancePtr];
+        ElementWdwPtr = SMProcess[SM17Natives.TElWind17.InstancePtr];
         ElementWdwPtr.RegisterValueChangedEventHandler<int>(OnWindowCreated);
       });
     }
@@ -477,7 +480,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       if (ElementWdwPtr.Read<int>() == 0)
         return false;
 
-      ElementIdPtr        = SMProcess[SM17Natives.TElWind.ElementIdPtr];
+      ElementIdPtr        = SMProcess[SM17Natives.TElWind17.ElementIdPtr];
       CurrentConceptIdPtr = SMProcess[SM17Natives.Globals.CurrentConceptIdPtr];
       CurrentRootIdPtr    = SMProcess[SM17Natives.Globals.CurrentRootIdPtr];
       CurrentHookIdPtr    = SMProcess[SM17Natives.Globals.CurrentHookIdPtr];
@@ -605,7 +608,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
     /// <inheritdoc />
     protected override IntPtr WindowHandle =>
-      SMProcess.Memory.Read<IntPtr>(new IntPtr(ElementWdwPtr.Read<int>() + SM17Natives.TControl.HandleOffset));
+      SMProcess.Memory.Read<IntPtr>(new IntPtr(ElementWdwPtr.Read<int>() + SM17Natives.TControl17.HandleOffset));
     /// <inheritdoc />
     public override string WindowClass => SMConst.UI.ElementWindowClassName;
 

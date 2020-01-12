@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/08 01:24
-// Modified On:  2019/01/15 12:35
+// Created On:   2019/09/03 18:08
+// Modified On:  2020/01/11 19:28
 // Modified By:  Alexis
 
 #endregion
@@ -30,13 +30,10 @@
 
 
 
-using System.Collections.Generic;
+using System;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.SMA.Hooks;
 using SuperMemoAssistant.SuperMemo.Common;
-using SuperMemoAssistant.SuperMemo.Common.Content;
-using SuperMemoAssistant.SuperMemo.Common.Elements;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17
 {
@@ -45,6 +42,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
   {
     #region Constants & Statics
 
+    public static readonly Version[] Versions =
+    {
+      new Version("17.4"),
+      new Version("18.0"),
+    };
     public const string RE_WindowTitle = "([^\\(]+) \\(SuperMemo 17: (.+)\\)";
 
     #endregion
@@ -57,6 +59,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
     /// <summary>SM17 Management interface</summary>
     /// <param name="collection">Target collection to open</param>
     /// <param name="binPath">SuperMemo bin path</param>
+    /// <param name="nativeData"></param>
     public SM17(SMCollection collection,
                 string       binPath)
       : base(collection,
@@ -72,8 +75,5 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
     public override SMAppVersion AppVersion => SMConst.Versions.v17_4;
 
     #endregion
-
-
-
   }
 }

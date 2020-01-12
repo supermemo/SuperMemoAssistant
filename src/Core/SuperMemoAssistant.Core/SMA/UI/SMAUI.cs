@@ -46,7 +46,7 @@ namespace SuperMemoAssistant.SMA.UI
 
     public static void Initialize()
     {
-      Svc.HotKeyManager.RegisterGlobal(
+      Core.HotKeyManager.RegisterGlobal(
         "Settings",
         "Show settings window",
         HotKeyScope.Global,
@@ -55,7 +55,7 @@ namespace SuperMemoAssistant.SMA.UI
       );
 
 #if DEBUG
-      Svc.HotKeyManager.RegisterGlobal(
+      Core.HotKeyManager.RegisterGlobal(
         "DebugInjectLib",
         "Attach debugger to injected lib",
         HotKeyScope.Global,
@@ -73,7 +73,7 @@ namespace SuperMemoAssistant.SMA.UI
     private static void DebugInjectLib()
     {
       /*
-      Svc.SMA.WindowFactory.MainWindow.PostMessage(
+      Core.SMA.WindowFactory.MainWindow.PostMessage(
         InjectLibMessageIds.SMA,
         new IntPtr((int)InjectLibMessageParams.AttachDebugger),
         new IntPtr(0)

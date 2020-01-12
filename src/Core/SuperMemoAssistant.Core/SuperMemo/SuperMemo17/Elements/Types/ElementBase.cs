@@ -251,7 +251,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
       try
       {
-        if (ChildrenCount <= 0)
+        if (ChildrenCount <= 0 || FirstChild == null)
           return ret;
 
         IElement itEl = FirstChild;

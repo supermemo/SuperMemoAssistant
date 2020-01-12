@@ -35,6 +35,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Anotar.Serilog;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Contents;
 using SuperMemoAssistant.SuperMemo.Common.Content.Content;
@@ -82,7 +83,11 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
       var rootObject = xamlLayout.ParseLayout(out var ex);
 
       if (ex != null || !(rootObject is UIElement rootUIElement))
+      {
+        LogTo.Warning(ex, $"Xaml layout {xamlLayout.Name} is invalid");
+
         return IsValid = false;
+      }
 
       Content = rootUIElement;
 

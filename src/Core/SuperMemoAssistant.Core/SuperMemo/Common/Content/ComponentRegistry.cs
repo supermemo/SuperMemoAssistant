@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/05/08 19:50
-// Modified On:  2019/07/22 12:25
+// Modified On:  2020/01/12 10:14
 // Modified By:  Alexis
 
 #endregion
@@ -108,16 +108,21 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content
     #region Methods Impl
 
     /// <inheritdoc />
-    protected override void Initialize()
-    {
-      CommitFromFile();
-    }
-
-    /// <inheritdoc />
     protected override void Cleanup()
     {
       ComponentGroups.Clear();
       CompSCA.Clear();
+    }
+
+    protected override void CommitFromFiles()
+    {
+      using (Stream cStream = File.OpenRead(Collection.GetInfoFilePath(ComponFileName)))
+      {
+        var compGroups = ParseCompGroupStream(cStream);
+
+        foreach (var cGroup in compGroups)
+          Commit(cGroup);
+      }
     }
 
     protected override void CommitFromMemory()
@@ -248,21 +253,6 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content
         }
 
       return ret;
-    }
-
-
-    //
-    // Lifecycle
-
-    protected virtual void CommitFromFile()
-    {
-      using (Stream cStream = File.OpenRead(Collection.GetInfoFilePath(ComponFileName)))
-      {
-        var compGroups = ParseCompGroupStream(cStream);
-
-        foreach (var cGroup in compGroups)
-          Commit(cGroup);
-      }
     }
 
     protected virtual void Commit(ComponentGroup cGroup)

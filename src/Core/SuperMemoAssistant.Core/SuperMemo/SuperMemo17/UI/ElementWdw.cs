@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/05/08 17:40
-// Modified On:  2019/08/09 11:54
+// Created On:   2019/09/03 18:08
+// Modified On:  2020/01/12 09:53
 // Modified By:  Alexis
 
 #endregion
@@ -44,10 +44,8 @@ using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Interop.SuperMemo.UI.Element;
 using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SuperMemo.Common;
 using SuperMemoAssistant.SuperMemo.Common.Content.Controls;
 using SuperMemoAssistant.SuperMemo.Common.UI;
-using static SuperMemoAssistant.Extensions.NativeMethodEx;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 {
@@ -95,8 +93,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
+        LogTo.Error(ex, "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -116,10 +113,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       //  SMProcess.ThreadFactory.MainThread);
     }
 
-    public async bool GoToElement(int elementId)
+    public bool GoToElement(int elementId)
     {
-      bool ret = false;
-
       try
       {
         var elem = Core.SM.Registry.Element[elementId];
@@ -127,19 +122,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
         if (elem == null || elem.Deleted)
           return false;
 
-        var test = await NativeMethod.ElWdw_GoToElement;
-
-        ret = Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_GoToElement,
-                                            ElementWdwPtr.Read<IntPtr>(),
-                                            elementId) == 1;
-
-        return ret;
+        return Core.Natives.ElWind.GoToElement(ElementWdwPtr.Read<IntPtr>(),
+                                               elementId);
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
-        return ret;
+        LogTo.Error(ex, "SM internal method call threw an exception.");
+        return false;
       }
     }
 
@@ -147,13 +136,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_PasteArticle,
-                                             ElementWdwPtr.Read<IntPtr>()) == 1;
+        return Core.Natives.ElWind.PasteArticle(ElementWdwPtr.Read<IntPtr>());
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
+        LogTo.Error(ex, "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -162,13 +149,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_PasteElement,
-                                             ElementWdwPtr.Read<IntPtr>()) == 1;
+        return Core.Natives.ElWind.PasteElement(ElementWdwPtr.Read<IntPtr>());
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
+        LogTo.Error(ex, "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -177,15 +162,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_AppendElement,
-                                             ElementWdwPtr.Read<IntPtr>(),
-                                             (byte)elementType,
-                                             0 /* ?? */);
+        return Core.Natives.ElWind.AppendElement(ElementWdwPtr.Read<IntPtr>(),
+                                                 elementType);
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
+        LogTo.Error(ex, "SM internal method call threw an exception.");
         return -1;
       }
     }
@@ -194,14 +176,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_AddElementFromText,
-                                             ElementWdwPtr.Read<IntPtr>(),
-                                             new DelphiUTF16String(elementDesc)) > 0;
+        return Core.Natives.ElWind.AddElementFromText(ElementWdwPtr.Read<IntPtr>(),
+                                                      elementDesc);
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
+        LogTo.Error(ex, "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -210,13 +190,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_DeleteCurrentElement,
-                                             ElementWdwPtr.Read<IntPtr>()) == 1;
+        return Core.Natives.ElWind.DeleteCurrentElement(ElementWdwPtr.Read<IntPtr>());
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
+        LogTo.Error(ex, "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -225,13 +203,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        return Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_Done,
-                                             ElementWdwPtr.Read<IntPtr>()) == 1;
+        return Core.Natives.ElWind.Done(ElementWdwPtr.Read<IntPtr>());
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
+        LogTo.Error(ex, "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -240,15 +216,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_NextElementInLearningQueue,
-                                      ElementWdwPtr.Read<IntPtr>());
-
-        return true;
+        return Core.Natives.ElWind.ShowNextElementInLearningQueue(ElementWdwPtr.Read<IntPtr>());
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
+        LogTo.Error(ex, "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -257,16 +229,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_SetElementState,
-                                      ElementWdwPtr.Read<IntPtr>(),
-                                      state);
-
-        return true;
+        return Core.Natives.ElWind.SetElementState(ElementWdwPtr.Read<IntPtr>(),
+                                                   state);
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
+        LogTo.Error(ex, "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -275,16 +243,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        Core.Hook.ExecuteOnMainThread(NativeMethod.PostponeRepetition,
-                                      ElementWdwPtr.Read<IntPtr>(),
-                                      interval);
-
-        return true;
+        return Core.Natives.ElWind.PostponeRepetition(ElementWdwPtr.Read<IntPtr>(),
+                                                      interval);
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
+        LogTo.Error(ex, "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -294,17 +258,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        Core.Hook.ExecuteOnMainThread(NativeMethod.ElWdw_ForceRepetitionExt,
-                                      ElementWdwPtr.Read<IntPtr>(),
-                                      interval,
-                                      adjustPriority);
-
-        return true;
+        return Core.Natives.ElWind.ForceRepetitionExt(ElementWdwPtr.Read<IntPtr>(),
+                                                      interval,
+                                                      adjustPriority);
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
+        LogTo.Error(ex, "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -314,17 +274,15 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        Core.Hook.ExecuteOnMainThread(NativeMethod.ForceRepetitionAndResume,
-                                      ElementWdwPtr.Read<IntPtr>(),
-                                      interval,
-                                      adjustPriority);
+        Core.Natives.ElWind.ForceRepetitionAndResume(ElementWdwPtr.Read<IntPtr>(),
+                                                     interval,
+                                                     adjustPriority);
 
         return true;
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
+        LogTo.Error(ex, "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -341,15 +299,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        return Core.Hook.ExecuteOnMainThread(NativeMethod.AppendAndAddElementFromText,
-                                             ElementWdwPtr.Read<IntPtr>(),
-                                             (byte)elementType,
-                                             new DelphiUTF16String(elementDesc));
+        return Core.Natives.ElWind.AppendAndAddElementFromText(ElementWdwPtr.Read<IntPtr>(),
+                                                               elementType,
+                                                               elementDesc);
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
+        LogTo.Error(ex, "SM internal method call threw an exception.");
         return -1;
       }
     }
@@ -365,55 +321,44 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
         //return true;
 
-        return NativeMethod.ElWdw_SetText.ExecuteOnMainThread(
-          ElementWdwPtr.Read<IntPtr>(),
-          control.Id + 1,
-          new DelphiUTF16String(text)) == 1;
+        return Core.Natives.ElWind.SetText(ElementWdwPtr.Read<IntPtr>(),
+                                           control,
+                                           text);
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
+        LogTo.Error(ex, "SM internal method call threw an exception.");
         return false;
       }
     }
 
     public string GetText(IControl control)
     {
-      return null;
-
-      // TODO: Add out parameters to Process.NET
-      //try
-      //{
-      //  var ret = new DelphiUString(8000);
-
-      //  GetTextMethod(ElementWdwPtr.Read<IntPtr>(),
-      //                control.Id + 1,
-      //                ret);
-
-      //  return ret.Text;
-      //}
-      //catch (Exception ex)
-      //{
-      //  return null;
-      //}
+      try
+      {
+        return Core.Natives.ElWind.GetText(ElementWdwPtr.Read<IntPtr>(),
+                                           control);
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "SM internal method call threw an exception.");
+        return null;
+      }
     }
 
     public bool EnterSMUpdateLock()
     {
       try
       {
-        SM17Natives.Instance.ElWind.EnterUpdateLock.Invoke(
-          ElementWdwPtr.Read<IntPtr>(),
-          true,
-          new DelphiUTF16String(1));
+        Core.Natives.ElWind.EnterUpdateLock.Invoke(ElementWdwPtr.Read<IntPtr>(),
+                                                   true,
+                                                   new DelphiUTF16String(1));
 
         return true;
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
+        LogTo.Error(ex, "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -422,17 +367,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        SM17Natives.Instance.ElWind.QuitUpdateLock.Invoke(
-          ElementWdwPtr.Read<IntPtr>(),
-          true
-        );
+        Core.Natives.ElWind.QuitUpdateLock.Invoke(ElementWdwPtr.Read<IntPtr>(),
+                                                  true);
 
         return true;
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "SM internal method call threw an exception.");
+        LogTo.Error(ex, "SM internal method call threw an exception.");
         return false;
       }
     }
@@ -454,7 +396,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
       await Task.Run(() =>
       {
-        ElementWdwPtr = SMProcess[SM17Natives.TElWind17.InstancePtr];
+        ElementWdwPtr = SMProcess[Core.Natives.ElWind.InstancePtr];
         ElementWdwPtr.RegisterValueChangedEventHandler<int>(OnWindowCreated);
       });
     }
@@ -480,10 +422,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       if (ElementWdwPtr.Read<int>() == 0)
         return false;
 
-      ElementIdPtr        = SMProcess[SM17Natives.TElWind17.ElementIdPtr];
-      CurrentConceptIdPtr = SMProcess[SM17Natives.Globals.CurrentConceptIdPtr];
-      CurrentRootIdPtr    = SMProcess[SM17Natives.Globals.CurrentRootIdPtr];
-      CurrentHookIdPtr    = SMProcess[SM17Natives.Globals.CurrentHookIdPtr];
+      ElementIdPtr        = SMProcess[Core.Natives.ElWind.ElementIdPtr];
+      CurrentConceptIdPtr = SMProcess[Core.Natives.Globals.CurrentConceptIdPtr];
+      CurrentRootIdPtr    = SMProcess[Core.Natives.Globals.CurrentRootIdPtr];
+      CurrentHookIdPtr    = SMProcess[Core.Natives.Globals.CurrentHookIdPtr];
 
       ElementIdPtr.RegisterValueChangedEventHandler<int>(OnElementChangedInternal);
 
@@ -505,8 +447,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
       try
       {
-        newElementId = BitConverter.ToInt32(newVal,
-                                            0);
+        newElementId = BitConverter.ToInt32(newVal, 0);
       }
       catch (Exception ex)
       {
@@ -553,8 +494,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "Error while notifying OnElementChanged");
+        LogTo.Error(ex, "Error while notifying OnElementChanged");
       }
 
       return false;
@@ -604,11 +544,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
 
     //
-    // IWdwBase Implt
+    // IWdwBase Impl
 
     /// <inheritdoc />
     protected override IntPtr WindowHandle =>
-      SMProcess.Memory.Read<IntPtr>(new IntPtr(ElementWdwPtr.Read<int>() + SM17Natives.TControl17.HandleOffset));
+      SMProcess.Memory.Read<IntPtr>(new IntPtr(ElementWdwPtr.Read<int>() + Core.Natives.Control.HandleOffset));
     /// <inheritdoc />
     public override string WindowClass => SMConst.UI.ElementWindowClassName;
 

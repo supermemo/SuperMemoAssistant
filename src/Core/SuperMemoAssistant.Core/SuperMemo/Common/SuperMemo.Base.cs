@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/05/08 17:40
-// Modified On:  2019/08/09 11:58
+// Created On:   2019/09/03 18:08
+// Modified On:  2020/01/11 20:31
 // Modified By:  Alexis
 
 #endregion
@@ -41,7 +41,7 @@ using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Hooks;
 using SuperMemoAssistant.SuperMemo.Hooks;
-using SuperMemoAssistant.SuperMemo.SuperMemo17;
+using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo.Common
 {
@@ -54,6 +54,10 @@ namespace SuperMemoAssistant.SuperMemo.Common
       : base(collection, binPath)
     {
       Core.SM = this;
+
+      _registry = new SuperMemoRegistryCore();
+      _ui       = new SuperMemoUICore();
+      _hook     = new SMHookEngine();
     }
 
     #endregion
@@ -71,16 +75,17 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
   /// <summary>Convenience class that implements shared code</summary>
   public abstract class SuperMemoBase
-    : IDisposable,
+    : PerpetualMarshalByRefObject,
+      IDisposable,
       ISuperMemo
   {
     #region Properties & Fields - Non-Public
 
     private readonly string _binPath;
 
-    protected readonly SuperMemoRegistryCore _registry;
-    protected readonly SuperMemoUICore       _ui;
-    protected readonly SMHookEngine          _hook;
+    protected SuperMemoRegistryCore _registry;
+    protected SuperMemoUICore       _ui;
+    protected SMHookEngine          _hook;
 
     private IPointer _ignoreUserConfirmationPtr;
 
@@ -96,10 +101,6 @@ namespace SuperMemoAssistant.SuperMemo.Common
     {
       Collection = collection;
       _binPath   = binPath;
-
-      _registry = new SuperMemoRegistryCore();
-      _ui       = new SuperMemoUICore();
-      _hook     = new SMHookEngine();
     }
 
     public virtual void Dispose()
@@ -136,7 +137,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
     #region Properties & Fields - Public
 
-    public IProcess                   SMProcess     { get; private set; }
+    public IProcess  SMProcess { get; private set; }
 
     #endregion
 
@@ -146,7 +147,9 @@ namespace SuperMemoAssistant.SuperMemo.Common
     #region Properties Impl - Public
 
     public SMCollection Collection { get; }
-    public int          ProcessId  => SMProcess.Native?.Id ?? -1;
+
+    public int ProcessId => SMProcess.Native?.Id ?? -1;
+
     public bool IgnoreUserConfirmation
     {
       get => _ignoreUserConfirmationPtr.Read<bool>();
@@ -165,17 +168,21 @@ namespace SuperMemoAssistant.SuperMemo.Common
     //
     // SM-App Lifecycle
 
-    public async Task Start()
+    public async Task Start(NativeData nativeData)
     {
       await OnPreInit();
 
-      SMProcess = await _hook.CreateAndHook(
+      var smProcess = await _hook.CreateAndHook(
         Collection,
         _binPath,
-        GetIOCallbacks()
+        GetIOCallbacks(),
+        nativeData
       );
 
+      SMProcess               =  smProcess ?? throw new InvalidOperationException("Failed to start SuperMemo process");
       SMProcess.Native.Exited += OnSMExited;
+
+      Core.Natives = smProcess.Procedures;
 
       await OnPostInit();
 
@@ -189,7 +196,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
     protected virtual Task OnPostInit()
     {
-      _ignoreUserConfirmationPtr = SMProcess[SM17Natives.Globals.IgnoreUserConfirmationPtr];
+      _ignoreUserConfirmationPtr = SMProcess[Core.Natives.Globals.IgnoreUserConfirmationPtr];
 
       return Core.SMA.OnSMStarted();
     }

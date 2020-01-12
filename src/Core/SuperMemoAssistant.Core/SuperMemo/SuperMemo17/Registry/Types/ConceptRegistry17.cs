@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/08/07 14:44
-// Modified On:  2019/08/07 15:04
+// Modified On:  2020/01/12 10:29
 // Modified By:  Alexis
 
 #endregion
@@ -51,7 +51,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override IRegistryUpdater Updater { get; }
 
     protected override IntPtr RegistryPtr =>
-      new IntPtr(SM17Natives.TRegistry17.ConceptRegistryInstance.Read<int>(Core.SMA.SMProcess.Memory));
+      new IntPtr(Core.Natives.Registry.ConceptRegistryInstance.Read<int>(Core.SMA.SMProcess.Memory));
 
     #endregion
 

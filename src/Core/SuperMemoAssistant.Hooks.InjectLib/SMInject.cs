@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/12 01:26
-// Modified On:  2019/02/25 00:14
+// Created On:   2019/03/02 18:29
+// Modified On:  2020/01/12 12:01
 // Modified By:  Alexis
 
 #endregion
@@ -31,7 +31,6 @@
 
 
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting;
@@ -40,6 +39,7 @@ using EasyHook;
 using Sentry;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.SMA.Hooks;
+using SuperMemoAssistant.SuperMemo;
 
 // ReSharper disable ClassNeverInstantiated.Global
 
@@ -64,7 +64,8 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
     // ReSharper disable once UnusedParameter.Local
     public SMInject(RemoteHooking.IContext context,
-                    string                 channelName)
+                    string                 channelName,
+                    NativeData             nativeData)
     {
       AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
       AppDomain.CurrentDomain.AssemblyResolve    += CurrentDomain_AssemblyResolve;
@@ -84,14 +85,15 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     #region Methods
 
     public void Run(RemoteHooking.IContext inContext,
-                    string                 channelName)
+                    string                 channelName,
+                    NativeData             nativeData)
     {
       try
       {
         try
         {
           InstallHooks();
-          InstallSM();
+          InstallSM(nativeData);
 
           SMA.OnHookInstalled(true);
         }
@@ -127,7 +129,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       finally
       {
         HasExited = true;
-        
+
         CleanupHooks();
 
         SentryInstance.Dispose();

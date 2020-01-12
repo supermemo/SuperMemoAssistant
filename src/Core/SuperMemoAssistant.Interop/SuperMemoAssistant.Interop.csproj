@@ -264,8 +264,6 @@
     <Compile Include="Extensions\PathEx.cs" />
     <Compile Include="Extensions\ProcessEx.cs" />
     <Compile Include="Extensions\StringEx.cs" />
-    <Compile Include="Interop\SuperMemo\Elements\ConceptSnapshot.cs" />
-    <Compile Include="Interop\SuperMemo\Elements\HookSnapshot.cs" />
     <Compile Include="Interop\SuperMemo\Registry\Members\IBinary.cs" />
     <Compile Include="Interop\SuperMemo\Registry\Types\IBinaryRegistry.cs" />
     <Compile Include="Interop\SuperMemo\Content\Controls\IControl.cs" />

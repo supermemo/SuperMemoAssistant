@@ -88,9 +88,11 @@ namespace SuperMemoAssistant.Plugins
           IsDeveloment   = pluginInstance.Metadata.IsDevelopment,
         };
 
+        var processArgs = Parser.Default.FormatCommandLine(cmdLineParams);
+
         var pluginStartInfo = new ProcessStartInfo(
           SMAFileSystem.PluginHostExeFile.FullPath,
-          Parser.Default.FormatCommandLine(cmdLineParams))
+          processArgs)
         {
           UseShellExecute = false,
         };

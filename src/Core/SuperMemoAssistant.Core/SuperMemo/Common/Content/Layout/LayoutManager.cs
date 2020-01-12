@@ -166,7 +166,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout
       _config.Default = Default.Name;
       _config.Layouts = new List<XamlLayout>(Layouts.Where(l => l.IsBuiltIn == false));
 
-      Svc.Configuration.Save(_config).RunAsync();
+      Core.Configuration.Save(_config).RunAsync();
     }
 
     private void OnLayoutNameChanged(XamlLayout xamlLayout, string before, string after)
@@ -183,7 +183,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout
 
     private async Task OnSMStarted(object sender, Interop.SuperMemo.Core.SMProcessArgs eventArgs)
     {
-      _config = await Svc.Configuration.Load<LayoutsCfg>() ?? new LayoutsCfg();
+      _config = await Core.Configuration.Load<LayoutsCfg>() ?? new LayoutsCfg();
 
       _layouts   = new ObservableCollection<XamlLayout>(_config.Layouts);
       _layoutMap = _layouts.ToDictionary(k => k.Name);

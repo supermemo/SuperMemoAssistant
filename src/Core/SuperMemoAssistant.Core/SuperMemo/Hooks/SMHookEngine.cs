@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/09/03 18:08
-// Modified On:  2019/12/13 20:34
+// Modified On:  2020/01/11 18:56
 // Modified By:  Alexis
 
 #endregion
@@ -45,7 +45,7 @@ using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Hooks;
-using SuperMemoAssistant.SuperMemo.Common;
+using SuperMemoAssistant.SuperMemo.Natives;
 using SuperMemoAssistant.Sys.Exceptions;
 
 namespace SuperMemoAssistant.SuperMemo.Hooks
@@ -194,11 +194,11 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     //
     // Core hook methods
 
-    public async Task<IProcess> CreateAndHook<TSMNatives>(
+    public async Task<ProcessSharp<SMNatives>> CreateAndHook(
       SMCollection            collection,
       string                  binPath,
-      IEnumerable<ISMAHookIO> ioCallbacks)
-      where TSMNatives : SuperMemoNatives, new()
+      IEnumerable<ISMAHookIO> ioCallbacks,
+      NativeData              nativeData)
     {
       LogTo.Debug("Starting and injecting SuperMemo");
 
@@ -222,7 +222,8 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
         SMAFileSystem.InjectionLibFile.FullPath,
         null,
         out var pId,
-        channelName
+        channelName,
+        nativeData
       );
 
       LogTo.Debug("Waiting for signal from Injected library");
@@ -245,11 +246,12 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
       LogTo.Debug($"SuperMemo started and injected, pId: {pId}");
 
-      return new ProcessSharp<TSMNatives>(
+      return new ProcessSharp<SMNatives>(
         pId,
         Process.NET.Memory.MemoryType.Remote,
         true,
-        Core.SMA.StartupConfig.PatternsHintAddresses);
+        Core.SMA.StartupConfig.PatternsHintAddresses,
+        nativeData);
     }
 
     public void CleanupHooks()

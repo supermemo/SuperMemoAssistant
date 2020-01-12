@@ -59,8 +59,8 @@ namespace SuperMemoAssistant.Extensions
                                      TKey                               key,
                                      T                                  defaultRet = default)
     {
-      if (dic.ContainsKey(key))
-        return dic[key];
+      if (dic.TryGetValue(key, out T ret))
+        return ret;
 
       return defaultRet;
     }

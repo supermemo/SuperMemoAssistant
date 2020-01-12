@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/08/08 11:29
+// Created On:   2019/09/03 18:08
+// Modified On:  2020/01/12 12:21
 // Modified By:  Alexis
 
 #endregion
@@ -32,12 +32,16 @@
 
 using System;
 using SuperMemoAssistant.Interop;
+using SuperMemoAssistant.Plugins;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.HotKeys;
 using SuperMemoAssistant.Services.IO.Keyboard;
 using SuperMemoAssistant.Services.IO.Logger;
 using SuperMemoAssistant.SMA;
+using SuperMemoAssistant.SuperMemo.Common.Content.Layout;
 
+// ReSharper disable NotAccessedVariable
+// ReSharper disable JoinDeclarationAndInitializer
 // ReSharper disable RedundantAssignment
 
 namespace SuperMemoAssistant
@@ -62,7 +66,12 @@ namespace SuperMemoAssistant
 
       Core.Configuration  = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
       Core.KeyboardHotKey = KeyboardHookService.Instance;
-      Core.HotKeyManager  = HotKeyManager.Instance.Initialize();
+      Core.HotKeyManager  = HotKeyManager.Instance.Initialize(Core.Configuration, Core.KeyboardHotKey);
+      Core.SMA            = SMA.SMA.Instance;
+
+      object tmp;
+      tmp = LayoutManager.Instance;
+      tmp = PluginManager.Instance;
     }
 
     #endregion

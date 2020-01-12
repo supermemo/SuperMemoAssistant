@@ -37,7 +37,6 @@ using System.Windows.Input;
 using SuperMemoAssistant.SMA.UI.Layout;
 using SuperMemoAssistant.SuperMemo.Common.Content.Layout;
 using SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts;
-using SuperMemoAssistant.SuperMemo.Common.Content.Layout;
 using SuperMemoAssistant.Sys.Windows.Input;
 
 namespace SuperMemoAssistant.SMA.UI.Settings

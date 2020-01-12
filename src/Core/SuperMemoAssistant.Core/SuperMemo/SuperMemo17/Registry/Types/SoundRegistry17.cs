@@ -51,7 +51,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override IRegistryUpdater Updater { get; }
 
     protected override IntPtr RegistryPtr =>
-      new IntPtr(SM17Natives.TRegistry17.SoundRegistryInstance.Read<int>(Core.SMA.SMProcess.Memory));
+      new IntPtr(Core.Natives.Registry.SoundRegistryInstance.Read<int>(Core.SMA.SMProcess.Memory));
 
     #endregion
 

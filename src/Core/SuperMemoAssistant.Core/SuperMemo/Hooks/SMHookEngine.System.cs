@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/08/09 11:38
-// Modified On:  2019/08/09 11:48
+// Modified On:  2020/01/12 14:59
 // Modified By:  Alexis
 
 #endregion
@@ -38,8 +38,6 @@ using Process.NET.Assembly;
 using Process.NET.Utilities;
 using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Hooks;
-using SuperMemoAssistant.SuperMemo.Common;
-using SuperMemoAssistant.SuperMemo.SuperMemo17;
 
 namespace SuperMemoAssistant.SuperMemo.Hooks
 {
@@ -117,8 +115,8 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     #region Methods
 
     // TODO: Not thread safe & ugly overall...
-    public int ExecuteOnMainThread(NativeMethod     method,
-                                   params dynamic[] parameters)
+    public int ExecuteOnMainThread(NativeMethod method,
+                                   dynamic[]    parameters)
     {
       _mainThreadReadyEvent.Reset();
 
@@ -128,11 +126,11 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
       var smMem = Core.SM.SMProcess.Memory;
 
-      var smMain = smMem.Read<int>(SM17Natives.TSMMain17.InstancePtr);
-      var handle = smMem.Read<IntPtr>(new IntPtr(smMain + SM17Natives.TControl17.HandleOffset));
+      var smMain = smMem.Read<int>(Core.Natives.SMMain.InstancePtr);
+      var handle = smMem.Read<IntPtr>(new IntPtr(smMain + Core.Natives.Control.HandleOffset));
 
-      var restoreWndProcAddr = SM17Natives.TApplication17.TApplicationOnMessagePtr.Read<int>(smMem);
-      SM17Natives.TApplication17.TApplicationOnMessagePtr.Write<int>(smMem,
+      var restoreWndProcAddr = Core.Natives.Application.TApplicationOnMessagePtr.Read<int>(smMem);
+      Core.Natives.Application.TApplicationOnMessagePtr.Write<int>(smMem,
                                                                    _wndProcHookAddr);
 
       WindowHelper.PostMessage(handle,
@@ -142,7 +140,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
       _mainThreadReadyEvent.WaitOne(AssemblyFactory.ExecutionTimeout);
 
-      SM17Natives.TApplication17.TApplicationOnMessagePtr.Write<int>(smMem,
+      Core.Natives.Application.TApplicationOnMessagePtr.Write<int>(smMem,
                                                                    restoreWndProcAddr);
 
       _execCtxt.ExecutionParameters = null;

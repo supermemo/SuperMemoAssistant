@@ -30,6 +30,7 @@
 
 
 
+using SuperMemoAssistant.SuperMemo;
 using SuperMemoAssistant.SuperMemo.Common;
 
 namespace SuperMemoAssistant.SMA

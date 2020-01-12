@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/09/03 18:08
-// Modified On:  2019/12/13 16:30
+// Modified On:  2020/01/11 20:46
 // Modified By:  Alexis
 
 #endregion
@@ -34,17 +34,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security;
+using System.Security.Permissions;
 using System.Threading.Tasks;
 using Anotar.Serilog;
 using AsyncEvent;
 using Process.NET;
-using Process.NET.Windows;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Services;
-using SuperMemoAssistant.SMA.Configs;
-using SuperMemoAssistant.SMA.UI;
+using SuperMemoAssistant.SuperMemo;
 using SuperMemoAssistant.SuperMemo.Common;
 using SuperMemoAssistant.SuperMemo.Common.Content.Layout;
 using SuperMemoAssistant.SuperMemo.SuperMemo17;
@@ -57,7 +56,7 @@ namespace SuperMemoAssistant.SMA
   ///   Wrapper around a SM management instance that handles SuperMemo App lifecycle events
   ///   (start, exit, ...) and provides a safe interface to interact with SuperMemo
   /// </summary>
-  public class SMA
+  public partial class SMA
     : PerpetualMarshalByRefObject,
       ISuperMemoAssistant,
       IDisposable
@@ -72,8 +71,6 @@ namespace SuperMemoAssistant.SMA
 
 
     #region Properties & Fields - Non-Public
-
-    private CollectionsCfg _collectionsCfg;
 
     protected SuperMemoCore _sm;
 
@@ -107,11 +104,6 @@ namespace SuperMemoAssistant.SMA
 
     #region Properties & Fields - Public
 
-    public StartupCfg    StartupConfig    { get; set; }
-    public CollectionCfg CollectionConfig { get; set; }
-
-    public SuperMemoCore SMBase => _sm;
-
     public IProcess SMProcess => _sm?.SMProcess;
 
     #endregion
@@ -144,21 +136,17 @@ namespace SuperMemoAssistant.SMA
       try
       {
         if (_sm != null)
-          throw new InvalidOperationException("_sm is already instanciated");
+          throw new InvalidOperationException("_sm is already instantiated");
 
         LoadConfig(collection);
+        var nativeData = CheckSuperMemoExecutable();
 
-        if (new FilePath(StartupConfig.SMBinPath).Exists() == false)
-          throw new FileNotFoundException($"Invalid file path for sm executable file: '{StartupConfig.SMBinPath}' could not be found.");
-
-        // TODO: Look at PE version and select Management Engine version
-        _sm = new SM17(collection,
-                       StartupConfig.SMBinPath);
+        _sm = InstantiateSuperMemo(collection, nativeData.SMVersion);
 
         // TODO: Move somewhere else
         _sm.UI.ElementWdw.OnAvailable += OnSuperMemoWindowsAvailable;
 
-        await _sm.Start();
+        await _sm.Start(nativeData);
         // TODO: Ensure opened collection (windows title) matches parameter
       }
       catch (Exception ex)
@@ -188,107 +176,38 @@ namespace SuperMemoAssistant.SMA
       return true;
     }
 
-    public void ApplySuperMemoWindowStyles()
+    private SuperMemoCore InstantiateSuperMemo(SMCollection collection,
+                                               Version      smVersion)
     {
-      if (CollectionConfig.CollapseElementWdwTitleBar)
-        WindowStyling.MakeWindowTitleless(_sm.UI.ElementWdw.Handle);
+      if (SM17.Versions.Contains(smVersion))
+        return new SM17(collection,
+                        StartupConfig.SMBinPath);
+
+      throw new NotSupportedException($"Unsupported SM version {smVersion}");
     }
 
-    public void LoadConfig(SMCollection collection)
+    private NativeData CheckSuperMemoExecutable()
     {
-      var knoPath = collection.GetKnoFilePath();
+      var nativeDataCfg = LoadNativeDataConfig();
+      var smFile        = new FilePath(StartupConfig.SMBinPath);
 
-      // StartupCfg
+      if (smFile.Exists() == false)
+        throw new FileNotFoundException(
+          $"Invalid file path for sm executable file: '{StartupConfig.SMBinPath}' could not be found. SMA cannot continue.");
 
-      StartupConfig = Svc.Configuration.Load<StartupCfg>().Result ?? new StartupCfg();
+      if (smFile.HasPermission(FileIOPermissionAccess.Read) == false)
+        throw new SecurityException($"SMA needs read access to execute SM executable at {smFile.FullPath}.");
 
-      // CollectionsCfg
+      var smFileCrc32 = FileEx.GetCrc32(smFile.FullPath);
+      var nativeData  = nativeDataCfg.SafeGet(smFileCrc32.ToUpper());
 
-      _collectionsCfg  = Svc.Configuration.Load<CollectionsCfg>().Result ?? new CollectionsCfg();
-      CollectionConfig = _collectionsCfg.CollectionsConfig.SafeGet(knoPath);
+      if (nativeData == null)
+        throw new NotSupportedException($"Unknown SM executable version with crc32 {smFileCrc32}.");
 
-      if (CollectionConfig == null)
-      {
-        CollectionConfig                           = new CollectionCfg();
-        _collectionsCfg.CollectionsConfig[knoPath] = CollectionConfig;
-      }
+      LogTo.Information($"SuperMemo version {nativeData.SMVersion} detected");
+
+      return nativeData;
     }
-
-    public Task SaveConfig(bool sync)
-    {
-      var tasks = new[]
-      {
-        Svc.Configuration.Save<StartupCfg>(StartupConfig),
-        Svc.Configuration.Save<CollectionsCfg>(_collectionsCfg),
-      };
-
-      var task = Task.WhenAll(tasks);
-
-      if (sync)
-        task.Wait();
-
-      return task;
-    }
-
-    public async Task OnSMStarting()
-    {
-      try
-      {
-        if (OnSMStartingEvent != null)
-          await OnSMStartingEvent.InvokeAsync(this,
-                                              new SMEventArgs(_sm));
-      }
-      catch (Exception ex)
-      {
-        LogTo.Error(ex, "Exception while notifying starting");
-        throw;
-      }
-    }
-
-    public async Task OnSMStarted()
-    {
-      try
-      {
-        await SaveConfig(false);
-
-        SMAUI.Initialize();
-
-        if (OnSMStartedEvent != null)
-          await OnSMStartedEvent.InvokeAsync(
-            this,
-            new SMProcessArgs(_sm, SMProcess.Native));
-      }
-      catch (Exception ex)
-      {
-        LogTo.Error(ex, "Exception while notifying started");
-
-        throw;
-      }
-    }
-
-    public async Task OnSMStopped()
-    {
-      _sm = null;
-
-      if (OnSMStoppedEvent != null)
-        await OnSMStoppedEvent.InvokeAsync(this, null);
-    }
-
-    private void OnSuperMemoWindowsAvailable()
-    {
-      ApplySuperMemoWindowStyles();
-    }
-
-    #endregion
-
-
-
-
-    #region Events
-
-    public virtual event AsyncEventHandler<SMProcessArgs> OnSMStartedEvent;
-    public virtual event AsyncEventHandler<SMEventArgs>   OnSMStartingEvent;
-    public virtual event AsyncEventHandler<SMProcessArgs> OnSMStoppedEvent;
 
     #endregion
   }

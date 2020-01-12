@@ -308,8 +308,11 @@
     <Compile Include="SMA\Configs\CollectionCfg.cs" />
     <Compile Include="SMA\Configs\CollectionsCfg.cs" />
     <Compile Include="SMA\Configs\LayoutsCfg.cs" />
+    <Compile Include="SMA\Configs\NativeDataCfg.cs" />
     <Compile Include="SMA\Core.cs" />
     <Compile Include="SMA\CoreEx.Hook.cs" />
+    <Compile Include="SMA\SuperMemoAssistant.Config.cs" />
+    <Compile Include="SMA\SuperMemoAssistant.Events.cs" />
     <Compile Include="SMA\UI\Layout\TextEditorEx.cs" />
     <Compile Include="SMA\UI\Settings\Settings.Layouts.xaml.cs">
       <DependentUpon>Settings.Layouts.xaml</DependentUpon>
@@ -359,8 +362,19 @@
     <Compile Include="SuperMemo\Common\Content\Controls\ControlText.cs" />
     <Compile Include="SuperMemo\Common\Content\Controls\ControlTextBased.cs" />
     <Compile Include="SuperMemo\Common\Content\Controls\ControlHtml.cs" />
+    <Compile Include="SuperMemo\Common\Elements\ConceptSnapshot.cs" />
+    <Compile Include="SuperMemo\Common\Elements\HookSnapshot.cs" />
     <Compile Include="SuperMemo\Common\Elements\IElementRegistryUpdater.cs" />
     <Compile Include="SuperMemo\Hooks\SMHookEngine.System.cs" />
+    <Compile Include="SuperMemo\Natives\SMNatives.cs" />
+    <Compile Include="SuperMemo\Natives\SMNatives.TApplication.cs" />
+    <Compile Include="SuperMemo\Natives\SMNatives.TControl.cs" />
+    <Compile Include="SuperMemo\Natives\SMNatives.TDatabase.cs" />
+    <Compile Include="SuperMemo\Natives\SMNatives.TElWind.cs" />
+    <Compile Include="SuperMemo\Natives\SMNatives.TElWind.TComponentData.cs" />
+    <Compile Include="SuperMemo\Natives\SMNatives.TGlobals.cs" />
+    <Compile Include="SuperMemo\Natives\SMNatives.TRegistry.cs" />
+    <Compile Include="SuperMemo\Natives\SMNatives.TSMMain.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Elements\ElementRegistry17.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Elements\ElementRegistryUpdater17.cs" />
     <Compile Include="SuperMemo\Common\Extensions\SMCollectionEx.cs" />
@@ -435,6 +449,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <Content Include="NativeDataCfg.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/08/07 15:20
-// Modified On:  2019/08/08 11:22
+// Modified On:  2020/01/12 10:26
 // Modified By:  Alexis
 
 #endregion
@@ -47,7 +47,6 @@ using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SuperMemo.Common.Extensions;
 using SuperMemoAssistant.SuperMemo.Common.Registry.Files;
 using SuperMemoAssistant.SuperMemo.Hooks;
-using SuperMemoAssistant.SuperMemo.SuperMemo17;
 using SuperMemoAssistant.Sys.SparseClusteredArray;
 
 // ReSharper disable VirtualMemberCallInConstructor
@@ -219,6 +218,9 @@ namespace SuperMemoAssistant.SuperMemo.Common.Registry
 
     protected virtual void OnMemberAddedOrUpdated(TMember member)
     {
+      if (Members.ContainsKey(member.Id) == false)
+        Members[member.Id] = member;
+
       if (member?.Id == _waitForMemberId)
         _waitForMemberEvent.Set();
     }
@@ -232,7 +234,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Registry
       {
         _waitForMemberEvent.Reset();
 
-        int ret = SM17Natives.Instance.Registry.AddMember.Invoke(
+        int ret = Core.Natives.Registry.AddMember.Invoke(
           RegistryPtr,
           new DelphiUTF16String(textOrPath));
 
@@ -267,7 +269,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Registry
 
         Core.SM.IgnoreUserConfirmation = true;
 
-        int ret = SM17Natives.Instance.Registry.ImportFile.Invoke(
+        int ret = Core.Natives.Registry.ImportFile.Invoke(
           RegistryPtr,
           new DelphiUTF16String(textOrPath),
           new DelphiUTF16String(registryName));

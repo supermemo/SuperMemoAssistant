@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/05/08 19:51
-// Modified On:  2019/08/09 11:55
+// Modified On:  2020/01/12 10:24
 // Modified By:  Alexis
 
 #endregion
@@ -36,11 +36,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Process.NET;
 using Process.NET.Memory;
-using Process.NET.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
 using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SuperMemo.SuperMemo17;
 using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
@@ -77,11 +75,11 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
     public ControlGroup(IProcess smProcess)
     {
       _smProcess         = smProcess;
-      _componentDataAddr = smProcess[SM17Natives.TElWind17.ComponentsDataPtr].Read<int>();
+      _componentDataAddr = smProcess[Core.Natives.ElWind.ComponentsDataPtr].Read<int>();
 
-      CountPtr            = smProcess[SM17Natives.TElWind17.TComponentData17.ComponentCountPtr];
-      FocusedControlNoPtr = smProcess[SM17Natives.TElWind17.FocusedComponentPtr];
-      IsModifiedPtr       = smProcess[SM17Natives.TElWind17.TComponentData17.IsModifiedPtr];
+      CountPtr            = smProcess[Core.Natives.ElWind.Components.ComponentCountPtr];
+      FocusedControlNoPtr = smProcess[Core.Natives.ElWind.FocusedComponentPtr];
+      IsModifiedPtr       = smProcess[Core.Natives.ElWind.Components.IsModifiedPtr];
     }
 
 
@@ -205,8 +203,8 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
 
       byte smCompType = _smProcess.Memory.Read<byte>(
         new IntPtr(_componentDataAddr
-                   + SM17Natives.TElWind17.TComponentData17.ComponentDataArrOffset
-                   + SM17Natives.TElWind17.TComponentData17.ComponentDataArrItemLength * idx)
+                   + Core.Natives.ElWind.Components.ComponentDataArrOffset
+                   + Core.Natives.ElWind.Components.ComponentDataArrItemLength * idx)
       );
 
       switch (smCompType)
@@ -298,10 +296,9 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
       if (IsDisposed)
         throw new InvalidOperationException(DisposedException);
 
-      return Core.Hook.ExecuteOnMainThread(NativeMethod.TCompData_SetText,
-                                           new IntPtr(_componentDataAddr),
-                                           control.Id + 1,
-                                           new DelphiUTF16String(text)) == 1;
+      return Core.Natives.ElWind.Components.SetText(new IntPtr(_componentDataAddr),
+                                                    control,
+                                                    text);
     }
 
     public int GetTextRegMember(IControl control)
@@ -309,9 +306,8 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
       if (IsDisposed)
         throw new InvalidOperationException(DisposedException);
 
-      return Core.Hook.ExecuteOnMainThread(NativeMethod.TCompData_GetTextRegMember,
-                                           new IntPtr(_componentDataAddr),
-                                           control.Id + 1);
+      return Core.Natives.ElWind.Components.GetTextRegMember(new IntPtr(_componentDataAddr),
+                                                             control);
     }
 
     public bool SetTextRegMember(IControl control,
@@ -323,10 +319,9 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
       if (Core.SM.Registry.Text[member] == null)
         return false;
 
-      return Core.Hook.ExecuteOnMainThread(NativeMethod.TCompData_SetTextRegMember,
-                                           new IntPtr(_componentDataAddr),
-                                           control.Id + 1,
-                                           member) == 1;
+      return Core.Natives.ElWind.Components.SetTextRegMember(new IntPtr(_componentDataAddr),
+                                                             control,
+                                                             member);
     }
 
     public int GetImageRegMember(IControl control)
@@ -334,9 +329,8 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
       if (IsDisposed)
         throw new InvalidOperationException(DisposedException);
 
-      return Core.Hook.ExecuteOnMainThread(NativeMethod.TCompData_GetImageRegMember,
-                                           new IntPtr(_componentDataAddr),
-                                           control.Id + 1);
+      return Core.Natives.ElWind.Components.GetImageRegMember(new IntPtr(_componentDataAddr),
+                                                              control);
     }
 
     public bool SetImageRegMember(IControl control,
@@ -348,10 +342,9 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
       if (Core.SM.Registry.Image[member] == null)
         return false;
 
-      return Core.Hook.ExecuteOnMainThread(NativeMethod.TCompData_SetImageRegMember,
-                                           new IntPtr(_componentDataAddr),
-                                           control.Id + 1,
-                                           member) == 1;
+      return Core.Natives.ElWind.Components.SetImageRegMember(new IntPtr(_componentDataAddr),
+                                                              control,
+                                                              member);
     }
 
     #endregion

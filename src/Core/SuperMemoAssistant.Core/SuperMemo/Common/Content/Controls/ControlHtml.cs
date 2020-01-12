@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/05/08 19:51
-// Modified On:  2019/08/09 10:53
+// Modified On:  2020/01/12 10:25
 // Modified By:  Alexis
 
 #endregion
@@ -42,7 +42,6 @@ using Process.NET.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
 using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SuperMemo.SuperMemo17;
 using SuperMemoAssistant.Sys.COM.InternetExplorer;
 
 namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
@@ -64,7 +63,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
     private IHTMLDocument2 _document;
 
     private int NativeControlAddr =>
-      _group._smProcess.Memory.Read<int>(SM17Natives.TElWind17.ObjectsPtr, 4 * Id);
+      _group._smProcess.Memory.Read<int>(Core.Natives.ElWind.ObjectsPtr, 4 * Id);
 
     #endregion
 
@@ -145,7 +144,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
         try
         {
           IntPtr shellEmbedHwnd = _group._smProcess.Memory.Read<IntPtr>(
-            new IntPtr(NativeControlAddr + SM17Natives.TControl17.HandleOffset)
+            new IntPtr(NativeControlAddr + Core.Natives.Control.HandleOffset)
           );
 
           ieSrvFrame = UIAutomation.FromHandle(shellEmbedHwnd).FindFirstDescendant(c => c.ByClassName("Internet Explorer_Server"));

@@ -91,7 +91,7 @@ namespace SuperMemoAssistant.Interop.Plugins
         Svc.KeyboardHotKey = KeyboardHookService.Instance;
         Svc.KeyboardHotKeyLegacy = KeyboardHotKeyService.Instance;
         Svc.Configuration = new PluginConfigurationService(this);
-        Svc.HotKeyManager = HotKeyManager.Instance.Initialize();
+        Svc.HotKeyManager = HotKeyManager.Instance.Initialize(Svc.Configuration, Svc.KeyboardHotKey);
 
         // Create Plugin's IPC Server
         _channelName = RemotingServicesEx.GenerateIpcServerChannelName();

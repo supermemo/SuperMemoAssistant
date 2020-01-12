@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/08/08 10:54
-// Modified On:  2019/08/09 10:49
+// Modified On:  2020/01/11 20:44
 // Modified By:  Alexis
 
 #endregion
@@ -35,6 +35,7 @@ using SuperMemoAssistant.Services.IO.HotKeys;
 using SuperMemoAssistant.Services.IO.Keyboard;
 using SuperMemoAssistant.SuperMemo.Common;
 using SuperMemoAssistant.SuperMemo.Hooks;
+using SuperMemoAssistant.SuperMemo.Natives;
 
 namespace SuperMemoAssistant.SMA
 {
@@ -42,9 +43,10 @@ namespace SuperMemoAssistant.SMA
   {
     #region Constants & Statics
 
-    public static SMA           SMA { get; set; }
-    public static SuperMemoCore SM  { get; set; }
-    public static SMHookEngine  Hook {get; set; }
+    public static SMA           SMA     { get; set; }
+    public static SuperMemoCore SM      { get; set; }
+    public static SMHookEngine  Hook    { get; set; }
+    public static SMNatives     Natives { get; set; }
 
     public static IKeyboardHookService KeyboardHotKey { get; set; }
     public static HotKeyManager        HotKeyManager  { get; set; }

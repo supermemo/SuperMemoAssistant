@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/12/21 17:12
-// Modified On:  2019/02/25 00:00
+// Created On:   2019/09/03 18:08
+// Modified On:  2020/01/11 20:58
 // Modified By:  Alexis
 
 #endregion
@@ -40,9 +40,9 @@ using Process.NET.Marshaling;
 using Process.NET.Memory;
 using Process.NET.Native.Types;
 using Process.NET.Patterns;
+using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.SMA.Hooks;
-using SuperMemoAssistant.SuperMemo.Common;
-using SuperMemoAssistant.SuperMemo.SuperMemo17;
+using SuperMemoAssistant.SuperMemo;
 using SuperMemoAssistantHooksNativeLib;
 
 // ReSharper disable RedundantDelegateCreation
@@ -68,7 +68,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
     #region Methods
 
-    private unsafe void InstallSM()
+    private unsafe void InstallSM(NativeData nativeData)
     {
       _smProcess = new ProcessSharp(System.Diagnostics.Process.GetCurrentProcess(),
                                     MemoryType.Local);
@@ -80,27 +80,27 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       SMA.SetWndProcHookAddr(WndProcWrapper.GetWndProcNativeWrapperAddr());
 
       // Native calls
-      ScanSMMethods();
+      ScanSMMethods(nativeData);
     }
 
-    protected void ScanSMMethods()
+    protected void ScanSMMethods(NativeData nativeData)
     {
       var scanner   = new PatternScanner(_smProcess.ModuleFactory.MainModule);
       var hintAddrs = SMA.GetPatternsHintAddresses();
 
-      foreach (var methodPattern in SM17Natives.MethodsPatterns)
+      foreach (var (method, pattern) in nativeData.GetAllMemoryPatterns())
       {
         int hintAddr = 0;
 
-        if (hintAddrs.ContainsKey(methodPattern.Value.PatternText))
-          hintAddr = hintAddrs[methodPattern.Value.PatternText];
+        if (hintAddrs.ContainsKey(pattern.PatternText))
+          hintAddr = hintAddrs[pattern.PatternText];
 
-        var scanRes = scanner.Find(methodPattern.Value,
+        var scanRes = scanner.Find(pattern,
                                    hintAddr);
         var procAddr = scanRes.BaseAddress.ToInt32();
 
-        hintAddrs[methodPattern.Value.PatternText] = scanRes.Offset;
-        _callTable[methodPattern.Key]              = procAddr;
+        hintAddrs[pattern.PatternText] = scanRes.Offset;
+        _callTable[method]             = procAddr;
       }
 
       SMA.SetPatternsHintAddresses(hintAddrs);
@@ -165,7 +165,8 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     {
       var marshalledParameters =
         parameters.Select(p => MarshalValue.Marshal(_smProcess, p))
-                  .Cast<IMarshalledValue>().ToArray();
+                  .Cast<IMarshalledValue>()
+                  .ToArray();
 
       try
       {
@@ -197,7 +198,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
             var interval = marshalledParameters[1].Reference.ToInt32();
 
             // elWdw.ExecuteUncommittedRepetition(inclTopics: true, forceDisplay: false);
-            Delphi.registerCall3(_callTable[NativeMethod.ElWdw_ExecuteUncommitedRepetition],
+            Delphi.registerCall3(_callTable[NativeMethod.ElWdw_ExecuteUncommittedRepetition],
                                  elWdw,
                                  1,
                                  0);

@@ -32,6 +32,9 @@
 
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Security;
+using System.Security.Permissions;
 
 namespace SuperMemoAssistant.Sys.IO
 {
@@ -248,6 +251,32 @@ namespace SuperMemoAssistant.Sys.IO
     ///   <see langword="false" /> regardless of the existence of file path.
     /// </returns>
     public bool Exists() => File.Exists(FullPath);
+
+    public bool IsLocked()
+    {
+      try
+      {
+        using (File.Open(FullPath, FileMode.Open)) { }
+      }
+      catch (IOException e)
+      {
+        var errorCode = Marshal.GetHRForException(e) & ((1 << 16) - 1);
+
+        return errorCode == 32 || errorCode == 33;
+      }
+
+      return false;
+    }
+
+    public bool HasPermission(FileIOPermissionAccess permissionFlag)
+    {
+      var permission    = new FileIOPermission(permissionFlag, FullPath);
+      var permissionSet = new PermissionSet(PermissionState.None);
+
+      permissionSet.AddPermission(permission);
+
+      return permissionSet.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet);
+    }
 
     /// <summary>
     ///   Performs an implicit conversion from <see cref="string" /> to <see cref="FilePath" />

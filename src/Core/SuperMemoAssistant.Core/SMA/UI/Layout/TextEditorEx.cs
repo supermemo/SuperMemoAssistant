@@ -33,6 +33,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
+using PropertyChanged;
 
 namespace SuperMemoAssistant.SMA.UI.Layout
 {
@@ -78,7 +79,8 @@ namespace SuperMemoAssistant.SMA.UI.Layout
 
 
     #region Methods Impl
-
+    
+    [SuppressPropertyChangedWarnings]
     protected override void OnTextChanged(EventArgs e)
     {
       if (Document != null)
@@ -93,7 +95,8 @@ namespace SuperMemoAssistant.SMA.UI.Layout
 
 
     #region Methods
-
+    
+    [SuppressPropertyChangedWarnings]
     protected static void OnDependencyPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
     {
       var target = (TextEditorEx)obj;

@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/04/14 21:33
+// Created On:   2020/01/13 16:38
+// Modified On:  2020/01/13 17:03
 // Modified By:  Alexis
 
 #endregion
@@ -118,6 +118,48 @@ namespace SuperMemoAssistant
       Core.Configuration.Save<StartupCfg>(_config).Wait();
     }
 
+    private void OpenSelectedCollection()
+    {
+      // Check sm executable exists
+      if (new FilePath(_config.SMBinPath).Exists() == false)
+      {
+        Forge.Forms.Show.Window().For(
+          new Alert(
+            $"Invalid file path for sm executable file: '{_config.SMBinPath}' could not be found.",
+            "Error")
+        );
+        return;
+      }
+
+      // Check collection exists
+      Collection = (SMCollection)lbCollections.SelectedItem;
+      var knoFilePath = new FilePath(Collection.GetKnoFilePath());
+
+      if (knoFilePath.Exists() == false
+        || Directory.Exists(Collection.GetRootDirPath()) == false)
+      {
+        Forge.Forms.Show.Window().For(new Alert("Collection doesn't exist anymore.", "Error"));
+
+        return;
+      }
+
+      // Check whether collection is locked
+      if (knoFilePath.IsLocked())
+      {
+        Forge.Forms.Show.Window().For(new Alert("Collection is locked. Is SuperMemo already running ?", "Error"));
+
+        return;
+      }
+
+      // Set last collection usage to now
+      Collection.LastOpen = DateTime.Now;
+
+      SaveConfig();
+
+      // Close the collection selection window
+      Close();
+    }
+
     private void btnBrowse_Click(object          sender,
                                  RoutedEventArgs e)
     {
@@ -152,44 +194,7 @@ namespace SuperMemoAssistant
     private void btnOpen_Click(object          sender,
                                RoutedEventArgs e)
     {
-      // Check sm executable exists
-      if (new FilePath(_config.SMBinPath).Exists() == false)
-      {
-        Forge.Forms.Show.Window().For(
-          new Alert(
-            $"Invalid file path for sm executable file: '{_config.SMBinPath}' could not be found.",
-            "Error")
-        );
-        return;
-      }
-      
-      // Check collection exists
-      Collection = (SMCollection)lbCollections.SelectedItem;
-      var knoFilePath = new FilePath(Collection.GetKnoFilePath());
-
-      if (knoFilePath.Exists() == false
-        || Directory.Exists(Collection.GetRootDirPath()) == false)
-      {
-        Forge.Forms.Show.Window().For(new Alert("Collection doesn't exist anymore.", "Error"));
-
-        return;
-      }
-
-      // Check whether collection is locked
-      if (knoFilePath.IsLocked())
-      {
-        Forge.Forms.Show.Window().For(new Alert("Collection is locked. Is SuperMemo already running ?", "Error"));
-
-        return;
-      }
-
-      // Set last collection usage to now
-      Collection.LastOpen = DateTime.Now;
-
-      SaveConfig();
-
-      // Close the collection selection window
-      Close();
+      OpenSelectedCollection();
     }
 
     private void BtnOptions_Click(object          sender,
@@ -215,6 +220,11 @@ namespace SuperMemoAssistant
                                                   RoutedEventArgs e)
     {
       lbCollections.SelectFirstItem();
+    }
+
+    private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+      OpenSelectedCollection();
     }
 
     #endregion

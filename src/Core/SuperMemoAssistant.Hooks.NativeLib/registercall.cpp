@@ -1,3 +1,4 @@
+#pragma unmanaged
 #include "stdafx.h"
 
 extern "C" __declspec(dllexport) int __stdcall registerCall1(int functionPointer, int arg1)

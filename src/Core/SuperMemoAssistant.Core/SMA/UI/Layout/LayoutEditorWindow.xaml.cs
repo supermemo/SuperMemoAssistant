@@ -37,6 +37,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Forge.Forms;
 using MahApps.Metro.Controls;
+using PropertyChanged;
 using SuperMemoAssistant.SuperMemo.Common.Content.Layout;
 using SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts;
 using SuperMemoAssistant.Sys.Threading;
@@ -88,7 +89,8 @@ namespace SuperMemoAssistant.SMA.UI.Layout
 
 
     #region Methods
-
+    
+    [SuppressPropertyChangedWarnings]
     private void OnXamlChanged(XamlLayout xamlLayout, string before, string after)
     {
       _parseXamlTask.Trigger(500);
@@ -176,7 +178,8 @@ namespace SuperMemoAssistant.SMA.UI.Layout
           break;
       }
     }
-
+    
+    [SuppressPropertyChangedWarnings]
     private void OnTabSelectionChanged(object                    sender,
                                        SelectionChangedEventArgs e)
     {

@@ -34,6 +34,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
+using PropertyChanged;
 using SuperMemoAssistant.SMA.UI.Layout;
 using SuperMemoAssistant.SuperMemo.Common.Content.Layout;
 using SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts;
@@ -110,7 +111,8 @@ namespace SuperMemoAssistant.SMA.UI.Settings
     {
       return layout.IsBuiltIn == false;
     }
-
+    
+    [SuppressPropertyChangedWarnings]
     private void OnLayoutSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       if (CtrlGroup == null || SelectedLayout == null)

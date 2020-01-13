@@ -31,7 +31,6 @@
 
 
 using System;
-using SuperMemoAssistant.Sys.IO;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Core
 {

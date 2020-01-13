@@ -34,6 +34,7 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using PropertyChanged;
 using SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts;
 
 // ReSharper disable InconsistentNaming
@@ -138,14 +139,16 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 
 
     #region Methods
-
+    
+    [SuppressPropertyChangedWarnings]
     private static void OnContentCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
       var xcg = (XamlControlGroup)d;
 
       xcg.GenerateDemoContent();
     }
-
+    
+    [SuppressPropertyChangedWarnings]
     private void OnSizeChanged(object sender, SizeChangedEventArgs e)
     {
       if (_displayMode)

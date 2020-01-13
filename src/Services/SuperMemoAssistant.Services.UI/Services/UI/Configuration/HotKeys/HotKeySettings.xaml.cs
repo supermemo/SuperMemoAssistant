@@ -35,6 +35,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using PropertyChanged;
 using SuperMemoAssistant.Services.IO.HotKeys;
 
 namespace SuperMemoAssistant.Services.UI.Configuration.HotKeys
@@ -75,6 +76,7 @@ namespace SuperMemoAssistant.Services.UI.Configuration.HotKeys
 
     #region Properties & Fields - Public
 
+    [SuppressPropertyChangedWarnings]
     public HotKeyManager HotKeyManager
     {
       set => SetValue(HotKeyManagerProperty, value);
@@ -88,7 +90,8 @@ namespace SuperMemoAssistant.Services.UI.Configuration.HotKeys
 
 
     #region Methods
-
+    
+    [SuppressPropertyChangedWarnings]
     private static void OnHotKeyManagerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
       var hks = (HotKeySettings)d;

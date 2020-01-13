@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Anotar.Serilog;
+using PropertyChanged;
 using SuperMemoAssistant.Interop.SuperMemo.Content;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
@@ -205,7 +206,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
                     "Error while signaling Element Changed event");
       }
     }
-
+    
+    [SuppressPropertyChangedWarnings]
     protected void OnComponentPosChanged(int oldCompPos,
                                          int newCompPos)
     {
@@ -290,8 +292,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
       LogTo.Debug("[{0} {1}] {2}: {3}",
                   GetType().Name,
                   Id,
-                  name,
-                  value);
+                  propertyName,
+                  after);
 #endif
 
       if (propertyName is nameof(ComponentPos))

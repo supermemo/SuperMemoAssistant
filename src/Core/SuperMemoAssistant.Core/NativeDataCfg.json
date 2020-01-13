@@ -1,0 +1,275 @@
+﻿{
+  "7EDE24CE": {
+    "SMVersion": "17.4",
+    "Pointers": {
+      "ElWdw_InstancePtr": "0x00BC00F0",
+      "ElWdw_ElementIdPtr": "0x0D81",
+      "ElWdw_ObjectsPtr": "0x0F71",
+      "ElWdw_ComponentsDataPtr": "0x1101",
+      "ElWdw_RecentGradePtr": "0x1105",
+      "ElWdw_FocusedComponentPtr": "0x11DF",
+      "ElWdw_LearningModePtr": "0x11E5",
+      "SMMain_InstancePtr": "0x00BBFE80",
+      "Registry_TextRegistryInstance": "0x4E7",
+      "Registry_ImageRegistryInstance": "0x4FF",
+      "Registry_SoundRegistryInstance": "0x503",
+      "Registry_VideoRegistryInstance": "0x507",
+      "Registry_BinaryRegistryInstance": "0x513",
+      "Registry_TemplateRegistryInstance": "0x517",
+      "Registry_ConceptRegistryInstance": "0x527",
+      "Globals_CurrentConceptIdPtr": "0x00BBCDD0",
+      "Globals_CurrentRootIdPtr": "0x00BBCDD4",
+      "Globals_CurrentHookIdPtr": "0x00BBCDD8",
+      "Globals_IgnoreUserConfirmationPtr": "0x00BC0007",
+      "ElWdw_ComponentData_ComponentDataArrOffset": "0x003F",
+      "ElWdw_ComponentData_ComponentDataArrItemLength": "0x0D",
+      "ElWdw_ComponentData_ComponentCountPtr": "0x000A",
+      "ElWdw_ComponentData_IsModifiedPtr": "0x0013",
+      "Database_InstancePtr": "0x00BBFCC0",
+      "Control_ParentOffset": "0x0038",
+      "Control_WindowProcOffset": "0x0040",
+      "Control_HandleOffset": "0x0270",
+      "Control_LeftOffset": "0x0048",
+      "Control_TopOffset": "0x004C",
+      "Control_WidthOffset": "0x0050",
+      "Control_HeightOffset": "0x0054",
+      "Application_InstancePtr": "0x00ACF3D4",
+      "Application_OnMessageOffset": "0x110"
+    },
+    "NativeCallPatterns": {
+      "ElWdw_GoToElement": {
+        "Pattern": "E8 ? ? ? ? 80 7D FB 23",
+        "Offset": 1
+      },
+      "ElWdw_PasteElement": {
+        "Pattern": "E8 ? ? ? ? EB 05 E8 ? ? ? ? 59 59 5D C3 8B C0",
+        "Offset": 1
+      },
+      "ElWdw_AppendElement": {
+        "Pattern": "E8 ? ? ? ? A1 ? ? ? ? 8B 00 8B 4D F8 B2 01",
+        "Offset": 1
+      },
+      "ElWdw_AddElementFromText": {
+        "Pattern": "E8 ? ? ? ? 8B 45 FC E8 ? ? ? ? 8D 45 D4",
+        "Offset": 1
+      },
+      "ElWdw_DeleteCurrentElement": {
+        "Pattern": "E8 ? ? ? ? A1 ? ? ? ? 8B 00 8B 55 F8 E8 ? ? ? ? 84 C0 75 04",
+        "Offset": 1
+      },
+      "ElWdw_GetText": {
+        "Pattern": "E8 ? ? ? ? 8A 45 F3 84 C0",
+        "Offset": 1
+      },
+      "ElWdw_EnterUpdateLock": {
+        "Pattern": "E8 ? ? ? ? 8D 4D E6",
+        "Offset": 1
+      },
+      "ElWdw_QuitUpdateLock": {
+        "Pattern": "E8 ? ? ? ? C6 45 FA 01 EB 0C",
+        "Offset": 1
+      },
+      "ElWdw_NextElementInLearningQueue": {
+        "Pattern": "E8 ? ? ? ? 59 5D C3 33 D2 8B 45 FC E8 ? ? ? ? B2 02",
+        "Offset": 1
+      },
+      "ElWdw_SetElementState": {
+        "Pattern": "E8 ? ? ? ? EB 7C B2 02",
+        "Offset": 1
+      },
+      "ElWdw_ScheduleInInterval": {
+        "Pattern": "E8 ? ? ? ? 80 BD ? ? ? ? ? 75 45 8D 45 8E",
+        "Offset": 1
+      },
+      "ElWdw_ExecuteUncommittedRepetition": {
+        "Pattern": "E8 ? ? ? ? 8D 45 EB",
+        "Offset": 1
+      },
+      "TCompData_GetType": {
+        "Pattern": "E8 ? ? ? ? 3A 45 EF",
+        "Offset": 1
+      },
+      "TCompData_GetText": {
+        "Pattern": "E8 ? ? ? ? 83 7D F4 00 74 25 8B 0D ? ? ? ?",
+        "Offset": 1
+      },
+      "TCompData_SetText": {
+        "Pattern": "E8 ? ? ? ? 0F BE 55 F3",
+        "Offset": 1
+      },
+      "TCompData_GetTextRegMember": {
+        "Pattern": "E8 ? ? ? ? 89 45 E8 8A 55 DE",
+        "Offset": 1
+      },
+      "TCompData_SetTextRegMember": {
+        "Pattern": "E8 ? ? ? ? 8A 55 EF 8B 45 F0",
+        "Offset": 1
+      },
+      "TCompData_GetImageRegMember": {
+        "Pattern": "E8 ? ? ? ? 89 45 F4 8B 45 F4 8B E5 5D C3 90 55 8B EC 83 C4 F4 89 4D F4 88 55 FB 89 45 FC 8B 4D F4 8A 55 FB 8B 45 FC 8B 80 ? ? ? ? E8 ? ? ? ? 8B E5 5D C3 90 55 8B EC 51",
+        "Offset": 1
+      },
+      "TCompData_SetImageRegMember": {
+        "Pattern": "E8 ? ? ? ? 88 45 F3 EB 4A",
+        "Offset": 1
+      },
+      "TRegistry_AddMember": {
+        "Pattern": "E8 ? ? ? ? 89 45 E8 8D 55 EC",
+        "Offset": 1
+      },
+      "TRegistry_ImportFile": {
+        "Pattern": "E8 ? ? ? ? 89 45 D8 8B 4D F4",
+        "Offset": 1
+      },
+      "TSMMain_SelectDefaultConcept": {
+        "Pattern": "E8 ? ? ? ? B1 01 8B 55 F8 8B 45 FC E8 ? ? ? ? 33 C0",
+        "Offset": 1
+      }
+    },
+    "NativeDataPatterns": {},
+    "NativeFunctionPatterns": {
+      "ElWdw_Done": "55 8B EC 81 C4 ? ? ? ? 53 56 57 89 45 FC 33 C0 55 68 ? ? ? ? 64 FF 30 64 89 20 E8",
+      "ElWdw_PasteArticle": "55 8B EC 51 89 45 FC 33 D2 8B 45 FC E8 ? ? ? ? 84 C0",
+      "ElWdw_SetText": "55 8B EC 83 C4 F4 89 4D F4 88 55 FB 89 45 FC 8B 45 F4 E8 ? ? ? ? 33 C0 55 68 ? ? ? ? 64 FF 30 64 89 20 8B 4D F4 8A 55 FB 8B 45 FC 8B 80 ? ? ? ? E8 ? ? ? ? 33 C0 5A",
+      "ElWdw_ForceRepetitionExt": "55 8B EC 81 C4 ? ? ? ? 88 4D F7 89 55 F8 89 45 FC 8D 4D 81",
+      "ElWdw_RestoreLearningMode": "55 8B EC 51 89 45 FC 8B 45 FC 80 B8 ? ? ? ? ? 75 1E"
+    }
+  },
+
+  "5BA7F64F": {
+    "SMVersion": "18.3",
+    "Pointers": {
+      "ElWdw_InstancePtr": "0x00CA36D0",
+      "ElWdw_ElementIdPtr": "0x0DB1",
+      "ElWdw_ObjectsPtr": "0x0FA1",
+      "ElWdw_ComponentsDataPtr": "0x1131",
+      "ElWdw_RecentGradePtr": "0x1135",
+      "ElWdw_FocusedComponentPtr": "0x1219",
+      "ElWdw_LearningModePtr": "0x121F",
+      "SMMain_InstancePtr": "0x00CA31B8",
+      "Registry_TextRegistryInstance": "0x4E2",
+      "Registry_ImageRegistryInstance": "0x4FA",
+      "Registry_SoundRegistryInstance": "0x4FE",
+      "Registry_VideoRegistryInstance": "0x502",
+      "Registry_BinaryRegistryInstance": "0x50E",
+      "Registry_TemplateRegistryInstance": "0x512",
+      "Registry_ConceptRegistryInstance": "0x522",
+      "Globals_CurrentConceptIdPtr": "0x00CA076C",
+      "Globals_CurrentRootIdPtr": "0x00CA0770",
+      "Globals_CurrentHookIdPtr": "0x00CA0774",
+      "Globals_IgnoreUserConfirmationPtr": "0x00CA3389",
+      "ElWdw_ComponentData_ComponentDataArrOffset": "0x003F",
+      "ElWdw_ComponentData_ComponentDataArrItemLength": "0x0D",
+      "ElWdw_ComponentData_ComponentCountPtr": "0x000A",
+      "ElWdw_ComponentData_IsModifiedPtr": "0x0013",
+      "Database_InstancePtr": "0x00CA30C8",
+      "Control_ParentOffset": "0x0040",
+      "Control_WindowProcOffset": "0x0048",
+      "Control_HandleOffset": "0x0288",
+      "Control_LeftOffset": "0x0050",
+      "Control_TopOffset": "0x0054",
+      "Control_WidthOffset": "0x0058",
+      "Control_HeightOffset": "0x005C",
+      "Application_InstancePtr": "0x00BAE1E8",
+      "Application_OnMessageOffset": "0x120"
+    },
+    "NativeCallPatterns": {
+      "ElWdw_GoToElement": {
+        "Pattern": "E8 ? ? ? ? 80 7D FB 24",
+        "Offset": 1
+      },
+      "ElWdw_PasteElement": {
+        "Pattern": "E8 ? ? ? ? EB 05 E8 ? ? ? ? 59 59 5D C3 8B C0",
+        "Offset": 1
+      },
+      "ElWdw_AppendElement": {
+        "Pattern": "E8 ? ? ? ? A1 ? ? ? ? 8B 00 8B 4D F8 B2 01",
+        "Offset": 1
+      },
+      "ElWdw_AddElementFromText": {
+        "Pattern": "E8 ? ? ? ? 8B 45 FC E8 ? ? ? ? 8D 45 D4",
+        "Offset": 1
+      },
+      "ElWdw_DeleteCurrentElement": {
+        "Pattern": "E8 ? ? ? ? A1 ? ? ? ? 8B 00 8B 55 F8 E8 ? ? ? ? 84 C0 75 04",
+        "Offset": 1
+      },
+      "ElWdw_GetText": {
+        "Pattern": "E8 ? ? ? ? 8A 45 F3 84 C0",
+        "Offset": 1
+      },
+      "ElWdw_EnterUpdateLock": {
+        "Pattern": "E8 ? ? ? ? 8D 4D E6",
+        "Offset": 1
+      },
+      "ElWdw_QuitUpdateLock": {
+        "Pattern": "E8 ? ? ? ? C6 45 FA 01 EB 0C",
+        "Offset": 1
+      },
+      "ElWdw_NextElementInLearningQueue": {
+        "Pattern": "E8 ? ? ? ? 59 5D C3 33 D2 8B 45 FC E8 ? ? ? ? B2 02",
+        "Offset": 1
+      },
+      "ElWdw_SetElementState": {
+        "Pattern": "E8 ? ? ? ? EB 7C B2 02",
+        "Offset": 1
+      },
+      "ElWdw_ScheduleInInterval": {
+        "Pattern": "E8 ? ? ? ? 80 BD ? ? ? ? ? 75 45 8D 45 8E",
+        "Offset": 1
+      },
+      "ElWdw_ExecuteUncommittedRepetition": {
+        "Pattern": "E8 ? ? ? ? 8D 45 EB 50",
+        "Offset": 1
+      },
+      "TCompData_GetType": {
+        "Pattern": "E8 ? ? ? ? 3A 45 EF",
+        "Offset": 1
+      },
+      "TCompData_GetText": {
+        "Pattern": "E8 ? ? ? ? 83 7D F4 00 74 25 8B 0D ? ? ? ?",
+        "Offset": 1
+      },
+      "TCompData_SetText": {
+        "Pattern": "E8 ? ? ? ? 0F BE 55 F3",
+        "Offset": 1
+      },
+      "TCompData_GetTextRegMember": {
+        "Pattern": "E8 ? ? ? ? 89 45 E8 8A 55 DE",
+        "Offset": 1
+      },
+      "TCompData_SetTextRegMember": {
+        "Pattern": "E8 ? ? ? ? 88 45 F3 E9 ? ? ? ?",
+        "Offset": 1
+      },
+      "TCompData_GetImageRegMember": {
+        "Pattern": "E8 ? ? ? ? 89 45 F4 8B 45 F4 8B E5 5D C3 90 55 8B EC 83 C4 F4 89 4D F4 88 55 FB 89 45 FC 8B 45 FC 8B 80 ? ? ? ? 8B 4D F4 8A 55 FB E8 ? ? ? ? 8B E5 5D C3 90 55 8B EC 51",
+        "Offset": 1
+      },
+      "TCompData_SetImageRegMember": {
+        "Pattern": "E8 ? ? ? ? 88 45 F3 EB 4A",
+        "Offset": 1
+      },
+      "TRegistry_AddMember": {
+        "Pattern": "E8 ? ? ? ? 89 45 E8 8D 55 EC",
+        "Offset": 1
+      },
+      "TRegistry_ImportFile": {
+        "Pattern": "E8 ? ? ? ? 89 45 D8 8B 4D F4",
+        "Offset": 1
+      },
+      "TSMMain_SelectDefaultConcept": {
+        "Pattern": "E8 ? ? ? ? B1 01 8B 55 F8 8B 45 FC E8 ? ? ? ? 33 C0",
+        "Offset": 1
+      }
+    },
+    "NativeDataPatterns": {},
+    "NativeFunctionPatterns": {
+      "ElWdw_Done": "55 8B EC 81 C4 ? ? ? ? 53 56 57 89 45 FC 33 C0 55 68 ? ? ? ? 64 FF 30 64 89 20 E8 ? ? ? ?",
+      "ElWdw_PasteArticle": "55 8B EC 51 89 45 FC 33 D2 8B 45 FC E8 ? ? ? ? 84 C0",
+      "ElWdw_SetText": "55 8B EC 83 C4 F4 89 4D F4 88 55 FB 89 45 FC 8B 45 F4 E8 ? ? ? ? 33 C0 55 68 ? ? ? ? 64 FF 30 64 89 20 8B 45 FC 8B 80 ? ? ? ? 8B 4D F4 8A 55 FB E8 ? ? ? ? 33 C0 5A",
+      "ElWdw_ForceRepetitionExt": "55 8B EC 81 C4 ? ? ? ? 88 4D F7 89 55 F8 89 45 FC 8D 4D 81",
+      "ElWdw_RestoreLearningMode": "55 8B EC 51 89 45 FC 8B 45 FC 80 B8 ? ? ? ? ? 75 1E"
+    }
+  }
+}

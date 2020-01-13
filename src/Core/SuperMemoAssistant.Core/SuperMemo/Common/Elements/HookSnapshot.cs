@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
+// and/or sell copies of the Software, and to permit persons to whom the 
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/09/03 18:08
-// Modified On:  2020/01/11 19:28
+// Created On:   2018/09/04 19:55
+// Modified On:  2018/09/04 19:56
 // Modified By:  Alexis
 
 #endregion
@@ -31,23 +31,15 @@
 
 
 using System;
-using SuperMemoAssistant.Interop;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.SuperMemo.Common;
+using SuperMemoAssistant.SMA;
 
-namespace SuperMemoAssistant.SuperMemo.SuperMemo17
+namespace SuperMemoAssistant.SuperMemo.Common.Elements
 {
-  public class SM17
-    : SuperMemoCore
+  public class HookSnapshot : IDisposable
   {
-    #region Constants & Statics
+    #region Properties & Fields - Non-Public
 
-    public static readonly Version[] Versions =
-    {
-      new Version("17.4"),
-      new Version("18.3"),
-    };
-    public const string RE_WindowTitle = "([^\\(]+) \\(SuperMemo 17: (.+)\\)";
+    private int HookElementId { get; set; }
 
     #endregion
 
@@ -56,23 +48,16 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
 
     #region Constructors
 
-    /// <summary>SM17 Management interface</summary>
-    /// <param name="collection">Target collection to open</param>
-    /// <param name="binPath">SuperMemo bin path</param>
-    /// <param name="nativeData"></param>
-    public SM17(SMCollection collection,
-                string       binPath)
-      : base(collection,
-             binPath) { }
+    public HookSnapshot()
+    {
+      HookElementId = Core.SM.UI.ElementWdw.CurrentHookId;
+    }
 
-    #endregion
-
-
-
-
-    #region Properties Impl - Public
-
-    public override SMAppVersion AppVersion => SMConst.Versions.v17_4;
+    /// <inheritdoc />
+    public void Dispose()
+    {
+      Core.SM.UI.ElementWdw.CurrentHookId = HookElementId;
+    }
 
     #endregion
   }

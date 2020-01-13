@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/09/03 18:08
-// Modified On:  2020/01/11 19:28
+// Created On:   2019/12/13 20:24
+// Modified On:  2019/12/14 19:54
 // Modified By:  Alexis
 
 #endregion
@@ -31,49 +31,45 @@
 
 
 using System;
-using SuperMemoAssistant.Interop;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.SuperMemo.Common;
 
-namespace SuperMemoAssistant.SuperMemo.SuperMemo17
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable InconsistentNaming
+
+namespace SuperMemoAssistant.SuperMemo.Natives
 {
-  public class SM17
-    : SuperMemoCore
+  public partial class SMNatives
   {
-    #region Constants & Statics
-
-    public static readonly Version[] Versions =
+    /// <summary>Global variables</summary>
+    public class TGlobals
     {
-      new Version("17.4"),
-      new Version("18.3"),
-    };
-    public const string RE_WindowTitle = "([^\\(]+) \\(SuperMemo 17: (.+)\\)";
+      #region Constructors
 
-    #endregion
+      public TGlobals(NativeData nativeData)
+      {
+        CurrentConceptIdPtr = new IntPtr(nativeData.Pointers[NativePointers.Globals_CurrentConceptIdPtr]);
+        CurrentRootIdPtr    = new IntPtr(nativeData.Pointers[NativePointers.Globals_CurrentRootIdPtr]);
+        CurrentHookIdPtr    = new IntPtr(nativeData.Pointers[NativePointers.Globals_CurrentHookIdPtr]);
 
+        IgnoreUserConfirmationPtr = new IntPtr(nativeData.Pointers[NativePointers.Globals_IgnoreUserConfirmationPtr]);
+      }
 
-
-
-    #region Constructors
-
-    /// <summary>SM17 Management interface</summary>
-    /// <param name="collection">Target collection to open</param>
-    /// <param name="binPath">SuperMemo bin path</param>
-    /// <param name="nativeData"></param>
-    public SM17(SMCollection collection,
-                string       binPath)
-      : base(collection,
-             binPath) { }
-
-    #endregion
+      #endregion
 
 
 
 
-    #region Properties Impl - Public
+      #region Properties Impl - Public
 
-    public override SMAppVersion AppVersion => SMConst.Versions.v17_4;
+      public IntPtr CurrentConceptIdPtr { get; }
+      public IntPtr CurrentRootIdPtr    { get; }
+      public IntPtr CurrentHookIdPtr    { get; }
 
-    #endregion
+      
+      // Cont.TContents.DeleteCurrentElement
+      // 008575BD       call        TContents.MakeVisible
+      public IntPtr IgnoreUserConfirmationPtr { get; }
+
+      #endregion
+    }
   }
 }

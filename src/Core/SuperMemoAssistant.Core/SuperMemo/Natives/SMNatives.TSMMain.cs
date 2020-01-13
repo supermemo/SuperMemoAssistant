@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/09/03 18:08
-// Modified On:  2020/01/11 19:28
+// Created On:   2020/01/11 15:02
+// Modified On:  2020/01/11 18:42
 // Modified By:  Alexis
 
 #endregion
@@ -31,49 +31,46 @@
 
 
 using System;
-using SuperMemoAssistant.Interop;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.SuperMemo.Common;
 
-namespace SuperMemoAssistant.SuperMemo.SuperMemo17
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable InconsistentNaming
+
+namespace SuperMemoAssistant.SuperMemo.Natives
 {
-  public class SM17
-    : SuperMemoCore
+  public partial class SMNatives
   {
-    #region Constants & Statics
-
-    public static readonly Version[] Versions =
+    public class TSMMain
     {
-      new Version("17.4"),
-      new Version("18.3"),
-    };
-    public const string RE_WindowTitle = "([^\\(]+) \\(SuperMemo 17: (.+)\\)";
+      #region Constructors
 
-    #endregion
+      public TSMMain(NativeData nativeData)
+      {
+        InstancePtr = new IntPtr(nativeData.Pointers[NativePointers.SMMain_InstancePtr]);
+      }
 
-
-
-
-    #region Constructors
-
-    /// <summary>SM17 Management interface</summary>
-    /// <param name="collection">Target collection to open</param>
-    /// <param name="binPath">SuperMemo bin path</param>
-    /// <param name="nativeData"></param>
-    public SM17(SMCollection collection,
-                string       binPath)
-      : base(collection,
-             binPath) { }
-
-    #endregion
+      #endregion
 
 
 
 
-    #region Properties Impl - Public
+      #region Properties & Fields - Public
 
-    public override SMAppVersion AppVersion => SMConst.Versions.v17_4;
+      public IntPtr InstancePtr { get; }
 
-    #endregion
+      #endregion
+
+
+
+
+      #region Methods
+
+      // TSMMain.SelectDefaultConcept
+      public bool SelectDefaultConcept(int elementId)
+      {
+        return false;
+      }
+
+      #endregion
+    }
   }
 }

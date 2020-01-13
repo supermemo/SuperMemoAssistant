@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/09/03 18:08
-// Modified On:  2020/01/11 19:28
+// Created On:   2020/01/11 14:50
+// Modified On:  2020/01/11 21:04
 // Modified By:  Alexis
 
 #endregion
@@ -30,50 +30,45 @@
 
 
 
+// ReSharper disable InconsistentNaming
 using System;
-using SuperMemoAssistant.Interop;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.SuperMemo.Common;
 
-namespace SuperMemoAssistant.SuperMemo.SuperMemo17
+namespace SuperMemoAssistant.SuperMemo
 {
-  public class SM17
-    : SuperMemoCore
+  [Serializable]
+  public enum NativeMethod
   {
-    #region Constants & Statics
+    ElWdw_GoToElement,
+    ElWdw_PasteElement,
+    ElWdw_AppendElement,
+    ElWdw_AddElementFromText,
+    ElWdw_DeleteCurrentElement,
+    ElWdw_GetText,
+    ElWdw_EnterUpdateLock,
+    ElWdw_QuitUpdateLock,
+    ElWdw_Done,
+    ElWdw_PasteArticle,
+    ElWdw_SetText,
+    ElWdw_NextElementInLearningQueue,
+    ElWdw_SetElementState,
+    ElWdw_ScheduleInInterval,
+    ElWdw_ExecuteUncommittedRepetition,
+    ElWdw_ForceRepetitionExt,
+    ElWdw_RestoreLearningMode,
+    TCompData_GetType,
+    TCompData_GetText,
+    TCompData_SetText,
+    TCompData_GetTextRegMember,
+    TCompData_SetTextRegMember,
+    TCompData_GetImageRegMember,
+    TCompData_SetImageRegMember,
+    TSMMain_SelectDefaultConcept,
+    TRegistry_AddMember,
+    TRegistry_ImportFile,
 
-    public static readonly Version[] Versions =
-    {
-      new Version("17.4"),
-      new Version("18.3"),
-    };
-    public const string RE_WindowTitle = "([^\\(]+) \\(SuperMemo 17: (.+)\\)";
-
-    #endregion
-
-
-
-
-    #region Constructors
-
-    /// <summary>SM17 Management interface</summary>
-    /// <param name="collection">Target collection to open</param>
-    /// <param name="binPath">SuperMemo bin path</param>
-    /// <param name="nativeData"></param>
-    public SM17(SMCollection collection,
-                string       binPath)
-      : base(collection,
-             binPath) { }
-
-    #endregion
-
-
-
-
-    #region Properties Impl - Public
-
-    public override SMAppVersion AppVersion => SMConst.Versions.v17_4;
-
-    #endregion
+    // Special handling
+    AppendAndAddElementFromText,
+    PostponeRepetition,
+    ForceRepetitionAndResume,
   }
 }

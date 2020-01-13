@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/09/03 18:08
-// Modified On:  2020/01/11 19:28
+// Created On:   2020/01/12 11:38
+// Modified On:  2020/01/12 11:39
 // Modified By:  Alexis
 
 #endregion
@@ -31,48 +31,16 @@
 
 
 using System;
-using SuperMemoAssistant.Interop;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.SuperMemo.Common;
 
-namespace SuperMemoAssistant.SuperMemo.SuperMemo17
+namespace SuperMemoAssistant.SuperMemo
 {
-  public class SM17
-    : SuperMemoCore
+  [Serializable]
+  public class MemoryPatternWithOffset
   {
-    #region Constants & Statics
+    #region Properties & Fields - Public
 
-    public static readonly Version[] Versions =
-    {
-      new Version("17.4"),
-      new Version("18.3"),
-    };
-    public const string RE_WindowTitle = "([^\\(]+) \\(SuperMemo 17: (.+)\\)";
-
-    #endregion
-
-
-
-
-    #region Constructors
-
-    /// <summary>SM17 Management interface</summary>
-    /// <param name="collection">Target collection to open</param>
-    /// <param name="binPath">SuperMemo bin path</param>
-    /// <param name="nativeData"></param>
-    public SM17(SMCollection collection,
-                string       binPath)
-      : base(collection,
-             binPath) { }
-
-    #endregion
-
-
-
-
-    #region Properties Impl - Public
-
-    public override SMAppVersion AppVersion => SMConst.Versions.v17_4;
+    public string Pattern { get; set; }
+    public int    Offset  { get; set; }
 
     #endregion
   }

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/19 12:03
-// Modified On:  2019/01/24 13:50
+// Created On:   2019/08/07 14:44
+// Modified On:  2019/08/08 11:11
 // Modified By:  Alexis
 
 #endregion
@@ -35,7 +35,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
+using SuperMemoAssistant.SMA;
+using SuperMemoAssistant.SuperMemo.Common.Registry;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 {
@@ -43,12 +44,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
   {
     #region Constructors
 
-    public Concept(int        id,
-                   RegMemElem mem,
-                   RegRtElem  rt)
-      : base(id,
-             mem,
-             rt) { }
+    public Concept(int id)
+      : base(id) { }
 
     #endregion
 
@@ -57,7 +54,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 
     #region Properties Impl - Public
 
-    public IConceptGroup ConceptGroup => (IConceptGroup)SMA.SMA.Instance.Registry.Element?[SlotLengthOrConceptGroupId];
+    public IConceptGroup ConceptGroup => (IConceptGroup)Core.SM.Registry.Element?[SlotLengthOrConceptGroupId];
 
     #endregion
 

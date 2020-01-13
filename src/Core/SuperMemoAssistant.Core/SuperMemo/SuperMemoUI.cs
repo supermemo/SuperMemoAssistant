@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/01 22:39
-// Modified On:  2018/12/13 12:52
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/07/22 12:48
 // Modified By:  Alexis
 
 #endregion
@@ -37,17 +37,29 @@ using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo
 {
-  public class SuperMemoUI : PerpetualMarshalByRefObject, ISuperMemoUI
+  public class SuperMemoUICore : SuperMemoUI
   {
-    #region Constants & Statics
+    #region Constructors
 
-    public static SuperMemoUI Instance { get; } = new SuperMemoUI();
+    public SuperMemoUICore()
+    {
+      base.ElementWdw = ElementWdw = new ElementWdw();
+    }
 
     #endregion
 
 
 
 
+    #region Properties & Fields - Public
+
+    public new ElementWdw ElementWdw { get; }
+
+    #endregion
+  }
+
+  public class SuperMemoUI : PerpetualMarshalByRefObject, ISuperMemoUI
+  {
     #region Constructors
 
     protected SuperMemoUI() { }
@@ -58,8 +70,8 @@ namespace SuperMemoAssistant.SuperMemo
 
 
     #region Properties Impl - Public
-    
-    public IElementWdw     ElementWindow     => ElementWdw.Instance;
+
+    public IElementWdw ElementWdw { get; protected set; }
 
     #endregion
   }

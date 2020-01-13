@@ -34,6 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Anotar.Serilog;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Sys.IO;
 
@@ -76,12 +77,19 @@ namespace SuperMemoAssistant.Interop.Plugins
     {
       foreach (var pluginAssembly in pluginAssemblies)
       {
-        Type pluginType = FindPluginType(pluginAssembly);
+        try
+        {
+          Type pluginType = FindPluginType(pluginAssembly);
 
-        if (pluginType == null)
-          continue;
+          if (pluginType == null)
+            continue;
 
-        return (ISMAPlugin)Activator.CreateInstance(pluginType);
+          return (ISMAPlugin)Activator.CreateInstance(pluginType);
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, $"Exception thrown while loading plugin dll {pluginAssembly.FullName}");
+        }
       }
 
       return null;

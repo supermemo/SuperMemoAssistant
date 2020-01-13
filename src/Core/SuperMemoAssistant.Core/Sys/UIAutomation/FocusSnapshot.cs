@@ -52,7 +52,7 @@ namespace SuperMemoAssistant.Sys.UIAutomation
     {
       _useDispatcher = useDispatcher;
       WindowHandle = WindowHelper.GetForegroundWindow();
-      //FocusedElement = Svc.UIAutomation.FocusedElement();
+      //FocusedElement = Core.UIAutomation.FocusedElement();
     }
 
     /// <inheritdoc />

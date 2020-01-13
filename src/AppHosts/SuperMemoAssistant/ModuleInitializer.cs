@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 22:02
-// Modified On:  2019/02/28 20:42
+// Created On:   2019/09/03 18:08
+// Modified On:  2020/01/12 12:21
 // Modified By:  Alexis
 
 #endregion
@@ -33,17 +33,15 @@
 using System;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Plugins;
-using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.HotKeys;
 using SuperMemoAssistant.Services.IO.Keyboard;
 using SuperMemoAssistant.Services.IO.Logger;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Content;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.UI;
+using SuperMemoAssistant.SMA;
+using SuperMemoAssistant.SuperMemo.Common.Content.Layout;
 
+// ReSharper disable NotAccessedVariable
+// ReSharper disable JoinDeclarationAndInitializer
 // ReSharper disable RedundantAssignment
 
 namespace SuperMemoAssistant
@@ -63,32 +61,17 @@ namespace SuperMemoAssistant
 
     public static void Initialize()
     {
-      //InitOnLoad.Initialize();
-
       Logger.Instance.Initialize(SMAConst.Name, Services.Sentry.SentryEx.LogToSentry);
       SentryInstance = Services.Sentry.SentryEx.Initialize();
 
-      Svc.Configuration  = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
-      Svc.KeyboardHotKey = KeyboardHookService.Instance;
-      Svc.HotKeyManager  = HotKeyManager.Instance.Initialize();
+      Core.Configuration  = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
+      Core.KeyboardHotKey = KeyboardHookService.Instance;
+      Core.HotKeyManager  = HotKeyManager.Instance.Initialize(Core.Configuration, Core.KeyboardHotKey);
+      Core.SMA            = SMA.SMA.Instance;
 
-      // ReSharper disable once NotAccessedVariable
-      // ReSharper disable once JoinDeclarationAndInitializer
       object tmp;
-      tmp = ComponentRegistry.Instance;
-      tmp = ElementRegistry.Instance;
-      tmp = BinaryRegistry.Instance;
-      tmp = ConceptRegistry.Instance;
-      tmp = ImageRegistry.Instance;
-      tmp = SoundRegistry.Instance;
-      tmp = TemplateRegistry.Instance;
-      tmp = TextRegistry.Instance;
-      tmp = VideoRegistry.Instance;
-      tmp = ElementWdw.Instance;
       tmp = LayoutManager.Instance;
       tmp = PluginManager.Instance;
-
-      Svc.SMA = SMA.SMA.Instance;
     }
 
     #endregion

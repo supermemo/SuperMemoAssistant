@@ -32,7 +32,6 @@
 
 using System.Windows;
 using System.Windows.Input;
-using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.IO.Keyboard;
 using SuperMemoAssistant.SMA.UI.Settings;
 using SuperMemoAssistant.Sys.IO.Devices;
@@ -46,7 +45,7 @@ namespace SuperMemoAssistant.SMA.UI
 
     public static void Initialize()
     {
-      Svc.HotKeyManager.RegisterGlobal(
+      Core.HotKeyManager.RegisterGlobal(
         "Settings",
         "Show settings window",
         HotKeyScope.Global,
@@ -55,7 +54,7 @@ namespace SuperMemoAssistant.SMA.UI
       );
 
 #if DEBUG
-      Svc.HotKeyManager.RegisterGlobal(
+      Core.HotKeyManager.RegisterGlobal(
         "DebugInjectLib",
         "Attach debugger to injected lib",
         HotKeyScope.Global,
@@ -73,9 +72,9 @@ namespace SuperMemoAssistant.SMA.UI
     private static void DebugInjectLib()
     {
       /*
-      Svc.SMA.WindowFactory.MainWindow.PostMessage(
-        2345,
-        new IntPtr((int)InjectLibMessages.AttachDebugger),
+      Core.SMA.WindowFactory.MainWindow.PostMessage(
+        InjectLibMessageIds.SMA,
+        new IntPtr((int)InjectLibMessageParams.AttachDebugger),
         new IntPtr(0)
       );
       */

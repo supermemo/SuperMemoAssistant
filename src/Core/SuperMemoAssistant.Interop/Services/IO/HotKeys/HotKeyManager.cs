@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/28 00:03
-// Modified On:  2019/03/01 18:44
+// Created On:   2019/03/02 18:29
+// Modified On:  2020/01/12 12:14
 // Modified By:  Alexis
 
 #endregion
@@ -34,6 +34,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using SuperMemoAssistant.Extensions;
+using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.Keyboard;
 using SuperMemoAssistant.Sys.Collections;
 using SuperMemoAssistant.Sys.IO.Devices;
@@ -59,8 +60,10 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
     private readonly ConcurrentBiDictionary<string, HotKey>   _defaultHotKeys = new ConcurrentBiDictionary<string, HotKey>();
     private readonly ConcurrentBiDictionary<string, HotKey>   _userHotKeyMap  = new ConcurrentBiDictionary<string, HotKey>();
 
-    private readonly DelayedTask _delayedTask;
-    private          HotKeyCfg   _config;
+    private readonly DelayedTask              _delayedTask;
+    private          ConfigurationServiceBase _cfgSvc;
+    private          HotKeyCfg                _config;
+    private          IKeyboardHookService     _kbHookSvc;
 
     #endregion
 
@@ -71,7 +74,7 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
 
     private HotKeyManager()
     {
-      //if (Svc.Configuration != null)
+      //if (_cfgSvc != null)
       //Initialize();
 
       _delayedTask = new DelayedTask(SaveConfig);
@@ -105,15 +108,18 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
 
     #region Methods
 
-    public HotKeyManager Initialize()
+    public HotKeyManager Initialize(ConfigurationServiceBase cfgSvc, IKeyboardHookService kbHookSvc)
     {
-      if (Svc.Configuration == null)
-        throw new InvalidOperationException($"Svc.Configuration cannot be null during {nameof(HotKeyManager)} initialization");
+      _cfgSvc    = cfgSvc;
+      _kbHookSvc = kbHookSvc;
+
+      if (_cfgSvc == null)
+        throw new InvalidOperationException($"_cfgSvc cannot be null during {nameof(HotKeyManager)} initialization");
 
       if (_config != null)
         throw new InvalidOperationException($"{nameof(HotKeyManager)} is already initialized");
 
-      _config = Svc.Configuration.Load<HotKeyCfg>().Result ?? new HotKeyCfg();
+      _config = _cfgSvc.Load<HotKeyCfg>().Result ?? new HotKeyCfg();
 
       foreach (var kvp in _config.HotKeyMap)
         if (_userHotKeyMap.Reverse.ContainsKey(kvp.Value) == false)
@@ -122,7 +128,12 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
       return this;
     }
 
-    public HotKeyManager RegisterGlobal(string id, string description, HotKeyScope scope, HotKey defaultHotKey, Action callback, bool enabled = true)
+    public HotKeyManager RegisterGlobal(string      id,
+                                        string      description,
+                                        HotKeyScope scope,
+                                        HotKey      defaultHotKey,
+                                        Action      callback,
+                                        bool        enabled = true)
     {
       Register(id, description, scope, defaultHotKey, callback, enabled);
 
@@ -152,7 +163,7 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
       hkData.Enabled = true;
 
       if (hkData.IsGlobal)
-        Svc.KeyboardHotKey.RegisterHotKey(hkData.ActualHotKey, hkData.Callback);
+        _kbHookSvc.RegisterHotKey(hkData.ActualHotKey, hkData.Callback);
 
       return this;
     }
@@ -173,7 +184,7 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
       hkData.Enabled = false;
 
       if (hkData.IsGlobal)
-        Svc.KeyboardHotKey.UnregisterHotKey(hkData.ActualHotKey);
+        _kbHookSvc.UnregisterHotKey(hkData.ActualHotKey);
 
       return this;
     }
@@ -191,7 +202,7 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
         _userHotKeyMap.Reverse.Remove(actualBefore);
 
         if (hkData.IsGlobal)
-          Svc.KeyboardHotKey.UnregisterHotKey(actualBefore);
+          _kbHookSvc.UnregisterHotKey(actualBefore);
       }
 
       if (actualAfter != null)
@@ -207,19 +218,19 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
         _userHotKeyMap[hkData.Id] = actualAfter;
 
         if (hkData.IsGlobal)
-          Svc.KeyboardHotKey.RegisterHotKey(actualAfter, hkData.Callback);
+          _kbHookSvc.RegisterHotKey(actualAfter, hkData.Callback);
       }
 
       _delayedTask.Trigger(1000);
     }
 
     private void Register(
-      string id,
-      string description,
+      string       id,
+      string       description,
       HotKeyScope? scope,
-      HotKey defaultHotKey,
-      Action callback,
-      bool   enabled)
+      HotKey       defaultHotKey,
+      Action       callback,
+      bool         enabled)
     {
       if (_config == null)
         throw new InvalidOperationException($"{nameof(HotKeyManager)} must be initialized");
@@ -239,7 +250,7 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
         _hotKeyDataMap[hkData.ActualHotKey] = hkData;
 
       if (enabled && scope != null)
-        Svc.KeyboardHotKey.RegisterHotKey(hkData.ActualHotKey, callback, scope.Value);
+        _kbHookSvc.RegisterHotKey(hkData.ActualHotKey, callback, scope.Value);
     }
 
     private HotKeyData CreateHotKeyData(
@@ -276,7 +287,7 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
     {
       _config.HotKeyMap = new Dictionary<string, HotKey>(_userHotKeyMap);
 
-      Svc.Configuration.Save(_config).Wait();
+      _cfgSvc.Save(_config).Wait();
     }
 
     #endregion

@@ -39,8 +39,12 @@ namespace SuperMemoAssistant.Properties {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SuperMemoAssistant.Properties.Resources", typeof(Resources).Assembly);
-                    resourceMan = temp;
+#pragma warning disable CS0436 // Type conflicts with imported type
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager(
+                      "SuperMemoAssistant.Properties.Resources",
+                      typeof(SuperMemoAssistant.Properties.Resources).Assembly);
+#pragma warning restore CS0436 // Type conflicts with imported type
+          resourceMan = temp;
                 }
                 return resourceMan;
             }

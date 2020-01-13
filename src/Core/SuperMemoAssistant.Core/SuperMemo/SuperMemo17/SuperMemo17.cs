@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/08 01:24
-// Modified On:  2019/01/15 12:35
+// Created On:   2019/09/03 18:08
+// Modified On:  2020/01/11 19:28
 // Modified By:  Alexis
 
 #endregion
@@ -30,22 +30,23 @@
 
 
 
-using System.Collections.Generic;
+using System;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.SMA.Hooks;
 using SuperMemoAssistant.SuperMemo.Common;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Content;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17
 {
   public class SM17
-    : SuperMemoBase
+    : SuperMemoCore
   {
     #region Constants & Statics
 
+    public static readonly Version[] Versions =
+    {
+      new Version("17.4"),
+      new Version("18.3"),
+    };
     public const string RE_WindowTitle = "([^\\(]+) \\(SuperMemo 17: (.+)\\)";
 
     #endregion
@@ -70,33 +71,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
 
     #region Properties Impl - Public
 
-    public override SMAppVersion AppVersion => SMConst.Versions.v17_3;
-
-    #endregion
-
-
-
-
-    #region Methods Impl
-
-    //
-    // Init/Hooks-related
-
-    protected override IEnumerable<ISMAHookIO> GetIOCallbacks()
-    {
-      return new ISMAHookIO[]
-      {
-        ElementRegistry.Instance,
-        ComponentRegistry.Instance,
-        TextRegistry.Instance,
-        BinaryRegistry.Instance,
-        ConceptRegistry.Instance,
-        ImageRegistry.Instance,
-        TemplateRegistry.Instance,
-        SoundRegistry.Instance,
-        VideoRegistry.Instance
-      };
-    }
+    public override SMAppVersion AppVersion => SMConst.Versions.v17_4;
 
     #endregion
   }

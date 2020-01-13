@@ -40,6 +40,7 @@ using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.Plugins;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.Sys;
 using static MoreLinq.Extensions.DistinctByExtension;
 
@@ -77,8 +78,8 @@ namespace SuperMemoAssistant.Plugins
     {
       AllPlugins = new ReadOnlyObservableCollection<PluginInstance>(_allPlugins);
 
-      SMA.SMA.Instance.OnSMStartedEvent += OnSMStarted;
-      SMA.SMA.Instance.OnSMStoppedEvent += OnSMStopped;
+      Core.SMA.OnSMStartedEvent += OnSMStarted;
+      Core.SMA.OnSMStoppedEvent += OnSMStopped;
     }
 
     /// <inheritdoc />

@@ -61,8 +61,7 @@ namespace SuperMemoAssistant.Extensions
     }
 
     public static (int exitCode, string output, bool timedOut) ExecuteBlockingWithOutputs(this System.Diagnostics.Process p,
-                                                                                          int timeout =
-                                                                                            int.MaxValue,
+                                                                                          int timeout = int.MaxValue,
                                                                                           bool kill = true)
     {
       StringBuilder outputBuilder = new StringBuilder();

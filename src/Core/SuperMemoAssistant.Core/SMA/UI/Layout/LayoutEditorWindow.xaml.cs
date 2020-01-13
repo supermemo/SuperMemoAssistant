@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/03/02 18:29
-// Modified On:  2019/03/03 15:34
+// Modified On:  2019/08/08 11:15
 // Modified By:  Alexis
 
 #endregion
@@ -37,8 +37,8 @@ using System.Windows;
 using System.Windows.Controls;
 using Forge.Forms;
 using MahApps.Metro.Controls;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout.XamlLayouts;
+using SuperMemoAssistant.SuperMemo.Common.Content.Layout;
+using SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts;
 using SuperMemoAssistant.Sys.Threading;
 
 namespace SuperMemoAssistant.SMA.UI.Layout
@@ -152,7 +152,7 @@ namespace SuperMemoAssistant.SMA.UI.Layout
 
       if (IsDefault)
         LayoutManager.Instance.SetDefault(OriginalLayout.Name);
-      
+
       else if (OriginalLayout.IsDefault)
         LayoutManager.Instance.SetDefault(LayoutManager.GenericLayoutName);
 

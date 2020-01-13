@@ -1,0 +1,32 @@
+<!--sma:Grids.Collapse="True" enables collapsing empty rows and columns-->
+<!--sma:Panels.AcceptedContent defines the positioning of extracted contents-->
+<Grid
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:sma="clr-namespace:SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls"
+  sma:Grids.Collapsable="True"
+  Margin="100 100 120 300">
+  <Grid.RowDefinitions>
+    <RowDefinition Height="*" />
+    <RowDefinition Height="auto" />
+  </Grid.RowDefinitions>
+
+  <Grid Grid.Row="0"
+        sma:Grids.Collapsable="True">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <!--Text container-->
+    <sma:AutoGrid Grid.Column="0"
+                  sma:Panels.AcceptedContent="Text" />
+
+    <!--Image container-->
+    <sma:AutoGrid Grid.Column="1"
+                  sma:Panels.AcceptedContent="Image" />
+  </Grid>
+
+  <!--Sound container-->
+  <sma:AutoGrid Grid.Row="1"
+                sma:Panels.AcceptedContent="Sound" />
+</Grid>

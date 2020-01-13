@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/14 19:52
-// Modified On:  2019/01/14 19:57
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/05/08 18:52
 // Modified By:  Alexis
 
 #endregion
@@ -31,7 +31,9 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace SuperMemoAssistant.Extensions
 {
@@ -52,6 +54,32 @@ namespace SuperMemoAssistant.Extensions
 
         return Convert.ToBase64String(ms.ToArray());
       }
+    }
+
+
+    public static Dictionary<int, TContainer> StreamToStruct<TContainer, TStruct>(
+      this Stream                 structStream,
+      int                         sizeOfStruct,
+      Func<TStruct, TContainer>   wrapperFunc,
+      Dictionary<int, TContainer> dict = null)
+    {
+      var ret = dict ?? new Dictionary<int, TContainer>();
+
+      if (structStream.Position % sizeOfStruct != 0 || structStream.Length % sizeOfStruct != 0)
+        throw new InvalidDataException("Invalid Position or Length for struct Stream");
+
+      int elemId    = (int)(structStream.Position / sizeOfStruct) + 1;
+      int elemCount = (int)(structStream.Length / sizeOfStruct);
+
+      using (BinaryReader binStream = new BinaryReader(structStream, Encoding.Default, true))
+        for (int i = 0; i < elemCount; i++)
+        {
+          var elem = binStream.ReadStruct<TStruct>();
+
+          ret[elemId++] = wrapperFunc(elem);
+        }
+
+      return ret;
     }
 
     #endregion

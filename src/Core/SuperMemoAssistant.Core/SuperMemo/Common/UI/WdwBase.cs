@@ -34,10 +34,11 @@ using System;
 using Process.NET;
 using Process.NET.Windows;
 using SuperMemoAssistant.Interop.SuperMemo.UI;
+using SuperMemoAssistant.SMA;
 
 namespace SuperMemoAssistant.SuperMemo.Common.UI
 {
-  public abstract class WdwBase : /*UIAutomationBase,*/MarshalByRefObject, IWdw
+  public abstract class WdwBase : /*UIAutomationBase,*/ MarshalByRefObject, IWdw
   {
     #region Properties & Fields - Non-Public
 
@@ -46,7 +47,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.UI
     protected abstract IntPtr WindowHandle { get; }
 
 
-    protected IProcess SMProcess => SMA.SMA.Instance.SMProcess;
+    protected IProcess SMProcess => Core.SMA.SMProcess;
 
     #endregion
 

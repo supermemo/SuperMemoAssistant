@@ -66,6 +66,6 @@ namespace SuperMemoAssistant.Interop.SuperMemo
 
   public interface ISuperMemoUI
   {
-    IElementWdw ElementWindow { get; }
+    IElementWdw ElementWdw { get; }
   }
 }

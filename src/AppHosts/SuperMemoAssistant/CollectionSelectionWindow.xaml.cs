@@ -41,7 +41,7 @@ using MahApps.Metro.Controls;
 using Microsoft.Win32;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Services;
+using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Configs;
 using SuperMemoAssistant.Sys.IO;
 using SuperMemoAssistant.Sys.Windows.Input;
@@ -64,7 +64,7 @@ namespace SuperMemoAssistant
 
     public CollectionSelectionWindow()
     {
-      _config          = Svc.Configuration.Load<StartupCfg>().Result ?? new StartupCfg();
+      _config          = Core.Configuration.Load<StartupCfg>().Result ?? new StartupCfg();
       SavedCollections = _config.Collections;
 
       InitializeComponent();
@@ -115,7 +115,7 @@ namespace SuperMemoAssistant
 
     private void SaveConfig()
     {
-      Svc.Configuration.Save<StartupCfg>(_config).Wait();
+      Core.Configuration.Save<StartupCfg>(_config).Wait();
     }
 
     private void btnBrowse_Click(object          sender,
@@ -165,11 +165,20 @@ namespace SuperMemoAssistant
       
       // Check collection exists
       Collection = (SMCollection)lbCollections.SelectedItem;
+      var knoFilePath = new FilePath(Collection.GetKnoFilePath());
 
-      if (File.Exists(Collection.GetKnoFilePath()) == false
+      if (knoFilePath.Exists() == false
         || Directory.Exists(Collection.GetRootDirPath()) == false)
       {
         Forge.Forms.Show.Window().For(new Alert("Collection doesn't exist anymore.", "Error"));
+
+        return;
+      }
+
+      // Check whether collection is locked
+      if (knoFilePath.IsLocked())
+      {
+        Forge.Forms.Show.Window().For(new Alert("Collection is locked. Is SuperMemo already running ?", "Error"));
 
         return;
       }

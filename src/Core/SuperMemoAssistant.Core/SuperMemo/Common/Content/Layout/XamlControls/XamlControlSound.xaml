@@ -1,0 +1,92 @@
+﻿<xamlControls1:XamlControlBase
+  x:Class="SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls.XamlControlSound"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:xamlControls="clr-namespace:SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls"
+  xmlns:fa5="http://schemas.fontawesome.com/icons/"
+  xmlns:xamlControls1="clr-namespace:SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}"
+  d:DataContext="{d:DesignInstance xamlControls:XamlControlSound}"
+  mc:Ignorable="d">
+  <Border BorderThickness="1"
+          BorderBrush="#E3E3E3">
+    <Border BorderThickness="6"
+            BorderBrush="#F4F7FC">
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" MinHeight="500" />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <TextBox x:Name="Caption"
+                 Grid.Row="0"
+                 FontSize="300"
+                 Text="{Binding Text}" />
+
+        <StackPanel x:Name="SliderContainer"
+                    Grid.Row="1"
+                    Background="#F0F0F0"
+                    Orientation="Horizontal">
+
+          <Button x:Name="Play"
+                  Width="420"
+                  Height="500"
+                  Padding="70"
+                  VerticalAlignment="Center"
+                  Background="#E1E1E1"
+                  BorderThickness="10"
+                  BorderBrush="#ADADAD">
+            <fa5:SvgAwesome Icon="Solid_Play"
+                            Foreground="#00FF00" />
+          </Button>
+
+          <Button x:Name="Pause"
+                  Width="420"
+                  Height="500"
+                  Padding="70"
+                  VerticalAlignment="Center"
+                  Background="#E1E1E1"
+                  BorderThickness="10"
+                  BorderBrush="#ADADAD">
+            <fa5:SvgAwesome Icon="Solid_Pause"
+                            Foreground="#A0A0A0" />
+          </Button>
+
+          <Button x:Name="Stop"
+                  Width="420"
+                  Height="500"
+                  Padding="70"
+                  VerticalAlignment="Center"
+                  Background="#E1E1E1"
+                  BorderThickness="10"
+                  BorderBrush="#ADADAD">
+            <fa5:SvgAwesome Icon="Solid_Stop"
+                            Foreground="#A0A0A0" />
+          </Button>
+
+          <Slider x:Name="Slider"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch"
+                  SelectionStart="0"
+                  SelectionEnd="100"
+                  Margin="100 20 0 20" />
+
+        </StackPanel>
+        
+        <StackPanel Grid.Row="0" Grid.RowSpan="2"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal">
+          <fa5:SvgAwesome Width="500"
+                          Height="500"
+                          Icon="Solid_Music" />
+          <TextBlock Margin="200 0 0 0"
+                     FontSize="450"
+                     Text="Sound" />
+        </StackPanel>
+      </Grid>
+    </Border>
+  </Border>
+</xamlControls1:XamlControlBase>

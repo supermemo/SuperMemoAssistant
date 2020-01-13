@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2019/12/13 16:37
-// Modified On:  2019/12/13 16:38
+// Modified On:  2020/01/13 12:45
 // Modified By:  Alexis
 
 #endregion
@@ -31,7 +31,6 @@
 
 
 using SuperMemoAssistant.SuperMemo;
-using SuperMemoAssistant.SuperMemo.Common;
 
 namespace SuperMemoAssistant.SMA
 {

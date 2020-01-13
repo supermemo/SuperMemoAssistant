@@ -32,7 +32,6 @@
 
 using System.Windows;
 using System.Windows.Input;
-using SuperMemoAssistant.Services;
 using SuperMemoAssistant.Services.IO.Keyboard;
 using SuperMemoAssistant.SMA.UI.Settings;
 using SuperMemoAssistant.Sys.IO.Devices;

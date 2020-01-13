@@ -59,7 +59,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
     /// <summary>SM17 Management interface</summary>
     /// <param name="collection">Target collection to open</param>
     /// <param name="binPath">SuperMemo bin path</param>
-    /// <param name="nativeData"></param>
     public SM17(SMCollection collection,
                 string       binPath)
       : base(collection,

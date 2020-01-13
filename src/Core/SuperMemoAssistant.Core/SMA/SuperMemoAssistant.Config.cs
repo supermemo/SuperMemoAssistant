@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2020/01/11 19:03
-// Modified On:  2020/01/11 19:03
+// Modified On:  2020/01/13 12:45
 // Modified By:  Alexis
 
 #endregion
@@ -36,7 +36,6 @@ using Process.NET.Windows;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Services;
 using SuperMemoAssistant.SMA.Configs;
 
 namespace SuperMemoAssistant.SMA
@@ -53,7 +52,7 @@ namespace SuperMemoAssistant.SMA
 
 
     #region Properties & Fields - Public
-    
+
     public CollectionCfg CollectionConfig { get; set; }
     public StartupCfg    StartupConfig    { get; set; }
 
@@ -72,7 +71,7 @@ namespace SuperMemoAssistant.SMA
 
     private NativeDataCfg LoadNativeDataConfig()
     {
-      var nativeDataCfg = 
+      var nativeDataCfg =
         Core.Configuration.Load<NativeDataCfg>(SMAFileSystem.AppRootDir).Result
         ?? new NativeDataCfg();
 

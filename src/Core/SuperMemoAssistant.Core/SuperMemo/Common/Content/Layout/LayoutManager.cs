@@ -38,7 +38,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Services;
 using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Configs;
 using SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts;

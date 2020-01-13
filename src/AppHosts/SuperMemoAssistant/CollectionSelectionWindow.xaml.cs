@@ -41,7 +41,6 @@ using MahApps.Metro.Controls;
 using Microsoft.Win32;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Services;
 using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Configs;
 using SuperMemoAssistant.Sys.IO;

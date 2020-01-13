@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:SuperMemoAssistant.SMA.UI.Settings"
              xmlns:fa5="http://schemas.fontawesome.com/icons/"
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-             xmlns:xamlControls="clr-namespace:SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:data="clr-namespace:SuperMemoAssistant.Sys.Windows.Data;assembly=SuperMemoAssistant.Interop"
              xmlns:xamlLayouts="clr-namespace:SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts"

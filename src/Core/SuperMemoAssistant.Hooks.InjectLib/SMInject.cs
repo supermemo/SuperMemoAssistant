@@ -41,6 +41,7 @@ using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.SMA.Hooks;
 using SuperMemoAssistant.SuperMemo;
 
+// ReSharper disable UnusedParameter.Local
 // ReSharper disable ClassNeverInstantiated.Global
 
 namespace SuperMemoAssistant.Hooks.InjectLib
@@ -62,7 +63,6 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
     #region Constructors
 
-    // ReSharper disable once UnusedParameter.Local
     public SMInject(RemoteHooking.IContext context,
                     string                 channelName,
                     NativeData             nativeData)

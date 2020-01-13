@@ -221,7 +221,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Registry
       if (Members.ContainsKey(member.Id) == false)
         Members[member.Id] = member;
 
-      if (member?.Id == _waitForMemberId)
+      if (member.Id == _waitForMemberId)
         _waitForMemberEvent.Set();
     }
 

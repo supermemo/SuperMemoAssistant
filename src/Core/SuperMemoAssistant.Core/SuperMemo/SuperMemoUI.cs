@@ -32,7 +32,7 @@
 
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.UI.Element;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.UI;
 using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo

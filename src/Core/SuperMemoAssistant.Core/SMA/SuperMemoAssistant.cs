@@ -47,9 +47,10 @@ using SuperMemoAssistant.Services;
 using SuperMemoAssistant.SMA.Configs;
 using SuperMemoAssistant.SMA.UI;
 using SuperMemoAssistant.SuperMemo;
+using SuperMemoAssistant.SuperMemo.Common;
 using SuperMemoAssistant.SuperMemo.SuperMemo17;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Layout;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.UI.Element;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.UI;
 using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.Sys.IO;
 

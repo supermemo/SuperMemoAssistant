@@ -326,6 +326,8 @@
       <DependentUpon>LayoutEditorWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SMA\UI\SMAUI.cs" />
+    <Compile Include="SuperMemo\Common\SuperMemo.Base.cs" />
+    <Compile Include="SuperMemo\Common\UI\WdwBase.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Content\Content\ContentEx.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Content\Layout\LayoutManager.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Content\Layout\XamlControls\AutoGrid.cs" />
@@ -359,6 +361,7 @@
     <Compile Include="SuperMemo\SuperMemo17\Content\Controls\ControlHtml.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Registry\Members\Binary.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Registry\Types\BinaryRegistry.cs" />
+    <Compile Include="SuperMemo\SuperMemo17\UI\ElementWdw.cs" />
     <Compile Include="SuperMemo\SuperMemoRegistry.cs" />
     <Compile Include="SuperMemo\SuperMemoUI.cs" />
     <Compile Include="Sys\Exceptions\HookException.cs" />
@@ -396,8 +399,6 @@
     <Compile Include="SuperMemo\SuperMemo17\Registry\Members\Text.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Registry\Types\ConceptRegistry.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Registry\Types\TextRegistry.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\UI\Element\ElementWdw.cs" />
-    <Compile Include="SuperMemo\SuperMemo17\UI\WdwBase.cs" />
     <Compile Include="SuperMemo\Hooks\SMHookIOBase.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Registry\Types\RegistryBase.cs" />
     <Compile Include="SuperMemo\Hooks\SMHookEngine.cs" />
@@ -406,7 +407,6 @@
     <Compile Include="SuperMemo\SuperMemo17\Files\RegMemElem.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Files\RegRtxElem.cs" />
     <Compile Include="SuperMemo\SuperMemo17\SuperMemo17.cs" />
-    <Compile Include="SuperMemo\SuperMemo.Base.cs" />
     <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="Sys\InitOnLoad.cs" />
     <Compile Include="Sys\SparseClusteredArray\SparseClusteredArray.Bounds.cs" />
@@ -423,6 +423,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Exceptions\" />
+    <Folder Include="SuperMemo\SuperMemo17\UI\Element\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="FodyWeavers.xml">

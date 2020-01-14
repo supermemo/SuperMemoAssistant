@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/07/27 12:55
-// Modified On:  2019/01/04 21:21
+// Created On:   2020/01/13 16:38
+// Modified On:  2020/01/13 20:38
 // Modified By:  Alexis
 
 #endregion
@@ -30,6 +30,7 @@
 
 
 
+using System;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Components;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements;
@@ -40,7 +41,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo
 {
   public interface ISuperMemo
   {
-    SMAppVersion AppVersion { get; }
+    Version      AppVersion { get; }
     SMCollection Collection { get; }
 
     int ProcessId { get; }

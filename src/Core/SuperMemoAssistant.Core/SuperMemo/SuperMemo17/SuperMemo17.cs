@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/09/03 18:08
-// Modified On:  2020/01/11 19:28
+// Created On:   2020/01/13 16:38
+// Modified On:  2020/01/13 21:02
 // Modified By:  Alexis
 
 #endregion
@@ -31,7 +31,6 @@
 
 
 using System;
-using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SuperMemo.Common;
 
@@ -63,15 +62,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
                 string       binPath)
       : base(collection,
              binPath) { }
-
-    #endregion
-
-
-
-
-    #region Properties Impl - Public
-
-    public override SMAppVersion AppVersion => SMConst.Versions.v17_4;
 
     #endregion
   }

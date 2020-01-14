@@ -28,7 +28,6 @@
 
 
 
-using System;
 using System.IO;
 using SuperMemoAssistant.Sys.Security.Cryptography;
 
@@ -39,9 +38,9 @@ namespace SuperMemoAssistant.Extensions
     public static string GetCrc32(string filePath)
     {
       Crc32  crc32 = new Crc32();
-      String hash  = String.Empty;
+      string hash  = string.Empty;
 
-      using (FileStream fs = File.Open(filePath, FileMode.Open))
+      using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
         foreach (byte b in crc32.ComputeHash(fs)) hash += b.ToString("x2").ToLower();
 
       return hash;

@@ -31,7 +31,9 @@
 
 
 using System;
+using System.IO;
 using System.Threading.Tasks;
+using Anotar.Serilog;
 using Process.NET.Windows;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
@@ -103,18 +105,31 @@ namespace SuperMemoAssistant.SMA
 
     public Task SaveConfig(bool sync)
     {
-      var tasks = new[]
+      try
+      {
+        var tasks = new[]
       {
         Core.Configuration.Save<StartupCfg>(StartupConfig),
         Core.Configuration.Save<CollectionsCfg>(_collectionsCfg),
       };
 
-      var task = Task.WhenAll(tasks);
+        var task = Task.WhenAll(tasks);
 
-      if (sync)
-        task.Wait();
+        if (sync)
+          task.Wait();
 
-      return task;
+        return task;
+      }
+      catch (IOException ex)
+      {
+        if (ex.Message.StartsWith("The process cannot access the file", StringComparison.OrdinalIgnoreCase))
+          LogTo.Warning(ex, "Failed to save config files in SMA.SaveConfig");
+
+        else
+          LogTo.Error(ex, "Failed to save config files in SMA.SaveConfig");
+
+        return Task.CompletedTask;
+      }
     }
 
     #endregion

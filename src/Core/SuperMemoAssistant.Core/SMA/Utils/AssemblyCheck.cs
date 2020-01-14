@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,53 +21,44 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/04/22 17:20
-// Modified On:  2019/04/22 20:52
+// Created On:   2020/01/14 02:07
+// Modified On:  2020/01/14 02:09
 // Modified By:  Alexis
 
 #endregion
 
 
 
-using SuperMemoAssistant.Services.Sentry;
 
-namespace SuperMemoAssistant.Plugins.Template
+using System;
+using System.IO;
+using Anotar.Serilog;
+using Process.NET.Assembly.Assemblers;
+
+namespace SuperMemoAssistant.SMA.Utils
 {
-  // ReSharper disable once UnusedMember.Global
-  // ReSharper disable once ClassNeverInstantiated.Global
-  public class TemplatePlugin : SentrySMAPluginBase<TemplatePlugin>
+  public static class AssemblyCheck
   {
-    #region Constructors
+    #region Methods
 
-    public TemplatePlugin() { }
-
-    #endregion
-
-
-
-
-    #region Properties Impl - Public
-
-    /// <inheritdoc />
-    public override string Name => "Template";
-
-    public override bool HasSettings => false;
-
-    #endregion
-
-
-
-
-    #region Methods Impl
-
-    /// <inheritdoc />
-    protected override void PluginInit()
+    public static bool CheckFasm32()
     {
-    }
-    
-    /// <inheritdoc />
-    public override void ShowSettings()
-    {
+      try
+      {
+        var unused = new Fasm32Assembler().Assemble("nop");
+
+        return true;
+      }
+      catch (FileNotFoundException ex)
+      {
+        LogTo.Warning(ex, "Fasm32 assembly not found.");
+        return false;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "Exception while checking for Fasm32 assembly.");
+        return false;
+      }
     }
 
     #endregion

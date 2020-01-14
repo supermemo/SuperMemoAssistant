@@ -35,6 +35,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Anotar.Serilog;
 using Newtonsoft.Json;
+using SuperMemoAssistant.Exceptions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.Plugins;
 using SuperMemoAssistant.Sys.IO;
@@ -118,20 +119,21 @@ namespace SuperMemoAssistant.Services.Configuration
 
     public async Task<T> Load<T>(DirectoryPath dirPath = null)
     {
-      dirPath = dirPath ?? GetDefaultConfigDirectoryPath();
+      dirPath ??= GetDefaultConfigDirectoryPath();
 
       try
       {
-        using (var stream = OpenConf(dirPath.FullPath, typeof(T), FileAccess.Read))
-        using (var reader = new StreamReader(stream))
-          return JsonConvert.DeserializeObject<T>(await reader.ReadToEndAsync().ConfigureAwait(false));
+        using var stream = OpenConf(dirPath.FullPath, typeof(T), FileAccess.Read);
+        using var reader = new StreamReader(stream);
+
+        return JsonConvert.DeserializeObject<T>(await reader.ReadToEndAsync().ConfigureAwait(false));
       }
       catch (Exception ex)
       {
         var filePath = GetConfigFilePath(dirPath, typeof(T));
         LogTo.Warning(ex, $"Failed to load config {filePath}");
 
-        throw;
+        throw new SMAException($"Failed to load config {filePath}", ex);
       }
     }
 
@@ -145,13 +147,14 @@ namespace SuperMemoAssistant.Services.Configuration
                                  Type          configType,
                                  DirectoryPath dirPath = null)
     {
-      dirPath = dirPath ?? GetDefaultConfigDirectoryPath();
+      dirPath ??= GetDefaultConfigDirectoryPath();
 
       try
       {
-        using (var stream = OpenConf(dirPath.FullPath, configType, FileAccess.Write))
-        using (var writer = new StreamWriter(stream))
-          await writer.WriteAsync(JsonConvert.SerializeObject(config, Formatting.Indented)).ConfigureAwait(false);
+        using var stream = OpenConf(dirPath.FullPath, configType, FileAccess.Write);
+        using var writer = new StreamWriter(stream);
+        
+        await writer.WriteAsync(JsonConvert.SerializeObject(config, Formatting.Indented)).ConfigureAwait(false);
 
         return true;
       }
@@ -159,8 +162,8 @@ namespace SuperMemoAssistant.Services.Configuration
       {
         var filePath = GetConfigFilePath(dirPath, configType);
         LogTo.Warning(ex, $"Failed to save config {filePath}");
-
-        throw;
+        
+        throw new SMAException($"Failed to save config {filePath}", ex);
       }
     }
 
@@ -173,7 +176,11 @@ namespace SuperMemoAssistant.Services.Configuration
 
       var filePath = GetConfigFilePath(dirPath, confType);
 
-      return File.Open(filePath.FullPath, fileAccess == FileAccess.Read ? FileMode.OpenOrCreate : FileMode.Create, fileAccess);
+      return File.Open(
+        filePath.FullPath,
+        fileAccess == FileAccess.Read ? FileMode.OpenOrCreate : FileMode.Create,
+        fileAccess,
+        fileAccess == FileAccess.Read ? FileShare.Read : FileShare.None);
     }
 
     protected virtual FilePath GetConfigFilePath(DirectoryPath dirPath,

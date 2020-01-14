@@ -39,6 +39,7 @@ using System.Windows.Input;
 using Forge.Forms;
 using MahApps.Metro.Controls;
 using Microsoft.Win32;
+using SuperMemoAssistant.Exceptions;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SMA;
@@ -64,7 +65,18 @@ namespace SuperMemoAssistant
 
     public CollectionSelectionWindow()
     {
-      _config          = Core.Configuration.Load<StartupCfg>().Result ?? new StartupCfg();
+      try
+      {
+        _config = Core.Configuration.Load<StartupCfg>().Result ?? new StartupCfg();
+      }
+      catch (SMAException)
+      {
+        Forge.Forms.Show.Window().For(new Alert("Failed to open StartupCfg.json. Make sure file is unlocked and try again.", "Error"));
+
+        Environment.Exit(1);
+        return;
+      }
+
       SavedCollections = _config.Collections;
 
       InitializeComponent();

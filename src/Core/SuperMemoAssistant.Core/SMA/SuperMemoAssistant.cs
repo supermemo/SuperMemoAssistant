@@ -32,14 +32,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Globalization;
 using System.Linq;
-using System.Security;
 using System.Security.Permissions;
 using System.Threading.Tasks;
 using Anotar.Serilog;
 using AsyncEvent;
 using Process.NET;
+using SuperMemoAssistant.Exceptions;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
@@ -151,7 +151,11 @@ namespace SuperMemoAssistant.SMA
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex, "Failed to start SM.");
+        if (ex is SMAException)
+          LogTo.Warning(ex, "Failed to start SM.");
+
+        else
+          LogTo.Error(ex, "Failed to start SM.");
 
         _sm?.Dispose();
         _sm = null;
@@ -160,7 +164,7 @@ namespace SuperMemoAssistant.SMA
         {
           if (OnSMStoppedEvent != null)
             await OnSMStoppedEvent.InvokeAsync(this,
-                                               new SMProcessArgs(_sm, null));
+                                               new SMProcessArgs(_sm, null)).ConfigureAwait(true);
         }
         catch (Exception pluginEx)
         {
@@ -183,7 +187,7 @@ namespace SuperMemoAssistant.SMA
         return new SM17(collection,
                         StartupConfig.SMBinPath);
 
-      throw new NotSupportedException($"Unsupported SM version {smVersion}");
+      throw new SMAException($"Unsupported SM version {smVersion}");
     }
 
     private NativeData CheckSuperMemoExecutable()
@@ -192,17 +196,20 @@ namespace SuperMemoAssistant.SMA
       var smFile        = new FilePath(StartupConfig.SMBinPath);
 
       if (smFile.Exists() == false)
-        throw new FileNotFoundException(
+        throw new SMAException(
           $"Invalid file path for sm executable file: '{StartupConfig.SMBinPath}' could not be found. SMA cannot continue.");
 
       if (smFile.HasPermission(FileIOPermissionAccess.Read) == false)
-        throw new SecurityException($"SMA needs read access to execute SM executable at {smFile.FullPath}.");
+        throw new SMAException($"SMA needs read access to execute SM executable at {smFile.FullPath}.");
+
+      if (smFile.IsLocked())
+        throw new SMAException($"{smFile.FullPath} is locked. Make sure it isn't already running.");
 
       var smFileCrc32 = FileEx.GetCrc32(smFile.FullPath);
-      var nativeData  = nativeDataCfg.SafeGet(smFileCrc32.ToUpper());
+      var nativeData  = nativeDataCfg.SafeGet(smFileCrc32.ToUpper(CultureInfo.InvariantCulture));
 
       if (nativeData == null)
-        throw new NotSupportedException($"Unknown SM executable version with crc32 {smFileCrc32}.");
+        throw new SMAException($"Unknown SM executable version with crc32 {smFileCrc32}.");
 
       LogTo.Information($"SuperMemo version {nativeData.SMVersion} detected");
 

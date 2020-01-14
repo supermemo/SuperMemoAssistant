@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/07/27 12:54
-// Modified On:  2018/12/20 12:24
+// Created On:   2019/09/03 18:15
+// Modified On:  2020/01/13 21:02
 // Modified By:  Alexis
 
 #endregion
@@ -31,7 +31,6 @@
 
 
 using System.Windows.Media;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
 
 // ReSharper disable PossibleNullReferenceException
 // ReSharper disable InconsistentNaming
@@ -53,10 +52,15 @@ namespace SuperMemoAssistant.Interop
 
     public static class Stylesheet
     {
-      public static readonly Color ExtractClozedColor = (Color)ColorConverter.ConvertFromString("#E67300"); // ColorTranslator.FromHtml("#E67300");
-      public static readonly Color ExtractColor = (Color)ColorConverter.ConvertFromString("#44C2FF");
+      #region Constants & Statics
+
+      public static readonly Color
+        ExtractClozedColor = (Color)ColorConverter.ConvertFromString("#E67300"); // ColorTranslator.FromHtml("#E67300");
+      public static readonly Color ExtractColor            = (Color)ColorConverter.ConvertFromString("#44C2FF");
       public static readonly Color ExtractTransparentColor = (Color)ColorConverter.ConvertFromString("#8044C2FF");
-      public static readonly Color IgnoreColor = (Color)ColorConverter.ConvertFromString("#DAB6B6");
+      public static readonly Color IgnoreColor             = (Color)ColorConverter.ConvertFromString("#DAB6B6");
+
+      #endregion
     }
 
 
@@ -118,21 +122,6 @@ namespace SuperMemoAssistant.Interop
       public const string SMMainClassName            = "TSMMain";
 
       public const string MainMenuItemClassName = "#32768";
-
-      #endregion
-    }
-
-    public static class Versions
-    {
-      #region Constants & Statics
-
-      public static readonly SMAppVersion vInvalid = new SMAppVersion(-1,
-                                                                      -1,
-                                                                      -1);
-      public static readonly SMAppVersion v17_3 = new SMAppVersion(17,
-                                                                   3);
-      public static readonly SMAppVersion v17_4 = new SMAppVersion(17,
-                                                                   4);
 
       #endregion
     }

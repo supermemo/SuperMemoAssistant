@@ -32,6 +32,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.Remoting;
 using System.Threading.Tasks;
 using Anotar.Serilog;
 using CommandLine;
@@ -143,6 +144,10 @@ namespace SuperMemoAssistant.Plugins
 
         pluginInstance.Process.Kill();
       }
+      catch (RemotingException ex)
+      {
+        LogTo.Warning(ex, $"StartPlugin '{pluginInstance.Denomination}' {packageName} failed.");
+      }
       catch (Exception ex)
       {
         LogTo.Error(ex, $"An error occured while starting {pluginInstance.Denomination} {packageName}");
@@ -172,6 +177,10 @@ namespace SuperMemoAssistant.Plugins
           {
             pluginInstance.Plugin.Dispose();
           }
+          catch (RemotingException ex)
+          {
+            LogTo.Warning(ex, $"Failed to gracefully stop {pluginInstance.Denomination} '{pluginInstance.Metadata.PackageName}' failed.");
+          }
           catch (Exception ex)
           {
             LogTo.Error(
@@ -181,6 +190,12 @@ namespace SuperMemoAssistant.Plugins
 
         try
         {
+          if (pluginInstance.Process is null)
+          {
+            LogTo.Warning($"pluginInstance.Process is null. Unable to kill {pluginInstance.Denomination} {pluginInstance.Metadata.PackageName}.");
+            return;
+          }
+
           if (await Task.Run(() => pluginInstance.Process.WaitForExit(PluginStopTimeout)))
             return;
 
@@ -198,6 +213,10 @@ namespace SuperMemoAssistant.Plugins
         {
           LogTo.Error(ex, $"An exception occured while killing {pluginInstance.Denomination} {pluginInstance.Metadata.PackageName}");
         }
+      }
+      catch (RemotingException ex)
+      {
+        LogTo.Warning(ex, $"StopPlugin {pluginInstance?.Denomination} '{pluginInstance?.Metadata?.PackageName}' failed.");
       }
       finally
       {

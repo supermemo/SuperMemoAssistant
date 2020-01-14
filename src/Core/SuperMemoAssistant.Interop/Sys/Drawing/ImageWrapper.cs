@@ -35,7 +35,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Media.Imaging;
-using JetBrains.Annotations;
 
 namespace SuperMemoAssistant.Sys.Drawing
 {
@@ -53,17 +52,16 @@ namespace SuperMemoAssistant.Sys.Drawing
 
     #region Constructors
 
-    public ImageWrapper([NotNull] Image img)
+    public ImageWrapper(Image img)
     {
       if (img == null)
         throw new ArgumentNullException(nameof(img));
 
-      using (MemoryStream stream = new MemoryStream())
-      {
-        img.Save(stream,
-                 ImageFormat.Png);
-        _bytes = stream.ToArray();
-      }
+      using MemoryStream stream = new MemoryStream();
+
+      img.Save(stream,
+               ImageFormat.Png);
+      _bytes = stream.ToArray();
     }
 
     #endregion

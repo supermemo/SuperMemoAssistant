@@ -33,6 +33,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting;
 using System.Threading.Tasks;
 using Anotar.Serilog;
 using SuperMemoAssistant.Extensions;
@@ -123,6 +124,12 @@ namespace SuperMemoAssistant.Plugins
           OnPluginConnected(pluginInstance, plugin);
 
         return Core.SMA;
+      }
+      catch (RemotingException ex)
+      {
+        LogTo.Error(ex, $"Connection to plugin {pluginAssemblyName} failed.");
+
+        return null;
       }
       catch (Exception ex)
       {

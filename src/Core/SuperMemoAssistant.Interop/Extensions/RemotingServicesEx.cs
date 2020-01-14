@@ -41,7 +41,6 @@ using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using Anotar.Serilog;
-using JetBrains.Annotations;
 
 namespace SuperMemoAssistant.Extensions
 {
@@ -50,7 +49,7 @@ namespace SuperMemoAssistant.Extensions
     #region Methods
 
     public static IService ConnectToIpcServer<IService>(
-      [NotNull] string channelName,
+      string channelName,
       string channelPort = null)
     {
       return (IService)Activator.GetObject(
@@ -59,7 +58,7 @@ namespace SuperMemoAssistant.Extensions
     }
 
     public static IpcServerChannel CreateIpcServer<IService, TService>(
-      [NotNull] TService service,
+      TService service,
       string             channelName = null,
       WellKnownSidType   aclSid      = WellKnownSidType.WorldSid)
       where IService : class
@@ -144,7 +143,7 @@ namespace SuperMemoAssistant.Extensions
         }
         catch (RemotingException remoteEx)
         {
-          LogTo.Error(remoteEx, $"{eventName}: Remoting exception while notifying remote service - forcing unsubscribe");
+          LogTo.Warning(remoteEx, $"{eventName}: Remoting exception while notifying remote service - forcing unsubscribe");
           unsubscribeDelegate?.Invoke(handler);
         }
         catch (Exception ex)

@@ -31,6 +31,8 @@
 
 
 using System;
+using Anotar.Serilog;
+using SuperMemoAssistant.Exceptions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Plugins;
 using SuperMemoAssistant.Services.Configuration;
@@ -61,17 +63,28 @@ namespace SuperMemoAssistant
 
     public static void Initialize()
     {
-      Logger.Instance.Initialize(SMAConst.Name, Services.Sentry.SentryEx.LogToSentry);
-      SentryInstance = Services.Sentry.SentryEx.Initialize();
+      try
+      {
+        Logger.Instance.Initialize(SMAConst.Name, Services.Sentry.SentryEx.LogToSentry);
+        SentryInstance = Services.Sentry.SentryEx.Initialize();
 
-      Core.Configuration  = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
-      Core.KeyboardHotKey = KeyboardHookService.Instance;
-      Core.HotKeyManager  = HotKeyManager.Instance.Initialize(Core.Configuration, Core.KeyboardHotKey);
-      Core.SMA            = SMA.SMA.Instance;
+        Core.Configuration = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
+        Core.KeyboardHotKey = KeyboardHookService.Instance;
+        Core.HotKeyManager = HotKeyManager.Instance.Initialize(Core.Configuration, Core.KeyboardHotKey);
+        Core.SMA = SMA.SMA.Instance;
 
-      object tmp;
-      tmp = LayoutManager.Instance;
-      tmp = PluginManager.Instance;
+        object tmp;
+        tmp = LayoutManager.Instance;
+        tmp = PluginManager.Instance;
+      }
+      catch (SMAException ex)
+      {
+        LogTo.Warning(ex, "Error during SuperMemoAssistant Initialize().");
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "Exception thrown during SuperMemoAssistant module Initialize().");
+      }
     }
 
     #endregion

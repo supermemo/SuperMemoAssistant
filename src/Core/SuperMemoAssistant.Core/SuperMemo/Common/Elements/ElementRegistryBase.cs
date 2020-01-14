@@ -283,9 +283,8 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
           }
           catch (Exception ex)
           {
-            LogTo.Error(ex,
-                        "Failed to exit SM Update Lock.");
-            MessageBox.Show($@"Failed to exit SuperMemo update lock.
+            LogTo.Warning(ex, "Failed to exit SM Update Lock.");
+            MessageBox.Show($@"Failed to exit SuperMemo UI update lock.
 You might have to restart SuperMemo.
 
 Exception: {ex}",
@@ -303,9 +302,9 @@ Exception: {ex}",
           }
           catch (Exception ex)
           {
-            LogTo.Error(ex,
-                        "Failed to restore context after creating a new SM element.");
-            MessageBox.Show($@"Failed to restore initial context.
+            LogTo.Warning(ex, "Failed to restore context after creating a new SM element.");
+            MessageBox.Show($@"Failed to restore initial context after creating a new SM element.
+Your hook and/or current concept might have been changed.
 
 Exception: {ex}",
                             "Warning");

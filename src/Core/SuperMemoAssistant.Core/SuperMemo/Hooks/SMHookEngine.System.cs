@@ -32,7 +32,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
+using System.Windows;
 using Anotar.Serilog;
 using Process.NET.Assembly;
 using Process.NET.Utilities;
@@ -59,9 +61,21 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     public override void OnException(Exception ex)
     {
-      LogTo.Error(ex, "Exception caught in InjectLib.");
+      switch (ex)
+      {
+        case FileNotFoundException nativeLibEx when nativeLibEx.Message.StartsWith("Could not load file or assembly 'SuperMemoAssistant.Hooks.NativeLib", StringComparison.OrdinalIgnoreCase):
+          LogTo.Warning(nativeLibEx, @"SuperMemoAssistant.Hooks.NativeLib.dll failed to load.
+This might mean SuperMemoAssistant.Hooks.NativeLib.dll is missing from your SMA install location.
+But most likely, NativeLib exists and failed to load other assemblies or libraries. If this is your case, try installing vcredist 2012 x86");
+          break;
+
+        default:
+          LogTo.Error(ex, "Exception caught in InjectLib.");
+          break;
+      }
 
       StopIPCServer();
+      Application.Current.Shutdown(1);
     }
 
     public override Dictionary<string, int> GetPatternsHintAddresses()

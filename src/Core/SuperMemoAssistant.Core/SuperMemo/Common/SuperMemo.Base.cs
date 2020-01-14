@@ -170,6 +170,8 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
     public async Task Start(NativeData nativeData)
     {
+      AppVersion = nativeData.SMVersion;
+
       await OnPreInit();
 
       var smProcess = await _hook.CreateAndHook(
@@ -181,7 +183,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
       SMProcess               =  smProcess ?? throw new InvalidOperationException("Failed to start SuperMemo process");
       SMProcess.Native.Exited += OnSMExited;
-
+      
       Core.Natives = smProcess.Procedures;
 
       await OnPostInit();
@@ -233,7 +235,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
     //
     // ISuperMemo Methods
 
-    public abstract SMAppVersion AppVersion { get; }
+    public Version AppVersion { get; private set; }
 
     #endregion
   }

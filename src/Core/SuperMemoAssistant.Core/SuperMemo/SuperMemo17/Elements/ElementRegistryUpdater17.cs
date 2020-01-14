@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/08/07 23:09
-// Modified On:  2019/08/08 10:53
+// Created On:   2020/01/13 16:38
+// Modified On:  2020/01/13 21:01
 // Modified By:  Alexis
 
 #endregion
@@ -35,7 +35,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using Anotar.Serilog;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
@@ -45,6 +44,11 @@ using SuperMemoAssistant.SuperMemo.Common.Extensions;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.Sys.SparseClusteredArray;
+
+#if DEBUG && !DEBUG_IN_PROD
+using Anotar.Serilog;
+#endif
+
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 {

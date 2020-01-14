@@ -29,8 +29,10 @@
 
 
 
-
+#if DEBUG
 using System.IO;
+#endif
+
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.SuperMemo.Common.Elements;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types;
@@ -90,7 +92,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 #if DEBUG
       throw new InvalidDataException("Unknown object type");
 #else
-      return new Topic(id, cttElem, elElem);
+      return new Topic(id);
 #endif
     }
 

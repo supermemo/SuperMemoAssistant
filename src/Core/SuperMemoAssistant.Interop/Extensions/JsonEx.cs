@@ -56,16 +56,18 @@ namespace SuperMemoAssistant.Extensions
                                              FilePath    filePath,
                                              Formatting  format = Formatting.None)
     {
-      using (var fs = File.Open(filePath.FullPath, FileMode.Create, FileAccess.Write))
-      using (var writer = new StreamWriter(fs))
-        await writer.WriteAsync(obj.Serialize(format));
+      using var fs = File.Open(filePath.FullPath, FileMode.Create, FileAccess.Write);
+      using var writer = new StreamWriter(fs);
+
+      await writer.WriteAsync(obj.Serialize(format));
     }
 
     public static async Task<T> DeserializeFromFileAsync<T>(FilePath filePath)
     {
-      using (var fs = File.Open(filePath.FullPath, FileMode.Open, FileAccess.Read))
-      using (var reader = new StreamReader(fs))
-        return Deserialize<T>(await reader.ReadToEndAsync());
+      using var fs = File.Open(filePath.FullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+      using var reader = new StreamReader(fs);
+
+      return Deserialize<T>(await reader.ReadToEndAsync());
     }
 
     #endregion

@@ -256,7 +256,7 @@ namespace SuperMemoAssistant.Sys.IO
     {
       try
       {
-        using (File.Open(FullPath, FileMode.Open)) { }
+        using (File.Open(FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) { }
       }
       catch (IOException e)
       {

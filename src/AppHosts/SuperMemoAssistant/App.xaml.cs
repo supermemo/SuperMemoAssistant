@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/13 13:55
-// Modified On:  2019/02/25 00:50
+// Created On:   2020/01/13 16:38
+// Modified On:  2020/01/14 02:11
 // Modified By:  Alexis
 
 #endregion
@@ -38,13 +38,18 @@ using Hardcodet.Wpf.TaskbarNotification;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Services.IO.Logger;
 using SuperMemoAssistant.SMA;
+using SuperMemoAssistant.SMA.Utils;
 
 namespace SuperMemoAssistant
 {
   /// <summary>Interaction logic for App.xaml</summary>
   public partial class App : Application
   {
+    #region Properties & Fields - Non-Public
+
     private TaskbarIcon _taskbarIcon;
+
+    #endregion
 
 
 
@@ -69,9 +74,12 @@ namespace SuperMemoAssistant
     #region Methods
 
     private async void Application_Startup(object           o1,
-                                     StartupEventArgs e1)
+                                           StartupEventArgs e1)
     {
       DispatcherUnhandledException += (o2, e2) => LogTo.Error(e2.Exception, "Unhandled exception");
+
+      if (CheckAssemblies() == false)
+        return;
 
       _taskbarIcon = (TaskbarIcon)FindResource("TbIcon");
 
@@ -105,6 +113,18 @@ namespace SuperMemoAssistant
                                            Interop.SuperMemo.Core.SMProcessArgs e)
     {
       return Dispatcher.InvokeAsync(Shutdown).Task;
+    }
+
+    private bool CheckAssemblies()
+    {
+      if (AssemblyCheck.CheckFasm32() == false)
+      {
+        Shutdown();
+
+        return false;
+      }
+
+      return true;
     }
 
     #endregion

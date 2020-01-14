@@ -32,6 +32,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Anotar.Serilog;
 using FlaUI.Core.AutomationElements;
@@ -164,6 +165,16 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
             || ex is Win32Exception)
         {
           Thread.Sleep(50);
+        }
+        catch (COMException ex)
+        {
+          LogTo.Warning(ex, "Failed to acquire IHTMLDocument2's ShellEmbed handle");
+          break;
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+          LogTo.Warning(ex, "Failed to acquire IHTMLDocument2's ShellEmbed handle");
+          break;
         }
         catch (Exception ex)
         {

@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,54 +21,32 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/04/22 17:20
-// Modified On:  2019/04/22 20:52
+// Created On:   2020/01/14 00:18
+// Modified On:  2020/01/14 00:20
 // Modified By:  Alexis
 
 #endregion
 
 
 
-using SuperMemoAssistant.Services.Sentry;
 
-namespace SuperMemoAssistant.Plugins.Template
+using System;
+using System.Runtime.Serialization;
+
+namespace SuperMemoAssistant.Exceptions
 {
-  // ReSharper disable once UnusedMember.Global
-  // ReSharper disable once ClassNeverInstantiated.Global
-  public class TemplatePlugin : SentrySMAPluginBase<TemplatePlugin>
+  [Serializable]
+  public class SMAException : Exception
   {
     #region Constructors
 
-    public TemplatePlugin() { }
+    public SMAException() { }
 
-    #endregion
+    public SMAException(string message) : base(message) { }
 
+    public SMAException(string message, Exception innerException) : base(message, innerException) { }
 
-
-
-    #region Properties Impl - Public
-
-    /// <inheritdoc />
-    public override string Name => "Template";
-
-    public override bool HasSettings => false;
-
-    #endregion
-
-
-
-
-    #region Methods Impl
-
-    /// <inheritdoc />
-    protected override void PluginInit()
-    {
-    }
-    
-    /// <inheritdoc />
-    public override void ShowSettings()
-    {
-    }
+    protected SMAException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 
     #endregion
   }

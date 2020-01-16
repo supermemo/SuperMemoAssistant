@@ -144,11 +144,11 @@ namespace SuperMemoAssistant
       }
 
       // Check collection exists
-      Collection = (SMCollection)lbCollections.SelectedItem;
-      var knoFilePath = new FilePath(Collection.GetKnoFilePath());
+      var collection = (SMCollection)lbCollections.SelectedItem;
+      var knoFilePath = new FilePath(collection.GetKnoFilePath());
 
       if (knoFilePath.Exists() == false
-        || Directory.Exists(Collection.GetRootDirPath()) == false)
+        || Directory.Exists(collection.GetRootDirPath()) == false)
       {
         Forge.Forms.Show.Window().For(new Alert("Collection doesn't exist anymore.", "Error"));
 
@@ -162,6 +162,9 @@ namespace SuperMemoAssistant
 
         return;
       }
+
+      // We're a go
+      Collection = collection;
 
       // Set last collection usage to now
       Collection.LastOpen = DateTime.Now;

@@ -30,6 +30,7 @@
 
 
 
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using Anotar.Serilog;
@@ -39,6 +40,7 @@ using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Services.IO.Logger;
 using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Utils;
+using SuperMemoAssistant.Sys.IO;
 
 namespace SuperMemoAssistant
 {
@@ -78,7 +80,7 @@ namespace SuperMemoAssistant
     {
       DispatcherUnhandledException += (o2, e2) => LogTo.Error(e2.Exception, "Unhandled exception");
 
-      if (CheckAssemblies() == false)
+      if (CheckAssemblies() == false || CheckSMALocation() == false)
         return;
 
       _taskbarIcon = (TaskbarIcon)FindResource("TbIcon");
@@ -113,6 +115,13 @@ namespace SuperMemoAssistant
                                            Interop.SuperMemo.Core.SMProcessArgs e)
     {
       return Dispatcher.InvokeAsync(Shutdown).Task;
+    }
+
+    private bool CheckSMALocation()
+    {
+      var smaExeFile = new FilePath(Assembly.GetExecutingAssembly().Location);
+
+      return smaExeFile.Directory == SMAFileSystem.AppRootDir;
     }
 
     private bool CheckAssemblies()

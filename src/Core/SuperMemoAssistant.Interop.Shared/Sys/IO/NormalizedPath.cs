@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/20 08:10
-// Modified On:  2019/01/26 01:16
+// Created On:   2019/09/03 18:15
+// Modified On:  2020/01/16 09:27
 // Modified By:  Alexis
 
 #endregion
@@ -284,6 +284,16 @@ namespace SuperMemoAssistant.Sys.IO
 
 
     #region Methods
+
+    public static bool operator ==(NormalizedPath left, NormalizedPath right)
+    {
+      return Equals(left, right);
+    }
+
+    public static bool operator !=(NormalizedPath left, NormalizedPath right)
+    {
+      return !Equals(left, right);
+    }
 
     // Internal for testing
     internal static Uri GetFileProviderUri(string provider)

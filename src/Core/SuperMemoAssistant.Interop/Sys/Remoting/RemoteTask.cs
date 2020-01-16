@@ -33,6 +33,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Anotar.Serilog;
 using Nito.AsyncEx;
 
 namespace SuperMemoAssistant.Sys.Remoting
@@ -48,7 +49,10 @@ namespace SuperMemoAssistant.Sys.Remoting
       void Signal(Exception ex)
       {
         if (ex != null)
+        {
+          LogTo.Warning(ex, "Exception caught");
           throw ex;
+        }
 
         taskCompletedEvent.Set();
       }
@@ -67,6 +71,11 @@ namespace SuperMemoAssistant.Sys.Remoting
     {
       return remoteTask.GetTask().GetAwaiter();
     }
+    
+    public static RemoteTask ConfigureRemoteTask(this Task task, Action<Exception> onExceptionHandler)
+    {
+      return new RemoteTask(task, onExceptionHandler);
+    }
 
     public static Task<T> GetTask<T>(this RemoteTask<T> remoteTask)
     {
@@ -77,7 +86,10 @@ namespace SuperMemoAssistant.Sys.Remoting
                   Exception ex)
       {
         if (ex != null)
+        {
+          LogTo.Warning(ex, "Exception caught");
           throw ex;
+        }
 
         ret = result;
         taskCompletedEvent.Set();
@@ -104,6 +116,11 @@ namespace SuperMemoAssistant.Sys.Remoting
     {
       return remoteTask.GetAwaiter().GetResult();
     }
+    
+    public static RemoteTask<T> ConfigureRemoteTask<T>(this Task<T> task, Action<Exception> onExceptionHandler)
+    {
+      return new RemoteTask<T>(task, onExceptionHandler);
+    }
 
     #endregion
   }
@@ -113,6 +130,7 @@ namespace SuperMemoAssistant.Sys.Remoting
     #region Properties & Fields - Non-Public
 
     private readonly Task _task;
+    private readonly Action<Exception> _onExceptionHandler;
     private          bool _calledCallback = false;
 
     private ActionProxy<Exception> _completedCallback;
@@ -124,9 +142,10 @@ namespace SuperMemoAssistant.Sys.Remoting
 
     #region Constructors
 
-    public RemoteTask(Task task)
+    public RemoteTask(Task task, Action<Exception> onExceptionHandler = null)
     {
       _task = task;
+      _onExceptionHandler = onExceptionHandler;
       task.ContinueWith(OnTaskCompleted);
     }
 
@@ -151,8 +170,21 @@ namespace SuperMemoAssistant.Sys.Remoting
       {
         if (_calledCallback || _completedCallback == null)
           return;
+        
+        if (completedTask.Exception != null)
+        {
+          if (_onExceptionHandler != null)
+            _onExceptionHandler(completedTask.Exception);
 
-        _completedCallback.Invoke(completedTask.Exception);
+          else
+            LogTo.Warning(completedTask.Exception, "Exception caught");
+        }
+
+        try
+        {
+          _completedCallback.Invoke(completedTask.Exception);
+        }
+        catch { /* ignored */ }
 
         _calledCallback = true;
       }
@@ -171,6 +203,7 @@ namespace SuperMemoAssistant.Sys.Remoting
     #region Properties & Fields - Non-Public
 
     private readonly Task<T> _task;
+    private readonly Action<Exception> _onExceptionHandler;
     private          bool    _calledCallback = false;
 
     private ActionProxy<T, Exception> _completedCallback;
@@ -182,9 +215,10 @@ namespace SuperMemoAssistant.Sys.Remoting
 
     #region Constructors
 
-    public RemoteTask(Task<T> task)
+    public RemoteTask(Task<T> task, Action<Exception> onExceptionHandler = null)
     {
       _task = task;
+      _onExceptionHandler = onExceptionHandler;
       task.ContinueWith(OnTaskCompleted);
     }
 
@@ -213,8 +247,21 @@ namespace SuperMemoAssistant.Sys.Remoting
         T result = completedTask.Status == TaskStatus.RanToCompletion
           ? completedTask.Result
           : default;
+        
+        if (completedTask.Exception != null)
+        {
+          if (_onExceptionHandler != null)
+            _onExceptionHandler(completedTask.Exception);
 
-        _completedCallback.Invoke(result, completedTask.Exception);
+          else
+            LogTo.Warning(completedTask.Exception, "Exception caught");
+        }
+
+        try
+        {
+          _completedCallback.Invoke(result, completedTask.Exception);
+        }
+        catch { /* ignored */ }
 
         _calledCallback = true;
       }

@@ -47,7 +47,7 @@ namespace SuperMemoAssistant.Extensions
       return JsonConvert.SerializeObject(obj, format);
     }
 
-    public static T Deserialize<T>(string json)
+    public static T Deserialize<T>(this string json)
     {
       return JsonConvert.DeserializeObject<T>(json);
     }
@@ -62,7 +62,7 @@ namespace SuperMemoAssistant.Extensions
       await writer.WriteAsync(obj.Serialize(format));
     }
 
-    public static async Task<T> DeserializeFromFileAsync<T>(FilePath filePath)
+    public static async Task<T> DeserializeFromFileAsync<T>(this FilePath filePath)
     {
       using var fs = File.Open(filePath.FullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
       using var reader = new StreamReader(fs);

@@ -52,3 +52,6 @@ In short, SMA is an interface to programmatically **interact with SuperMemo**.
 You can submit idea proposals at [our Feathub page](https://feathub.com/supermemo/SuperMemoAssistant).
 
 [![Feature Requests](http://feathub.com/supermemo/SuperMemoAssistant?format=svg)](http://feathub.com/supermemo/SuperMemoAssistant)
+
+
+![](To Extract Image With Text.gif)

@@ -53,5 +53,3 @@ You can submit idea proposals at [our Feathub page](https://feathub.com/supermem
 
 [![Feature Requests](http://feathub.com/supermemo/SuperMemoAssistant?format=svg)](http://feathub.com/supermemo/SuperMemoAssistant)
 
-
-![](To-Extract-Image-With-Text.gif)

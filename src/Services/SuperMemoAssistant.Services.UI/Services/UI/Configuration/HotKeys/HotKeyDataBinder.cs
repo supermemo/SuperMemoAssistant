@@ -56,7 +56,6 @@ namespace SuperMemoAssistant.Services.UI.Configuration.HotKeys
 
     #region Constructors
 
-    /// <inheritdoc />
     public HotKeyDataBinder(HotKeyManager hotKeyManager, HotKeyData hotKeyData)
     {
       _hotKeyManager = hotKeyManager;

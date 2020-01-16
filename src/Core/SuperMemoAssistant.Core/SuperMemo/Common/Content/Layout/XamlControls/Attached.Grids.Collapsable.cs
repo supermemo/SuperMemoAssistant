@@ -69,7 +69,6 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 
     #region Constructors
 
-    /// <inheritdoc />
     public CollapsableGridAttachedProperty() { }
 
     #endregion

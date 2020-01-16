@@ -68,7 +68,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 
     #region Constructors
 
-    /// <inheritdoc />
     public ElementRegistryUpdater17(
       Func<int, ElementBase>                 getElementFunc,
       Func<int, ElementType, ElementBase>    createFunc,

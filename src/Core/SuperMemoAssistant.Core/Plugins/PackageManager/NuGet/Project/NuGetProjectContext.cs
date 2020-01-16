@@ -46,7 +46,6 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet.Project
   {
     #region Constructors
 
-    /// <inheritdoc />
     public NuGetProjectContext(ISettings settings)
     {
       var nuGetLogger = new NuGetLogger();

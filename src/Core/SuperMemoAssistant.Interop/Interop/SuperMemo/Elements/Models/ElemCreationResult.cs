@@ -40,7 +40,6 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements.Models
   {
     #region Constructors
 
-    /// <inheritdoc />
     public ElemCreationResult(ElemCreationResultCode result, ElementBuilder builder)
     {
       Result  = result;

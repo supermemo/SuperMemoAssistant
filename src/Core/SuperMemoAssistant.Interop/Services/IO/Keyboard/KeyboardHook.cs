@@ -270,7 +270,6 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
     {
       #region Constructors
 
-      /// <inheritdoc />
       public RegisteredHotKey(Action callback, HotKeyScope scope)
       {
         Callback = callback;

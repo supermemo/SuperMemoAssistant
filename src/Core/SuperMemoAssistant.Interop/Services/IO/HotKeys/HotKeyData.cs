@@ -41,7 +41,6 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
   {
     #region Constructors
 
-    /// <inheritdoc />
     public HotKeyData(string id,
                       string description,
                       bool   enabled,

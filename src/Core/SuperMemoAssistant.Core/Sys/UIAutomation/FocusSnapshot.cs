@@ -47,7 +47,6 @@ namespace SuperMemoAssistant.Sys.UIAutomation
     #region Constructors
 
     /// <param name="useDispatcher"></param>
-    /// <inheritdoc />
     public FocusSnapshot(bool useDispatcher = false)
     {
       _useDispatcher = useDispatcher;

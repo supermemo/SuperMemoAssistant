@@ -68,7 +68,11 @@ namespace SuperMemoAssistant.SMA
     private void ApplySuperMemoWindowStyles()
     {
       if (CollectionConfig.CollapseElementWdwTitleBar)
-        WindowStyling.MakeWindowTitleless(_sm.UI.ElementWdw.Handle);
+        Task.Run(() =>
+        {
+          Task.Delay(4000);
+          WindowStyling.MakeWindowTitleless(_sm.UI.ElementWdw.Handle);
+        }).RunAsync();
     }
 
     private NativeDataCfg LoadNativeDataConfig()

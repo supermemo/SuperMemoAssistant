@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/21 22:43
-// Modified On:  2019/02/22 17:21
+// Created On:   2019/09/03 18:15
+// Modified On:  2020/01/17 10:45
 // Modified By:  Alexis
 
 #endregion
@@ -58,19 +58,20 @@ namespace SuperMemoAssistant.Extensions
     }
 
     public static IpcServerChannel CreateIpcServer<IService, TService>(
-      TService service,
-      string             channelName = null,
-      WellKnownSidType   aclSid      = WellKnownSidType.WorldSid)
+      TService         service,
+      string           channelName = null,
+      string           portName    = null,
+      WellKnownSidType aclSid      = WellKnownSidType.WorldSid)
       where IService : class
       where TService : MarshalByRefObject, IService
     {
       if (channelName == null)
         channelName = GenerateIpcServerChannelName();
 
-      System.Collections.IDictionary properties = new System.Collections.Hashtable()
+      System.Collections.IDictionary properties = new System.Collections.Hashtable
       {
         { "name", channelName },
-        { "portName", channelName }
+        { "portName", portName ?? channelName }
       };
 
       // Setup ACL : allow access from all users. Channel is protected by a random name.
@@ -131,9 +132,9 @@ namespace SuperMemoAssistant.Extensions
     }
 
     public static void InvokeRemote<TParam1>(
-      this Action<TParam1> @event,
-      string eventName,
-      TParam1 p1,
+      this Action<TParam1>    @event,
+      string                  eventName,
+      TParam1                 p1,
       Action<Action<TParam1>> unsubscribeDelegate)
     {
       foreach (var handler in @event.GetInvocationList().Cast<Action<TParam1>>())
@@ -151,7 +152,6 @@ namespace SuperMemoAssistant.Extensions
           LogTo.Error(ex, $"{eventName}: Exception while notifying remote service");
         }
     }
-    
 
     #endregion
   }

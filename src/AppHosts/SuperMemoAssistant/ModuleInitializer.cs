@@ -33,6 +33,7 @@
 using System;
 using Anotar.Serilog;
 using SuperMemoAssistant.Exceptions;
+using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Plugins;
 using SuperMemoAssistant.Services.Configuration;
@@ -66,7 +67,12 @@ namespace SuperMemoAssistant
       try
       {
         Logger.Instance.Initialize(SMAConst.Name, Services.Sentry.SentryEx.LogToSentry);
-        SentryInstance = Services.Sentry.SentryEx.Initialize();
+        
+        // ReSharper disable once RedundantNameQualifier
+        var appType = typeof(SuperMemoAssistant.App);
+        var releaseName = $"SuperMemoAssistant@{appType.GetAssemblyVersion()}";
+
+        SentryInstance = Services.Sentry.SentryEx.Initialize(releaseName);
 
         Core.Configuration = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
         Core.KeyboardHotKey = KeyboardHookService.Instance;

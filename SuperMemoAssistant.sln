@@ -271,11 +271,11 @@ Global
 		UpdateAssemblyVersion = True
 		UpdateAssemblyFileVersion = True
 		UpdateAssemblyInfoVersion = True
-		AssemblyVersionSettings = None.None.None.IncrementWithResetOnIncrease
-		AssemblyFileVersionSettings = None.None.None.IncrementWithResetOnIncrease
+		AssemblyVersionSettings = IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease
+		AssemblyFileVersionSettings = IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease
+		AssemblyInfoVersionSettings = IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease
 		UpdatePackageVersion = False
-		AssemblyInfoVersionSemVerSettings = AssemblyVersion.IncrementWithAutoReset.None
-		AssemblyInfoVersionType = SemVer1
+		AssemblyInfoVersionType = SettingsVersion
 		InheritWinAppVersionFrom = None
 	EndGlobalSection
 EndGlobal

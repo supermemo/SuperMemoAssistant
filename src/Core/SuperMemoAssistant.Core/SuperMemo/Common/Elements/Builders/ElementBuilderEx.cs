@@ -182,7 +182,11 @@ End Element #1";
         HtmlDocument doc = new HtmlDocument();
         doc.LoadHtml(txtContent.Text);
 
-        title = string.Join(" ", doc.DocumentNode.SelectNodes("//text()").Select(n => n.InnerText));
+        var text = doc.DocumentNode
+                      .SelectNodes("//text()")
+                      ?.Select(n => n.InnerText);
+
+        title = text != null ? string.Join(" ", text) : txtContent.Text;
         title = HtmlEntity.DeEntitize(title);
 
         return title.Substring(0, Math.Min(title.Length, 80));

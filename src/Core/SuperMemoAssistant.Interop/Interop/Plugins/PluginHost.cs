@@ -157,8 +157,7 @@ namespace SuperMemoAssistant.Interop.Plugins
                             smaProc,
                             TaskCreationOptions.LongRunning);
 
-      smaProc.Exited += (o,
-                         ev) => OnSMAStopped();
+      smaProc.Exited += (o, ev) => OnSMAStopped();
 
       return true;
     }

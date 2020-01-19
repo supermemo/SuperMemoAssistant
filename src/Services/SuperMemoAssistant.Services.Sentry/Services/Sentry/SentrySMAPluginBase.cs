@@ -33,6 +33,7 @@
 using System;
 using Anotar.Serilog;
 using Serilog;
+using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.Plugins;
 
 // ReSharper disable once CheckNamespace
@@ -57,7 +58,11 @@ namespace SuperMemoAssistant.Services.Sentry
       DebuggerAttachStrategy debuggerAttachStrategy = DebuggerAttachStrategy.Never)
       : base(debuggerAttachStrategy)
     {
-      _sentry = SentryEx.Initialize();
+      var pluginType = typeof(TPlugin);
+      // ReSharper disable once VirtualMemberCallInConstructor
+      var releaseName = $"{Name}@{pluginType.GetAssemblyVersion()}";
+
+      _sentry = SentryEx.Initialize(releaseName);
     }
 
     public override void Dispose()

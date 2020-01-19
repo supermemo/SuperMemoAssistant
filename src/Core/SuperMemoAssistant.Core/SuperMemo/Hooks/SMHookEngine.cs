@@ -214,17 +214,26 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
       // Start SuperMemo application with given collection as parameter,
       // and immediately install hooks
-      RemoteHooking.CreateAndInject(
-        binPath,
-        collection.GetKnoFilePath().Quotify(),
-        0,
-        InjectionOptions.Default,
-        SMAFileSystem.InjectionLibFile.FullPath,
-        null,
-        out var pId,
-        channelName,
-        nativeData
-      );
+      int pId = -1;
+
+      try
+      {
+        RemoteHooking.CreateAndInject(
+          binPath,
+          collection.GetKnoFilePath().Quotify(),
+          0,
+          InjectionOptions.Default,
+          SMAFileSystem.InjectionLibFile.FullPath,
+          null,
+          out pId,
+          channelName,
+          nativeData
+        );
+      }
+      catch (ArgumentException ex)
+      {
+        LogTo.Warning(ex, $"Failed to start and inject SuperMemo. Command line: '{binPath} {collection.GetKnoFilePath().Quotify()}'");
+      }
 
       LogTo.Debug("Waiting for signal from Injected library");
 

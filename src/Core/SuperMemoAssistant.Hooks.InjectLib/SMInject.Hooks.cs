@@ -71,7 +71,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       {
         try
         {
-          SMA?.OnException(ex);
+          OnException(ex);
         }
         catch
         {

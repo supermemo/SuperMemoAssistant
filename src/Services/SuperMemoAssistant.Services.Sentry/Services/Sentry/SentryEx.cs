@@ -45,6 +45,7 @@ namespace SuperMemoAssistant.Services.Sentry
     #region Constants & Statics
 
     public const string Id = "https://a63c3dad9552434598dae869d2026696@sentry.io/1362046";
+    private static User _user;
 
     #endregion
 
@@ -58,19 +59,29 @@ namespace SuperMemoAssistant.Services.Sentry
       return config.WriteTo.Sentry();
     }
 
-    public static IDisposable Initialize()
+    public static IDisposable Initialize(string releaseName)
     {
       try
       {
-        var ret = SentrySdk.Init(Id);
+        _user = new User
+        {
+          Username = System.Security.Principal.WindowsIdentity.GetCurrent().Name,
+          Id       = GetSystemFingerprint()
+        };
+
+        var ret = SentrySdk.Init(o =>
+        {
+#if DEBUG
+          o.Debug = true;
+#endif
+          o.Dsn = new Dsn(Id);
+          o.Release = releaseName;
+          o.BeforeSend = BeforeSend;
+        });
 
         SentrySdk.ConfigureScope(s =>
           {
-            s.User = new User
-            {
-              Username = System.Security.Principal.WindowsIdentity.GetCurrent().Name,
-              Id = GetSystemFingerprint()
-            };
+            s.User = _user;
           }
         );
 
@@ -81,6 +92,14 @@ namespace SuperMemoAssistant.Services.Sentry
         LogTo.Error(ex, "Exception while initializing Sentry");
         return null;
       }
+    }
+
+    private static SentryEvent BeforeSend(SentryEvent sentryEvent)
+    {
+      if (sentryEvent.HasUser() == false)
+        sentryEvent.User = _user;
+
+      return sentryEvent;
     }
 
     private static string GetSystemFingerprint()

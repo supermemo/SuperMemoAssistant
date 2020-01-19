@@ -107,7 +107,8 @@ namespace SuperMemoAssistant.SuperMemo.Common
     {
       _ignoreUserConfirmationPtr = null;
 
-      SMProcess.Native.Exited -= OnSMExited;
+      if (SMProcess?.Native != null)
+        SMProcess.Native.Exited -= OnSMExited;
 
       try
       {

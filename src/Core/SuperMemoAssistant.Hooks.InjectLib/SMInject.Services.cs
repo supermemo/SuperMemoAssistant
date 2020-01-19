@@ -34,6 +34,7 @@ using System;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Threading;
+using Sentry;
 
 namespace SuperMemoAssistant.Hooks.InjectLib
 {
@@ -54,9 +55,9 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     #region Methods
 
     private void Enqueue(HookedFunction  func,
-                         params object[] datas)
+                         params object[] data)
     {
-      _dataQueue.Enqueue((func, datas));
+      _dataQueue.Enqueue((func, data));
       _dataAvailableEvent.Set();
     }
 
@@ -67,38 +68,37 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         _dataAvailableEvent.WaitOne(1000);
 
         while (_dataQueue.TryDequeue(out var data))
-          ProcessData(data.func,
-                      data.datas);
+          ProcessData(data.func, data.datas);
       }
     }
 
     private void ProcessData(HookedFunction func,
-                             object[]       datas)
+                             object[]       data)
     {
       switch (func)
       {
         case HookedFunction.CreateFile:
-          SMA.OnFileCreate((string)datas[0],
-                           (IntPtr)datas[1]);
+          SMA.OnFileCreate((string)data[0],
+                           (IntPtr)data[1]);
           break;
 
         case HookedFunction.SetFilePointer:
-          SMA.OnFileSeek((IntPtr)datas[0],
-                         (UInt32)datas[1]);
+          SMA.OnFileSeek((IntPtr)data[0],
+                         (UInt32)data[1]);
           break;
 
         case HookedFunction.WriteFile:
-          var byteArr = (byte[])datas[1];
+          var byteArr = (byte[])data[1];
 
-          SMA.OnFileWrite((IntPtr)datas[0],
+          SMA.OnFileWrite((IntPtr)data[0],
                           byteArr,
-                          (UInt32)datas[2]);
+                          (UInt32)data[2]);
 
           ArrayPool<byte>.Shared.Return(byteArr);
           break;
 
         case HookedFunction.CloseHandle:
-          SMA.OnFileClose((IntPtr)datas[0]);
+          SMA.OnFileClose((IntPtr)data[0]);
           break;
       }
     }
@@ -126,14 +126,18 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     private void Debug(string          str,
                        params object[] args)
     {
-      SMA.Debug(str,
-                args);
+      SMA.Debug(str, args);
     }
 
     private void OnException<T>(T ex)
       where T : Exception
     {
-      SMA.OnException(ex);
+      try
+      {
+        SentrySdk.CaptureException(ex);
+        SMA?.OnException(ex);
+      }
+      catch { /* ignored */ }
     }
 
     #endregion

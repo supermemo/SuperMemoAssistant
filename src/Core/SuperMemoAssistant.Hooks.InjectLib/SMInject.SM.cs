@@ -111,14 +111,15 @@ namespace SuperMemoAssistant.Hooks.InjectLib
                                 Delphi.TMsg* msgPtr,
                                 bool*        handled)
     {
-      SMA.Debug($"Received WndProc message {msgPtr->msg} with wParam {msgPtr->wParam}.");
-
-      if (msgPtr->msg == (int)WindowsMessages.Quit
-        || msgPtr->msg != (int)InjectLibMessageIds.SMA)
-        return;
-
       try
       {
+        SMA.Debug($"Received WndProc message {msgPtr->msg} with wParam {msgPtr->wParam}.");
+
+        if (msgPtr == null
+          || msgPtr->msg == (int)WindowsMessages.Quit
+          || msgPtr->msg != (int)InjectLibMessageIds.SMA)
+          return;
+
         int wParam = msgPtr->wParam;
 
         switch ((InjectLibMessageParams)wParam)
@@ -132,8 +133,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
                 out var method,
                 out var parameters);
 
-              res = CallNativeMethod((NativeMethod)method,
-                                     parameters);
+              res = CallNativeMethod((NativeMethod)method, parameters);
             }
             catch (Exception ex)
             {
@@ -156,9 +156,9 @@ namespace SuperMemoAssistant.Hooks.InjectLib
             break;
         }
       }
-      catch (Exception)
+      catch (Exception ex)
       {
-        // Ignored
+        OnException(ex);
       }
     }
 
@@ -167,6 +167,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     {
       SMA.Debug($"Executing native method {Enum.GetName(typeof(NativeMethod), method)}.");
 
+      // Possible null reference on parameters
       var marshalledParameters =
         parameters.Select(p => MarshalValue.Marshal(_smProcess, p))
                   .Cast<IMarshalledValue>()

@@ -31,6 +31,7 @@
 
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting;
@@ -72,7 +73,6 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
       SentryInstance = SentrySdk.Init("https://a63c3dad9552434598dae869d2026696@sentry.io/1362046");
 
-      // TODO: Switch to WCF DuplexClientBase
       SMA = (SMAHookCallback)RemoteHooking.IpcConnectClient<MarshalByRefObject>(channelName);
       Task.Factory.StartNew(KeepAlive, TaskCreationOptions.LongRunning);
     }
@@ -99,8 +99,8 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         }
         catch (Exception ex)
         {
-          SMA.OnHookInstalled(false,
-                              ex);
+          SMA.OnHookInstalled(false, ex);
+          Environment.Exit(1);
           return;
         }
         finally
@@ -117,14 +117,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       }
       catch (Exception ex)
       {
-        try
-        {
-          SMA.OnException(ex);
-        }
-        catch
-        {
-          // ignored
-        }
+        OnException(ex);
       }
       finally
       {
@@ -139,14 +132,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     private void CurrentDomain_UnhandledException(object                      sender,
                                                   UnhandledExceptionEventArgs e)
     {
-      try
-      {
-        SMA.OnException((Exception)e.ExceptionObject);
-      }
-      catch
-      {
-        // ignored
-      }
+      OnException(e.ExceptionObject as Exception);
     }
 
     private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs e)
@@ -159,12 +145,24 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         return assembly;
 
       var assemblyName = e.Name.Split(',').First() + ".dll";
-      var assemblyPath = SMAFileSystem.AppRootDir
-                                      .CombineFile(assemblyName);
+      var assemblyPath = SMAFileSystem.AppRootDir.CombineFile(assemblyName);
 
-      return assemblyPath.Exists() == false
-        ? null
-        : Assembly.LoadFrom(assemblyPath.FullPath);
+      if (assemblyPath.Exists())
+        try
+        {
+          return Assembly.LoadFrom(assemblyPath.FullPath);
+        }
+        catch (Exception ex)
+        {
+          OnException(ex);
+
+          throw;
+        }
+
+      OnException(new FileNotFoundException($"Assembly {assemblyName} could not be found at {assemblyPath}"));
+
+      return null;
+
     }
 
     #endregion

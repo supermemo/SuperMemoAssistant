@@ -63,14 +63,16 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     {
       switch (ex)
       {
-        case FileNotFoundException nativeLibEx when nativeLibEx.Message.StartsWith("Could not load file or assembly 'SuperMemoAssistant.Hooks.NativeLib", StringComparison.OrdinalIgnoreCase):
+        case FileNotFoundException nativeLibEx
+          when nativeLibEx.Message.StartsWith("Could not load file or assembly 'SuperMemoAssistant.Hooks.NativeLib",
+                                              StringComparison.OrdinalIgnoreCase):
           LogTo.Warning(nativeLibEx, @"SuperMemoAssistant.Hooks.NativeLib.dll failed to load.
 This might mean SuperMemoAssistant.Hooks.NativeLib.dll is missing from your SMA install location.
 But most likely, NativeLib exists and failed to load other assemblies or libraries. If this is your case, try installing vcredist 2012 x86");
           break;
 
         default:
-          LogTo.Error(ex, "Exception caught in InjectLib.");
+          LogTo.Warning(ex, $"Exception caught in InjectLib.\r\n {ex}");
           break;
       }
 

@@ -168,8 +168,7 @@ namespace SuperMemoAssistant.Plugins
 
     private void OnPluginStarting(PluginInstance pluginInstance)
     {
-      LogTo.Information(
-        $"Starting {pluginInstance.Denomination} {pluginInstance.Package.Id}.");
+      LogTo.Information($"Starting {pluginInstance.Denomination} {pluginInstance.Package.Id}.");
 
       _runningPluginMap[pluginInstance.OnStarting()] = pluginInstance;
     }
@@ -177,36 +176,37 @@ namespace SuperMemoAssistant.Plugins
     private void OnPluginConnected(PluginInstance pluginInstance,
                                    ISMAPlugin     plugin)
     {
-      LogTo.Information(
-        $"Connected {pluginInstance.Denomination} {pluginInstance.Package.Id}.");
+      LogTo.Information($"Connected {pluginInstance.Denomination} {pluginInstance.Package.Id}.");
 
       pluginInstance.OnConnected(plugin);
     }
 
     private void OnPluginStopping(PluginInstance pluginInstance)
     {
-      LogTo.Information(
-        $"Stopping {pluginInstance.Denomination} {pluginInstance.Package.Id}.");
+      LogTo.Information($"Stopping {pluginInstance.Denomination} {pluginInstance.Package.Id}.");
 
       pluginInstance.OnStopping();
     }
 
-    private void OnPluginStopped(PluginInstance pluginInstance,
-                                 bool           crashed = false)
+    private void OnPluginStopped(PluginInstance pluginInstance)
     {
       if (IsDisposed || pluginInstance.Status == PluginStatus.Stopped)
         return;
 
-      if (crashed)
+      bool crashed = false;
+
+      try
       {
-        // Notify user about crash
-        LogTo.Information($"{pluginInstance.Denomination.CapitalizeFirst()} {pluginInstance.Metadata.PackageName} has crashed");
+        if (pluginInstance.Process?.HasExited ?? false)
+          crashed = pluginInstance.Process.ExitCode != 0;
       }
-      else
-        LogTo.Information($"{pluginInstance.Denomination.CapitalizeFirst()} {pluginInstance.Metadata.PackageName} has stopped.");
+      catch { /* ignored */ }
+
+      LogTo.Information($"{pluginInstance.Denomination.CapitalizeFirst()} {pluginInstance.Metadata.PackageName} "
+                        + $"has {(crashed ? "crashed" : "stopped")}");
 
       foreach (var interfaceType in pluginInstance.InterfaceChannelMap.Keys)
-        UnregisterChannelType(interfaceType, pluginInstance.Guid);
+        UnregisterChannelType(interfaceType, pluginInstance.Guid, false);
 
       _runningPluginMap.TryRemove(pluginInstance.Guid, out _);
 

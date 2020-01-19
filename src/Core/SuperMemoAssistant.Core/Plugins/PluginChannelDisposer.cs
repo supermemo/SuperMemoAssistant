@@ -64,7 +64,7 @@ namespace SuperMemoAssistant.Plugins
     /// <inheritdoc />
     public void Dispose()
     {
-      _pm.UnregisterChannelType(_interfaceType, _sessionGuid);
+      _pm.UnregisterChannelType(_interfaceType, _sessionGuid, true);
     }
 
     #endregion

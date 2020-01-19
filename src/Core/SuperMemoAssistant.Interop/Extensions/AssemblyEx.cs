@@ -53,7 +53,7 @@ namespace SuperMemoAssistant.Extensions
       return Guid.Parse(guidStr);
     }
 
-    public static string GetAssemblyVersion(Type typeInAssembly)
+    public static string GetAssemblyVersion(this Type typeInAssembly)
     {
       var assembly = typeInAssembly.Assembly;
       var fvi      = FileVersionInfo.GetVersionInfo(assembly.Location);

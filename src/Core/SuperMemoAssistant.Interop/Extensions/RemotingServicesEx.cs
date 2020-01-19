@@ -48,6 +48,11 @@ namespace SuperMemoAssistant.Extensions
   {
     #region Methods
 
+    static RemotingServicesEx()
+    {
+      RemotingConfiguration.CustomErrorsMode = CustomErrorsModes.Off;
+    }
+
     public static IService ConnectToIpcServer<IService>(
       string channelName,
       string channelPort = null)

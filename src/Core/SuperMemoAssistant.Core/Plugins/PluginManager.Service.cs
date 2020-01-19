@@ -127,7 +127,7 @@ namespace SuperMemoAssistant.Plugins
       }
       catch (RemotingException ex)
       {
-        LogTo.Error(ex, $"Connection to plugin {pluginAssemblyName} failed.");
+        LogTo.Warning(ex, $"Connection to plugin {pluginAssemblyName} failed.");
 
         return null;
       }
@@ -171,17 +171,30 @@ namespace SuperMemoAssistant.Plugins
     #region Methods
 
     public void UnregisterChannelType(string remoteServiceType,
-                                      Guid   sessionGuid)
+                                      Guid   sessionGuid,
+                                      bool   requireLock)
     {
-      var pluginInst = _runningPluginMap.SafeGet(sessionGuid);
+      IDisposable @lock = null;
 
-      if (pluginInst == null)
-        throw new ArgumentException("Invalid plugin");
+      try
+      {
+        var pluginInst = _runningPluginMap.SafeGet(sessionGuid);
 
-      pluginInst.InterfaceChannelMap.TryRemove(remoteServiceType, out _);
-      _interfaceChannelMap.TryRemove(remoteServiceType, out _);
+        if (pluginInst == null)
+          throw new ArgumentException($"Plugin not found for service {remoteServiceType}");
 
-      Task.Run(() => NotifyServiceRevoked(remoteServiceType));
+        if (requireLock)
+          @lock = pluginInst.Lock.Lock();
+
+        pluginInst.InterfaceChannelMap.TryRemove(remoteServiceType, out _);
+        _interfaceChannelMap.TryRemove(remoteServiceType, out _);
+
+        Task.Run(() => NotifyServiceRevoked(remoteServiceType));
+      }
+      finally
+      {
+        @lock?.Dispose();
+      }
     }
 
     private async Task NotifyServicePublished(string remoteServiceType)

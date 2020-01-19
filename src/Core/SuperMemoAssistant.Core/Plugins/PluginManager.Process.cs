@@ -51,7 +51,7 @@ namespace SuperMemoAssistant.Plugins
 #if DEBUG
     private const int PluginConnectTimeout = 30000;
 #else
-    private const int PluginConnectTimeout = 5000;
+    private const int PluginConnectTimeout = 10000;
 #endif
 
     #endregion
@@ -132,7 +132,7 @@ namespace SuperMemoAssistant.Plugins
       try
       {
         LogTo.Warning(
-          $"{pluginInstance.Denomination.CapitalizeFirst()} {packageName} failed to connect in {PluginConnectTimeout}ms. Attempting to kill process");
+          $"{pluginInstance.Denomination.CapitalizeFirst()} {packageName} failed to connect under {PluginConnectTimeout}ms. Attempting to kill process");
 
         pluginInstance.Process.Refresh();
 
@@ -165,26 +165,29 @@ namespace SuperMemoAssistant.Plugins
       {
         using (await pluginInstance.Lock.LockAsync())
         {
-          if (pluginInstance.Status == PluginStatus.Stopping)
-            return;
+          switch (pluginInstance.Status) {
+            case PluginStatus.Stopping:
+            case PluginStatus.Stopped:
+              return;
 
-          if (pluginInstance.Status == PluginStatus.Stopped)
-            return;
+            default:
+              OnPluginStopping(pluginInstance);
 
-          OnPluginStopping(pluginInstance);
+              try
+              {
+                pluginInstance.Plugin.Dispose();
+              }
+              catch (RemotingException ex)
+              {
+                LogTo.Warning(ex, $"Failed to gracefully stop {pluginInstance.Denomination} '{pluginInstance.Metadata.PackageName}' failed.");
+              }
+              catch (Exception ex)
+              {
+                LogTo.Error(
+                  ex, $"An exception occured while gracefully stopping {pluginInstance.Denomination} {pluginInstance.Metadata.PackageName}.");
+              }
 
-          try
-          {
-            pluginInstance.Plugin.Dispose();
-          }
-          catch (RemotingException ex)
-          {
-            LogTo.Warning(ex, $"Failed to gracefully stop {pluginInstance.Denomination} '{pluginInstance.Metadata.PackageName}' failed.");
-          }
-          catch (Exception ex)
-          {
-            LogTo.Error(
-              ex, $"An exception occured while gracefully stopping {pluginInstance.Denomination} {pluginInstance.Metadata.PackageName}.");
+              break;
           }
         }
 
@@ -220,7 +223,8 @@ namespace SuperMemoAssistant.Plugins
       }
       finally
       {
-        OnPluginStopped(pluginInstance);
+        using (await pluginInstance.Lock.LockAsync())
+          OnPluginStopped(pluginInstance);
       }
     }
 

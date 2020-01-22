@@ -31,6 +31,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Windows.Input;
 
 namespace SuperMemoAssistant.Sys.IO.Devices
@@ -43,16 +44,38 @@ namespace SuperMemoAssistant.Sys.IO.Devices
     Alt          = ModifierKeys.Alt,
     Ctrl         = ModifierKeys.Control,
     Shift        = ModifierKeys.Shift,
-    Win          = ModifierKeys.Windows,
+    Meta          = ModifierKeys.Windows,
     CtrlAlt      = Ctrl | Alt,
     CtrlAltShift = CtrlAlt | Shift,
-    CtrlAltWin   = CtrlAlt | Win,
-    CtrlWin      = Ctrl | Win,
-    CtrlWinShift = CtrlWin | Shift,
+    CtrlAltMeta   = CtrlAlt | Meta,
+    CtrlMeta      = Ctrl | Meta,
+    CtrlMetaShift = CtrlMeta | Shift,
     CtrlShift    = Ctrl | Shift,
     AltShift     = Alt | Shift,
-    AltWin       = Alt | Win,
-    AltWinShift  = AltWin | Shift,
-    WinShift     = Win | Shift,
+    AltMeta       = Alt | Meta,
+    AltMetaShift  = AltMeta | Shift,
+    MetaShift     = Meta | Shift,
+  }
+
+  public static class KeyModifiersEx
+  {
+    public static string ToString(this KeyModifiers mod)
+    {
+      List<string> modStrList = new List<string>();
+      
+      if (mod.HasFlag(KeyModifiers.Ctrl))
+        modStrList.Add("Ctrl");
+
+      if (mod.HasFlag(KeyModifiers.Alt))
+        modStrList.Add("Alt");
+
+      if (mod.HasFlag(KeyModifiers.Meta))
+        modStrList.Add("Meta");
+
+      if (mod.HasFlag(KeyModifiers.Shift))
+        modStrList.Add("Shift");
+
+      return string.Join("+", modStrList);
+    }
   }
 }

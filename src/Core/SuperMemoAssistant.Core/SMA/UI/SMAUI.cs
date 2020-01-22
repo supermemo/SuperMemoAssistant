@@ -58,7 +58,7 @@ namespace SuperMemoAssistant.SMA.UI
         "DebugInjectLib",
         "Attach debugger to injected lib",
         HotKeyScope.Global,
-        new HotKey(Key.D, KeyModifiers.CtrlWinShift),
+        new HotKey(Key.D, KeyModifiers.CtrlMetaShift),
         DebugInjectLib
       );
 #endif

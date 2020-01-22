@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/03/22 16:00
+// Created On:   2020/01/22 09:58
+// Modified On:  2020/01/22 10:16
 // Modified By:  Alexis
 
 #endregion
@@ -57,11 +57,11 @@ namespace SuperMemoAssistant.Services.IO.Logger
 
     public Logger(LoggerCfg config, LoggingLevelSwitch levelSwitch)
     {
-      Config = config;
+      Config      = config;
       LevelSwitch = levelSwitch;
 
       RegisterExceptionLoggers();
-      
+
       LogTo.Debug("Logger initialized");
     }
 
@@ -69,7 +69,13 @@ namespace SuperMemoAssistant.Services.IO.Logger
 
 
 
+
+    #region Properties & Fields - Public
+
     public LoggerCfg Config { get; private set; }
+
+    #endregion
+
 
 
 
@@ -81,7 +87,10 @@ namespace SuperMemoAssistant.Services.IO.Logger
       {
         Log.CloseAndFlush();
       }
-      catch { /* Ignore */ }
+      catch
+      {
+        /* Ignore */
+      }
     }
 
     public void ReloadConfig(ConfigurationServiceBase sharedCfg)

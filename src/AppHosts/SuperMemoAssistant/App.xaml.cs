@@ -37,7 +37,6 @@ using Anotar.Serilog;
 using Forge.Forms;
 using Hardcodet.Wpf.TaskbarNotification;
 using SuperMemoAssistant.Interop;
-using SuperMemoAssistant.Services.IO.Logger;
 using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Utils;
 using SuperMemoAssistant.Sys.IO;
@@ -80,8 +79,14 @@ namespace SuperMemoAssistant
     {
       DispatcherUnhandledException += (o2, e2) => LogTo.Error(e2.Exception, "Unhandled exception");
 
-      if (CheckAssemblies() == false || CheckSMALocation() == false)
+      if (CheckAssemblies(out var errMsg) == false || CheckSMALocation(out errMsg) == false)
+      {
+        LogTo.Warning(errMsg);
+        await Show.Window().For(new Alert(errMsg, "Error"));
+        
+        Shutdown();
         return;
+      }
 
       _taskbarIcon = (TaskbarIcon)FindResource("TbIcon");
 
@@ -117,18 +122,27 @@ namespace SuperMemoAssistant
       return Dispatcher.InvokeAsync(Shutdown).Task;
     }
 
-    private bool CheckSMALocation()
+    private bool CheckSMALocation(out string error)
     {
       var smaExeFile = new FilePath(Assembly.GetExecutingAssembly().Location);
 
-      return smaExeFile.Directory == SMAFileSystem.AppRootDir;
+      error = null;
+
+      if (smaExeFile.Directory == SMAFileSystem.AppRootDir)
+        return true;
+
+      error = $"SuperMemoAssistant should be located in the '{SMAFileSystem.AppRootDir}' folder";
+
+      return false;
     }
 
-    private bool CheckAssemblies()
+    private bool CheckAssemblies(out string error)
     {
+      error = null;
+
       if (AssemblyCheck.CheckFasm32() == false)
       {
-        Shutdown();
+        error = "Fasm32 assembly is missing";
 
         return false;
       }

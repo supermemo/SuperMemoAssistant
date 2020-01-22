@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/01 14:25
-// Modified On:  2019/02/28 22:16
+// Created On:   2019/09/03 18:15
+// Modified On:  2020/01/22 13:18
 // Modified By:  Alexis
 
 #endregion
@@ -33,6 +33,7 @@
 using System;
 using System.Windows.Input;
 using Newtonsoft.Json;
+
 // ReSharper disable NonReadonlyMemberInGetHashCode
 
 namespace SuperMemoAssistant.Sys.IO.Devices
@@ -41,7 +42,7 @@ namespace SuperMemoAssistant.Sys.IO.Devices
   public class HotKey : IEquatable<HotKey>
   {
     #region Constructors
-    
+
     public HotKey() { }
 
     public HotKey(Key key, bool ctrl = false, bool alt = false, bool shift = false, bool win = false)
@@ -60,19 +61,19 @@ namespace SuperMemoAssistant.Sys.IO.Devices
 
     #region Properties & Fields - Public
 
-    public Key  Key  { get; set; }
+    public Key Key { get; set; }
     [JsonIgnore]
     public VKey VKey => (VKey)KeyInterop.VirtualKeyFromKey(Key);
 
     public KeyModifiers Modifiers { get; set; }
     [JsonIgnore]
-    public bool         Ctrl      => Modifiers.HasFlag(KeyModifiers.Ctrl);
+    public bool Ctrl => Modifiers.HasFlag(KeyModifiers.Ctrl);
     [JsonIgnore]
-    public bool         Alt       => Modifiers.HasFlag(KeyModifiers.Alt);
+    public bool Alt => Modifiers.HasFlag(KeyModifiers.Alt);
     [JsonIgnore]
-    public bool         Shift     => Modifiers.HasFlag(KeyModifiers.Shift);
+    public bool Shift => Modifiers.HasFlag(KeyModifiers.Shift);
     [JsonIgnore]
-    public bool         Win       => Modifiers.HasFlag(KeyModifiers.Win);
+    public bool Win => Modifiers.HasFlag(KeyModifiers.Meta);
 
     #endregion
 
@@ -80,6 +81,11 @@ namespace SuperMemoAssistant.Sys.IO.Devices
 
 
     #region Methods Impl
+
+    public override string ToString()
+    {
+      return $"{Modifiers.ToString()}+{Enum.GetName(typeof(Key), Key)}";
+    }
 
     /// <inheritdoc />
     public override int GetHashCode()
@@ -132,7 +138,7 @@ namespace SuperMemoAssistant.Sys.IO.Devices
         ret |= KeyModifiers.Shift;
 
       if (win)
-        ret |= KeyModifiers.Win;
+        ret |= KeyModifiers.Meta;
 
       return ret;
     }

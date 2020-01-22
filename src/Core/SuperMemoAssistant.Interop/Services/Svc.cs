@@ -31,6 +31,7 @@
 
 
 using System;
+using System.Windows;
 using SuperMemoAssistant.Interop.Plugins;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Services.Configuration;
@@ -69,6 +70,8 @@ namespace SuperMemoAssistant.Services
 
     public static ConfigurationServiceBase Configuration { get; set; }
     public static ConfigurationServiceBase SharedConfiguration { get; set; }
+
+    public static Application App { get; set; }
 
     #endregion
 

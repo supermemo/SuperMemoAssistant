@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/09/03 18:08
-// Modified On:  2020/01/12 12:21
+// Created On:   2020/01/22 09:58
+// Modified On:  2020/01/22 10:16
 // Modified By:  Alexis
 
 #endregion
@@ -70,17 +70,17 @@ namespace SuperMemoAssistant
         Core.SharedConfiguration = new ConfigurationService(SMAFileSystem.SharedConfigDir);
 
         Core.Logger = LoggerFactory.Create(SMAConst.Name, Core.SharedConfiguration, Services.Sentry.SentryEx.LogToSentry);
-        
+
         // ReSharper disable once RedundantNameQualifier
-        var appType = typeof(SuperMemoAssistant.App);
+        var appType     = typeof(SuperMemoAssistant.App);
         var releaseName = $"SuperMemoAssistant@{appType.GetAssemblyVersion()}";
 
         SentryInstance = Services.Sentry.SentryEx.Initialize(releaseName);
 
-        Core.Configuration = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
+        Core.Configuration  = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
         Core.KeyboardHotKey = KeyboardHookService.Instance;
-        Core.HotKeyManager = HotKeyManager.Instance.Initialize(Core.Configuration, Core.KeyboardHotKey);
-        Core.SMA = SMA.SMA.Instance;
+        Core.HotKeyManager  = HotKeyManager.Instance.Initialize(Core.Configuration, Core.KeyboardHotKey);
+        Core.SMA            = SMA.SMA.Instance;
 
         object tmp;
         tmp = LayoutManager.Instance;

@@ -165,8 +165,8 @@
     <Error Condition="!Exists('..\..\..\packages\CefSharp.OffScreen.71.0.2\build\CefSharp.OffScreen.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\CefSharp.OffScreen.71.0.2\build\CefSharp.OffScreen.props'))" />
     <Error Condition="!Exists('..\..\..\packages\CefSharp.OffScreen.71.0.2\build\CefSharp.OffScreen.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\CefSharp.OffScreen.71.0.2\build\CefSharp.OffScreen.targets'))" />
     <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\Fody.6.0.6\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.6.0.6\build\Fody.targets'))" />
     <Error Condition="!Exists('..\..\..\packages\PropertyChanged.Fody.3.2.3\build\PropertyChanged.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\PropertyChanged.Fody.3.2.3\build\PropertyChanged.Fody.props'))" />
+    <Error Condition="!Exists('..\..\..\packages\Fody.6.0.8\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.6.0.8\build\Fody.targets'))" />
   </Target>
   <PropertyGroup>
     <PreBuildEvent>
@@ -174,5 +174,5 @@
   </PropertyGroup>
   <Import Project="..\..\..\packages\CefSharp.Common.71.0.2\build\CefSharp.Common.targets" Condition="Exists('..\..\..\packages\CefSharp.Common.71.0.2\build\CefSharp.Common.targets')" />
   <Import Project="..\..\..\packages\CefSharp.OffScreen.71.0.2\build\CefSharp.OffScreen.targets" Condition="Exists('..\..\..\packages\CefSharp.OffScreen.71.0.2\build\CefSharp.OffScreen.targets')" />
-  <Import Project="..\..\..\packages\Fody.6.0.6\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.6.0.6\build\Fody.targets')" />
+  <Import Project="..\..\..\packages\Fody.6.0.8\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.6.0.8\build\Fody.targets')" />
 </Project>

@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 22:02
-// Modified On:  2019/02/28 20:41
+// Created On:   2020/01/22 09:58
+// Modified On:  2020/01/22 12:39
 // Modified By:  Alexis
 
 #endregion
@@ -33,6 +33,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels.Ipc;
 using System.Threading.Tasks;
@@ -81,26 +82,26 @@ namespace SuperMemoAssistant.Interop.Plugins
           AttachDebuggerIfDebug();
           break;
       }
-      
+
       try
       {
-        App = CreateApplication();
-
         // Required for logging
+        Svc.App                 = CreateApplication();
         Svc.SharedConfiguration = new ConfigurationService(SMAFileSystem.SharedConfigDir);
 
         Svc.Logger = LoggerFactory.Create(AssemblyName, Svc.SharedConfiguration, ConfigureLogger);
+        ReloadAnotarLogger();
 
-        Svc.KeyboardHotKey = KeyboardHookService.Instance;
+        Svc.KeyboardHotKey       = KeyboardHookService.Instance;
         Svc.KeyboardHotKeyLegacy = KeyboardHotKeyService.Instance;
-        Svc.Configuration = new PluginConfigurationService(this);
-        Svc.HotKeyManager = HotKeyManager.Instance.Initialize(Svc.Configuration, Svc.KeyboardHotKey);
+        Svc.Configuration        = new PluginConfigurationService(this);
+        Svc.HotKeyManager        = HotKeyManager.Instance.Initialize(Svc.Configuration, Svc.KeyboardHotKey);
 
         // Create Plugin's IPC Server
         _channelName = RemotingServicesEx.GenerateIpcServerChannelName();
-        RemotingServicesEx.CreateIpcServer<ISMAPlugin, SMAPluginBase<TPlugin>>(
-          this,
-          _channelName);
+        RemotingServicesEx.CreateIpcServer<ISMAPlugin, SMAPluginBase<TPlugin>>(this, _channelName);
+
+        LogTo.Debug($"Plugin {AssemblyName} initialized");
       }
       catch (Exception ex)
       {
@@ -120,12 +121,11 @@ namespace SuperMemoAssistant.Interop.Plugins
 
         KeyboardHotKeyService.Instance.Dispose();
 
-        App?.Dispatcher.InvokeShutdown();
+        Svc.App?.Dispatcher.InvokeShutdown();
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "Plugin threw an exception while disposing.");
+        LogTo.Error(ex, "Plugin threw an exception while disposing.");
       }
 
       Svc.Logger.Shutdown();
@@ -144,8 +144,6 @@ namespace SuperMemoAssistant.Interop.Plugins
 
 
     #region Properties & Fields - Public
-
-    public Application App { get; set; }
 
     public ISuperMemoAssistant SMA          { get; set; }
     public ISMAPluginManager   SMAPluginMgr { get; set; }
@@ -188,7 +186,7 @@ namespace SuperMemoAssistant.Interop.Plugins
         throw new NullReferenceException($"{nameof(SMAPluginMgr)} is null");
 
       Svc.Plugin = this;
-      Svc.SMA = SMA;
+      Svc.SMA    = SMA;
 
       PluginInit();
     }
@@ -225,14 +223,33 @@ namespace SuperMemoAssistant.Interop.Plugins
       Debugger.Launch();
     }
 
-    protected virtual LoggerConfiguration ConfigureLogger(LoggerConfiguration loggerConfiguration)
+    // See https://github.com/Fody/Anotar/issues/114
+    private void ReloadAnotarLogger()
     {
-      return loggerConfiguration;
+      var baseClass   = typeof(SMAPluginBase<TPlugin>);
+      var pluginClass = typeof(TPlugin);
+
+      // SMAPluginBase's logger
+      var logger = Log.ForContext<SMAPluginBase<TPlugin>>();
+      var field  = baseClass.GetField("AnotarLogger", BindingFlags.NonPublic | BindingFlags.Static);
+      field.SetValue(this, logger);
+
+      // TPlugin's logger
+      if ((field = pluginClass.GetField("AnotarLogger", BindingFlags.NonPublic | BindingFlags.Static)) != null)
+      {
+        logger = Log.ForContext<TPlugin>();
+        field.SetValue(this, logger);
+      }
     }
 
     protected virtual Application CreateApplication()
     {
       return new PluginApp();
+    }
+
+    protected virtual LoggerConfiguration ConfigureLogger(LoggerConfiguration loggerConfiguration)
+    {
+      return loggerConfiguration;
     }
 
     public IService GetService<IService>()

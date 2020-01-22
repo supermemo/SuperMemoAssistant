@@ -33,6 +33,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Anotar.Serilog;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.Keyboard;
@@ -165,6 +166,8 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
       if (hkData.IsGlobal)
         _kbHookSvc.RegisterHotKey(hkData.ActualHotKey, hkData.Callback);
 
+      LogTo.Debug($"Hotkey {id} is now enabled.");
+
       return this;
     }
 
@@ -185,6 +188,8 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
 
       if (hkData.IsGlobal)
         _kbHookSvc.UnregisterHotKey(hkData.ActualHotKey);
+
+      LogTo.Debug($"Hotkey {id} is now disabled.");
 
       return this;
     }
@@ -221,6 +226,8 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
           _kbHookSvc.RegisterHotKey(actualAfter, hkData.Callback);
       }
 
+      LogTo.Debug($"Hotkey {hkData.Id} is now bound to {actualAfter}.");
+
       _delayedTask.Trigger(1000);
     }
 
@@ -251,6 +258,8 @@ namespace SuperMemoAssistant.Services.IO.HotKeys
 
       if (enabled && scope != null)
         _kbHookSvc.RegisterHotKey(hkData.ActualHotKey, callback, scope.Value);
+
+      LogTo.Debug($"Assigned default hotkey {defaultHotKey} to {id} ({description}).");
     }
 
     private HotKeyData CreateHotKeyData(

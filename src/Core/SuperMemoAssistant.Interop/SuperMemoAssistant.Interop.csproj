@@ -198,6 +198,7 @@
     <Compile Include="Extensions\AsyncEx.cs" />
     <Compile Include="Services\IO\HotKeys\HotKeyManager.cs" />
     <Compile Include="Services\IO\Logger\LoggerCfg.cs" />
+    <Compile Include="Services\IO\Logger\LoggerFactory.cs" />
     <Compile Include="Sys\Collections\ConcurrentBiDictionary.cs" />
     <Compile Include="Sys\Collections\BiDictionary.cs" />
     <Compile Include="Sys\ComponentModel\PropertyChangedDelegate.cs" />

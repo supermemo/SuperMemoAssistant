@@ -62,7 +62,7 @@ namespace SuperMemoAssistant
     {
       _taskbarIcon.Dispose();
 
-      Logger.Instance.Shutdown();
+      Core.Logger.Shutdown();
       ModuleInitializer.SentryInstance?.Dispose();
 
       base.OnExit(e);

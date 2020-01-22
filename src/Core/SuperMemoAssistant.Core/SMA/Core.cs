@@ -33,6 +33,7 @@
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.HotKeys;
 using SuperMemoAssistant.Services.IO.Keyboard;
+using SuperMemoAssistant.Services.IO.Logger;
 using SuperMemoAssistant.SuperMemo.Common;
 using SuperMemoAssistant.SuperMemo.Hooks;
 using SuperMemoAssistant.SuperMemo.Natives;
@@ -48,9 +49,12 @@ namespace SuperMemoAssistant.SMA
     public static SMHookEngine  Hook    { get; set; }
     public static SMNatives     Natives { get; set; }
 
+    public static Logger Logger { get; set; }
+
     public static IKeyboardHookService KeyboardHotKey { get; set; }
     public static HotKeyManager        HotKeyManager  { get; set; }
-
+    
+    public static ConfigurationServiceBase SharedConfiguration { get; set; }
     public static ConfigurationServiceBase Configuration { get; set; }
 
     #endregion

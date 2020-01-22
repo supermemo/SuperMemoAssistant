@@ -38,35 +38,13 @@ using Anotar.Serilog;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
-using Serilog.Exceptions;
-using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Services.Configuration;
-using SuperMemoAssistant.Sys.IO;
 
 namespace SuperMemoAssistant.Services.IO.Logger
 {
-  public delegate LoggerConfiguration LoggerConfigPredicate(LoggerConfiguration config);
-
   public class Logger
   {
-    #region Constants & Statics
-
-    protected const string OutputFormat = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}";
-
-
-    private static Logger _instance;
-
-    public static Logger Instance => _instance ?? (_instance = new Logger());
-
-    #endregion
-
-
-
-
     #region Properties & Fields - Non-Public
-
-    private readonly ConfigurationService _configSvc;
-    private          LoggerCfg            _config;
 
     protected LoggingLevelSwitch LevelSwitch { get; set; }
 
@@ -77,56 +55,25 @@ namespace SuperMemoAssistant.Services.IO.Logger
 
     #region Constructors
 
-    protected Logger()
+    public Logger(LoggerCfg config, LoggingLevelSwitch levelSwitch)
     {
-      _configSvc = new ConfigurationService(SMAFileSystem.SharedConfigDir);
+      Config = config;
+      LevelSwitch = levelSwitch;
+
+      RegisterExceptionLoggers();
+      
+      LogTo.Debug("Logger initialized");
     }
 
     #endregion
 
 
 
+    public LoggerCfg Config { get; private set; }
+
+
 
     #region Methods
-
-    public void Initialize(
-      string                appName,
-      LoggerConfigPredicate configPredicate = null)
-    {
-      _config     = LoadConfig();
-      LevelSwitch = new LoggingLevelSwitch(_config.LogLevel);
-
-      var config = new LoggerConfiguration()
-                   .MinimumLevel.ControlledBy(LevelSwitch)
-                   .Enrich.WithExceptionDetails()
-                   .Enrich.WithDemystifiedStackTraces()
-                   .WriteTo.Debug(outputTemplate: OutputFormat)
-                   //.WriteTo.RollingFile(
-                   //  GetLogFilePath(appName).FullPath,
-                   //  fileSizeLimitBytes: 5242880,
-                   //  retainedFileCountLimit: 7,
-                   //  shared: false,
-                   //  outputTemplate: OutputFormat
-                   //);
-                   .WriteTo.Async(
-                     a =>
-                       a.RollingFile(
-                         GetLogFilePath(appName).FullPath,
-                         fileSizeLimitBytes: 5242880, // Math.Max(ConfigMgr.AppConfig.LogMaxSize, 5242880),
-                         retainedFileCountLimit: 7,
-                         shared: false,
-                         outputTemplate: OutputFormat
-                       ));
-
-      if (configPredicate != null)
-        config = configPredicate(config);
-
-      Log.Logger = config.CreateLogger();
-
-      LogTo.Debug("Logger initialized");
-
-      RegisterExceptionLoggers();
-    }
 
     public void Shutdown()
     {
@@ -134,19 +81,16 @@ namespace SuperMemoAssistant.Services.IO.Logger
       {
         Log.CloseAndFlush();
       }
-      catch
-      {
-        // Ignore
-      }
+      catch { /* Ignore */ }
     }
 
-    public void ReloadConfig()
+    public void ReloadConfig(ConfigurationServiceBase sharedCfg)
     {
-      var newConfig = LoadConfig();
+      var newConfig = LoggerFactory.LoadConfig(sharedCfg);
 
       SetMinimumLevel(newConfig.LogLevel);
 
-      if (newConfig.LogFirstChanceExceptions != _config.LogFirstChanceExceptions)
+      if (newConfig.LogFirstChanceExceptions != Config.LogFirstChanceExceptions)
       {
         if (newConfig.LogFirstChanceExceptions)
           RegisterFirstChanceExceptionLogger();
@@ -155,7 +99,7 @@ namespace SuperMemoAssistant.Services.IO.Logger
           UnregisterFirstChanceExceptionLogger();
       }
 
-      _config = newConfig;
+      Config = newConfig;
     }
 
     public LogEventLevel SetMinimumLevel(LogEventLevel level)
@@ -174,10 +118,10 @@ namespace SuperMemoAssistant.Services.IO.Logger
       if (Application.Current != null)
         Application.Current.DispatcherUnhandledException += LogDispatcherUnhandledException;
 
-      if (_config.LogFirstChanceExceptions)
+      if (Config.LogFirstChanceExceptions)
         RegisterFirstChanceExceptionLogger();
 
-      LogTo.Debug($"Exception loggers registered (first-chance logging: {(_config.LogFirstChanceExceptions ? "on" : "off")})");
+      LogTo.Debug($"Exception loggers registered (first-chance logging: {(Config.LogFirstChanceExceptions ? "on" : "off")})");
     }
 
     private void RegisterFirstChanceExceptionLogger()
@@ -218,32 +162,6 @@ namespace SuperMemoAssistant.Services.IO.Logger
     private void LogFirstChanceException(object _, FirstChanceExceptionEventArgs e)
     {
       LogTo.Error(e.Exception, "First chance exception");
-    }
-
-    private LoggerCfg LoadConfig()
-    {
-      try
-      {
-        return _configSvc.Load<LoggerCfg>().Result ?? new LoggerCfg();
-      }
-      catch (Exception ex)
-      {
-        LogTo.Error(ex, "Exception while loading logger config");
-
-        return new LoggerCfg();
-      }
-    }
-
-    private static FilePath GetLogFilePath(string appName)
-    {
-      var logDir = SMAFileSystem.LogDir;
-
-      if (logDir.Exists() == false)
-        logDir.Create();
-
-      var filePath = logDir.CombineFile($"{appName}-{{Date}}.log");
-
-      return filePath;
     }
 
     #endregion

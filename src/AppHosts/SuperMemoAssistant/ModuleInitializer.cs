@@ -66,7 +66,10 @@ namespace SuperMemoAssistant
     {
       try
       {
-        Logger.Instance.Initialize(SMAConst.Name, Services.Sentry.SentryEx.LogToSentry);
+        // Required for logging
+        Core.SharedConfiguration = new ConfigurationService(SMAFileSystem.SharedConfigDir);
+
+        Core.Logger = LoggerFactory.Create(SMAConst.Name, Core.SharedConfiguration, Services.Sentry.SentryEx.LogToSentry);
         
         // ReSharper disable once RedundantNameQualifier
         var appType = typeof(SuperMemoAssistant.App);

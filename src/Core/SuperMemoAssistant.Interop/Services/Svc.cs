@@ -36,6 +36,7 @@ using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.HotKeys;
 using SuperMemoAssistant.Services.IO.Keyboard;
+using SuperMemoAssistant.Services.IO.Logger;
 
 // ReSharper disable StaticMemberInGenericType
 // ReSharper disable UnusedTypeParameter
@@ -64,7 +65,10 @@ namespace SuperMemoAssistant.Services
     public static IKeyboardHookService   KeyboardHotKey       { get; set; }
     public static HotKeyManager          HotKeyManager        { get; set; }
 
+    public static Logger Logger { get; set; }
+
     public static ConfigurationServiceBase Configuration { get; set; }
+    public static ConfigurationServiceBase SharedConfiguration { get; set; }
 
     #endregion
 

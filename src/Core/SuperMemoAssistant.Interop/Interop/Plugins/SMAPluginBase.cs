@@ -86,7 +86,10 @@ namespace SuperMemoAssistant.Interop.Plugins
       {
         App = CreateApplication();
 
-        Logger.Instance.Initialize(AssemblyName, ConfigureLogger);
+        // Required for logging
+        Svc.SharedConfiguration = new ConfigurationService(SMAFileSystem.SharedConfigDir);
+
+        Svc.Logger = LoggerFactory.Create(AssemblyName, Svc.SharedConfiguration, ConfigureLogger);
 
         Svc.KeyboardHotKey = KeyboardHookService.Instance;
         Svc.KeyboardHotKeyLegacy = KeyboardHotKeyService.Instance;
@@ -125,7 +128,7 @@ namespace SuperMemoAssistant.Interop.Plugins
                     "Plugin threw an exception while disposing.");
       }
 
-      Logger.Instance.Shutdown();
+      Svc.Logger.Shutdown();
 
       // TODO: Improve this
       Task.Factory.StartNew(() =>

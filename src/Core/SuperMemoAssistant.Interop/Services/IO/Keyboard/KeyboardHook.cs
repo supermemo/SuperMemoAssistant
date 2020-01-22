@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 22:02
-// Modified On:  2019/03/02 03:48
+// Created On:   2020/01/13 16:38
+// Modified On:  2020/01/22 16:47
 // Modified By:  Alexis
 
 #endregion
@@ -65,7 +65,7 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
     private bool     _isDisposed;
     private IntPtr   _windowsHookHandle;
     private IntPtr   _elWdwHandle;
-    private int _smProcessId;
+    private int      _smProcessId;
 
     private ConcurrentDictionary<HotKey, RegisteredHotKey> HotKeys { get; } =
       new ConcurrentDictionary<HotKey, RegisteredHotKey>();
@@ -132,6 +132,15 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
 
 
 
+    #region Properties & Fields - Public
+
+    public Action<HotKey> MainCallback { get; set; }
+
+    #endregion
+
+
+
+
     #region Methods Impl
 
     public bool UnregisterHotKey(HotKey hotkey)
@@ -140,19 +149,19 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
                                out _);
     }
 
-    #endregion
-
-
-
-
-    #region Methods
-
     public void RegisterHotKey(HotKey      hotkey,
                                Action      callback,
                                HotKeyScope scope = HotKeyScope.SM)
     {
       HotKeys[hotkey] = new RegisteredHotKey(callback, scope);
     }
+
+    #endregion
+
+
+
+
+    #region Methods
 
     private void ExecuteCallbacks()
     {
@@ -169,7 +178,7 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
           LogTo.Error(ex, "An exception was thrown while executing Keyboard HotKey callback");
         }
     }
-    
+
     [LogToErrorOnException]
     private IntPtr LowLevelKeyboardProc(int    nCode,
                                         IntPtr wParam,
@@ -194,11 +203,13 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
 
         if (kbState == KeyboardState.KeyDown || kbState == KeyboardState.SysKeyDown)
         {
-          var hkReg = HotKeys.SafeGet(
-            new HotKey(
-              kbEvent.Key,
-              GetCtrlPressed(), GetAltPressed(), GetShiftPressed(), GetMetaPressed())
-          );
+          var hk = new HotKey(
+            kbEvent.Key,
+            GetCtrlPressed(), GetAltPressed(), GetShiftPressed(), GetMetaPressed());
+          var hkReg = HotKeys.SafeGet(hk);
+
+          if (MainCallback != null && hk.Modifiers != KeyModifiers.None)
+            MainCallback(hk);
 
           if (hkReg != null)
           {
@@ -210,12 +221,16 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
 
               // ReSharper disable once ConditionIsAlwaysTrueOrFalse
               if (foregroundWdwHandle == null || foregroundWdwHandle == IntPtr.Zero)
+              {
                 scopeMatches = false;
-              
-              else if (hkReg.Scope == HotKeyScope.SMBrowser && foregroundWdwHandle != _elWdwHandle)
-                scopeMatches = false;
+              }
 
-              else if (hkReg.Scope == HotKeyScope.SM )
+              else if (hkReg.Scope == HotKeyScope.SMBrowser && foregroundWdwHandle != _elWdwHandle)
+              {
+                scopeMatches = false;
+              }
+
+              else if (hkReg.Scope == HotKeyScope.SM)
               {
                 GetWindowThreadProcessId(foregroundWdwHandle, out var foregroundProcId);
 

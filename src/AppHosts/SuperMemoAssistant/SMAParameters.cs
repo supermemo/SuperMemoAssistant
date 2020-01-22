@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2020/01/22 15:08
-// Modified On:  2020/01/22 15:18
+// Modified On:  2020/01/22 16:49
 // Modified By:  Alexis
 
 #endregion
@@ -41,6 +41,10 @@ namespace SuperMemoAssistant
     [Option('c', "collection", Required = false,
             HelpText                    = "Will bypass collection selection if a valid path to a collection .kno file is passed")]
     public string CollectionKnoPath { get; set; }
+
+    [Option("key-logger", Required = false,
+            HelpText                 = "Debug feature. Logs all keys send with a modifier (ctrl, alt, shift, meta) to file.")]
+    public bool KeyLogger { get; set; }
 
     #endregion
   }

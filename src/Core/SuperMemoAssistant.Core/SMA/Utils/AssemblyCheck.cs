@@ -32,7 +32,9 @@
 
 using System;
 using System.IO;
+using System.Windows.Forms;
 using Anotar.Serilog;
+using mshtml;
 using Process.NET.Assembly.Assemblers;
 
 namespace SuperMemoAssistant.SMA.Utils
@@ -41,8 +43,10 @@ namespace SuperMemoAssistant.SMA.Utils
   {
     #region Methods
 
-    public static bool CheckFasm32()
+    public static bool CheckFasm32(out string error)
     {
+      error = null;
+
       try
       {
         var unused = new Fasm32Assembler().Assemble("nop");
@@ -51,12 +55,42 @@ namespace SuperMemoAssistant.SMA.Utils
       }
       catch (FileNotFoundException ex)
       {
-        LogTo.Warning(ex, "Fasm32 assembly not found.");
+        error = "Fasm32 assembly not found.";
+        LogTo.Warning(ex, error);
         return false;
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex, "Exception while checking for Fasm32 assembly.");
+        error = "Exception while checking for Fasm32 assembly.";
+        LogTo.Error(ex, error);
+        return false;
+      }
+    }
+
+    public static bool CheckMshtml(out string error)
+    {
+      error = null;
+
+      try
+      {
+        using (var wb = new WebBrowser())
+        {
+          // ReSharper disable once UnusedVariable
+          IHTMLDocument2 doc = (IHTMLDocument2)wb.Document.DomDocument;
+        }
+
+        return true;
+      }
+      catch (FileNotFoundException ex)
+      {
+        error = "Microsoft.mshtml assembly not found.";
+        LogTo.Warning(ex, error);
+        return false;
+      }
+      catch (Exception ex)
+      {
+        error = "Exception while checking for Microsoft.mshtml assembly.";
+        LogTo.Error(ex, error);
         return false;
       }
     }

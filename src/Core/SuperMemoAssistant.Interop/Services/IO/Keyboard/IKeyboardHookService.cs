@@ -38,6 +38,7 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
   public interface IKeyboardHookService
   {
     event EventHandler<KeyboardHookEventArgs> KeyboardPressed;
+    Action<HotKey> MainCallback { get; set; }
 
     void RegisterHotKey(HotKey hotkey,
                         Action callback,

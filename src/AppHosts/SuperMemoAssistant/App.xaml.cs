@@ -44,6 +44,7 @@ using SuperMemoAssistant.PluginHost;
 using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Utils;
 using SuperMemoAssistant.Sys.IO;
+using SuperMemoAssistant.Sys.IO.Devices;
 
 namespace SuperMemoAssistant
 {
@@ -98,6 +99,9 @@ namespace SuperMemoAssistant
         Shutdown();
         return;
       }
+
+      if (args.KeyLogger)
+        Core.KeyboardHotKey.MainCallback = LogHotKeys;
 
       _taskbarIcon = (TaskbarIcon)FindResource("TbIcon");
       
@@ -164,16 +168,16 @@ namespace SuperMemoAssistant
 
     private bool CheckAssemblies(out string error)
     {
-      error = null;
-
-      if (AssemblyCheck.CheckFasm32() == false)
-      {
-        error = "Fasm32 assembly is missing";
-
+      if (AssemblyCheck.CheckFasm32(out error) == false
+      || AssemblyCheck.CheckMshtml(out error))
         return false;
-      }
 
       return true;
+    }
+
+    private void LogHotKeys(HotKey hk)
+    {
+      LogTo.Debug($"Key pressed: {hk}");
     }
 
     #endregion

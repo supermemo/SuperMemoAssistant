@@ -63,6 +63,9 @@
     <Reference Include="AsyncEvent, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\AsyncEvent.0.2.0\lib\netstandard2.0\AsyncEvent.dll</HintPath>
     </Reference>
+    <Reference Include="CommandLine, Version=2.7.82.0, Culture=neutral, PublicKeyToken=5a870481e358d379, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\CommandLineParser.2.7.82\lib\net461\CommandLine.dll</HintPath>
+    </Reference>
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
@@ -159,6 +162,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="SMAParameters.cs" />
     <Compile Include="SMATaskbarIcon.cs" />
     <Page Include="CollectionSelectionWindow.xaml">
       <SubType>Designer</SubType>

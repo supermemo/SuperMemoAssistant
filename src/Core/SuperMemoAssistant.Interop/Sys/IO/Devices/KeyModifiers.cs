@@ -59,7 +59,7 @@ namespace SuperMemoAssistant.Sys.IO.Devices
 
   public static class KeyModifiersEx
   {
-    public static string ToString(this KeyModifiers mod)
+    public static string GetString(this KeyModifiers mod)
     {
       List<string> modStrList = new List<string>();
       

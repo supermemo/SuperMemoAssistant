@@ -84,7 +84,7 @@ namespace SuperMemoAssistant.Sys.IO.Devices
 
     public override string ToString()
     {
-      return $"{Modifiers.ToString()}+{Enum.GetName(typeof(Key), Key)}";
+      return $"{Modifiers.GetString()}+{Enum.GetName(typeof(Key), Key)}";
     }
 
     /// <inheritdoc />

@@ -106,14 +106,50 @@ namespace SuperMemoAssistant
 
     #region Methods
 
+    public bool ValidateSuperMemoPath()
+    {
+      if (new FilePath(_config.SMBinPath).Exists() == false)
+      {
+        Forge.Forms.Show.Window().For(
+          new Alert(
+            $"Invalid file path for sm executable file: '{_config.SMBinPath}' could not be found.",
+            "Error")
+        );
+        return false;
+      }
+
+      return true;
+    }
+
+    public bool ValidateCollection(SMCollection collection)
+    {
+      var knoFilePath = new FilePath(collection.GetKnoFilePath());
+
+      if (knoFilePath.Exists() == false
+        || Directory.Exists(collection.GetRootDirPath()) == false)
+      {
+        Forge.Forms.Show.Window().For(new Alert("Collection doesn't exist anymore.", "Error"));
+
+        return false;
+      }
+
+      // Check whether collection is locked
+      if (knoFilePath.IsLocked())
+      {
+        Forge.Forms.Show.Window().For(new Alert("Collection is locked. Is SuperMemo already running ?", "Error"));
+
+        return false;
+      }
+
+      return true;
+    }
+
     private SMCollection CreateCollection(string knoFilePath)
     {
       string filePath = Path.GetDirectoryName(knoFilePath);
       string name     = Path.GetFileNameWithoutExtension(knoFilePath);
 
-      return new SMCollection(name,
-                              filePath,
-                              DateTime.Now);
+      return new SMCollection(name, filePath, DateTime.Now);
     }
 
     private void DeleteCollection(SMCollection collection)
@@ -132,36 +168,15 @@ namespace SuperMemoAssistant
 
     private void OpenSelectedCollection()
     {
-      // Check sm executable exists
-      if (new FilePath(_config.SMBinPath).Exists() == false)
-      {
-        Forge.Forms.Show.Window().For(
-          new Alert(
-            $"Invalid file path for sm executable file: '{_config.SMBinPath}' could not be found.",
-            "Error")
-        );
+      // Check whether sm executable exists
+      if (ValidateSuperMemoPath() == false)
         return;
-      }
 
       // Check collection exists
       var collection = (SMCollection)lbCollections.SelectedItem;
-      var knoFilePath = new FilePath(collection.GetKnoFilePath());
 
-      if (knoFilePath.Exists() == false
-        || Directory.Exists(collection.GetRootDirPath()) == false)
-      {
-        Forge.Forms.Show.Window().For(new Alert("Collection doesn't exist anymore.", "Error"));
-
+      if (ValidateCollection(collection) == false)
         return;
-      }
-
-      // Check whether collection is locked
-      if (knoFilePath.IsLocked())
-      {
-        Forge.Forms.Show.Window().For(new Alert("Collection is locked. Is SuperMemo already running ?", "Error"));
-
-        return;
-      }
 
       // We're a go
       Collection = collection;

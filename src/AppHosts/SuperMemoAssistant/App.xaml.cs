@@ -30,13 +30,17 @@
 
 
 
+using System;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using Anotar.Serilog;
+using CommandLine;
 using Forge.Forms;
 using Hardcodet.Wpf.TaskbarNotification;
 using SuperMemoAssistant.Interop;
+using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.PluginHost;
 using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Utils;
 using SuperMemoAssistant.Sys.IO;
@@ -74,11 +78,18 @@ namespace SuperMemoAssistant
 
     #region Methods
 
-    private async void Application_Startup(object           o1,
-                                           StartupEventArgs e1)
+    private async void Application_Startup(object           o,
+                                           StartupEventArgs e)
     {
-      DispatcherUnhandledException += (o2, e2) => LogTo.Error(e2.Exception, "Unhandled exception");
+      if (Parser.Default.ParseArguments<SMAParameters>(e.Args) is Parsed<SMAParameters> parsed)
+        await LoadApp(parsed.Value);
 
+      else
+        Environment.Exit(HostConst.ExitParameters);
+    }
+    
+    private async Task LoadApp(SMAParameters args)
+    {
       if (CheckAssemblies(out var errMsg) == false || CheckSMALocation(out errMsg) == false)
       {
         LogTo.Warning(errMsg);
@@ -89,18 +100,33 @@ namespace SuperMemoAssistant
       }
 
       _taskbarIcon = (TaskbarIcon)FindResource("TbIcon");
-
+      
+      SMCollection smCollection = null;
       var selectionWdw = new CollectionSelectionWindow();
 
-      selectionWdw.ShowDialog();
+      // Try to open command line collection, if one was passed
+      if (args.CollectionKnoPath != null && selectionWdw.ValidateSuperMemoPath())
+      {
+        smCollection = new SMCollection(args.CollectionKnoPath, DateTime.Now);
 
-      var selectedCol = selectionWdw.Collection;
+        if (selectionWdw.ValidateCollection(smCollection) == false)
+          smCollection = null;
+      }
 
+      // No valid collection passed, show selection window
+      if (smCollection == null)
+      {
+        selectionWdw.ShowDialog();
+
+        smCollection = selectionWdw.Collection;
+      }
+
+      // If a collection was selected, start SMA
       if (selectionWdw.Collection != null)
       {
         Core.SMA.OnSMStoppedEvent += Instance_OnSMStoppedEvent;
 
-        if (await Core.SMA.Start(selectedCol).ConfigureAwait(true) == false)
+        if (await Core.SMA.Start(smCollection).ConfigureAwait(true) == false)
         {
           await Show.Window().For(
             new Alert(

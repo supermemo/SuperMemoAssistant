@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2020/01/11 20:19
+// Created On:   2020/01/13 16:38
+// Modified On:  2020/01/22 16:29
 // Modified By:  Alexis
 
 #endregion
@@ -31,21 +31,31 @@
 
 
 using System;
+// ReSharper disable NonReadonlyMemberInGetHashCode
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Core
 {
   [Serializable]
-  public class SMCollection
-    : IEquatable<SMCollection>
+  public class SMCollection : IEquatable<SMCollection>
   {
     #region Constructors
 
+    public SMCollection() { }
+
+    public SMCollection(string   knoFilePath,
+                        DateTime lastOpen)
+    {
+      Name     = System.IO.Path.GetFileNameWithoutExtension(knoFilePath);
+      Path     = System.IO.Path.GetDirectoryName(knoFilePath);
+      LastOpen = lastOpen;
+    }
+
     public SMCollection(string   name,
-                        string   path,
+                        string   dirPath,
                         DateTime lastOpen)
     {
       Name     = name;
-      Path     = path;
+      Path     = dirPath;
       LastOpen = lastOpen;
     }
 
@@ -56,8 +66,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
 
     #region Properties & Fields - Public
 
-    public string   Name     { get; }
-    public string   Path     { get; }
+    public string   Name     { get; set; }
+    public string   Path     { get; set; }
     public DateTime LastOpen { get; set; }
 
     #endregion

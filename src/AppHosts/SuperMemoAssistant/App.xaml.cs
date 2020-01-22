@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2020/01/13 16:38
-// Modified On:  2020/01/14 02:11
+// Created On:   2020/01/22 09:58
+// Modified On:  2020/01/22 17:31
 // Modified By:  Alexis
 
 #endregion
@@ -88,14 +88,14 @@ namespace SuperMemoAssistant
       else
         Environment.Exit(HostConst.ExitParameters);
     }
-    
+
     private async Task LoadApp(SMAParameters args)
     {
       if (CheckAssemblies(out var errMsg) == false || CheckSMALocation(out errMsg) == false)
       {
         LogTo.Warning(errMsg);
         await Show.Window().For(new Alert(errMsg, "Error"));
-        
+
         Shutdown();
         return;
       }
@@ -104,9 +104,9 @@ namespace SuperMemoAssistant
         Core.KeyboardHotKey.MainCallback = LogHotKeys;
 
       _taskbarIcon = (TaskbarIcon)FindResource("TbIcon");
-      
+
       SMCollection smCollection = null;
-      var selectionWdw = new CollectionSelectionWindow();
+      var          selectionWdw = new CollectionSelectionWindow();
 
       // Try to open command line collection, if one was passed
       if (args.CollectionKnoPath != null && selectionWdw.ValidateSuperMemoPath())
@@ -126,7 +126,7 @@ namespace SuperMemoAssistant
       }
 
       // If a collection was selected, start SMA
-      if (selectionWdw.Collection != null)
+      if (smCollection != null)
       {
         Core.SMA.OnSMStoppedEvent += Instance_OnSMStoppedEvent;
 
@@ -146,8 +146,8 @@ namespace SuperMemoAssistant
       }
     }
 
-    private Task Instance_OnSMStoppedEvent(object                               sender,
-                                           Interop.SuperMemo.Core.SMProcessArgs e)
+    private Task Instance_OnSMStoppedEvent(object        sender,
+                                           SMProcessArgs e)
     {
       return Dispatcher.InvokeAsync(Shutdown).Task;
     }
@@ -169,7 +169,7 @@ namespace SuperMemoAssistant
     private bool CheckAssemblies(out string error)
     {
       if (AssemblyCheck.CheckFasm32(out error) == false
-      || AssemblyCheck.CheckMshtml(out error))
+        || AssemblyCheck.CheckMshtml(out error) == false)
         return false;
 
       return true;

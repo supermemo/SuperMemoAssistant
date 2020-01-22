@@ -75,6 +75,8 @@ namespace SuperMemoAssistant.SMA.Utils
       {
         using (var wb = new WebBrowser())
         {
+          wb.DocumentText = "<html><body></body></html>";
+
           // ReSharper disable once UnusedVariable
           IHTMLDocument2 doc = (IHTMLDocument2)wb.Document.DomDocument;
         }

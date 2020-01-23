@@ -203,6 +203,7 @@
     <Compile Include="Sys\Collections\BiDictionary.cs" />
     <Compile Include="Sys\ComponentModel\PropertyChangedDelegate.cs" />
     <Compile Include="Sys\COM\InternetExplorer\IEComHelper.cs" />
+    <Compile Include="Sys\Converters\Json\ObjectToStringJsonConverter.cs" />
     <Compile Include="Sys\EmptyDisposable.cs" />
     <Compile Include="Sys\ForceAssemblyReference.cs" />
     <Compile Include="Sys\Index2D.cs" />

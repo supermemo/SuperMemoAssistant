@@ -69,8 +69,8 @@
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
-    <Reference Include="DeviceId, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\DeviceId.4.4.0\lib\net40\DeviceId.dll</HintPath>
+    <Reference Include="DeviceId, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\DeviceId.4.5.0\lib\net40\DeviceId.dll</HintPath>
     </Reference>
     <Reference Include="FastMember, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\FastMember.1.5.0\lib\net461\FastMember.dll</HintPath>

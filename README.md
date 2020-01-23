@@ -52,4 +52,9 @@ In short, SMA is an interface to programmatically **interact with SuperMemo**.
 You can submit idea proposals at [our Feathub page](https://feathub.com/supermemo/SuperMemoAssistant).
 
 [![Feature Requests](http://feathub.com/supermemo/SuperMemoAssistant?format=svg)](http://feathub.com/supermemo/SuperMemoAssistant)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsupermemo%2FSuperMemoAssistant.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsupermemo%2FSuperMemoAssistant?ref=badge_shield)
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsupermemo%2FSuperMemoAssistant.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsupermemo%2FSuperMemoAssistant?ref=badge_large)

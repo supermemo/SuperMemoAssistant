@@ -72,7 +72,7 @@ namespace SuperMemoAssistant.Services.Sentry
         var ret = SentrySdk.Init(o =>
         {
 #if DEBUG
-          o.Debug = true;
+          //o.Debug = true;
 #endif
           o.Dsn = new Dsn(Id);
           o.Release = releaseName;

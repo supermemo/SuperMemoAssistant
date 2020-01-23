@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsupermemo%2FSuperMemoAssistant.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsupermemo%2FSuperMemoAssistant?ref=badge_shield)
+
 ## SuperMemo Assistant
 
 PSA: if you'd like to use SMA before the official release, contact @Naess at supermemo discord channel https://discord.gg/pB7jcSK
@@ -53,3 +55,5 @@ You can submit idea proposals at [our Feathub page](https://feathub.com/supermem
 
 [![Feature Requests](http://feathub.com/supermemo/SuperMemoAssistant?format=svg)](http://feathub.com/supermemo/SuperMemoAssistant)
 
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsupermemo%2FSuperMemoAssistant.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsupermemo%2FSuperMemoAssistant?ref=badge_large)

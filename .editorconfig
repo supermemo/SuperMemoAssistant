@@ -1,7 +1,27 @@
-﻿[*.cs]
+[*.cs]
 
 # CA1031: Do not catch general exception types
-dotnet_diagnostic.CA1031.severity = suggestion
+dotnet_diagnostic.ca1031.severity=suggestion
 
 # CA1062: Validate arguments of public methods
-dotnet_diagnostic.CA1062.severity = suggestion
+dotnet_diagnostic.ca1062.severity=suggestion
+
+[*.{c,c++,cc,cp,cpp,cu,cuh,cxx,h,hh,hpp,hxx,inc,inl,ino,ipp,mpp,proto,tpp}]
+indent_style=tab
+indent_size=tab
+tab_width=4
+
+[*.{asax,ascx,aspx,cshtml,css,htm,html,js,jsx,master,razor,skin,ts,tsx,vb}]
+indent_style=space
+indent_size=4
+tab_width=4
+
+[*.{appxmanifest,axml,build,config,csproj,dbml,discomap,dtd,json,jsproj,lsproj,njsproj,nuspec,proj,props,resjson,resw,resx,StyleCop,targets,tasks,vbproj,xml,xsd}]
+indent_style=space
+indent_size=2
+tab_width=2
+
+[*.{cs,xaml,xamlx,xoml}]
+indent_style=space
+indent_size=2
+tab_width=4

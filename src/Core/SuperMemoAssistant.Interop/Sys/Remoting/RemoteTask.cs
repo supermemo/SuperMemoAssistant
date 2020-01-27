@@ -32,6 +32,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Anotar.Serilog;
 using Nito.AsyncEx;
@@ -97,7 +98,8 @@ namespace SuperMemoAssistant.Sys.Remoting
 
       async Task<T> WaitForSignal()
       {
-        await taskCompletedEvent.WaitAsync();
+        var cts = new CancellationTokenSource(60000);
+        await taskCompletedEvent.WaitAsync(cts.Token);
 
         return ret;
       }
@@ -261,7 +263,10 @@ namespace SuperMemoAssistant.Sys.Remoting
         {
           _completedCallback.Invoke(result, completedTask.Exception);
         }
-        catch { /* ignored */ }
+        catch (Exception ex)
+        {
+          LogTo.Warning(ex, "Exception caught in RemoteTask");
+        }
 
         _calledCallback = true;
       }

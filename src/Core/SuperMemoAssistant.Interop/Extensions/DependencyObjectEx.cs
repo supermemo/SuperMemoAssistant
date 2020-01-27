@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/18 00:24
-// Modified On:  2019/01/18 03:13
+// Modified On:  2020/01/26 18:24
 // Modified By:  Alexis
 
 #endregion
@@ -53,6 +52,19 @@ namespace SuperMemoAssistant.Extensions
         // return all children of the found child
         foreach (var nestedChild in directChild.EnumerateChildren())
           yield return nestedChild;
+      }
+    }
+
+    public static IEnumerable<T> EnumerateChildren<T>(this DependencyObject parent)
+      where T : class
+    {
+      foreach (DependencyObject child in parent.EnumerateChildren())
+      {
+        if (child is T typedChild)
+          yield return typedChild;
+
+        foreach (T descendant in EnumerateChildren<T>(child))
+          yield return descendant;
       }
     }
 

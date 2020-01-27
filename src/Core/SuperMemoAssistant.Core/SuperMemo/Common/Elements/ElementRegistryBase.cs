@@ -200,9 +200,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
 
       results = new List<ElemCreationResult>(
         builders.Select(
-          b => new ElemCreationResult(
-            ElemCreationResultCode.UnknownError,
-            b))
+          b => new ElemCreationResult(ElemCreationResultCode.UnknownError, b))
       );
 
       try

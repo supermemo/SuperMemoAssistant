@@ -84,22 +84,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMemoAssistant.Plugins.Import.BrowserNativeHost", "src\Plugins\SuperMemoAssistant.Plugins.Import\libs\SuperMemoAssistant.Plugins.Import.BrowserNativeHost\SuperMemoAssistant.Plugins.Import.BrowserNativeHost.csproj", "{390A9FF0-4B34-4869-AF15-7EF7960D5D56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMemoAssistant.Plugins.Import.Common", "src\Plugins\SuperMemoAssistant.Plugins.Import\libs\SuperMemoAssistant.Plugins.Import.Common\SuperMemoAssistant.Plugins.Import.Common.csproj", "{1B4B5809-4108-4C73-B3FB-3A7609D97704}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMemoAssistant.Plugins.Import.Interop", "src\Plugins\SuperMemoAssistant.Plugins.Import\libs\SuperMemoAssistant.Plugins.Import.Interop\SuperMemoAssistant.Plugins.Import.Interop.csproj", "{1B4B5809-4108-4C73-B3FB-3A7609D97704}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Core\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.projitems*{149c5a9b-0588-41b9-8f77-c5d17a1cdfbe}*SharedItemsImports = 4
 		src\Core\SuperMemoAssistant.PluginHost.Shared\SuperMemoAssistant.PluginHost.Shared.projitems*{149c5a9b-0588-41b9-8f77-c5d17a1cdfbe}*SharedItemsImports = 4
+		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{390a9ff0-4b34-4869-af15-7ef7960d5d56}*SharedItemsImports = 4
 		libs\pngcs\pngcs.projitems*{4f65145f-6f0c-49cd-830a-a51a2a9c5f75}*SharedItemsImports = 13
 		libs\pngcs\pngcs.projitems*{677647e4-f052-41d0-915a-ad76da72463e}*SharedItemsImports = 4
 		src\Core\SuperMemoAssistant.PluginHost.Shared\SuperMemoAssistant.PluginHost.Shared.projitems*{7550628d-0630-4a42-b0b7-55d26f981365}*SharedItemsImports = 4
 		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{77605834-e425-4f69-8b27-dca82a04eb07}*SharedItemsImports = 13
 		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{c57d9489-0a27-4b18-818c-7cbb379acfd8}*SharedItemsImports = 4
+		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{c76cfa78-f820-4f05-9429-4a3a3c9c1414}*SharedItemsImports = 4
 		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{cd1238da-b610-40ad-995a-aa5a28fbbbfe}*SharedItemsImports = 4
+		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{cd2988da-b610-40ad-995a-aa5a28fbbbfe}*SharedItemsImports = 4
 		src\Core\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.projitems*{d4eff016-9a16-4560-8e1d-2a33d0de399f}*SharedItemsImports = 13
 		src\Core\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.projitems*{d5086d5e-84a6-4c0d-b6f2-d1b82c5fb487}*SharedItemsImports = 4
 		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{f8bb6993-25df-4173-bb3d-acee15c5a2b9}*SharedItemsImports = 4
 		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{f8bb6993-b610-40ad-995a-aa5a28fbbbfe}*SharedItemsImports = 4
+		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{faecf9bb-9fd5-4fb1-a3a8-9f7caa57a1fe}*SharedItemsImports = 4
 		src\Core\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.projitems*{fd0e1be8-bed3-4ab0-a9c8-022a2dbc8450}*SharedItemsImports = 4
 		src\Core\SuperMemoAssistant.PluginHost.Shared\SuperMemoAssistant.PluginHost.Shared.projitems*{fe47a14f-9157-4917-82fb-7861a57b1822}*SharedItemsImports = 13
 	EndGlobalSection
@@ -286,16 +290,13 @@ Global
 		{F8BB6993-B610-40AD-995A-AA5A28FBBBFE}.Release|Any CPU.ActiveCfg = Release|x86
 		{F8BB6993-B610-40AD-995A-AA5A28FBBBFE}.Release|x86.ActiveCfg = Release|x86
 		{F8BB6993-B610-40AD-995A-AA5A28FBBBFE}.Release|x86.Build.0 = Release|x86
-		{A95DA3C0-54C5-4BB9-84CB-E8B69E712A62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A95DA3C0-54C5-4BB9-84CB-E8B69E712A62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A95DA3C0-54C5-4BB9-84CB-E8B69E712A62}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{A95DA3C0-54C5-4BB9-84CB-E8B69E712A62}.Debug|x86.ActiveCfg = Debug|x86
 		{A95DA3C0-54C5-4BB9-84CB-E8B69E712A62}.Debug|x86.Build.0 = Debug|x86
-		{A95DA3C0-54C5-4BB9-84CB-E8B69E712A62}.Debug-InProd|Any CPU.ActiveCfg = Debug-InProd|Any CPU
-		{A95DA3C0-54C5-4BB9-84CB-E8B69E712A62}.Debug-InProd|Any CPU.Build.0 = Debug-InProd|Any CPU
+		{A95DA3C0-54C5-4BB9-84CB-E8B69E712A62}.Debug-InProd|Any CPU.ActiveCfg = Debug-InProd|x86
 		{A95DA3C0-54C5-4BB9-84CB-E8B69E712A62}.Debug-InProd|x86.ActiveCfg = Debug-InProd|x86
 		{A95DA3C0-54C5-4BB9-84CB-E8B69E712A62}.Debug-InProd|x86.Build.0 = Debug-InProd|x86
-		{A95DA3C0-54C5-4BB9-84CB-E8B69E712A62}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A95DA3C0-54C5-4BB9-84CB-E8B69E712A62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A95DA3C0-54C5-4BB9-84CB-E8B69E712A62}.Release|Any CPU.ActiveCfg = Release|x86
 		{A95DA3C0-54C5-4BB9-84CB-E8B69E712A62}.Release|x86.ActiveCfg = Release|x86
 		{A95DA3C0-54C5-4BB9-84CB-E8B69E712A62}.Release|x86.Build.0 = Release|x86
 		{CD1238DA-B610-40AD-995A-AA5A28FBBBFE}.Debug|Any CPU.ActiveCfg = Debug|x86
@@ -364,17 +365,5 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF31D6F5-6E93-461B-8C5F-348439D19C6D}
-	EndGlobalSection
-	GlobalSection(AutomaticVersions) = postSolution
-		UpdateAssemblyVersion = True
-		UpdateAssemblyFileVersion = True
-		UpdateAssemblyInfoVersion = True
-		ShouldCreateLogs = True
-		AssemblyVersionSettings = IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease
-		AssemblyFileVersionSettings = IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease
-		AssemblyInfoVersionSettings = IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.None
-		UpdatePackageVersion = False
-		AssemblyInfoVersionType = SettingsVersion
-		InheritWinAppVersionFrom = None
 	EndGlobalSection
 EndGlobal

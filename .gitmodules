@@ -31,3 +31,6 @@
 [submodule "src/Plugins/SuperMemoAssistant.Plugins.Import"]
 	path = src/Plugins/SuperMemoAssistant.Plugins.Import
 	url = https://github.com/supermemo/SuperMemoAssistant.Plugins.Import.git
+[submodule "src/Plugins/SuperMemoAssistant.Plugins.Import.BrowserExtension"]
+	path = src/Plugins/SuperMemoAssistant.Plugins.Import.BrowserExtension
+	url = https://github.com/supermemo/SuperMemoAssistant.Plugins.Import.BrowserPlugin.git

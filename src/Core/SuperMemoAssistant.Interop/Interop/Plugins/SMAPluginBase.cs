@@ -288,7 +288,7 @@ namespace SuperMemoAssistant.Interop.Plugins
       }
     }
 
-    public void PublishService<IService, TService>(TService service)
+    public void PublishService<IService, TService>(TService service, string channelName = null)
       where IService : class
       where TService : PerpetualMarshalByRefObject, IService
     {
@@ -307,7 +307,7 @@ namespace SuperMemoAssistant.Interop.Plugins
 
       LogTo.Debug($"Publishing service {svcTypeName}");
 
-      var channelName = RemotingServicesEx.GenerateIpcServerChannelName();
+      channelName ??= RemotingServicesEx.GenerateIpcServerChannelName();
       var ipcServer   = RemotingServicesEx.CreateIpcServer<IService, TService>(service, channelName);
 
       var unregisterObj = SMAPluginMgr.RegisterService(SessionGuid, svcTypeName, channelName);

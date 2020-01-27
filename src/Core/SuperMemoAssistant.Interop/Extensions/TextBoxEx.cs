@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/10/26 22:37
-// Modified On:  2019/01/26 06:10
+// Created On:   2020/01/24 17:29
+// Modified On:  2020/01/24 17:31
 // Modified By:  Alexis
 
 #endregion
@@ -31,39 +31,25 @@
 
 
 using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
+using System.Windows.Controls;
 
 namespace SuperMemoAssistant.Extensions
 {
-  public static class AssemblyEx
+  public static class TextBoxEx
   {
     #region Methods
 
-    public static Guid GetAssemblyGuid(this Type typeInAssembly)
+    public static string[] SplitLines(this TextBox tb)
     {
-      var assembly = typeInAssembly.Assembly;
-      var guidAttr = assembly.GetCustomAttributes(typeof(GuidAttribute),
-                                                  true);
-
-      var guidStr = ((GuidAttribute)guidAttr.FirstOrDefault())?.Value
-        ?? throw new NullReferenceException("GUID can't be null");
-
-      return Guid.Parse(guidStr);
+      return tb.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
     }
 
-    public static string GetAssemblyVersion(this Type typeInAssembly)
+    public static string[] SplitLines(this TextBox tb, out int count)
     {
-      var assembly = typeInAssembly.Assembly;
-      var fvi      = FileVersionInfo.GetVersionInfo(assembly.Location);
+      var res = tb.SplitLines();
+      count = res.Length;
 
-      return fvi.FileVersion;
-    }
-
-    public static string GetAssemblyName(this Type typeInAssembly)
-    {
-      return typeInAssembly.Assembly.GetName().Name;
+      return res;
     }
 
     #endregion

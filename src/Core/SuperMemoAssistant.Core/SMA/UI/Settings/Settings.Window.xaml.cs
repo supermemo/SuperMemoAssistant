@@ -122,13 +122,11 @@ namespace SuperMemoAssistant.SMA.UI.Settings
       switch (e.Key)
       {
         case System.Windows.Input.Key.Enter:
-          BtnOk_Click(sender,
-                      null);
+          BtnOk_Click(sender, null);
           break;
 
         case System.Windows.Input.Key.Escape:
-          BtnCancel_Click(sender,
-                          null);
+          BtnCancel_Click(sender, null);
           break;
       }
     }

@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/04/14 03:03
+// Modified On:  2020/01/26 22:31
 // Modified By:  Alexis
 
 #endregion
@@ -49,7 +48,7 @@ namespace SuperMemoAssistant.Extensions
       var start = starts.FirstOrDefault(str.StartsWith);
 
       return start != null
-        ? (start == str ? string.Empty : str.Substring(start.Length))
+        ? start == str ? string.Empty : str.Substring(start.Length)
         : str;
     }
 
@@ -58,7 +57,7 @@ namespace SuperMemoAssistant.Extensions
       var end = ends.FirstOrDefault(str.EndsWith);
 
       return end != null
-        ? (end == str ? string.Empty : str.Substring(0, str.Length - end.Length))
+        ? end == str ? string.Empty : str.Substring(0, str.Length - end.Length)
         : str;
     }
 
@@ -67,7 +66,7 @@ namespace SuperMemoAssistant.Extensions
       if (string.IsNullOrEmpty(text))
         return text;
 
-      return text.Length <= maxLength ? text : text.Substring(0, maxLength); 
+      return text.Length <= maxLength ? text : text.Substring(0, maxLength);
     }
 
     public static string Quotify(this string text, bool escapeQuotes = false)
@@ -76,6 +75,16 @@ namespace SuperMemoAssistant.Extensions
         text = text.Replace("\"", "\\\"");
 
       return $"\"{text}\"";
+    }
+
+    public static string Ellipsis(this string text, int length)
+    {
+      if (text.Length <= length)
+        return text;
+
+      int pos = text.IndexOf(" ", length, StringComparison.Ordinal);
+
+      return pos >= 0 ? text.Substring(0, pos) + "..." : text;
     }
 
     public static string ReplaceFirst(this string text,

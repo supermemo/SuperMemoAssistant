@@ -4,7 +4,7 @@
 
 PSA: if you'd like to use SMA before the official release, contact @Naess at supermemo discord channel https://discord.gg/pB7jcSK
 
-*SuperMemo Assistant* is a companion app for [SuperMemo 17](https://super-memo.com/supermemo17.html).
+*SuperMemo Assistant* is a companion app for [SuperMemo 17](https://super-memo.com/supermemo17.html) and [SuperMemo 18](https://super-memo.com/supermemo18.html).
 
 Did you ever wish you could use **PDF** documents ? Or integrate **LaTeX** right into your SuperMemo ? *SMA* does all of this for you, and more !
 

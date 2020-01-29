@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/12/13 20:24
-// Modified On:  2019/12/14 19:54
+// Modified On:  2020/01/29 12:54
 // Modified By:  Alexis
 
 #endregion
@@ -46,9 +45,10 @@ namespace SuperMemoAssistant.SuperMemo.Natives
 
       public TGlobals(NativeData nativeData)
       {
-        CurrentConceptIdPtr = new IntPtr(nativeData.Pointers[NativePointers.Globals_CurrentConceptIdPtr]);
-        CurrentRootIdPtr    = new IntPtr(nativeData.Pointers[NativePointers.Globals_CurrentRootIdPtr]);
-        CurrentHookIdPtr    = new IntPtr(nativeData.Pointers[NativePointers.Globals_CurrentHookIdPtr]);
+        CurrentConceptGroupIdPtr = new IntPtr(nativeData.Pointers[NativePointers.Globals_CurrentConceptGroupIdPtr]);
+        CurrentRootIdPtr         = new IntPtr(nativeData.Pointers[NativePointers.Globals_CurrentRootIdPtr]);
+        CurrentHookIdPtr         = new IntPtr(nativeData.Pointers[NativePointers.Globals_CurrentHookIdPtr]);
+        CurrentConceptIdPtr      = new IntPtr(nativeData.Pointers[NativePointers.Globals_CurrentConceptIdPtr]);
 
         IgnoreUserConfirmationPtr = new IntPtr(nativeData.Pointers[NativePointers.Globals_IgnoreUserConfirmationPtr]);
       }
@@ -58,13 +58,14 @@ namespace SuperMemoAssistant.SuperMemo.Natives
 
 
 
-      #region Properties Impl - Public
+      #region Properties & Fields - Public
 
-      public IntPtr CurrentConceptIdPtr { get; }
-      public IntPtr CurrentRootIdPtr    { get; }
-      public IntPtr CurrentHookIdPtr    { get; }
+      public IntPtr CurrentConceptGroupIdPtr { get; }
+      public IntPtr CurrentRootIdPtr         { get; }
+      public IntPtr CurrentHookIdPtr         { get; }
+      public IntPtr CurrentConceptIdPtr      { get; }
 
-      
+
       // Cont.TContents.DeleteCurrentElement
       // 008575BD       call        TContents.MakeVisible
       public IntPtr IgnoreUserConfirmationPtr { get; }

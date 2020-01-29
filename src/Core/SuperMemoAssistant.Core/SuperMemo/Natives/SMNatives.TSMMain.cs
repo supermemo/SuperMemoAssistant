@@ -31,6 +31,8 @@
 
 
 using System;
+using Anotar.Serilog;
+using SuperMemoAssistant.SMA;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable InconsistentNaming
@@ -65,9 +67,19 @@ namespace SuperMemoAssistant.SuperMemo.Natives
       #region Methods
 
       // TSMMain.SelectDefaultConcept
-      public bool SelectDefaultConcept(int elementId)
+      public bool SelectDefaultConcept(IntPtr smMainPtr, int conceptId)
       {
-        return false;
+        try
+        {
+          NativeMethod.TSMMain_SelectDefaultConcept.ExecuteOnMainThread(smMainPtr, conceptId);
+
+          return true;
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, "Native method call threw an exception.");
+          return false;
+        }
       }
 
       #endregion

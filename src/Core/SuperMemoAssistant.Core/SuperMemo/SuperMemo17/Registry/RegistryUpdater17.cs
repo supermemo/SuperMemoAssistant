@@ -219,6 +219,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry
         return;
       }
 
+      member.Empty = false;
+
       member.UseCount = mem.useCount;
 
       member.LinkType = (RegistryLinkType)mem.linkType;

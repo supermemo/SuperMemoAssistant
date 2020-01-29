@@ -105,7 +105,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
       {
         try
         {
-          return Document?.body.innerHTML;
+          return Document?.body?.innerHTML;
         }
         catch
         {

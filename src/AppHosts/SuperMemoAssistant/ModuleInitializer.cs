@@ -40,7 +40,6 @@ using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.HotKeys;
 using SuperMemoAssistant.Services.IO.Keyboard;
 using SuperMemoAssistant.Services.IO.Logger;
-using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SuperMemo.Common.Content.Layout;
 
 // ReSharper disable NotAccessedVariable
@@ -67,9 +66,9 @@ namespace SuperMemoAssistant
       try
       {
         // Required for logging
-        Core.SharedConfiguration = new ConfigurationService(SMAFileSystem.SharedConfigDir);
+        SuperMemoAssistant.SMA.Core.SharedConfiguration = new ConfigurationService(SMAFileSystem.SharedConfigDir);
 
-        Core.Logger = LoggerFactory.Create(SMAConst.Name, Core.SharedConfiguration, Services.Sentry.SentryEx.LogToSentry);
+        SuperMemoAssistant.SMA.Core.Logger = LoggerFactory.Create(SMAConst.Name, SuperMemoAssistant.SMA.Core.SharedConfiguration, Services.Sentry.SentryEx.LogToSentry);
 
         // ReSharper disable once RedundantNameQualifier
         var appType     = typeof(SuperMemoAssistant.App);
@@ -77,10 +76,10 @@ namespace SuperMemoAssistant
 
         SentryInstance = Services.Sentry.SentryEx.Initialize(releaseName);
 
-        Core.Configuration  = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
-        Core.KeyboardHotKey = KeyboardHookService.Instance;
-        Core.HotKeyManager  = HotKeyManager.Instance.Initialize(Core.Configuration, Core.KeyboardHotKey);
-        Core.SMA            = SMA.SMA.Instance;
+        SuperMemoAssistant.SMA.Core.Configuration  = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
+        SuperMemoAssistant.SMA.Core.KeyboardHotKey = KeyboardHookService.Instance;
+        SuperMemoAssistant.SMA.Core.HotKeyManager  = HotKeyManager.Instance.Initialize(SuperMemoAssistant.SMA.Core.Configuration, SuperMemoAssistant.SMA.Core.KeyboardHotKey);
+        SuperMemoAssistant.SMA.Core.SMA            = SMA.SMA.Instance;
 
         object tmp;
         tmp = LayoutManager.Instance;

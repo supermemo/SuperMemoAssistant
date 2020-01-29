@@ -44,10 +44,10 @@ namespace SuperMemoAssistant.Extensions
     public static string GetErrorString(this List<ElemCreationResult> results)
     {
       StringBuilder errorStr = new StringBuilder();
-      var tooManyChildrenErrors = results.Where(r => r.Result == ElemCreationResultCode.TooManyChildrenError)
+      var tooManyChildrenErrors = results.Where(r => r.Result.HasFlag(ElemCreationResultCode.ErrorTooManyChildren))
                                          .Select(r => r.Builder.Title.Truncate(40))
                                          .ToList();
-      var unknownErrors = results.Where(r => r.Result != ElemCreationResultCode.Success)
+      var unknownErrors = results.Where(r => r.Success == false)
                                  .Select(r => r.Builder.Title.Truncate(40))
                                  .ToList();
 

@@ -204,6 +204,7 @@
     <Compile Include="Sys\Collections\BiDictionary.cs" />
     <Compile Include="Sys\ComponentModel\PropertyChangedDelegate.cs" />
     <Compile Include="Sys\COM\InternetExplorer\IEComHelper.cs" />
+    <Compile Include="Sys\Converters\Controls\ImageSourceBase64Converter.cs" />
     <Compile Include="Sys\Converters\Json\ObjectToStringJsonConverter.cs" />
     <Compile Include="Sys\EmptyDisposable.cs" />
     <Compile Include="Sys\ForceAssemblyReference.cs" />
@@ -362,6 +363,7 @@
     <Folder Include="Interop\SuperMemo\Content\Layout\XamlControls\" />
     <Folder Include="Interop\SuperMemo\Content\Layout\XamlLayouts\" />
     <Folder Include="Sys\UIAutomation\" />
+    <Folder Include="Sys\Windows\Controls\" />
   </ItemGroup>
   <Import Project="..\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

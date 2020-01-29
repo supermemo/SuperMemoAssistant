@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/08/07 14:44
-// Modified On:  2019/08/08 11:11
+// Modified On:  2020/01/28 22:12
 // Modified By:  Alexis
 
 #endregion
@@ -55,6 +54,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
     #region Properties Impl - Public
 
     public IConceptGroup ConceptGroup => (IConceptGroup)Core.SM.Registry.Element?[SlotLengthOrConceptGroupId];
+
+    public int ElementId => SlotLengthOrConceptGroupId;
 
     #endregion
 

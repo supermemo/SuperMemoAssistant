@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 04:36
-// Modified On:  2019/02/25 06:47
+// Modified On:  2020/01/29 12:00
 // Modified By:  Alexis
 
 #endregion
@@ -32,20 +31,31 @@
 
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Anotar.Serilog;
 using Hardcodet.Wpf.TaskbarNotification;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Plugins;
-using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.UI.Settings;
+using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types;
+using Task = System.Threading.Tasks.Task;
+
+// ReSharper disable UnusedParameter.Local
 
 namespace SuperMemoAssistant
 {
   public partial class SMATaskbarIcon : ResourceDictionary
   {
+    #region Constants & Statics
+
+    private const string MenuPluginTag = "PluginItem";
+
+    #endregion
+
+
+
+
     #region Properties & Fields - Non-Public
 
     private TaskbarIcon TbIcon { get; set; }
@@ -62,7 +72,7 @@ namespace SuperMemoAssistant
     {
       InitializeComponent();
 
-      Core.SMA.OnSMStartedEvent += OnSMStarted;
+      SMA.Core.SMA.OnSMStartedEvent += OnSMStarted;
     }
 
     #endregion
@@ -75,7 +85,7 @@ namespace SuperMemoAssistant
     private Task OnSMStarted(object        sender,
                              SMProcessArgs eventArgs)
     {
-      TbIcon.ToolTipText = $"SuperMemoAssistant - {Core.SM.Collection.Name}";
+      TbIcon.ToolTipText = $"SuperMemoAssistant - {SMA.Core.SM.Collection.Name}";
       TbIcon.Visibility  = Visibility.Visible;
 
       return Task.CompletedTask;
@@ -104,6 +114,15 @@ namespace SuperMemoAssistant
       Environment.Exit(0);
     }
 
+#if DEBUG
+    private void Test(object          sender,
+                      RoutedEventArgs e)
+    {
+      // ReSharper disable once UnusedVariable
+      var curEl = (ElementBase)SMA.Core.SM.UI.ElementWdw.CurrentElement;
+    }
+#endif
+
     private void PreviewTrayContextMenuOpen(object          sender,
                                             RoutedEventArgs e)
     {
@@ -115,11 +134,11 @@ namespace SuperMemoAssistant
                                         .ToList();
 
       // ReSharper disable once PossibleNullReferenceException
-      while (tbIcon.ContextMenu.Items.Count > 3)
+      while (tbIcon.ContextMenu.Items.Count > 0 && ((Control)tbIcon.ContextMenu.Items.GetItemAt(0)).Tag.Equals(MenuPluginTag))
         tbIcon.ContextMenu.Items.RemoveAt(0);
 
       if (runningPlugins.Any())
-        tbIcon.ContextMenu.Items.Insert(0, new Separator());
+        tbIcon.ContextMenu.Items.Insert(0, new Separator() { Tag = MenuPluginTag });
 
       foreach (var pluginInstance in runningPlugins)
         try
@@ -127,6 +146,7 @@ namespace SuperMemoAssistant
           var menuItem = new MenuItem
           {
             Header = pluginInstance.Metadata.DisplayName,
+            Tag    = MenuPluginTag
           };
           menuItem.Click += (o, _) =>
           {

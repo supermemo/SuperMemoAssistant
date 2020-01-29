@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/09/03 18:08
-// Modified On:  2020/01/12 09:53
+// Modified On:  2020/01/29 12:59
 // Modified By:  Alexis
 
 #endregion
@@ -58,11 +57,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
     protected int LastElementId { get; set; }
 
-    protected IPointer ElementWdwPtr       { get; set; }
-    protected IPointer ElementIdPtr        { get; set; }
-    protected IPointer CurrentConceptIdPtr { get; set; }
-    protected IPointer CurrentRootIdPtr    { get; set; }
-    protected IPointer CurrentHookIdPtr    { get; set; }
+    protected IPointer SMMainWdwPtr             { get; set; }
+    protected IPointer ElementWdwPtr            { get; set; }
+    protected IPointer ElementIdPtr             { get; set; }
+    protected IPointer CurrentConceptIdPtr      { get; set; }
+    protected IPointer CurrentConceptGroupIdPtr { get; set; }
+    protected IPointer CurrentRootIdPtr         { get; set; }
+    protected IPointer CurrentHookIdPtr         { get; set; }
 
     #endregion
 
@@ -106,17 +107,15 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
     public bool SetCurrentConcept(int conceptId)
     {
-      var elem = Core.SM.Registry.Element[conceptId];
+      var concept = Core.SM.Registry.Concept[conceptId];
 
-      if (elem == null || elem.Deleted || elem is IConceptGroup == false)
+      if (concept == null || concept.Empty)
         return false;
 
-      throw new NotImplementedException(); // SetDefaultConcept is actually a TSMMain method
+      // SetDefaultConcept is actually a TSMMain method
+      var success = Core.Natives.SMMain.SelectDefaultConcept(SMMainWdwPtr.Read<IntPtr>(), conceptId);
 
-      //return SetDefaultConceptMethod(
-      //  ElementWdwPtr.Read<IntPtr>(),
-      //  conceptId,
-      //  SMProcess.ThreadFactory.MainThread);
+      return success && CurrentConceptId == conceptId;
     }
 
     public bool GoToElement(int elementId)
@@ -487,6 +486,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
       await Task.Run(() =>
       {
+        SMMainWdwPtr  = SMProcess[Core.Natives.SMMain.InstancePtr];
         ElementWdwPtr = SMProcess[Core.Natives.ElWind.InstancePtr];
         ElementWdwPtr.RegisterValueChangedEventHandler<int>(OnWindowCreated);
       });
@@ -499,11 +499,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
       ElementIdPtr?.Dispose();
 
-      ElementWdwPtr       = null;
-      ElementIdPtr        = null;
-      CurrentConceptIdPtr = null;
-      CurrentRootIdPtr    = null;
-      CurrentHookIdPtr    = null;
+      SMMainWdwPtr             = null;
+      ElementWdwPtr            = null;
+      ElementIdPtr             = null;
+      CurrentConceptIdPtr      = null;
+      CurrentConceptGroupIdPtr = null;
+      CurrentRootIdPtr         = null;
+      CurrentHookIdPtr         = null;
 
       return TaskConstants.Completed;
     }
@@ -513,10 +515,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       if (ElementWdwPtr.Read<int>() == 0)
         return false;
 
-      ElementIdPtr        = SMProcess[Core.Natives.ElWind.ElementIdPtr];
-      CurrentConceptIdPtr = SMProcess[Core.Natives.Globals.CurrentConceptIdPtr];
-      CurrentRootIdPtr    = SMProcess[Core.Natives.Globals.CurrentRootIdPtr];
-      CurrentHookIdPtr    = SMProcess[Core.Natives.Globals.CurrentHookIdPtr];
+      ElementIdPtr             = SMProcess[Core.Natives.ElWind.ElementIdPtr];
+      CurrentConceptIdPtr      = SMProcess[Core.Natives.Globals.CurrentConceptIdPtr];
+      CurrentConceptGroupIdPtr = SMProcess[Core.Natives.Globals.CurrentConceptGroupIdPtr];
+      CurrentRootIdPtr         = SMProcess[Core.Natives.Globals.CurrentRootIdPtr];
+      CurrentHookIdPtr         = SMProcess[Core.Natives.Globals.CurrentHookIdPtr];
 
       ElementIdPtr.RegisterValueChangedEventHandler<int>(OnElementChangedInternal);
 
@@ -542,8 +545,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "Failed to convert bytes to int 32.");
+        LogTo.Error(ex, "Failed to convert bytes to int 32.");
         return false;
       }
 
@@ -618,7 +620,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     /// <inheritdoc />
     public IElement CurrentElement => Core.SM.Registry.Element?[CurrentElementId];
 
-    public int CurrentConceptId => CurrentConceptIdPtr.Read<int>();
+    public int CurrentConceptGroupId => CurrentConceptGroupIdPtr.Read<int>();
+    public int CurrentConceptId      => CurrentConceptIdPtr.Read<int>();
     public int CurrentRootId
     {
       get => CurrentRootIdPtr.Read<int>();

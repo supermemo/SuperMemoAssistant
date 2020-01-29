@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/05/08 19:51
-// Modified On:  2019/08/08 11:21
+// Modified On:  2020/01/28 18:50
 // Modified By:  Alexis
 
 #endregion
@@ -56,7 +55,7 @@ Priority={2}
 Begin ElementInfo #1
 Title={3}
 Type={4}
-Status={10}
+Status={8}
 FirstGrade=8
 Ordinal=10004.000000
 Repetitions=1
@@ -80,10 +79,11 @@ ReadPointStart=0
 ReadPointLength=0
 ReadPointScrollTop=0
 {7}
-Begin RepHist #1
-ElNo=1 Rep=1 Date={8} Hour={9:0.000} Int=0 Grade=10 Laps=0 Priority={2}
-End RepHist #1
 End Element #1";
+
+    private const string ElementRepHistFmt = @"Begin RepHist #1
+ElNo=1 Rep=1 Date={1} Hour={2:0.000} Int=0 Grade=10 Laps=0 Priority={3}
+End RepHist #1";
 
     #endregion
 
@@ -94,15 +94,10 @@ End Element #1";
 
     public static string ToElementString(this ElementBuilder elemBuilder)
     {
-      DateTime now            = DateTime.Now;
       string   collectionPath = Core.SM.Collection.Path;
       int      parentId       = elemBuilder.Parent?.Id ?? 1;
-      string lastRepDate1 = DateTime.Today.ToString("dd.MM.yy",
-                                                    CultureInfo.InvariantCulture);
-      string lastRepDate2 = DateTime.Today.ToString("dd.MM.yyyy",
-                                                    CultureInfo.InvariantCulture);
-      double lastRepTime = now.Hour + (now.Minute * 60 + now.Second) / 3600.0;
-      string type;
+      string   lastRepDate1   = DateTime.Today.ToString("dd.MM.yy", CultureInfo.InvariantCulture);
+      string   type;
 
       switch (elemBuilder.Type)
       {
@@ -135,8 +130,6 @@ End Element #1";
                               lastRepDate1,
                               elemBuilder.Reference?.ToString() ?? string.Empty,
                               layout.Build(elemBuilder.Contents),
-                              lastRepDate2,
-                              lastRepTime,
                               elemBuilder.Status);
 
 

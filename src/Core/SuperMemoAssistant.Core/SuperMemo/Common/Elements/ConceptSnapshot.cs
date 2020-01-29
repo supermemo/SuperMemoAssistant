@@ -39,7 +39,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
   {
     #region Properties & Fields - Non-Public
 
-    private int ConceptElementId { get; set; }
+    private int ConceptId { get; set; }
 
     #endregion
 
@@ -50,13 +50,14 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
 
     public ConceptSnapshot()
     {
-      ConceptElementId = Core.SM.UI.ElementWdw.CurrentConceptId;
+      ConceptId = Core.SM.UI.ElementWdw.CurrentConceptId;
     }
 
     /// <inheritdoc />
     public void Dispose()
     {
-      Core.SM.UI.ElementWdw.SetCurrentConcept(ConceptElementId);
+      if (Core.SM.UI.ElementWdw.CurrentConceptId != ConceptId)
+        Core.SM.UI.ElementWdw.SetCurrentConcept(ConceptId);
     }
 
     #endregion

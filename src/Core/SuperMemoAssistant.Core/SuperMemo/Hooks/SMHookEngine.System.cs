@@ -146,8 +146,7 @@ But most likely, NativeLib exists and failed to load other assemblies or librari
       var handle = smMem.Read<IntPtr>(new IntPtr(smMain + Core.Natives.Control.HandleOffset));
 
       var restoreWndProcAddr = Core.Natives.Application.TApplicationOnMessagePtr.Read<int>(smMem);
-      Core.Natives.Application.TApplicationOnMessagePtr.Write<int>(smMem,
-                                                                   _wndProcHookAddr);
+      Core.Natives.Application.TApplicationOnMessagePtr.Write<int>(smMem, _wndProcHookAddr);
 
       WindowHelper.PostMessage(handle,
                                (int)InjectLibMessageIds.SMA,
@@ -156,8 +155,7 @@ But most likely, NativeLib exists and failed to load other assemblies or librari
 
       _mainThreadReadyEvent.WaitOne(AssemblyFactory.ExecutionTimeout);
 
-      Core.Natives.Application.TApplicationOnMessagePtr.Write<int>(smMem,
-                                                                   restoreWndProcAddr);
+      Core.Natives.Application.TApplicationOnMessagePtr.Write<int>(smMem, restoreWndProcAddr);
 
       _execCtxt.ExecutionParameters = null;
 

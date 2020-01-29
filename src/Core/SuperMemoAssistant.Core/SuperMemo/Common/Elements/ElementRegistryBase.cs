@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/08/07 23:03
-// Modified On:  2019/08/08 11:21
+// Modified On:  2020/01/29 12:37
 // Modified By:  Alexis
 
 #endregion
@@ -200,7 +199,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
 
       results = new List<ElemCreationResult>(
         builders.Select(
-          b => new ElemCreationResult(ElemCreationResultCode.UnknownError, b))
+          b => new ElemCreationResult(ElemCreationResultCode.ErrorUnknown, b))
       );
 
       try
@@ -222,7 +221,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
         //
         // Save states
 
-        toDispose.Add(new HookSnapshot());
+        //toDispose.Add(new HookSnapshot());
         //toDispose.Add(new ConceptSnapshot());
 
         //
@@ -237,12 +236,14 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
           inSMUpdateLockMode = Core.SM.UI.ElementWdw.EnterSMUpdateLock(); // TODO: Pass in EnterUpdateLock
 
         foreach (var result in results)
-        {
-          result.Result    = AddElement(result.Builder, options, restoreHookId, out int elemId);
-          result.ElementId = elemId;
+          using (new ConceptSnapshot())
+          using (new HookSnapshot())
+          {
+            result.Result    = AddElement(result.Builder, options, restoreHookId, out int elemId);
+            result.ElementId = elemId;
 
-          success = success && result.Result == ElemCreationResultCode.Success;
-        }
+            success = success && result.Success;
+          }
 
         //
         // Display original element, and unfreeze window -- or simply resume element changed monitoring
@@ -381,6 +382,7 @@ Exception: {ex}",
           .WithTitle(title)
           .WithStatus(ElementStatus.Dismissed)
           .WithPriority(100.0)
+          .WithConcept(parent.Concept)
           .DoNotDisplay(),
         ElemCreationFlags.ForceCreate,
         parent.Id,
@@ -424,6 +426,25 @@ Exception: {ex}",
       return subFolder.child.Id;
     }
 
+    private bool AdjustRoot(int parentId)
+    {
+      var  parentEl      = this[parentId];
+      var  currentRootId = Core.SM.UI.ElementWdw.CurrentRootId;
+      bool needAdjust    = true;
+
+      while (parentEl.Id != currentRootId && parentEl.Id != 1 && parentEl.Parent != null)
+        parentEl = parentEl.Parent;
+
+      if (parentEl.Id == currentRootId)
+        needAdjust = false;
+
+      // Revert to root concept
+      if (needAdjust)
+        Core.SM.UI.ElementWdw.SetCurrentConcept(1);
+
+      return needAdjust;
+    }
+
     private bool AddElement(ElementBuilder builder, out int elemId)
     {
       elemId = -1;
@@ -464,6 +485,7 @@ Exception: {ex}",
                                               int               originalHookId,
                                               out int           elemId)
     {
+      var successFlag = ElemCreationResultCode.Success;
       elemId = -1;
 
       try
@@ -478,25 +500,38 @@ Exception: {ex}",
 
         parentId = FindDestinationBranch(this[parentId], options);
 
-        if (parentId <= 0)
-          return ElemCreationResultCode.TooManyChildrenError;
-
-        Core.SM.UI.ElementWdw.CurrentHookId = parentId;
+        if (parentId <= 0 || this[parentId] == null)
+          return ElemCreationResultCode.ErrorTooManyChildren;
 
         //
         // Has a concept been specified for the new element ?
 
-        //if (builder.Concept != null)
-        //Core.SM.UI.ElementWdw.SetCurrentConcept(builder.Concept.Id);
+        if (builder.Concept != null)
+          if (Core.SM.UI.ElementWdw.SetCurrentConcept(builder.Concept.Id) == false)
+            successFlag |= ElemCreationResultCode.WarningConceptNotSet;
+
+        //
+        // Make sure concept & root are valid
+
+        if (AdjustRoot(parentId))
+          successFlag |= ElemCreationResultCode.WarningConceptNotSet;
+
+        //
+        // Set hook *after* adjusting concept
+
+        Core.SM.UI.ElementWdw.CurrentHookId = parentId;
+
+        //
+        // Create
 
         return AddElement(builder, out elemId)
-          ? ElemCreationResultCode.Success
-          : ElemCreationResultCode.UnknownError;
+          ? successFlag
+          : ElemCreationResultCode.ErrorUnknown;
       }
       catch (Exception ex)
       {
         LogTo.Error(ex, "Exception caught while adding new element");
-        return ElemCreationResultCode.UnknownError;
+        return ElemCreationResultCode.ErrorUnknown;
       }
     }
 

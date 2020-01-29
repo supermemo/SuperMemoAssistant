@@ -42,7 +42,6 @@ using Microsoft.Win32;
 using SuperMemoAssistant.Exceptions;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Configs;
 using SuperMemoAssistant.Sys.IO;
 using SuperMemoAssistant.Sys.Windows.Input;
@@ -67,7 +66,7 @@ namespace SuperMemoAssistant
     {
       try
       {
-        _config = Core.Configuration.Load<StartupCfg>().Result ?? new StartupCfg();
+        _config = SuperMemoAssistant.SMA.Core.Configuration.Load<StartupCfg>().Result ?? new StartupCfg();
       }
       catch (SMAException)
       {
@@ -163,7 +162,7 @@ namespace SuperMemoAssistant
 
     private void SaveConfig()
     {
-      Core.Configuration.Save<StartupCfg>(_config).Wait();
+      SuperMemoAssistant.SMA.Core.Configuration.Save<StartupCfg>(_config).Wait();
     }
 
     private void OpenSelectedCollection()

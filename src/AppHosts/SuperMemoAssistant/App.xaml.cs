@@ -41,7 +41,6 @@ using Hardcodet.Wpf.TaskbarNotification;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.PluginHost;
-using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Utils;
 using SuperMemoAssistant.Sys.IO;
 using SuperMemoAssistant.Sys.IO.Devices;
@@ -66,7 +65,7 @@ namespace SuperMemoAssistant
     {
       _taskbarIcon.Dispose();
 
-      Core.Logger.Shutdown();
+      SuperMemoAssistant.SMA.Core.Logger.Shutdown();
       ModuleInitializer.SentryInstance?.Dispose();
 
       base.OnExit(e);
@@ -101,7 +100,7 @@ namespace SuperMemoAssistant
       }
 
       if (args.KeyLogger)
-        Core.KeyboardHotKey.MainCallback = LogHotKeys;
+        SuperMemoAssistant.SMA.Core.KeyboardHotKey.MainCallback = LogHotKeys;
 
       _taskbarIcon = (TaskbarIcon)FindResource("TbIcon");
 
@@ -128,9 +127,9 @@ namespace SuperMemoAssistant
       // If a collection was selected, start SMA
       if (smCollection != null)
       {
-        Core.SMA.OnSMStoppedEvent += Instance_OnSMStoppedEvent;
+        SuperMemoAssistant.SMA.Core.SMA.OnSMStoppedEvent += Instance_OnSMStoppedEvent;
 
-        if (await Core.SMA.Start(smCollection).ConfigureAwait(true) == false)
+        if (await SuperMemoAssistant.SMA.Core.SMA.Start(smCollection).ConfigureAwait(true) == false)
         {
           await Show.Window().For(
             new Alert(

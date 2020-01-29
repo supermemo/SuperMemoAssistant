@@ -35,10 +35,14 @@ using System;
 namespace SuperMemoAssistant.Interop.SuperMemo.Elements.Models
 {
   [Serializable]
+  [Flags]
   public enum ElemCreationResultCode
   {
-    Success,
-    TooManyChildrenError,
-    UnknownError
+    Success = 1,
+    
+    WarningConceptNotSet = 4,
+
+    ErrorTooManyChildren = 64,
+    ErrorUnknown = 128
   }
 }

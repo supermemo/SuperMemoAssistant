@@ -57,6 +57,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Elements.Models
     public ElementBuilder         Builder   { get; }
     public int                    ElementId { get; set; } = -1;
 
+    public bool Success => Result.HasFlag(ElemCreationResultCode.Success);
+
     #endregion
   }
 }

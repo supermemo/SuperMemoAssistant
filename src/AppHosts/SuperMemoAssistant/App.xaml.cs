@@ -63,9 +63,9 @@ namespace SuperMemoAssistant
 
     protected override void OnExit(ExitEventArgs e)
     {
-      _taskbarIcon.Dispose();
+      _taskbarIcon?.Dispose();
 
-      SuperMemoAssistant.SMA.Core.Logger.Shutdown();
+      SuperMemoAssistant.SMA.Core.Logger?.Shutdown();
       ModuleInitializer.SentryInstance?.Dispose();
 
       base.OnExit(e);
@@ -90,6 +90,8 @@ namespace SuperMemoAssistant
 
     private async Task LoadApp(SMAParameters args)
     {
+      _taskbarIcon = (TaskbarIcon)FindResource("TbIcon");
+
       if (CheckAssemblies(out var errMsg) == false || CheckSMALocation(out errMsg) == false)
       {
         LogTo.Warning(errMsg);
@@ -101,8 +103,6 @@ namespace SuperMemoAssistant
 
       if (args.KeyLogger)
         SuperMemoAssistant.SMA.Core.KeyboardHotKey.MainCallback = LogHotKeys;
-
-      _taskbarIcon = (TaskbarIcon)FindResource("TbIcon");
 
       SMCollection smCollection = null;
       var          selectionWdw = new CollectionSelectionWindow();

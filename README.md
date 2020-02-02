@@ -41,26 +41,16 @@ Plugins use these functionalities to extend *SuperMemo* with new features (PDF i
 
 In short, SMA is an interface to programmatically **interact with SuperMemo**.
 
-### Downloads
+### Download, Installation and Usage
 
-**Work In Progress**. You can use [the legacy AHK version](https://github.com/supermemo/SuperMemoScripts) until then.
-
-### Installation and Usage
-
-*SMA* will be announced soon.
+**[Get started now](https://www.supermemo.wiki/sma/)
 
 ### Plugins
 
 - [Incremental PDF](https://github.com/supermemo/SuperMemoAssistant.Plugins.PDF) unlocks the power of SuperMemo for PDF files.
 - [LaTeX](https://github.com/supermemo/SuperMemoAssistant.Plugins.LateX) integrates LaTeX in your SuperMemo elements.
-- [Feeds](https://github.com/supermemo/SuperMemoAssistant.Plugins.Feeds) automatically imports your favourite RSS/Atom feeds in your collection.
+- [Import](https://github.com/supermemo/SuperMemoAssistant.Plugins.Import) import your Chrome/Firefox tabs and your favourite RSS/Atom feeds in your collection.
 - [Dictionary](https://github.com/supermemo/SuperMemoAssistant.Plugins.Dictionary) lookups words definitions, and inserts them in your collection if desired.
-
-### Feature requests
-
-You can submit idea proposals at [our Feathub page](https://feathub.com/supermemo/SuperMemoAssistant).
-
-[![Feature Requests](http://feathub.com/supermemo/SuperMemoAssistant?format=svg)](http://feathub.com/supermemo/SuperMemoAssistant)
 
 ## License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsupermemo%2FSuperMemoAssistant.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsupermemo%2FSuperMemoAssistant?ref=badge_large)

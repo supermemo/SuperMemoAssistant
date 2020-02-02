@@ -43,7 +43,7 @@ In short, SMA is an interface to programmatically **interact with SuperMemo**.
 
 ### Download, Installation and Usage
 
-**[Get started now](https://www.supermemo.wiki/sma/)
+[Get started now](https://www.supermemo.wiki/sma/)
 
 ### Plugins
 

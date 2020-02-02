@@ -15,13 +15,6 @@
 
 You can now do all of this *and more*, right in SuperMemo. **[Get started now](https://www.supermemo.wiki/sma/) !**
 
-### Table of Content
-- [What can it do ?](#what-can-it-do-)
-- [How does it work ?](#how-does-it-work-)
-- [Download, Installation and Usage](#download-installation-and-usage)
-- [Plugins](#plugins)
-- [Feature requests](#feature-requests)
-
 ### What can it do ?
 
 Almost anything that *SuperMemo* itself can do:

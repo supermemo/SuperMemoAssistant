@@ -18,8 +18,7 @@ You can now do all of this *and more*, right in SuperMemo. **[Get started now](h
 ### Table of Content
 - [What can it do ?](#what-can-it-do-)
 - [How does it work ?](#how-does-it-work-)
-- [Downloads](#downloads)
-- [Installation and Usage](#installation-and-usage)
+- [Download, Installation and Usage](#download-installation-and-usage)
 - [Plugins](#plugins)
 - [Feature requests](#feature-requests)
 

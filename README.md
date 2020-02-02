@@ -2,11 +2,18 @@
 
 ## SuperMemo Assistant
 
-PSA: if you'd like to use SMA before the official release, contact @Naess at supermemo discord channel https://discord.gg/pB7jcSK
+### What is it?
 
-*SuperMemo Assistant* is a companion app for [SuperMemo 17](https://super-memo.com/supermemo17.html) and [SuperMemo 18](https://super-memo.com/supermemo18.html).
+**[SuperMemo Assistant](https://www.supermemo.wiki/sma/)** supercharges your [*SuperMemo*](https://super-memo.com/supermemo18.html) with powerful features:
 
-Did you ever wish you could use **PDF** documents ? Or integrate **LaTeX** right into your SuperMemo ? *SMA* does all of this for you, and more !
+<img src="https://www.supermemo.wiki/sma/content/images/icons/robot-128.png" align="right" />
+
+> - Do you want to incrementally read <strong>PDF</strong> files ?
+> - Would <strong>Chrome</strong> or <strong>Firefox</strong> be more convenient to import web articles ?
+> - Do you need **LaTeX** to display scientific formulas ?
+> - Or to quickly lookup word definitions from the **dictionary** ?
+
+You can now do all of this *and more*, right in SuperMemo. **[Get started now](https://www.supermemo.wiki/sma/) !**
 
 ### Table of Content
 - [What can it do ?](#what-can-it-do-)

@@ -224,6 +224,19 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
               {
                 scopeMatches = false;
               }
+              
+              // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+              else if (_elWdwHandle == null || _elWdwHandle == IntPtr.Zero)
+              {
+                LogTo.Warning(
+                  $"KeyboardHook: HotKey {hk} requested with scope {Enum.GetName(typeof(HotKeyScope), hkReg.Scope)}, but _elWdwHandle is {foregroundWdwHandle}. Trying to refresh.");
+
+                OnElementWindowAvailable();
+                
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                if (_elWdwHandle == null || _elWdwHandle == IntPtr.Zero)
+                  scopeMatches = false;
+              }
 
               else if (hkReg.Scope == HotKeyScope.SMBrowser && foregroundWdwHandle != _elWdwHandle)
               {

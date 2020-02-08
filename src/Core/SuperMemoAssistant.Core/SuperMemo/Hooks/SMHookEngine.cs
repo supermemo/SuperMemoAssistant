@@ -106,8 +106,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
                                          Exception hookEx = null)
     {
       if (hookEx != null)
-        LogTo.Error(hookEx,
-                    "InjectionLib threw an error during initialization.");
+        OnException(hookEx);
 
       try
       {
@@ -122,8 +121,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "Failed to Signal InitEvent for Hook Install Success");
+        LogTo.Error(ex, "Failed to Signal InitEvent for Hook Install Success");
 
         return false;
       }
@@ -134,8 +132,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     public override void Debug(string          msg,
                                params object[] args)
     {
-      LogTo.Debug(msg,
-                  args);
+      LogTo.Debug(msg, args);
     }
 
 

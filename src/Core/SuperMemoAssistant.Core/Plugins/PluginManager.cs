@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/13 13:55
-// Modified On:  2019/02/24 20:00
+// Modified On:  2020/02/03 10:35
 // Modified By:  Alexis
 
 #endregion
@@ -42,7 +41,7 @@ using SuperMemoAssistant.Interop.Plugins;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.Sys;
-using static MoreLinq.Extensions.DistinctByExtension;
+using DistinctBy = MoreLinq.Extensions.DistinctByExtension;
 
 // ReSharper disable RedundantTypeArgumentsOfMethod
 
@@ -200,7 +199,10 @@ namespace SuperMemoAssistant.Plugins
         if (pluginInstance.Process?.HasExited ?? false)
           crashed = pluginInstance.Process.ExitCode != 0;
       }
-      catch { /* ignored */ }
+      catch
+      {
+        /* ignored */
+      }
 
       LogTo.Information($"{pluginInstance.Denomination.CapitalizeFirst()} {pluginInstance.Metadata.PackageName} "
                         + $"has {(crashed ? "crashed" : "stopped")}");

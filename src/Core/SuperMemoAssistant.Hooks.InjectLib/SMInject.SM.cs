@@ -33,8 +33,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting;
 using Process.NET;
 using Process.NET.Marshaling;
 using Process.NET.Memory;
@@ -113,7 +113,11 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     {
       try
       {
-        SMA.Debug($"Received WndProc message {msgPtr->msg} with wParam {msgPtr->wParam}.");
+        try
+        {
+          SMA.Debug($"Received WndProc message {msgPtr->msg} with wParam {msgPtr->wParam}.");
+        }
+        catch (RemotingException) {}
 
         if (msgPtr == null
           || msgPtr->msg == (int)WindowsMessages.Quit
@@ -167,11 +171,29 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     {
       SMA.Debug($"Executing native method {Enum.GetName(typeof(NativeMethod), method)}.");
 
+      if (parameters == null)
+      {
+        OnException(new ArgumentNullException(nameof(parameters), $"CallNativeMethod: Called with null 'parameters' for method {method}"));
+        return -1;
+      }
+
       // Possible null reference on parameters
-      var marshalledParameters =
-        parameters.Select(p => MarshalValue.Marshal(_smProcess, p))
-                  .Cast<IMarshalledValue>()
-                  .ToArray();
+      var marshalledParameters = new IMarshalledValue[parameters.Length];
+
+      for (var i = 0; i < parameters.Length; i++)
+      {
+        var p          = parameters[i];
+        var dynMarshalled = MarshalValue.Marshal(_smProcess, p);
+
+        if (dynMarshalled is IMarshalledValue marshalled)
+          marshalledParameters[i] = marshalled;
+
+        else
+        {
+          OnException(new ArgumentException($"CallNativeMethod: Parameter n°{i} '{p}' could not be marshalled for method {method}", nameof(p)));
+          return -1;
+        }
+      }
 
       try
       {

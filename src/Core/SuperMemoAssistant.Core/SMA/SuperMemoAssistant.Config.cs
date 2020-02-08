@@ -36,7 +36,6 @@ using System.Threading.Tasks;
 using Anotar.Serilog;
 using Process.NET.Windows;
 using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SMA.Configs;
 
@@ -75,28 +74,13 @@ namespace SuperMemoAssistant.SMA
         }).RunAsync();
     }
 
-    private NativeDataCfg LoadNativeDataConfig()
-    {
-      var nativeDataCfg =
-        Core.Configuration.Load<NativeDataCfg>(SMAFileSystem.AppRootDir).Result
-        ?? new NativeDataCfg();
-
-      if (nativeDataCfg == null)
-        throw new InvalidOperationException("Failed to load native data config file.");
-
-      return nativeDataCfg;
-    }
-
-    private void LoadConfig(SMCollection collection)
+    private void LoadConfig(SMCollection collection, StartupCfg startupCfg)
     {
       var knoPath = collection.GetKnoFilePath();
 
-      // StartupCfg
-
-      StartupConfig = Core.Configuration.Load<StartupCfg>().Result ?? new StartupCfg();
+      StartupConfig = startupCfg;
 
       // CollectionsCfg
-
       _collectionsCfg  = Core.Configuration.Load<CollectionsCfg>().Result ?? new CollectionsCfg();
       CollectionConfig = _collectionsCfg.CollectionsConfig.SafeGet(knoPath);
 

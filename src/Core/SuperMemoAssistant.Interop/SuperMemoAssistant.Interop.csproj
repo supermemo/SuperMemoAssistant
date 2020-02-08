@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\packages\PropertyChanged.Fody.3.2.4\build\PropertyChanged.Fody.props" Condition="Exists('..\..\..\packages\PropertyChanged.Fody.3.2.4\build\PropertyChanged.Fody.props')" />
+  <Import Project="..\..\..\packages\PropertyChanged.Fody.3.2.5\build\PropertyChanged.Fody.props" Condition="Exists('..\..\..\packages\PropertyChanged.Fody.3.2.5\build\PropertyChanged.Fody.props')" />
   <Import Project="..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props" Condition="Exists('..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -88,8 +88,8 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="PropertyChanged, Version=3.2.4.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\PropertyChanged.Fody.3.2.4\lib\net40\PropertyChanged.dll</HintPath>
+    <Reference Include="PropertyChanged, Version=3.2.5.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\PropertyChanged.Fody.3.2.5\lib\net40\PropertyChanged.dll</HintPath>
     </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Serilog.2.9.0\lib\net46\Serilog.dll</HintPath>
@@ -120,6 +120,7 @@
       <HintPath>..\..\..\packages\System.Collections.Immutable.1.7.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -209,6 +210,7 @@
     <Compile Include="Sys\EmptyDisposable.cs" />
     <Compile Include="Sys\ForceAssemblyReference.cs" />
     <Compile Include="Sys\Index2D.cs" />
+    <Compile Include="Sys\Net\UriEx.cs" />
     <Compile Include="Sys\Remoting\RemoteCancellationToken.cs" />
     <Compile Include="Sys\Remoting\RemoteCancellationTokenSource.cs" />
     <Compile Include="Sys\Remoting\RemoteTask.cs" />
@@ -316,6 +318,9 @@
     <Compile Include="Sys\Security\Cryptography\Crc32.cs" />
     <Compile Include="Sys\PerpetualMarshalByRefObject.cs" />
     <Compile Include="Sys\Span.cs" />
+    <Compile Include="Sys\Windows\Search\WindowsSearch.cs" />
+    <Compile Include="Sys\Windows\Search\WindowsSearchKind.cs" />
+    <Compile Include="Sys\Windows\Search\WindowsSearchResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
@@ -360,8 +365,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Interop\SuperMemo\Content\Layout\XamlControls\" />
-    <Folder Include="Interop\SuperMemo\Content\Layout\XamlLayouts\" />
     <Folder Include="Sys\UIAutomation\" />
     <Folder Include="Sys\Windows\Controls\" />
   </ItemGroup>
@@ -372,8 +375,8 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\Fody.6.0.8\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.6.0.8\build\Fody.targets'))" />
-    <Error Condition="!Exists('..\..\..\packages\PropertyChanged.Fody.3.2.4\build\PropertyChanged.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\PropertyChanged.Fody.3.2.4\build\PropertyChanged.Fody.props'))" />
+    <Error Condition="!Exists('..\..\..\packages\Fody.6.1.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.6.1.0\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\PropertyChanged.Fody.3.2.5\build\PropertyChanged.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\PropertyChanged.Fody.3.2.5\build\PropertyChanged.Fody.props'))" />
   </Target>
-  <Import Project="..\..\..\packages\Fody.6.0.8\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.6.0.8\build\Fody.targets')" />
+  <Import Project="..\..\..\packages\Fody.6.1.0\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.6.1.0\build\Fody.targets')" />
 </Project>

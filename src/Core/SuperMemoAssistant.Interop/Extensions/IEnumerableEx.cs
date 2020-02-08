@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/31 13:45
-// Modified On:  2018/12/13 13:04
+// Modified On:  2020/02/02 23:00
 // Modified By:  Alexis
 
 #endregion
@@ -54,6 +53,15 @@ namespace SuperMemoAssistant.Extensions
         action(elem);
 
       return elements;
+    }
+
+    public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+    {
+      HashSet<TKey> seenKeys = new HashSet<TKey>();
+
+      foreach (TSource element in source)
+        if (seenKeys.Add(keySelector(element)))
+          yield return element;
     }
 
     #endregion

@@ -258,7 +258,11 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
 
     private void OnSMAAvailable(Interop.SuperMemo.ISuperMemoAssistant sma)
     {
-      sma.SM.UI.ElementWdw.OnAvailable += new ActionProxy(OnElementWindowAvailable);
+      if (sma.SM.UI.ElementWdw.IsAvailable)
+        OnElementWindowAvailable();
+
+      else
+        sma.SM.UI.ElementWdw.OnAvailable += new ActionProxy(OnElementWindowAvailable);
     }
 
     private void OnElementWindowAvailable()

@@ -170,6 +170,10 @@ namespace SuperMemoAssistant.Sys.IO
     /// <value>The full path.</value>
     public string FullPath { get; }
 
+    /// <summary>Gets the full path.</summary>
+    /// <value>The full path.</value>
+    public string FullPathWin => FullPath.Replace('/', '\\');
+
     /// <summary>Gets a value indicating whether this path is relative.</summary>
     /// <value><c>true</c> if this path is relative; otherwise, <c>false</c>.</value>
     public bool IsRelative => !IsAbsolute;

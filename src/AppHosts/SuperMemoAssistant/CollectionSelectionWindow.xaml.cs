@@ -39,7 +39,6 @@ using System.Windows.Input;
 using Forge.Forms;
 using MahApps.Metro.Controls;
 using Microsoft.Win32;
-using SuperMemoAssistant.Exceptions;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SMA.Configs;
@@ -53,7 +52,7 @@ namespace SuperMemoAssistant
   {
     #region Properties & Fields - Non-Public
 
-    private readonly StartupCfg _config;
+    private readonly StartupCfg _startupCfg;
 
     #endregion
 
@@ -62,21 +61,10 @@ namespace SuperMemoAssistant
 
     #region Constructors
 
-    public CollectionSelectionWindow()
+    public CollectionSelectionWindow(StartupCfg startupCfg)
     {
-      try
-      {
-        _config = SuperMemoAssistant.SMA.Core.Configuration.Load<StartupCfg>().Result ?? new StartupCfg();
-      }
-      catch (SMAException)
-      {
-        Forge.Forms.Show.Window().For(new Alert("Failed to open StartupCfg.json. Make sure file is unlocked and try again.", "Error"));
-
-        Environment.Exit(1);
-        return;
-      }
-
-      SavedCollections = _config.Collections;
+      _startupCfg = startupCfg;
+      SavedCollections = startupCfg.Collections;
 
       InitializeComponent();
 
@@ -107,11 +95,11 @@ namespace SuperMemoAssistant
 
     public bool ValidateSuperMemoPath()
     {
-      if (new FilePath(_config.SMBinPath).Exists() == false)
+      if (new FilePath(_startupCfg.SMBinPath).Exists() == false)
       {
         Forge.Forms.Show.Window().For(
           new Alert(
-            $"Invalid file path for sm executable file: '{_config.SMBinPath}' could not be found.",
+            $"Invalid file path for sm executable file: '{_startupCfg.SMBinPath}' could not be found.",
             "Error")
         );
         return false;
@@ -162,7 +150,7 @@ namespace SuperMemoAssistant
 
     private void SaveConfig()
     {
-      SuperMemoAssistant.SMA.Core.Configuration.Save<StartupCfg>(_config).Wait();
+      SuperMemoAssistant.SMA.Core.Configuration.Save<StartupCfg>(_startupCfg).Wait();
     }
 
     private void OpenSelectedCollection()
@@ -205,19 +193,24 @@ namespace SuperMemoAssistant
       if (filePath != null)
       {
         var newCollection = CreateCollection(filePath);
-        var duplicate     = _config.Collections.FirstOrDefault(c => c == newCollection);
+        var duplicate     = _startupCfg.Collections.FirstOrDefault(c => c == newCollection);
 
         if (duplicate != null)
           duplicate.LastOpen = DateTime.Now;
 
         else
-          _config.Collections.Add(newCollection);
+          _startupCfg.Collections.Add(newCollection);
 
         SaveConfig();
 
         Collection = duplicate ?? newCollection;
         Close();
       }
+    }
+
+    private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+      OpenSelectedCollection();
     }
 
     private void btnOpen_Click(object          sender,
@@ -229,7 +222,7 @@ namespace SuperMemoAssistant
     private void BtnOptions_Click(object          sender,
                                   RoutedEventArgs e)
     {
-      Forge.Forms.Show.Window().For<StartupCfg>(_config).Wait();
+      Forge.Forms.Show.Window().For<StartupCfg>(_startupCfg).Wait();
 
       SaveConfig();
     }
@@ -249,11 +242,6 @@ namespace SuperMemoAssistant
                                                   RoutedEventArgs e)
     {
       lbCollections.SelectFirstItem();
-    }
-
-    private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-    {
-      OpenSelectedCollection();
     }
 
     #endregion

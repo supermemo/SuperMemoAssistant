@@ -41,8 +41,6 @@ namespace SuperMemoAssistant.Interop
   {
     #region Constants & Statics
 
-    public const string BinPath = "C:\\SuperMemo\\sm17.exe";
-
     public const string AppName = "SuperMemoAssistant";
 
     #endregion

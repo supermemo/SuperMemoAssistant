@@ -75,31 +75,38 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     private void ProcessData(HookedFunction func,
                              object[]       data)
     {
-      switch (func)
+      try
       {
-        case HookedFunction.CreateFile:
-          SMA.OnFileCreate((string)data[0],
-                           (IntPtr)data[1]);
-          break;
+        switch (func)
+        {
+          case HookedFunction.CreateFile:
+            SMA.OnFileCreate((string)data[0],
+                             (IntPtr)data[1]);
+            break;
 
-        case HookedFunction.SetFilePointer:
-          SMA.OnFileSeek((IntPtr)data[0],
-                         (UInt32)data[1]);
-          break;
+          case HookedFunction.SetFilePointer:
+            SMA.OnFileSeek((IntPtr)data[0],
+                           (UInt32)data[1]);
+            break;
 
-        case HookedFunction.WriteFile:
-          var byteArr = (byte[])data[1];
+          case HookedFunction.WriteFile:
+            var byteArr = (byte[])data[1];
 
-          SMA.OnFileWrite((IntPtr)data[0],
-                          byteArr,
-                          (UInt32)data[2]);
+            SMA.OnFileWrite((IntPtr)data[0],
+                            byteArr,
+                            (UInt32)data[2]);
 
-          ArrayPool<byte>.Shared.Return(byteArr);
-          break;
+            ArrayPool<byte>.Shared.Return(byteArr);
+            break;
 
-        case HookedFunction.CloseHandle:
-          SMA.OnFileClose((IntPtr)data[0]);
-          break;
+          case HookedFunction.CloseHandle:
+            SMA.OnFileClose((IntPtr)data[0]);
+            break;
+        }
+      }
+      catch (Exception ex)
+      {
+        OnException(ex);
       }
     }
 

@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/17 14:35
-// Modified On:  2019/01/17 20:51
+// Modified On:  2020/02/02 22:51
 // Modified By:  Alexis
 
 #endregion
@@ -30,33 +29,31 @@
 
 
 
-namespace SuperMemoAssistant.Interop.SuperMemo.Content.Layout.Legacy.Grid
+using System;
+
+namespace SuperMemoAssistant.Sys.Windows.Search
 {
-  public partial class LayoutGrid
+  [Serializable]
+  public class WindowsSearchResult
   {
-    protected class VectorData
-    {
-      #region Properties & Fields - Public
+    #region Constructors
 
-      public int UsedSize       { get; set; }
-      public int BlockCount     { get; set; }
-      public int FillBlockCount { get; set; }
+    public WindowsSearchResult() { }
 
-      #endregion
+    #endregion
 
 
 
 
-      #region Methods
+    #region Properties & Fields - Public
 
-      public void Reset()
-      {
-        UsedSize       = 0;
-        BlockCount     = 0;
-        FillBlockCount = 0;
-      }
+    public String            FileName { get; set; }
+    public String            FilePath { get; set; }
+    public WindowsSearchKind Kind     { get; set; }
+    public int               Rank     { get; set; }
 
-      #endregion
-    }
+    public bool Touched { get; set; }
+
+    #endregion
   }
 }

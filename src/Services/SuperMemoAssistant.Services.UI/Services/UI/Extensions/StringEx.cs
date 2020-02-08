@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/17 14:35
-// Modified On:  2019/01/17 14:35
+// Modified On:  2020/02/03 10:19
 // Modified By:  Alexis
 
 #endregion
@@ -30,43 +29,28 @@
 
 
 
-using System;
-using System.Drawing;
-using SuperMemoAssistant.Interop.SuperMemo.Content.Contents;
+using System.Threading.Tasks;
+using Forge.Forms;
 
-namespace SuperMemoAssistant.Interop.SuperMemo.Content.Layout.Legacy.Auto
+namespace SuperMemoAssistant.Services.UI.Extensions
 {
-  public partial class LayoutAuto : LayoutBase
+  public static class StringEx
   {
-    #region Constructors
+    #region Methods
 
-    public LayoutAuto(ContentTypeFlag    acceptedContents,
-                      Action<LayoutAuto> buildMethod) : base(acceptedContents) { }
-
-    #endregion
-
-
-
-
-    #region Properties Impl - Public
-
-    public override Size MinSize { get; }
-
-    #endregion
-
-
-
-
-    #region Methods Impl
-
-    public override void InitializeLayout()
+    public static Task ErrorMsgBox(this string msg)
     {
-      throw new NotImplementedException();
+      return Show.Window().For(new Alert(msg, "Error"));
     }
 
-    public override void CalculateLayout(Rectangle cors)
+    public static Task WarningMsgBox(this string msg)
     {
-      throw new NotImplementedException();
+      return Show.Window().For(new Alert(msg, "Warning"));
+    }
+
+    public static Task InfoMsgBox(this string msg)
+    {
+      return Show.Window().For(new Alert(msg, "Information"));
     }
 
     #endregion

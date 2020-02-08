@@ -1,6 +1,6 @@
 ﻿{
   "7EDE24CE": {
-    "SMVersion": "17.4",
+    "SMVersion": "17.40",
     "Pointers": {
       "ElWdw_InstancePtr": "0x00BC00F0",
       "ElWdw_ElementIdPtr": "0x0D81",
@@ -138,7 +138,7 @@
   },
 
   "5BA7F64F": {
-    "SMVersion": "18.3",
+    "SMVersion": "18.03",
     "Pointers": {
       "ElWdw_InstancePtr": "0x00CA36D0",
       "ElWdw_ElementIdPtr": "0x0DB1",

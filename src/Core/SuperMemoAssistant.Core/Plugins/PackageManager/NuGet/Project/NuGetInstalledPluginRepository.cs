@@ -36,7 +36,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Anotar.Serilog;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using NuGet.Packaging.Core;
 using SuperMemoAssistant.Extensions;
@@ -102,7 +101,7 @@ namespace SuperMemoAssistant.Plugins.PackageManager.NuGet.Project
     #region Methods
 
     public static async Task<NuGetInstalledPluginRepository<TMeta>> LoadAsync(
-      [NotNull] FilePath filePath)
+      FilePath filePath)
     {
       NuGetInstalledPluginRepository<TMeta> repo = null;
 

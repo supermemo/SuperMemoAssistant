@@ -37,7 +37,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Anotar.Serilog;
-using JetBrains.Annotations;
 using NuGet.Configuration;
 using NuGet.Frameworks;
 using NuGet.PackageManagement;
@@ -69,10 +68,10 @@ namespace SuperMemoAssistant.Plugins.PackageManager
 
     #region Constructors
 
-    internal PluginPackageManager([NotNull] DirectoryPath                   pluginDirPath,
-                                  [NotNull] DirectoryPath                   pluginHomeDirPath,
-                                  [NotNull] DirectoryPath                   packageDirPath,
-                                  [NotNull] FilePath                        configFilePath,
+    internal PluginPackageManager(DirectoryPath                   pluginDirPath,
+                                  DirectoryPath                   pluginHomeDirPath,
+                                  DirectoryPath                   packageDirPath,
+                                  FilePath                        configFilePath,
                                   Func<ISettings, SourceRepositoryProvider> providerCreator = null)
     {
       pluginDirPath  = pluginDirPath.Collapse();

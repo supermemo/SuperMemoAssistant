@@ -67,6 +67,8 @@ namespace SuperMemoAssistant.SuperMemo.Common.UI
 
     /// <inheritdoc />
     public IntPtr Handle => WindowHandle;
+    /// <inheritdoc />
+    public bool IsAvailable { get; protected set; }
 
     #endregion
 

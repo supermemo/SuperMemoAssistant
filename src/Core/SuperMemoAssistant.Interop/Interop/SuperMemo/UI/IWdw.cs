@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/07/27 12:55
-// Modified On:  2019/01/19 04:55
+// Modified On:  2020/02/03 18:52
 // Modified By:  Alexis
 
 #endregion
@@ -36,7 +35,8 @@ namespace SuperMemoAssistant.Interop.SuperMemo.UI
 {
   public interface IWdw
   {
-    IntPtr Handle { get; }
+    IntPtr Handle      { get; }
+    bool   IsAvailable { get; }
 
     event Action OnAvailable;
   }

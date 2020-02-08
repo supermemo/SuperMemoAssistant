@@ -32,17 +32,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Security.Permissions;
 using System.Threading.Tasks;
 using Anotar.Serilog;
 using AsyncEvent;
 using Process.NET;
 using SuperMemoAssistant.Exceptions;
-using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.SMA.Configs;
+using SuperMemoAssistant.SMA.Utils;
 using SuperMemoAssistant.SuperMemo;
 using SuperMemoAssistant.SuperMemo.Common;
 using SuperMemoAssistant.SuperMemo.Common.Content.Layout;
@@ -131,15 +130,19 @@ namespace SuperMemoAssistant.SMA
     //
     // Collection loading management
 
-    public async Task<bool> Start(SMCollection collection)
+    public async Task<bool> Start(
+      NativeDataCfg nativeDataCfg,
+      StartupCfg    startupCfg,
+      SMCollection  collection)
     {
       try
       {
         if (_sm != null)
           throw new InvalidOperationException("_sm is already instantiated");
 
-        LoadConfig(collection);
-        var nativeData = CheckSuperMemoExecutable();
+        LoadConfig(collection, startupCfg);
+
+        var nativeData = CheckSuperMemoExecutable(nativeDataCfg);
 
         _sm = InstantiateSuperMemo(collection, nativeData.SMVersion);
 
@@ -163,13 +166,11 @@ namespace SuperMemoAssistant.SMA
         try
         {
           if (OnSMStoppedEvent != null)
-            await OnSMStoppedEvent.InvokeAsync(this,
-                                               new SMProcessArgs(_sm, null)).ConfigureAwait(true);
+            await OnSMStoppedEvent.InvokeAsync(this, new SMProcessArgs(_sm, null)).ConfigureAwait(true);
         }
         catch (Exception pluginEx)
         {
-          LogTo.Error(pluginEx,
-                      "Exception while notifying plugins OnSMStoppedEvent.");
+          LogTo.Error(pluginEx, "Exception while notifying plugins OnSMStoppedEvent.");
         }
 
         // TODO: Handle exception
@@ -184,32 +185,17 @@ namespace SuperMemoAssistant.SMA
                                                Version      smVersion)
     {
       if (SM17.Versions.Contains(smVersion))
-        return new SM17(collection,
-                        StartupConfig.SMBinPath);
+        return new SM17(collection, StartupConfig.SMBinPath);
 
       throw new SMAException($"Unsupported SM version {smVersion}");
     }
 
-    private NativeData CheckSuperMemoExecutable()
+    private NativeData CheckSuperMemoExecutable(NativeDataCfg nativeDataCfg)
     {
-      var nativeDataCfg = LoadNativeDataConfig();
       var smFile        = new FilePath(StartupConfig.SMBinPath);
 
-      if (smFile.Exists() == false)
-        throw new SMAException(
-          $"Invalid file path for sm executable file: '{StartupConfig.SMBinPath}' could not be found. SMA cannot continue.");
-
-      if (smFile.HasPermission(FileIOPermissionAccess.Read) == false)
-        throw new SMAException($"SMA needs read access to execute SM executable at {smFile.FullPath}.");
-
-      if (smFile.IsLocked())
-        throw new SMAException($"{smFile.FullPath} is locked. Make sure it isn't already running.");
-
-      var smFileCrc32 = FileEx.GetCrc32(smFile.FullPath);
-      var nativeData  = nativeDataCfg.SafeGet(smFileCrc32.ToUpper(CultureInfo.InvariantCulture));
-
-      if (nativeData == null)
-        throw new SMAException($"Unknown SM executable version with crc32 {smFileCrc32}.");
+      if (SuperMemoFinder.CheckSuperMemoExecutable(nativeDataCfg, smFile, out var nativeData, out var ex) == false)
+        throw ex;
 
       LogTo.Information($"SuperMemo version {nativeData.SMVersion} detected");
 

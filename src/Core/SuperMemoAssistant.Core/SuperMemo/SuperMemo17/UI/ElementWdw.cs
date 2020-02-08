@@ -74,6 +74,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
     public ElementWdw()
     {
+      IsAvailable = false;
+
       Core.SMA.OnSMStartedEvent += OnSMStartedEvent;
       Core.SMA.OnSMStoppedEvent += OnSMStoppedEvent;
     }
@@ -95,7 +97,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       }
       catch (ApplicationException ex)
       {
-        LogTo.Error(ex, "Windows API call failed.");
+        LogTo.Warning(ex, "Windows API call failed (ActivateWindow).");
         return false;
       }
       catch (Exception ex)
@@ -529,6 +531,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       //OnElementChanged?.Invoke(new SMDisplayedElementChangedArgs(SMA.Instance,
       //                                                   CurrentElement,
       //                                                   null));
+
+      IsAvailable = true;
 
       OnAvailable?.Invoke();
 

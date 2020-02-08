@@ -23,7 +23,6 @@
                  KeyDown="Window_KeyDown">
   <Window.Resources>
     <ResourceDictionary>
-
       <CollectionViewSource x:Key='SortedCollections' Source="{Binding SavedCollections}">
         <CollectionViewSource.SortDescriptions>
           <componentModel:SortDescription PropertyName="LastOpen" Direction="Descending" />
@@ -72,6 +71,23 @@
           <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>
         </Style>
       </ListBox.ItemContainerStyle>
+      <ListBox.Style>
+        <Style TargetType="{x:Type ListBox}">
+          <Style.Triggers>
+            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+            <DataTrigger Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=Items.Count}"
+                         Value="0">
+              <Setter Property="Template">
+                <Setter.Value>
+                  <ControlTemplate>
+                    <TextBlock>No collection yet :-( Add one by pressing the "Browse" button.</TextBlock>
+                  </ControlTemplate>
+                </Setter.Value>
+              </Setter>
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </ListBox.Style>
     </ListBox>
 
     <Grid Grid.Row="1">

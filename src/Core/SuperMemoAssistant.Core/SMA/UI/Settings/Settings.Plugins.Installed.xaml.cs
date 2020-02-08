@@ -32,12 +32,14 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Runtime.Remoting;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Anotar.Serilog;
 using Forge.Forms;
 using SuperMemoAssistant.Plugins;
+using SuperMemoAssistant.Services.UI.Extensions;
 using SuperMemoAssistant.Sys.Windows.Input;
 
 namespace SuperMemoAssistant.SMA.UI.Settings
@@ -72,7 +74,7 @@ namespace SuperMemoAssistant.SMA.UI.Settings
 
     public ReadOnlyObservableCollection<PluginInstance> Plugins => PluginManager.Instance.AllPlugins;
 
-    public ICommand PluginShowSettingsCommand => new RelayCommand<PluginInstance>(PluginShowSettings);
+    public ICommand PluginShowSettingsCommand => new AsyncRelayCommand<PluginInstance>(PluginShowSettings);
 
     public ICommand PluginPlayPauseCommand => new AsyncRelayCommand<PluginInstance>(PluginPlayPause, CanPluginPlayPause, HandleException);
 
@@ -89,11 +91,15 @@ namespace SuperMemoAssistant.SMA.UI.Settings
 
     #region Methods
 
-    private void PluginShowSettings(PluginInstance pluginInstance)
+    private async Task PluginShowSettings(PluginInstance pluginInstance)
     {
       try
       {
         pluginInstance.Plugin.ShowSettings();
+      }
+      catch (RemotingException)
+      {
+        await "Remote plugin unreachable. Try restarting SMA.".ErrorMsgBox();
       }
       catch (Exception ex)
       {

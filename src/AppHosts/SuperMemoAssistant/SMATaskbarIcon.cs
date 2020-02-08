@@ -134,7 +134,7 @@ namespace SuperMemoAssistant
                                         .ToList();
 
       // ReSharper disable once PossibleNullReferenceException
-      while (tbIcon.ContextMenu.Items.Count > 0 && ((Control)tbIcon.ContextMenu.Items.GetItemAt(0)).Tag.Equals(MenuPluginTag))
+      while (tbIcon.ContextMenu.Items.Count > 0 && MenuPluginTag.Equals(((Control)tbIcon.ContextMenu.Items.GetItemAt(0)).Tag))
         tbIcon.ContextMenu.Items.RemoveAt(0);
 
       if (runningPlugins.Any())

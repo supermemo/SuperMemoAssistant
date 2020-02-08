@@ -152,6 +152,10 @@ namespace SuperMemoAssistant.Extensions
           LogTo.Warning(remoteEx, $"{eventName}: Remoting exception while notifying remote service - forcing unsubscribe");
           unsubscribeDelegate?.Invoke(handler);
         }
+        catch (NullReferenceException)
+        {
+          LogTo.Warning($"Null handler called for event {eventName}.");
+        }
         catch (Exception ex)
         {
           LogTo.Error(ex, $"{eventName}: Exception while notifying remote service");

@@ -58,7 +58,7 @@ namespace SuperMemoAssistant.SMA.Configs
     [Action("BrowseFile",
       "Browse",
       Placement = Placement.Inline)]
-    public string SMBinPath { get; set; } = SMConst.BinPath;
+    public string SMBinPath { get; set; }
 
     [Field(Name = "Skip procedures pattern scanning (trust hint addresses)")]
     public bool TrustHintAddresses { get;                                  set; } = false;

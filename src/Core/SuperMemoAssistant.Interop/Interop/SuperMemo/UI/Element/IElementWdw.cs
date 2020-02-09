@@ -50,6 +50,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.UI.Element
     int CurrentRootId         { get; set; }
     int CurrentHookId         { get; set; }
     int CurrentConceptId      { get; }
+    int CurrentLearningMode   { get; }
 
     bool SetCurrentConcept(int conceptId);
     bool GoToElement(int       elementId);

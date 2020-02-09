@@ -64,6 +64,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     protected IPointer CurrentConceptGroupIdPtr { get; set; }
     protected IPointer CurrentRootIdPtr         { get; set; }
     protected IPointer CurrentHookIdPtr         { get; set; }
+    protected IPointer LearningModePtr          { get; set; }
 
     #endregion
 
@@ -508,6 +509,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       CurrentConceptGroupIdPtr = null;
       CurrentRootIdPtr         = null;
       CurrentHookIdPtr         = null;
+      LearningModePtr          = null;
 
       return TaskConstants.Completed;
     }
@@ -522,6 +524,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       CurrentConceptGroupIdPtr = SMProcess[Core.Natives.Globals.CurrentConceptGroupIdPtr];
       CurrentRootIdPtr         = SMProcess[Core.Natives.Globals.CurrentRootIdPtr];
       CurrentHookIdPtr         = SMProcess[Core.Natives.Globals.CurrentHookIdPtr];
+      LearningModePtr          = SMProcess[Core.Natives.ElWind.LearningModePtr];
 
       ElementIdPtr.RegisterValueChangedEventHandler<int>(OnElementChangedInternal);
 
@@ -636,6 +639,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       get => CurrentHookIdPtr.Read<int>();
       set => CurrentHookIdPtr.Write<int>(0, value);
     }
+    public int CurrentLearningMode => LearningModePtr.Read<int>();
 
     /// <inheritdoc />
     public event Action<SMDisplayedElementChangedArgs> OnElementChanged;

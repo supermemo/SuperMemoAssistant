@@ -1,4 +1,5 @@
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsupermemo%2FSuperMemoAssistant.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsupermemo%2FSuperMemoAssistant?ref=badge_shield)
+[![Discord](https://img.shields.io/discord/673071773700587521.svg)](https://chat.supermemo.wiki/)
 
 ## SuperMemo Assistant
 

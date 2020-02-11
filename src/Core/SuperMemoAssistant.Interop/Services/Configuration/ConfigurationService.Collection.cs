@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/10 12:02
+// Modified On:  2020/02/10 10:47
 // Modified By:  Alexis
 
 #endregion
@@ -29,33 +29,50 @@
 
 
 
-using SuperMemoAssistant.Services.Configuration;
-using SuperMemoAssistant.Services.IO.HotKeys;
-using SuperMemoAssistant.Services.IO.Keyboard;
-using SuperMemoAssistant.Services.IO.Logger;
-using SuperMemoAssistant.SuperMemo.Common;
-using SuperMemoAssistant.SuperMemo.Hooks;
-using SuperMemoAssistant.SuperMemo.Natives;
+using SuperMemoAssistant.Interop.Plugins;
+using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.Sys.IO;
 
-namespace SuperMemoAssistant.SMA
+namespace SuperMemoAssistant.Services.Configuration
 {
-  public static class Core
+  public class CollectionConfigurationService : ConfigurationServiceBase
   {
-    #region Constants & Statics
+    #region Properties & Fields - Non-Public
 
-    public static SMA SMA     { get; set; }
-    public static SuperMemoCore      SM      { get; set; }
-    public static SMHookEngine       Hook    { get; set; }
-    public static SMNatives          Natives { get; set; }
+    private readonly SMCollection _collection;
+    private readonly string       _subDir;
 
-    public static Logger Logger { get; set; }
+    #endregion
 
-    public static IKeyboardHookService KeyboardHotKey { get; set; }
-    public static HotKeyManager        HotKeyManager  { get; set; }
 
-    public static ConfigurationServiceBase Configuration           { get; set; }
-    public static ConfigurationServiceBase CollectionConfiguration { get; set; }
-    public static ConfigurationServiceBase SharedConfiguration     { get; set; }
+
+
+    #region Constructors
+
+    public CollectionConfigurationService(SMCollection collection, string subDir)
+    {
+      _collection = collection;
+      _subDir     = subDir;
+
+      EnsureFolderExists();
+    }
+
+    public CollectionConfigurationService(SMCollection collection, ISMAPlugin plugin)
+    {
+      _collection = collection;
+      _subDir     = plugin.AssemblyName;
+
+      EnsureFolderExists();
+    }
+
+    #endregion
+
+
+
+
+    #region Methods Impl
+
+    protected override DirectoryPath GetDefaultConfigDirectoryPath() => _collection.GetSMAConfigsSubFolder(_subDir);
 
     #endregion
   }

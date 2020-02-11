@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/01/29 12:54
+// Modified On:  2020/02/10 11:41
 // Modified By:  Alexis
 
 #endregion
@@ -45,6 +45,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
 
       public TGlobals(NativeData nativeData)
       {
+        LimitChildrenCountPtr    = new IntPtr(nativeData.Pointers[NativePointers.Globals_LimitChildrenCountPtr]);
         CurrentConceptGroupIdPtr = new IntPtr(nativeData.Pointers[NativePointers.Globals_CurrentConceptGroupIdPtr]);
         CurrentRootIdPtr         = new IntPtr(nativeData.Pointers[NativePointers.Globals_CurrentRootIdPtr]);
         CurrentHookIdPtr         = new IntPtr(nativeData.Pointers[NativePointers.Globals_CurrentHookIdPtr]);
@@ -60,6 +61,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
 
       #region Properties & Fields - Public
 
+      public IntPtr LimitChildrenCountPtr    { get; }
       public IntPtr CurrentConceptGroupIdPtr { get; }
       public IntPtr CurrentRootIdPtr         { get; }
       public IntPtr CurrentHookIdPtr         { get; }

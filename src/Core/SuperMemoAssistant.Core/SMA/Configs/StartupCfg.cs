@@ -37,7 +37,6 @@ using Forge.Forms;
 using Forge.Forms.Annotations;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Sys.ComponentModel;
 

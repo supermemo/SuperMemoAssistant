@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/01/29 12:59
+// Modified On:  2020/02/10 11:47
 // Modified By:  Alexis
 
 #endregion
@@ -60,6 +60,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     protected IPointer SMMainWdwPtr             { get; set; }
     protected IPointer ElementWdwPtr            { get; set; }
     protected IPointer ElementIdPtr             { get; set; }
+    protected IPointer LimitChildrenCountPtr    { get; set; }
     protected IPointer CurrentConceptIdPtr      { get; set; }
     protected IPointer CurrentConceptGroupIdPtr { get; set; }
     protected IPointer CurrentRootIdPtr         { get; set; }
@@ -518,6 +519,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
         return false;
 
       ElementIdPtr             = SMProcess[Core.Natives.ElWind.ElementIdPtr];
+      LimitChildrenCountPtr    = SMProcess[Core.Natives.Globals.LimitChildrenCountPtr];
       CurrentConceptIdPtr      = SMProcess[Core.Natives.Globals.CurrentConceptIdPtr];
       CurrentConceptGroupIdPtr = SMProcess[Core.Natives.Globals.CurrentConceptGroupIdPtr];
       CurrentRootIdPtr         = SMProcess[Core.Natives.Globals.CurrentRootIdPtr];
@@ -624,8 +626,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     /// <inheritdoc />
     public IElement CurrentElement => Core.SM.Registry.Element?[CurrentElementId];
 
-    public int CurrentConceptGroupId => CurrentConceptGroupIdPtr.Read<int>();
-    public int CurrentConceptId      => CurrentConceptIdPtr.Read<int>();
+    public short LimitChildrenCount    => LimitChildrenCountPtr.Read<short>();
+    public int   CurrentConceptGroupId => CurrentConceptGroupIdPtr.Read<int>();
+    public int   CurrentConceptId      => CurrentConceptIdPtr.Read<int>();
     public int CurrentRootId
     {
       get => CurrentRootIdPtr.Read<int>();

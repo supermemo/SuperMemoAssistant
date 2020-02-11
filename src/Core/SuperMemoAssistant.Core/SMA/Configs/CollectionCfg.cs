@@ -32,7 +32,6 @@
 
 using System.ComponentModel;
 using Forge.Forms.Annotations;
-using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Sys.ComponentModel;
 
 namespace SuperMemoAssistant.SMA.Configs
@@ -41,15 +40,6 @@ namespace SuperMemoAssistant.SMA.Configs
   public class CollectionCfg : INotifyPropertyChangedEx
   {
     #region Properties & Fields - Public
-
-    [Field(Name = "Children per branch")]
-    [Value(Must.BeGreaterThanOrEqualTo,
-      5,
-      StrictValidation = true)]
-    [Value(Must.BeLessThanOrEqualTo,
-      500,
-      StrictValidation = true)]
-    public int ChildrenPerBranch { get; set; } = SMConst.Elements.DefaultChildrenPerNode;
 
     [Field(Name = "Collapse Element window Title bar")]
     public bool CollapseElementWdwTitleBar { get; set; }

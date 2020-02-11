@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2020/01/22 09:58
-// Modified On:  2020/01/22 12:39
+// Modified On:  2020/02/10 10:50
 // Modified By:  Alexis
 
 #endregion
@@ -157,9 +156,9 @@ namespace SuperMemoAssistant.Interop.Plugins
     #region Properties Impl - Public
 
     /// <inheritdoc />
-    public string AssemblyName => AssemblyEx.GetAssemblyName(GetType());
+    public string AssemblyName => GetType().GetAssemblyName();
     /// <inheritdoc />
-    public string AssemblyVersion => AssemblyEx.GetAssemblyVersion(GetType());
+    public string AssemblyVersion => GetType().GetAssemblyVersion();
     /// <inheritdoc />
     public string ChannelName => _channelName;
     /// <inheritdoc />
@@ -185,8 +184,9 @@ namespace SuperMemoAssistant.Interop.Plugins
       if (SMAPluginMgr == null)
         throw new NullReferenceException($"{nameof(SMAPluginMgr)} is null");
 
-      Svc.Plugin = this;
-      Svc.SMA    = SMA;
+      Svc.Plugin                  = this;
+      Svc.SMA                     = SMA;
+      Svc.CollectionConfiguration = new CollectionConfigurationService(Svc.SM.Collection, this);
 
       PluginInit();
     }
@@ -308,7 +308,7 @@ namespace SuperMemoAssistant.Interop.Plugins
       LogTo.Debug($"Publishing service {svcTypeName}");
 
       channelName ??= RemotingServicesEx.GenerateIpcServerChannelName();
-      var ipcServer   = RemotingServicesEx.CreateIpcServer<IService, TService>(service, channelName);
+      var ipcServer = RemotingServicesEx.CreateIpcServer<IService, TService>(service, channelName);
 
       var unregisterObj = SMAPluginMgr.RegisterService(SessionGuid, svcTypeName, channelName);
 

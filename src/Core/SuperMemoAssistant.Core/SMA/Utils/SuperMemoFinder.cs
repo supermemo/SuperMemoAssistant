@@ -114,6 +114,12 @@ namespace SuperMemoAssistant.SMA.Utils
     {
       nativeData = null;
 
+      if (smFile == null)
+      {
+        ex = new SMAException("SM exe file path is null", new ArgumentNullException(nameof(smFile)));
+        return false;
+      }
+
       if (smFile.Exists() == false)
       {
         ex = new SMAException(

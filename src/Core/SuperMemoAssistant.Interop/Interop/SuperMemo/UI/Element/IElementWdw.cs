@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/01/29 12:58
+// Modified On:  2020/02/10 11:48
 // Modified By:  Alexis
 
 #endregion
@@ -46,10 +46,11 @@ namespace SuperMemoAssistant.Interop.SuperMemo.UI.Element
     int      CurrentElementId { get; }
     IElement CurrentElement   { get; }
 
-    int CurrentConceptGroupId { get; }
-    int CurrentRootId         { get; set; }
-    int CurrentHookId         { get; set; }
-    int CurrentConceptId      { get; }
+    short LimitChildrenCount    { get; }
+    int   CurrentConceptGroupId { get; }
+    int   CurrentRootId         { get; set; }
+    int   CurrentHookId         { get; set; }
+    int   CurrentConceptId      { get; }
 
     bool SetCurrentConcept(int conceptId);
     bool GoToElement(int       elementId);

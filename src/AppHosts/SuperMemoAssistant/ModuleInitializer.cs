@@ -79,7 +79,7 @@ namespace SuperMemoAssistant
         SuperMemoAssistant.SMA.Core.Configuration  = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
         SuperMemoAssistant.SMA.Core.KeyboardHotKey = KeyboardHookService.Instance;
         SuperMemoAssistant.SMA.Core.HotKeyManager  = HotKeyManager.Instance.Initialize(SuperMemoAssistant.SMA.Core.Configuration, SuperMemoAssistant.SMA.Core.KeyboardHotKey);
-        SuperMemoAssistant.SMA.Core.SMA            = SMA.SMA.Instance;
+        SuperMemoAssistant.SMA.Core.SMA            = new SMA.SMA();
 
         object tmp;
         tmp = LayoutManager.Instance;

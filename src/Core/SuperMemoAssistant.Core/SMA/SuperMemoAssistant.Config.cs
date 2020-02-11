@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2020/01/11 19:03
-// Modified On:  2020/01/13 12:45
+// Modified On:  2020/02/10 10:57
 // Modified By:  Alexis
 
 #endregion
@@ -37,21 +36,13 @@ using Anotar.Serilog;
 using Process.NET.Windows;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.SMA.Configs;
 
 namespace SuperMemoAssistant.SMA
 {
   public partial class SMA
   {
-    #region Properties & Fields - Non-Public
-
-    private CollectionsCfg _collectionsCfg;
-
-    #endregion
-
-
-
-
     #region Properties & Fields - Public
 
     public CollectionCfg CollectionConfig { get; set; }
@@ -67,28 +58,20 @@ namespace SuperMemoAssistant.SMA
     private void ApplySuperMemoWindowStyles()
     {
       if (CollectionConfig.CollapseElementWdwTitleBar)
-        Task.Run(() =>
+        Task.Run(async () =>
         {
-          Task.Delay(4000);
+          await Task.Delay(4000).ConfigureAwait(false); // TODO: Fix this
           WindowStyling.MakeWindowTitleless(_sm.UI.ElementWdw.Handle);
         }).RunAsync();
     }
 
-    private void LoadConfig(SMCollection collection, StartupCfg startupCfg)
+    private async Task LoadConfig(SMCollection collection, StartupCfg startupCfg)
     {
-      var knoPath = collection.GetKnoFilePath();
-
-      StartupConfig = startupCfg;
+      Core.CollectionConfiguration = new CollectionConfigurationService(collection, "Core");
+      StartupConfig                = startupCfg;
 
       // CollectionsCfg
-      _collectionsCfg  = Core.Configuration.Load<CollectionsCfg>().Result ?? new CollectionsCfg();
-      CollectionConfig = _collectionsCfg.CollectionsConfig.SafeGet(knoPath);
-
-      if (CollectionConfig == null)
-      {
-        CollectionConfig                           = new CollectionCfg();
-        _collectionsCfg.CollectionsConfig[knoPath] = CollectionConfig;
-      }
+      CollectionConfig = await Core.CollectionConfiguration.Load<CollectionCfg>() ?? new CollectionCfg();
     }
 
     public Task SaveConfig(bool sync)
@@ -96,10 +79,10 @@ namespace SuperMemoAssistant.SMA
       try
       {
         var tasks = new[]
-      {
-        Core.Configuration.Save<StartupCfg>(StartupConfig),
-        Core.Configuration.Save<CollectionsCfg>(_collectionsCfg),
-      };
+        {
+          Core.Configuration.Save<StartupCfg>(StartupConfig),
+          Core.CollectionConfiguration.Save<CollectionCfg>(CollectionConfig),
+        };
 
         var task = Task.WhenAll(tasks);
 

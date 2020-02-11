@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/09/03 18:08
-// Modified On:  2020/01/11 20:46
+// Modified On:  2020/02/10 12:03
 // Modified By:  Alexis
 
 #endregion
@@ -55,23 +54,14 @@ namespace SuperMemoAssistant.SMA
   ///   Wrapper around a SM management instance that handles SuperMemo App lifecycle events
   ///   (start, exit, ...) and provides a safe interface to interact with SuperMemo
   /// </summary>
-  public partial class SMA
+  public sealed partial class SMA
     : PerpetualMarshalByRefObject,
       ISuperMemoAssistant,
       IDisposable
   {
-    #region Constants & Statics
-
-    public static SMA Instance { get; } = new SMA();
-
-    #endregion
-
-
-
-
     #region Properties & Fields - Non-Public
 
-    protected SuperMemoCore _sm;
+    private SuperMemoCore _sm;
 
     #endregion
 
@@ -84,14 +74,11 @@ namespace SuperMemoAssistant.SMA
     ///   Create an instance of the wrapper that will start a SM instance and attach the
     ///   management engine.
     /// </summary>
-    protected SMA()
-    {
-      Core.SMA = this;
-    }
+    public SMA() { }
 
 
     /// <inheritdoc />
-    public virtual void Dispose()
+    public void Dispose()
     {
       _sm?.Dispose();
     }
@@ -140,7 +127,7 @@ namespace SuperMemoAssistant.SMA
         if (_sm != null)
           throw new InvalidOperationException("_sm is already instantiated");
 
-        LoadConfig(collection, startupCfg);
+        await LoadConfig(collection, startupCfg);
 
         var nativeData = CheckSuperMemoExecutable(nativeDataCfg);
 
@@ -192,7 +179,7 @@ namespace SuperMemoAssistant.SMA
 
     private NativeData CheckSuperMemoExecutable(NativeDataCfg nativeDataCfg)
     {
-      var smFile        = new FilePath(StartupConfig.SMBinPath);
+      var smFile = new FilePath(StartupConfig.SMBinPath);
 
       if (SuperMemoFinder.CheckSuperMemoExecutable(nativeDataCfg, smFile, out var nativeData, out var ex) == false)
         throw ex;

@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/13 13:55
-// Modified On:  2019/02/22 01:13
+// Modified On:  2020/02/10 10:46
 // Modified By:  Alexis
 
 #endregion
@@ -43,7 +42,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
       return Path.Combine(collection.Path, collection.Name);
     }
 
-    public static string GetFilePath(
+    public static string CombinePath(
       this   SMCollection collection,
       params string[]     paths)
     {
@@ -56,14 +55,14 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
       this SMCollection collection,
       string            filePath)
     {
-      return collection.GetFilePath(SMConst.Paths.ElementsFolder,
+      return collection.CombinePath(SMConst.Paths.ElementsFolder,
                                     filePath);
     }
 
     public static string GetSMAFolder(
       this SMCollection collection)
     {
-      return collection.GetFilePath(SMAFileSystem.CollectionSMAFolder);
+      return collection.CombinePath(SMAFileSystem.CollectionSMAFolder);
     }
 
     public static string GetSMAElementsFolder(
@@ -71,27 +70,27 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
       int               elementId = 0)
     {
       return elementId == 0
-        ? collection.GetFilePath(SMAFileSystem.CollectionSMAFolder,
+        ? collection.CombinePath(SMAFileSystem.CollectionSMAFolder,
                                  SMAFileSystem.CollectionElementsFolder,
                                  elementId.ToString())
-        : collection.GetFilePath(SMAFileSystem.CollectionSMAFolder,
+        : collection.CombinePath(SMAFileSystem.CollectionSMAFolder,
                                  SMAFileSystem.CollectionElementsFolder);
     }
 
-    public static string GetSMASystemFolder(
+    public static string GetSMAConfigsFolder(
       this SMCollection collection)
     {
-      return collection.GetFilePath(SMAFileSystem.CollectionSMAFolder,
-                                    SMAFileSystem.CollectionSystemFolder);
+      return collection.CombinePath(SMAFileSystem.CollectionSMAFolder,
+                                    SMAFileSystem.ConfigsFolder);
     }
 
-    public static string GetSMASystemFilePath(
+    public static string GetSMAConfigsSubFolder(
       this SMCollection collection,
-      string            fileName)
+      string            subFolder)
     {
-      return collection.GetFilePath(SMAFileSystem.CollectionSMAFolder,
-                                    SMAFileSystem.CollectionSystemFolder,
-                                    fileName);
+      return collection.CombinePath(SMAFileSystem.CollectionSMAFolder,
+                                    SMAFileSystem.ConfigsFolder,
+                                    subFolder);
     }
 
     public static string GetKnoFilePath(this SMCollection collection)
@@ -103,7 +102,7 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
     public static string MakeRelative(this SMCollection collection,
                                       string            absolutePath)
     {
-      string basePath = collection.GetFilePath();
+      string basePath = collection.CombinePath();
 
       return absolutePath.StartsWith(basePath)
         ? absolutePath.Substring(basePath.Length).TrimStart('\\', '/')

@@ -67,8 +67,9 @@ namespace SuperMemoAssistant.Services
     public static HotKeyManager          HotKeyManager        { get; set; }
 
     public static Logger Logger { get; set; }
-
+    
     public static ConfigurationServiceBase Configuration { get; set; }
+    public static ConfigurationServiceBase CollectionConfiguration { get; set; }
     public static ConfigurationServiceBase SharedConfiguration { get; set; }
 
     public static Application App { get; set; }

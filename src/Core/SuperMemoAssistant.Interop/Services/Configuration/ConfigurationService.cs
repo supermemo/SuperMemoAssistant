@@ -36,45 +36,10 @@ using System.Threading.Tasks;
 using Anotar.Serilog;
 using Newtonsoft.Json;
 using SuperMemoAssistant.Exceptions;
-using SuperMemoAssistant.Interop;
-using SuperMemoAssistant.Interop.Plugins;
 using SuperMemoAssistant.Sys.IO;
 
 namespace SuperMemoAssistant.Services.Configuration
 {
-  public class PluginConfigurationService : ConfigurationServiceBase
-  {
-    #region Properties & Fields - Non-Public
-
-    protected ISMAPlugin Plugin { get; }
-
-    #endregion
-
-
-
-
-    #region Constructors
-
-    public PluginConfigurationService(ISMAPlugin plugin)
-    {
-      Plugin = plugin;
-
-      EnsureFolderExists();
-    }
-
-    #endregion
-
-
-
-
-    #region Methods Impl
-
-    protected override DirectoryPath GetDefaultConfigDirectoryPath() =>
-      SMAFileSystem.ConfigDir.CombineFile(Plugin.AssemblyName).FullPath;
-
-    #endregion
-  }
-
   public class ConfigurationService : ConfigurationServiceBase
   {
     #region Properties & Fields - Non-Public

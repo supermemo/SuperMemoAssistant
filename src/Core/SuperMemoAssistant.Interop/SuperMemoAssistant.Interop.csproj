@@ -189,6 +189,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\Configuration\ConfigurationService.Collection.cs" />
+    <Compile Include="Services\Configuration\ConfigurationService.Plugin.cs" />
     <Compile Include="Services\IO\HotKeys\HotKeyCfg.cs" />
     <Compile Include="Services\IO\HotKeys\HotKeyData.cs" />
     <Compile Include="Services\IO\Keyboard\IKeyboardHookService.cs" />

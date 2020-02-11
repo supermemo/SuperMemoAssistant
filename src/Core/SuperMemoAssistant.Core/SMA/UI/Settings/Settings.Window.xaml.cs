@@ -66,7 +66,7 @@ namespace SuperMemoAssistant.SMA.UI.Settings
 
     #region Properties & Fields - Public
 
-    public CollectionCfg CollectionConfig => SMA.Instance.CollectionConfig;
+    public CollectionCfg CollectionConfig => Core.SMA.CollectionConfig;
 
     #endregion
 
@@ -80,7 +80,7 @@ namespace SuperMemoAssistant.SMA.UI.Settings
       _instance = null;
 
       if (CollectionConfig.IsChanged)
-        SMA.Instance.SaveConfig(false);
+        Core.SMA.SaveConfig(false);
 
       base.OnClosed(e);
     }

@@ -195,7 +195,6 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
       var inSMUpdateLockMode  = false;
       var inSMAUpdateLockMode = false;
       var singleMode          = builders.Length == 1;
-      var toDispose           = new List<IDisposable>();
 
       results = new List<ElemCreationResult>(
         builders.Select(
@@ -236,14 +235,39 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
           inSMUpdateLockMode = Core.SM.UI.ElementWdw.EnterSMUpdateLock(); // TODO: Pass in EnterUpdateLock
 
         foreach (var result in results)
-          using (new ConceptSnapshot())
-          using (new HookSnapshot())
+        {
+          List<IDisposable> toDispose = new List<IDisposable>();
+
+          try
           {
+            toDispose.Add(new ConceptSnapshot());
+            toDispose.Add(new HookSnapshot());
+
             result.Result    = AddElement(result.Builder, options, restoreHookId, out int elemId);
             result.ElementId = elemId;
 
             success = success && result.Success;
           }
+          finally
+          {
+            //
+            // Restore initial context
+            foreach (var d in toDispose)
+              try
+              {
+                d.Dispose();
+              }
+              catch (Exception ex)
+              {
+                LogTo.Warning(ex, "Failed to restore context after creating a new SM element.");
+                MessageBox.Show($@"Failed to restore initial context after creating a new SM element.
+Your hook and/or current concept might have been changed.
+
+Exception: {ex}",
+                                "Warning");
+              }
+          }
+        }
 
         //
         // Display original element, and unfreeze window -- or simply resume element changed monitoring
@@ -289,26 +313,6 @@ You might have to restart SuperMemo.
 Exception: {ex}",
                             "Critical error");
           }
-
-        //
-        // Restore initial context
-
-        toDispose.ForEach(d =>
-        {
-          try
-          {
-            d.Dispose();
-          }
-          catch (Exception ex)
-          {
-            LogTo.Warning(ex, "Failed to restore context after creating a new SM element.");
-            MessageBox.Show($@"Failed to restore initial context after creating a new SM element.
-Your hook and/or current concept might have been changed.
-
-Exception: {ex}",
-                            "Warning");
-          }
-        });
 
         //
         // Unlock element changed monitoring if necessary
@@ -368,7 +372,7 @@ Exception: {ex}",
       if (options.HasFlag(ElemCreationFlags.ForceCreate))
         return true;
 
-      return parent.ChildrenCount < Core.SMA.CollectionConfig.ChildrenPerBranch;
+      return parent.ChildrenCount < Core.SM.UI.ElementWdw.LimitChildrenCount;
     }
 
     private int CreateAutoSubfolders(IElement parent,

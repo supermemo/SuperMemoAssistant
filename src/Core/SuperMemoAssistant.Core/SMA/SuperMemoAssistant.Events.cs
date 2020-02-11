@@ -99,9 +99,9 @@ namespace SuperMemoAssistant.SMA
 
     #region Events
 
-    public virtual event AsyncEventHandler<SMProcessArgs> OnSMStartedEvent;
-    public virtual event AsyncEventHandler<SMEventArgs>   OnSMStartingEvent;
-    public virtual event AsyncEventHandler<SMProcessArgs> OnSMStoppedEvent;
+    public event AsyncEventHandler<SMProcessArgs> OnSMStartedEvent;
+    public event AsyncEventHandler<SMEventArgs>   OnSMStartingEvent;
+    public event AsyncEventHandler<SMProcessArgs> OnSMStoppedEvent;
 
     #endregion
   }

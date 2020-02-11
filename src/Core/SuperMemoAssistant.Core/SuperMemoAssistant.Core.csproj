@@ -276,7 +276,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SMA\Configs\CollectionCfg.cs" />
-    <Compile Include="SMA\Configs\CollectionsCfg.cs" />
     <Compile Include="SMA\Configs\LayoutsCfg.cs" />
     <Compile Include="SMA\Configs\NativeDataCfg.cs" />
     <Compile Include="SMA\Core.cs" />
@@ -404,7 +403,7 @@
     <Compile Include="SuperMemo\Hooks\SMHookIOBase.cs" />
     <Compile Include="SuperMemo\Common\Registry\RegistryBase.cs" />
     <Compile Include="SuperMemo\Hooks\SMHookEngine.cs" />
-    <Compile Include="SMA\SuperMemoAssistant.cs" />
+    <Compile Include="SMA\SMA.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Elements\Types\ConceptGroup.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Files\RegMemElem17.cs" />
     <Compile Include="SuperMemo\SuperMemo17\Files\RegRtElem17.cs" />

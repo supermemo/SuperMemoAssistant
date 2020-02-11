@@ -6,7 +6,7 @@
                  xmlns:layout="clr-namespace:SuperMemoAssistant.SMA.UI.Layout"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:data="clr-namespace:SuperMemoAssistant.Sys.Windows.Data;assembly=SuperMemoAssistant.Interop"
-                 xmlns:xamlControls1="clr-namespace:SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls"
+                 xmlns:xamlControls="clr-namespace:SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls"
                  mc:Ignorable="d"
                  KeyDown="Window_KeyDown"
                  Height="768" Width="1024"
@@ -67,8 +67,7 @@
                 mah:TabControlHelper.Underlined="TabPanel"
                 SelectionChanged="OnTabSelectionChanged">
       <TabItem Header="Editor" mah:ControlsHelper.HeaderFontSize="18">
-        <layout:TextEditorEx x:Name="XamlEditor"
-                             SyntaxHighlighting="XML"
+        <layout:TextEditorEx SyntaxHighlighting="XML"
                              ShowLineNumbers="True"
                              Text="{Binding NewLayout.Xaml}" />
       </TabItem>
@@ -77,11 +76,11 @@
           <Grid
             MaxWidth="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=Grid}}"
             MaxHeight="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=Grid}}">
-            <Border 
+            <Border
               BorderThickness="1"
-              BorderBrush="DarkRed" >
-            <xamlControls1:XamlControlGroup x:Name="CtrlGroup" />
-              </Border>
+              BorderBrush="DarkRed">
+              <xamlControls:XamlControlGroup x:Name="CtrlGroup" />
+            </Border>
           </Grid>
 
           <Grid Background="#44FF0000"

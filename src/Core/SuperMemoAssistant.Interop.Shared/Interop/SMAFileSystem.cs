@@ -43,6 +43,7 @@ namespace SuperMemoAssistant.Interop
     public const string CollectionSMAFolder      = "sma";
     public const string CollectionElementsFolder = "elements";
     public const string CollectionSystemFolder   = "system";
+    public const string ConfigsFolder = "configs";
 
     public static DirectoryPath AppRootDir =>
       Path.Combine(

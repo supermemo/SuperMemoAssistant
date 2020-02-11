@@ -44,7 +44,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Extensions
       this SMCollection       collection,
       IRegistryFileDescriptor fileDesc)
     {
-      return collection.GetFilePath(SMConst.Paths.RegistryFolder,
+      return collection.CombinePath(SMConst.Paths.RegistryFolder,
                                     fileDesc.MemFileName);
     }
 
@@ -52,7 +52,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Extensions
       this SMCollection       collection,
       IRegistryFileDescriptor fileDesc)
     {
-      return collection.GetFilePath(SMConst.Paths.RegistryFolder,
+      return collection.CombinePath(SMConst.Paths.RegistryFolder,
                                     fileDesc.RtxFileName);
     }
 
@@ -60,7 +60,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Extensions
       this SMCollection       collection,
       IRegistryFileDescriptor fileDesc)
     {
-      return collection.GetFilePath(SMConst.Paths.RegistryFolder,
+      return collection.CombinePath(SMConst.Paths.RegistryFolder,
                                     fileDesc.RtfFileName);
     }
 
@@ -68,7 +68,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Extensions
       this SMCollection collection,
       string            fileName)
     {
-      return collection.GetFilePath(SMConst.Paths.InfoFolder,
+      return collection.CombinePath(SMConst.Paths.InfoFolder,
                                     fileName);
     }
 

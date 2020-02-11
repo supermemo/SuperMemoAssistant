@@ -163,13 +163,13 @@
         <RowDefinition Height="auto" />
         <RowDefinition Height="*" />
       </Grid.RowDefinitions>
-      
+
       <TextBlock Grid.Row="0"
                  Margin="4"
                  FontSize="14"
                  FontWeight="DemiBold"
                  Text="Preview content:" />
-      
+
       <StackPanel Grid.Row="1"
                   Orientation="Horizontal"
                   Margin="4">
@@ -182,7 +182,7 @@
                    Margin="8 0 0 0"
                    FontSize="14"
                    Text="Text(s)" />
-        
+
         <mah:NumericUpDown Name="nudImages"
                            Margin="24 0 0 0"
                            NumericInputMode="Numbers"
@@ -193,7 +193,7 @@
                    Margin="8 0 0 0"
                    FontSize="14"
                    Text="Images(s)" />
-        
+
         <mah:NumericUpDown Name="nudSounds"
                            Margin="24 0 0 0"
                            NumericInputMode="Numbers"
@@ -211,9 +211,9 @@
           MaxWidth="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=Grid}}"
           MaxHeight="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=Grid}}">
           <xamlControls1:XamlControlGroup x:Name="CtrlGroup"
-                                         TextContentCount="{Binding Path=Value, ElementName=nudTexts, Mode=OneWay}"
-                                         ImageContentCount="{Binding Path=Value, ElementName=nudImages, Mode=OneWay}"
-                                         SoundContentCount="{Binding Path=Value, ElementName=nudSounds, Mode=OneWay}" />
+                                          TextContentCount="{Binding Path=Value, ElementName=nudTexts, Mode=OneWay}"
+                                          ImageContentCount="{Binding Path=Value, ElementName=nudImages, Mode=OneWay}"
+                                          SoundContentCount="{Binding Path=Value, ElementName=nudSounds, Mode=OneWay}" />
         </Grid>
       </Grid>
     </Grid>

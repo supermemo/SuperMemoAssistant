@@ -54,6 +54,7 @@ namespace SuperMemoAssistant.SuperMemo
     Registry_BinaryRegistryInstance,
     Registry_TemplateRegistryInstance,
     Registry_ConceptRegistryInstance,
+    Globals_LimitChildrenCountPtr,
     Globals_CurrentConceptGroupIdPtr,
     Globals_CurrentRootIdPtr,
     Globals_CurrentHookIdPtr,

@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/04/16 14:00
-// Modified On:  2019/04/16 14:04
+// Modified On:  2020/02/10 10:32
 // Modified By:  Alexis
 
 #endregion
@@ -30,17 +29,41 @@
 
 
 
-using System.Collections.Generic;
-using Forge.Forms.Annotations;
+using SuperMemoAssistant.Interop;
+using SuperMemoAssistant.Interop.Plugins;
+using SuperMemoAssistant.Sys.IO;
 
-namespace SuperMemoAssistant.SMA.Configs
+namespace SuperMemoAssistant.Services.Configuration
 {
-  [Form(Mode = DefaultFields.None)]
-  public class CollectionsCfg
+  public class PluginConfigurationService : ConfigurationServiceBase
   {
-    #region Properties & Fields - Public
+    #region Properties & Fields - Non-Public
 
-    public Dictionary<string, CollectionCfg> CollectionsConfig { get; set; } = new Dictionary<string, CollectionCfg>();
+    protected ISMAPlugin Plugin { get; }
+
+    #endregion
+
+
+
+
+    #region Constructors
+
+    public PluginConfigurationService(ISMAPlugin plugin)
+    {
+      Plugin = plugin;
+
+      EnsureFolderExists();
+    }
+
+    #endregion
+
+
+
+
+    #region Methods Impl
+
+    protected override DirectoryPath GetDefaultConfigDirectoryPath() =>
+      SMAFileSystem.ConfigDir.CombineFile(Plugin.AssemblyName).FullPath;
 
     #endregion
   }

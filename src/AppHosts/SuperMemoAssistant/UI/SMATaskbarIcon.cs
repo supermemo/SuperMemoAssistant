@@ -43,7 +43,7 @@ using Task = System.Threading.Tasks.Task;
 
 // ReSharper disable UnusedParameter.Local
 
-namespace SuperMemoAssistant
+namespace SuperMemoAssistant.UI
 {
   public partial class SMATaskbarIcon : ResourceDictionary
   {

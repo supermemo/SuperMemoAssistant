@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/07/27 12:54
-// Modified On:  2019/01/26 02:40
+// Created On:   2020/01/23 08:17
+// Modified On:  2020/02/13 11:05
 // Modified By:  Alexis
 
 #endregion
@@ -47,8 +47,9 @@ namespace SuperMemoAssistant.Interop
     {
       #region Constants & Statics
 
-      public const string PluginHostExe  = "SuperMemoAssistant.PluginHost.exe";
-      public const string SMInjectionLib = "SuperMemoAssistant.Hooks.InjectLib.dll";
+      public const string SuperMemoAssistantExe = "SuperMemoAssistant.exe";
+      public const string PluginHostExe         = "SuperMemoAssistant.PluginHost.exe";
+      public const string SMInjectionLib        = "SuperMemoAssistant.Hooks.InjectLib.dll";
 
       #endregion
     }

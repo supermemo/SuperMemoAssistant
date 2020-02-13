@@ -150,6 +150,7 @@
     <Compile Include="Extensions\ButtonEx.cs" />
     <Compile Include="Extensions\DependencyObjectEx.cs" />
     <Compile Include="Extensions\ElemCreationResultEx.cs" />
+    <Compile Include="Extensions\EnumEx.cs" />
     <Compile Include="Extensions\GroupCollectionEx.cs" />
     <Compile Include="Extensions\IControlHtmlEx.cs" />
     <Compile Include="Extensions\ImageEx.cs" />

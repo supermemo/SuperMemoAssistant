@@ -42,6 +42,14 @@ namespace SuperMemoAssistant.SMA.Utils
   public static class AssemblyCheck
   {
     #region Methods
+    
+    public static bool CheckRequired(out string error)
+    {
+      if (CheckFasm32(out error) == false || CheckMshtml(out error) == false)
+        return false;
+
+      return true;
+    }
 
     public static bool CheckFasm32(out string error)
     {

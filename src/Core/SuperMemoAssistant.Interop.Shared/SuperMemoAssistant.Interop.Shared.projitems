@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Interop\SMAConst.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interop\SMAExecutableInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PluginHost\HostConst.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interop\SMAFileSystem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Sys\IO\DirectoryPath.cs" />

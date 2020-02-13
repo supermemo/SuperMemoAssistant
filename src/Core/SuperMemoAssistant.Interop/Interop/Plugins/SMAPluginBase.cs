@@ -21,7 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/10 10:50
+// Created On:   2020/01/23 08:17
+// Modified On:  2020/02/13 00:24
 // Modified By:  Alexis
 
 #endregion
@@ -144,9 +145,10 @@ namespace SuperMemoAssistant.Interop.Plugins
 
     #region Properties & Fields - Public
 
-    public ISuperMemoAssistant SMA          { get; set; }
-    public ISMAPluginManager   SMAPluginMgr { get; set; }
-    public Guid                SessionGuid  { get; set; }
+    public ISuperMemoAssistant SMA                 { get; set; }
+    public ISMAPluginManager   SMAPluginMgr        { get; set; }
+    public Guid                SessionGuid         { get; set; }
+    public bool                IsDevelopmentPlugin { get; set; }
 
     #endregion
 

@@ -53,6 +53,11 @@ namespace SuperMemoAssistant.Services.UI.Extensions
       return Show.Window().For(new Alert(msg, "Information"));
     }
 
+    public static Task MsgBox(this string msg, string title)
+    {
+      return Show.Window().For(new Alert(msg, title));
+    }
+
     #endregion
   }
 }

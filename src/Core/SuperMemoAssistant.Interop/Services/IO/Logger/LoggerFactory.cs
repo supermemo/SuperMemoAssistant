@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2020/01/22 09:58
-// Modified On:  2020/01/22 10:16
+// Created On:   2020/01/23 08:17
+// Modified On:  2020/02/12 23:41
 // Modified By:  Alexis
 
 #endregion
@@ -58,17 +58,12 @@ namespace SuperMemoAssistant.Services.IO.Logger
 
     #region Methods
 
-    public static Logger Create(
-      string                   appName,
-      ConfigurationServiceBase sharedConfig,
-      LoggerConfigPredicate    configPredicate = null)
+    public static ILogger CreateSerilog(
+      string                appName,
+      LoggerCfg             loggerCfg       = null,
+      LoggingLevelSwitch    levelSwitch     = null,
+      LoggerConfigPredicate configPredicate = null)
     {
-      if (Svc.Logger != null)
-        throw new NotSupportedException();
-
-      var config      = LoadConfig(sharedConfig);
-      var levelSwitch = new LoggingLevelSwitch(config.LogLevel);
-
       var loggerConfig = new LoggerConfiguration()
                          .MinimumLevel.ControlledBy(levelSwitch)
                          .Enrich.WithExceptionDetails()
@@ -78,9 +73,9 @@ namespace SuperMemoAssistant.Services.IO.Logger
                            a =>
                              a.RollingFile(
                                GetLogFilePath(appName).FullPath,
-                               fileSizeLimitBytes: 5242880, // Math.Max(ConfigMgr.AppConfig.LogMaxSize, 5242880),
+                               fileSizeLimitBytes: Math.Max(loggerCfg?.LogMaxSize ?? 5242880, 10485760),
                                retainedFileCountLimit: 7,
-                               shared: false,
+                               shared: true,
                                outputTemplate: OutputFormat
                              ));
       //.WriteTo.File(
@@ -97,7 +92,22 @@ namespace SuperMemoAssistant.Services.IO.Logger
       if (configPredicate != null)
         loggerConfig = configPredicate(loggerConfig);
 
-      Log.Logger = loggerConfig.CreateLogger();
+      return loggerConfig.CreateLogger();
+    }
+
+
+    public static Logger Create(
+      string                   appName,
+      ConfigurationServiceBase sharedConfig,
+      LoggerConfigPredicate    configPredicate = null)
+    {
+      if (Svc.Logger != null)
+        throw new NotSupportedException();
+
+      var config      = LoadConfig(sharedConfig);
+      var levelSwitch = new LoggingLevelSwitch(config.LogLevel);
+
+      Log.Logger = CreateSerilog(appName, config, levelSwitch, configPredicate);
 
       return new Logger(config, levelSwitch);
     }
@@ -116,16 +126,14 @@ namespace SuperMemoAssistant.Services.IO.Logger
       }
     }
 
-    private static FilePath GetLogFilePath(string appName)
+    private static FilePath GetLogFilePath(string appName, bool withDate = true)
     {
       var logDir = SMAFileSystem.LogDir;
 
       if (logDir.Exists() == false)
         logDir.Create();
 
-      var filePath = logDir.CombineFile($"{appName}-{{Date}}.log");
-
-      return filePath;
+      return withDate ? logDir.CombineFile($"{appName}-{{Date}}.log") : logDir.CombineFile($"{appName}.log");
     }
 
     #endregion

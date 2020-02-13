@@ -145,7 +145,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         return assembly;
 
       var assemblyName = e.Name.Split(',').First() + ".dll";
-      var assemblyPath = SMAFileSystem.AppRootDir.CombineFile(assemblyName);
+      var assemblyPath = SMAExecutableInfo.Instance.DirectoryPath.CombineFile(assemblyName);
 
       if (assemblyPath.Exists())
         try

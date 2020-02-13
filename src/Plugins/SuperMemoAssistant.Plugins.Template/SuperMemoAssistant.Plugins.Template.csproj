@@ -164,7 +164,7 @@
   <Import Project="..\..\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /h /i /c /k /e /r /y "$(TargetDir)*" "%25AppData%25\SuperMemoAssistant\Plugins\Development\$(ProjectName)"</PostBuildEvent>
+    <PostBuildEvent>xcopy /h /i /c /k /e /r /y "$(TargetDir)*" "%25LocalAppData%25\SuperMemoAssistant\Plugins\Development\$(ProjectName)"</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

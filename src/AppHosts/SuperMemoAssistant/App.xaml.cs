@@ -21,7 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/03 16:41
+// Created On:   2020/01/23 08:17
+// Modified On:  2020/02/12 22:29
 // Modified By:  Alexis
 
 #endregion
@@ -36,16 +37,16 @@ using System.Windows;
 using Anotar.Serilog;
 using CommandLine;
 using Hardcodet.Wpf.TaskbarNotification;
-using SuperMemoAssistant.Exceptions;
+using SuperMemoAssistant.Installer;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.Models;
 using SuperMemoAssistant.PluginHost;
 using SuperMemoAssistant.Services.UI.Extensions;
-using SuperMemoAssistant.SMA.Configs;
+using SuperMemoAssistant.Setup;
 using SuperMemoAssistant.SMA.Utils;
 using SuperMemoAssistant.Sys.IO;
-using SuperMemoAssistant.Sys.IO.Devices;
-using SuperMemoFinderUtil = SuperMemoAssistant.SMA.Utils.SuperMemoFinder;
+using SuperMemoAssistant.UI;
 
 namespace SuperMemoAssistant
 {
@@ -85,45 +86,59 @@ namespace SuperMemoAssistant
     private async void Application_Startup(object           o,
                                            StartupEventArgs e)
     {
+      _taskbarIcon = (TaskbarIcon)FindResource("TbIcon");
+
       if (Parser.Default.ParseArguments<SMAParameters>(e.Args) is Parsed<SMAParameters> parsed)
         await LoadApp(parsed.Value);
 
       else
-        Shutdown(HostConst.ExitParameters);
+        Shutdown(SMAExitCodes.ExitCodeParametersError);
     }
 
     private async Task LoadApp(SMAParameters args)
     {
-      _taskbarIcon = (TaskbarIcon)FindResource("TbIcon");
+      //
+      // Installer events
+      if (SMAInstaller.HandleEvent(args, out var firstRun))
+      {
+        if (firstRun)
+          await "SuperMemo Assistant has been successfully installed.".MsgBox("Installation");
+
+        Shutdown();
+        return;
+      }
 
       //
-      // Make sure assemblies are available, and SMA is installed in "%AppData%\SuperMemoAssistant"
-      if (CheckAssemblies(out var errMsg) == false || CheckSMALocation(out errMsg) == false)
+      // Make sure assemblies are available, and SMA is installed in "%LocalAppData%\SuperMemoAssistant"
+      if (AssemblyCheck.CheckRequired(out var errMsg) == false || CheckSMALocation(out errMsg) == false)
       {
         LogTo.Warning(errMsg);
         await errMsg.ErrorMsgBox();
 
-        Shutdown(1);
+        Shutdown(SMAExitCodes.ExitCodeDependencyError);
         return;
       }
 
       //
       // Load system configs
       if (await LoadConfigs(out var nativeDataCfg, out var startupCfg) == false)
+      {
+        Shutdown(SMAExitCodes.ExitCodeConfigError);
         return;
+      }
 
       //
       // Make sure SuperMemo exe path is correct. Prompt user to input the path otherwise.
-      if (ShouldFindSuperMemo(startupCfg, nativeDataCfg))
+      if (SMASetup.ShouldFindSuperMemo(startupCfg, nativeDataCfg))
       {
-        var smFinder = new SuperMemoFinder(nativeDataCfg, startupCfg);
+        var smFinder = new Setup.SuperMemoFinder(nativeDataCfg, startupCfg);
         smFinder.ShowDialog();
 
         if (smFinder.DialogResult == null || smFinder.DialogResult == false)
         {
           LogTo.Warning("No valid SM executable file path defined. SMA cannot run.");
 
-          Shutdown(1);
+          Shutdown(SMAExitCodes.ExitCodeSMExeError);
           return;
         }
       }
@@ -131,7 +146,7 @@ namespace SuperMemoAssistant
       //
       // (Optional) Start the debug Key logger (logs key strokes with modifiers, e.g. ctrl, alt, ..)
       if (args.KeyLogger)
-        SMA.Core.KeyboardHotKey.MainCallback = LogHotKeys;
+        SMA.Core.KeyboardHotKey.MainCallback = hk => LogTo.Debug($"Key pressed: {hk}");
 
       //
       // Determine which collection to open
@@ -164,7 +179,7 @@ namespace SuperMemoAssistant
         if (await SMA.Core.SMA.Start(nativeDataCfg, startupCfg, smCollection).ConfigureAwait(true) == false)
         {
           await $"SMA failed to start. Please check the logs in '{SMAFileSystem.LogDir.FullPath}' for details.".ErrorMsgBox();
-          Shutdown();
+          Shutdown(SMAExitCodes.ExitCodeSMAStartupError);
         }
       }
       else
@@ -179,86 +194,16 @@ namespace SuperMemoAssistant
       return Dispatcher.InvokeAsync(Shutdown).Task;
     }
 
-    private bool ShouldFindSuperMemo(StartupCfg startupCfg, NativeDataCfg nativeDataCfg)
-    {
-      return string.IsNullOrWhiteSpace(startupCfg.SMBinPath)
-        || SuperMemoFinderUtil.CheckSuperMemoExecutable(
-          nativeDataCfg,
-          startupCfg.SMBinPath,
-          out _,
-          out _) == false;
-    }
-
     private bool CheckSMALocation(out string error)
     {
-      var smaExeFile = new FilePath(Assembly.GetExecutingAssembly().Location);
-
       error = null;
 
-      if (smaExeFile.Directory == SMAFileSystem.AppRootDir)
+      if (SMAExecutableInfo.Instance.IsPathLocalAppData)
         return true;
 
-      error = $"SuperMemoAssistant should be located in the '{SMAFileSystem.AppRootDir}' folder";
+      error = $"SuperMemoAssistant should be located in the '{SMAFileSystem.AppRootDir}\\app-x.y.z.b' folder";
 
       return false;
-    }
-
-    private bool CheckAssemblies(out string error)
-    {
-      if (AssemblyCheck.CheckFasm32(out error) == false
-        || AssemblyCheck.CheckMshtml(out error) == false)
-        return false;
-
-      return true;
-    }
-
-    private void LogHotKeys(HotKey hk)
-    {
-      LogTo.Debug($"Key pressed: {hk}");
-    }
-
-    private Task<bool> LoadConfigs(out NativeDataCfg nativeDataCfg, out StartupCfg startupCfg)
-    {
-      nativeDataCfg = LoadNativeDataConfig().Result;
-      startupCfg    = LoadStartupConfig().Result;
-
-      if (nativeDataCfg == null || startupCfg == null)
-      {
-        Shutdown(1);
-        return Task.FromResult(false);
-      }
-
-      return Task.FromResult(true);
-    }
-
-    private async Task<StartupCfg> LoadStartupConfig()
-    {
-      try
-      {
-        return await SMA.Core.Configuration.Load<StartupCfg>()
-                        .ConfigureAwait(false) ?? new StartupCfg();
-      }
-      catch (SMAException)
-      {
-        await "Failed to open StartupCfg.json. Make sure file is unlocked and try again.".ErrorMsgBox();
-
-        return null;
-      }
-    }
-
-    private async Task<NativeDataCfg> LoadNativeDataConfig()
-    {
-      try
-      {
-        return await SMA.Core.Configuration.Load<NativeDataCfg>(SMAFileSystem.AppRootDir)
-                        .ConfigureAwait(false);
-      }
-      catch (SMAException)
-      {
-        await "Failed to load native data config file.".ErrorMsgBox();
-
-        return null;
-      }
     }
 
     #endregion

@@ -105,7 +105,8 @@ namespace SuperMemoAssistant.Interop.Plugins
     public bool InjectPropertyDependencies(ISMAPlugin          plugin,
                                            ISuperMemoAssistant sma,
                                            ISMAPluginManager   pluginMgr,
-                                           Guid                sessionGuid)
+                                           Guid                sessionGuid,
+                                           bool                isDevelopment)
     {
       bool smaSet  = false;
       bool mgrSet  = false;
@@ -133,6 +134,11 @@ namespace SuperMemoAssistant.Interop.Plugins
           {
             prop.SetValue(plugin, sessionGuid);
             guidSet = true;
+          }
+
+          else if (prop.PropertyType == typeof(bool) && prop.Name is "IsDevelopmentPlugin")
+          {
+            prop.SetValue(plugin, isDevelopment);
           }
 
         type = type.BaseType;

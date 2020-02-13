@@ -45,7 +45,7 @@ using SuperMemoFinderUtil = SuperMemoAssistant.SMA.Utils.SuperMemoFinder;
 
 // ReSharper disable RedundantNameQualifier
 
-namespace SuperMemoAssistant
+namespace SuperMemoAssistant.Setup
 {
   /// <summary>Interaction logic for SuperMemoFinder.xaml</summary>
   public partial class SuperMemoFinder : MetroWindow, INotifyPropertyChanged

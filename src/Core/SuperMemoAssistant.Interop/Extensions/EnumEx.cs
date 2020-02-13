@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2020/01/23 08:17
-// Modified On:  2020/02/12 23:40
+// Created On:   2020/02/13 19:04
+// Modified On:  2020/02/13 19:04
 // Modified By:  Alexis
 
 #endregion
@@ -30,18 +30,18 @@
 
 
 
-using Serilog.Events;
+using System;
 
-namespace SuperMemoAssistant.Services.IO.Logger
+namespace SuperMemoAssistant.Extensions
 {
-  public class LoggerCfg
+  public static class EnumEx
   {
-    #region Properties & Fields - Public
+    #region Methods
 
-    public LogEventLevel LogLevel                 { get; set; } = LogEventLevel.Debug;
-    public bool          LogFirstChanceExceptions { get; set; }
-    public bool          BugReportUserConsent     { get; set; } = false;
-    public int           LogMaxSize               { get; set; } = 5242880;
+    public static string Name(this Enum e)
+    {
+      return Enum.GetName(e.GetType(), e);
+    }
 
     #endregion
   }

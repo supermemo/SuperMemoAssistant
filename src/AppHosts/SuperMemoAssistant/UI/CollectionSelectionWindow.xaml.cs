@@ -45,7 +45,7 @@ using SuperMemoAssistant.SMA.Configs;
 using SuperMemoAssistant.Sys.IO;
 using SuperMemoAssistant.Sys.Windows.Input;
 
-namespace SuperMemoAssistant
+namespace SuperMemoAssistant.UI
 {
   /// <summary>Interaction logic for CollectionSelectionWindow.xaml</summary>
   public partial class CollectionSelectionWindow : MetroWindow

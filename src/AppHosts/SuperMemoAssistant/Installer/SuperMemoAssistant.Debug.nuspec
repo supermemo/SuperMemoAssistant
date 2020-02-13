@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>SuperMemoAssistant</id>
+    <!-- version will be replaced by MSBuild -->
+    <version>0.0.0.0</version>
+    <title>SuperMemo Assistant</title>
+    <authors>Alexis,SuperMemo.wiki</authors>
+    <description>SuperMemo Assistant supercharges your SuperMemo with powerful features like Incremental PDF, import from Chrome and Firefox, and more.</description>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <copyright></copyright>
+    <dependencies />
+  </metadata>
+  <files>
+    <file src="*.*" target="lib\net45\" exclude="*.nupkg;*.vshost.*"/>
+  </files>
+</package>

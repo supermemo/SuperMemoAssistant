@@ -126,7 +126,7 @@ namespace SuperMemoAssistant.Interop.Plugins
       }
 
       // Inject properties
-      InjectPropertyDependencies(_plugin, sma, pluginMgr, sessionGuid);
+      InjectPropertyDependencies(_plugin, sma, pluginMgr, sessionGuid, isDev);
 
       _plugin.OnInjected();
 

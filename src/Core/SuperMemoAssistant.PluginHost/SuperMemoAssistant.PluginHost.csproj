@@ -125,6 +125,6 @@
   <Import Project="..\SuperMemoAssistant.PluginHost.Shared\SuperMemoAssistant.PluginHost.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /h /i /d /c /k /r /y $(TargetPath) %25AppData%25\SuperMemoAssistant\</PostBuildEvent>
+    <PostBuildEvent>xcopy /h /i /d /c /k /r /y $(TargetPath) %25LocalAppData%25\SuperMemoAssistant\app-dev\</PostBuildEvent>
   </PropertyGroup>
 </Project>

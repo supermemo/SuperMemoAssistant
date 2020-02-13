@@ -37,7 +37,7 @@ using SuperMemoAssistant.Exceptions;
 using SuperMemoAssistant.SMA.Configs;
 using SuperMemoAssistant.Sys.IO;
 
-namespace SuperMemoAssistant
+namespace SuperMemoAssistant.Setup
 {
   public partial class SuperMemoFinder
   {

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2020/01/23 08:17
-// Modified On:  2020/02/12 23:40
+// Created On:   2020/02/12 22:53
+// Modified On:  2020/02/12 22:56
 // Modified By:  Alexis
 
 #endregion
@@ -30,18 +30,17 @@
 
 
 
-using Serilog.Events;
-
-namespace SuperMemoAssistant.Services.IO.Logger
+namespace SuperMemoAssistant.Models
 {
-  public class LoggerCfg
+  public static class SMAExitCodes
   {
-    #region Properties & Fields - Public
+    #region Constants & Statics
 
-    public LogEventLevel LogLevel                 { get; set; } = LogEventLevel.Debug;
-    public bool          LogFirstChanceExceptions { get; set; }
-    public bool          BugReportUserConsent     { get; set; } = false;
-    public int           LogMaxSize               { get; set; } = 5242880;
+    public const int ExitCodeParametersError = 1;
+    public const int ExitCodeDependencyError = 2;
+    public const int ExitCodeConfigError     = 3;
+    public const int ExitCodeSMExeError      = 4;
+    public const int ExitCodeSMAStartupError = 5;
 
     #endregion
   }

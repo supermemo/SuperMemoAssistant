@@ -41,10 +41,14 @@ using System.Windows;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SuperMemoAssistant")]
+[assembly: AssemblyProduct("SuperMemo Assistant")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+
+// Let Squirrel know it should notify this app about install events
+// https://github.com/Squirrel/Squirrel.Windows/blob/master/docs/using/custom-squirrel-events.md
+[assembly: AssemblyMetadata("SquirrelAwareVersion", "1")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from

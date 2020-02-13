@@ -229,7 +229,7 @@ namespace SuperMemoAssistant.Services.IO.Keyboard
               else if (_elWdwHandle == null || _elWdwHandle == IntPtr.Zero)
               {
                 LogTo.Warning(
-                  $"KeyboardHook: HotKey {hk} requested with scope {Enum.GetName(typeof(HotKeyScope), hkReg.Scope)}, but _elWdwHandle is {foregroundWdwHandle}. Trying to refresh.");
+                  $"KeyboardHook: HotKey {hk} requested with scope {Enum.GetName(typeof(HotKeyScope), hkReg.Scope)}, but _elWdwHandle is {_elWdwHandle}. Trying to refresh.");
 
                 OnElementWindowAvailable();
                 

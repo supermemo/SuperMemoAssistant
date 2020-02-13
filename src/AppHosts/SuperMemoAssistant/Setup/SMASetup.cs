@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2020/01/23 08:17
-// Modified On:  2020/02/12 23:40
+// Created On:   2020/02/12 22:20
+// Modified On:  2020/02/12 22:21
 // Modified By:  Alexis
 
 #endregion
@@ -30,18 +30,24 @@
 
 
 
-using Serilog.Events;
+using SuperMemoAssistant.SMA.Configs;
+using SuperMemoFinderUtil = SuperMemoAssistant.SMA.Utils.SuperMemoFinder;
 
-namespace SuperMemoAssistant.Services.IO.Logger
+namespace SuperMemoAssistant.Setup
 {
-  public class LoggerCfg
+  public static class SMASetup
   {
-    #region Properties & Fields - Public
+    #region Methods
 
-    public LogEventLevel LogLevel                 { get; set; } = LogEventLevel.Debug;
-    public bool          LogFirstChanceExceptions { get; set; }
-    public bool          BugReportUserConsent     { get; set; } = false;
-    public int           LogMaxSize               { get; set; } = 5242880;
+    public static bool ShouldFindSuperMemo(StartupCfg startupCfg, NativeDataCfg nativeDataCfg)
+    {
+      return string.IsNullOrWhiteSpace(startupCfg.SMBinPath)
+        || SuperMemoFinderUtil.CheckSuperMemoExecutable(
+          nativeDataCfg,
+          startupCfg.SMBinPath,
+          out _,
+          out _) == false;
+    }
 
     #endregion
   }

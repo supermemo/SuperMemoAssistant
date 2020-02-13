@@ -149,9 +149,9 @@
     <Error Condition="!Exists('..\..\..\packages\Fody.6.1.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.6.1.0\build\Fody.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /h /i /d /c /k /r /y $(TargetPath) %25AppData%25\SuperMemoAssistant\
-xcopy /h /i /d /c /k /r /y $(TargetDir)EasyHook32.dll %25AppData%25\SuperMemoAssistant\
-xcopy /h /i /d /c /k /r /y $(TargetDir)EasyLoad32.dll %25AppData%25\SuperMemoAssistant\</PostBuildEvent>
+    <PostBuildEvent>xcopy /h /i /d /c /k /r /y $(TargetPath) %25LocalAppData%25\SuperMemoAssistant\app-dev\
+xcopy /h /i /d /c /k /r /y $(TargetDir)EasyHook32.dll %25LocalAppData%25\SuperMemoAssistant\app-dev\
+xcopy /h /i /d /c /k /r /y $(TargetDir)EasyLoad32.dll %25LocalAppData%25\SuperMemoAssistant\app-dev\</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\..\..\packages\Fody.6.1.0\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.6.1.0\build\Fody.targets')" />
 </Project>

@@ -258,7 +258,7 @@ namespace SuperMemoAssistant
     private void ShowQuoteOfTheDay(object sender, RoutedEventArgs e)
     {
 
-      var QuoteFile = SMAFileSystem.AppRootDir.CombineFile("quotes.csv");
+      var QuoteFile = SMAFileSystem.AppRootDir.CombineFile("quotes.tsv");
 
       if (QuoteFile.Exists())
       {

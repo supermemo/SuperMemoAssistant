@@ -109,11 +109,15 @@
                    FontSize="13">
           Piotr Wozniak
         </TextBlock>
-        <TextBlock Name="QuoteTitleTextBlock"
-                   VerticalAlignment="Center"
+        <TextBlock VerticalAlignment="Center"
                    HorizontalAlignment="Center"
                    FontSize="13">
-          Pleasure of Learning
+          <Hyperlink Name="TitleHyperlink"
+                     RequestNavigate="TitleLink_RequestNavigate">
+                     <TextBlock Name="QuoteTitleTextBlock">
+                       Pleasure of Learning
+                     </TextBlock>
+          </Hyperlink>
         </TextBlock>
       </StackPanel>
     </Grid>

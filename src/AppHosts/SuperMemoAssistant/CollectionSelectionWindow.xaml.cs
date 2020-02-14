@@ -45,6 +45,9 @@ using SuperMemoAssistant.SMA.Configs;
 using SuperMemoAssistant.Sys.IO;
 using SuperMemoAssistant.Sys.Windows.Input;
 using SuperMemoAssistant.Interop;
+using Anotar.Serilog;
+using System.Diagnostics;
+using System.Windows.Navigation;
 
 namespace SuperMemoAssistant
 {
@@ -246,6 +249,12 @@ namespace SuperMemoAssistant
       lbCollections.SelectFirstItem();
     }
 
+    private void TitleLink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+    {
+      Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+      e.Handled = true;
+    }
+
     private void ShowQuoteOfTheDay(object sender, RoutedEventArgs e)
     {
 
@@ -253,27 +262,46 @@ namespace SuperMemoAssistant
 
       if (QuoteFile.Exists())
       {
-        var Lines = File.ReadAllLines(QuoteFile.FullPath);
-        var RandInt = new Random();
-        var RandomLineNumber = RandInt.Next(0, Lines.Length - 1);
-        var QuoteLine = Lines[RandomLineNumber];
-        var SplitQuoteLine = QuoteLine.Split('|');
-
-        // Pipe | separated file.
-        // Field 0 = quote text
-        // Field 1 = quote author
-        // Field 2 = quote URL
-        // Field 3 = quote title
-        if (!SplitQuoteLine[0].EndsWith(".")
-            && !SplitQuoteLine[0].EndsWith("!")
-            && !SplitQuoteLine[0].EndsWith("?"))
+        try
         {
-          SplitQuoteLine[0] += ".";
-        }
+          var Lines = File.ReadAllLines(QuoteFile.FullPath);
 
-        QuoteBodyTextBlock.Text = "\"" + SplitQuoteLine[0] + "\"";
-        QuoteAuthorTextBlock.Text = SplitQuoteLine[1];
-        QuoteTitleTextBlock.Text = SplitQuoteLine[3];
+          // Line 1 is .tsv heading
+          if (Lines.Length <= 1)
+          {
+            return;
+          }
+
+          var RandInt = new Random();
+          var RandomLineNumber = RandInt.Next(1, Lines.Length - 1);
+          var QuoteLine = Lines[RandomLineNumber];
+          var SplitQuoteLine = QuoteLine.Split('\t');
+          
+          // Tab separated file
+          // Field 0: Quote
+          // Field 1: Author
+          // Field 2: Url
+          // Field 3: Title
+          if (!SplitQuoteLine[0].EndsWith(".")
+              && !SplitQuoteLine[0].EndsWith("!")
+              && !SplitQuoteLine[0].EndsWith("?"))
+          {
+            SplitQuoteLine[0] += ".";
+          }
+
+          QuoteBodyTextBlock.Text = "\"" + SplitQuoteLine[0] + "\"";
+          QuoteAuthorTextBlock.Text = SplitQuoteLine[1];
+          TitleHyperlink.NavigateUri = new Uri(SplitQuoteLine[2]);
+          QuoteTitleTextBlock.Text = SplitQuoteLine[3];
+        }
+        catch (IOException ex)
+        {
+          LogTo.Warning(ex, $"IOException when trying to open {QuoteFile.FullPath}");
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, $"Exception caught while opening file {QuoteFile.FullPath}");
+        }
       }
     }
     #endregion

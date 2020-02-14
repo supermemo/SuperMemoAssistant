@@ -71,12 +71,17 @@
       
       <TabItem Header="Browse Plugins" Padding="4, 4" mah:ControlsHelper.HeaderFontSize="18">
       </TabItem>
-      
+
       <TabItem Header="General" Padding="4, 4" mah:ControlsHelper.HeaderFontSize="18">
         <controls:DynamicForm Model="{Binding Path=DataContext.CollectionConfig, ElementName=tcSettings}"
                               MaxWidth="250" />
       </TabItem>
-      
+
+      <TabItem Header="Logging" Padding="4, 4" mah:ControlsHelper.HeaderFontSize="18">
+        <controls:DynamicForm Model="{Binding Path=DataContext.CollectionConfig, ElementName=tcSettings}"
+                              MaxWidth="250" />
+      </TabItem>
+
       <TabItem Header="Layouts" Padding="4, 4" mah:ControlsHelper.HeaderFontSize="18">
         <settings:LayoutSettings />
       </TabItem>

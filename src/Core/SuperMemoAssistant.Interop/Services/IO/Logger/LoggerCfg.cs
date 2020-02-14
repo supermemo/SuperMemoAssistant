@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2020/01/23 08:17
-// Modified On:  2020/02/12 23:40
+// Modified On:  2020/02/13 21:01
 // Modified By:  Alexis
 
 #endregion
@@ -30,11 +30,13 @@
 
 
 
+using System.ComponentModel;
 using Serilog.Events;
+using SuperMemoAssistant.Sys.ComponentModel;
 
 namespace SuperMemoAssistant.Services.IO.Logger
 {
-  public class LoggerCfg
+  public class LoggerCfg : INotifyPropertyChangedEx
   {
     #region Properties & Fields - Public
 
@@ -42,6 +44,26 @@ namespace SuperMemoAssistant.Services.IO.Logger
     public bool          LogFirstChanceExceptions { get; set; }
     public bool          BugReportUserConsent     { get; set; } = false;
     public int           LogMaxSize               { get; set; } = 5242880;
+
+    #endregion
+
+
+
+
+    #region Properties Impl - Public
+
+    /// <inheritdoc />
+    public bool IsChanged { get; set; }
+
+    #endregion
+
+
+
+
+    #region Events
+
+    /// <inheritdoc />
+    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
   }

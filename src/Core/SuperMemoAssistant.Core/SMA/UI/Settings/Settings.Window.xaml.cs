@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/04/16 17:25
+// Created On:   2020/01/23 08:17
+// Modified On:  2020/02/13 21:03
 // Modified By:  Alexis
 
 #endregion
@@ -34,6 +34,8 @@ using System;
 using System.Windows;
 using MahApps.Metro.Controls;
 using SuperMemoAssistant.Extensions;
+using SuperMemoAssistant.Plugins;
+using SuperMemoAssistant.Services.IO.Logger;
 using SuperMemoAssistant.SMA.Configs;
 
 namespace SuperMemoAssistant.SMA.UI.Settings
@@ -67,6 +69,7 @@ namespace SuperMemoAssistant.SMA.UI.Settings
     #region Properties & Fields - Public
 
     public CollectionCfg CollectionConfig => Core.SMA.CollectionConfig;
+    public LoggerCfg     LoggerConfig     => Core.Logger.Config;
 
     #endregion
 
@@ -81,6 +84,14 @@ namespace SuperMemoAssistant.SMA.UI.Settings
 
       if (CollectionConfig.IsChanged)
         Core.SMA.SaveConfig(false);
+
+      if (LoggerConfig.IsChanged)
+      {
+        Core.Logger.ReloadConfig();
+        Core.SharedConfiguration.Save(LoggerConfig);
+
+        PluginManager.Instance.OnLoggerConfigUpdated();
+      }
 
       base.OnClosed(e);
     }

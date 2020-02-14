@@ -168,6 +168,7 @@
     <Compile Include="Interop\Plugins\ISMAPluginManager.cs" />
     <Compile Include="Interop\Plugins\PluginHost.Assembly.cs" />
     <Compile Include="Interop\Plugins\PluginHost.cs" />
+    <Compile Include="Interop\Plugins\PluginMessage.cs" />
     <Compile Include="Interop\SuperMemo\Content\Components\Base\ComponentSoundBase.cs" />
     <Compile Include="Interop\SuperMemo\Content\Components\Base\ComponentImageBase.cs" />
     <Compile Include="Interop\SuperMemo\Content\Components\Base\ComponentHtmlBase.cs" />

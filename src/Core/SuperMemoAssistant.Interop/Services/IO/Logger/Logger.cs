@@ -32,21 +32,24 @@
 
 using System;
 using System.Runtime.ExceptionServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using Anotar.Serilog;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
+using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Services.Configuration;
 
 namespace SuperMemoAssistant.Services.IO.Logger
 {
-  public class Logger
+  public sealed class Logger
   {
     #region Properties & Fields - Non-Public
 
-    protected LoggingLevelSwitch LevelSwitch { get; set; }
+    private LoggingLevelSwitch LevelSwitch { get; set; }
+    private bool IsLogFirstChangeRegistered {get;set;}= false;
 
     #endregion
 
@@ -93,29 +96,33 @@ namespace SuperMemoAssistant.Services.IO.Logger
       }
     }
 
-    public void ReloadConfig(ConfigurationServiceBase sharedCfg)
+    /// <summary>
+    /// Update logger settings with new <see cref="Config"/> parameters.
+    /// </summary>
+    public void ReloadConfig()
     {
-      var newConfig = LoggerFactory.LoadConfig(sharedCfg);
+      SetMinimumLevel(Config.LogLevel);
 
-      SetMinimumLevel(newConfig.LogLevel);
+      if (Config.LogFirstChanceExceptions)
+        RegisterFirstChanceExceptionLogger();
 
-      if (newConfig.LogFirstChanceExceptions != Config.LogFirstChanceExceptions)
-      {
-        if (newConfig.LogFirstChanceExceptions)
-          RegisterFirstChanceExceptionLogger();
+      else
+        UnregisterFirstChanceExceptionLogger();
+    }
 
-        else
-          UnregisterFirstChanceExceptionLogger();
-      }
+    internal async Task ReloadConfigFromFile(ConfigurationServiceBase cfgService)
+    {
+      Config = await cfgService.Load<LoggerCfg>();
 
-      Config = newConfig;
+      ReloadConfig();
     }
 
     public LogEventLevel SetMinimumLevel(LogEventLevel level)
     {
       var oldLevel = LevelSwitch.MinimumLevel;
-
       LevelSwitch.MinimumLevel = level;
+
+      LogTo.Information($"Logging level changed from {oldLevel.Name()} to {level.Name()}");
 
       return oldLevel;
     }
@@ -135,11 +142,19 @@ namespace SuperMemoAssistant.Services.IO.Logger
 
     private void RegisterFirstChanceExceptionLogger()
     {
+      if (IsLogFirstChangeRegistered)
+        return;
+
+      IsLogFirstChangeRegistered = true;
       AppDomain.CurrentDomain.FirstChanceException += LogFirstChanceException;
     }
 
     private void UnregisterFirstChanceExceptionLogger()
     {
+      if (IsLogFirstChangeRegistered == false)
+        return;
+
+      IsLogFirstChangeRegistered = false;
       AppDomain.CurrentDomain.FirstChanceException -= LogFirstChanceException;
     }
 

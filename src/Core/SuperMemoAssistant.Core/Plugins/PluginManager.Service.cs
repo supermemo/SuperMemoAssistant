@@ -170,6 +170,11 @@ namespace SuperMemoAssistant.Plugins
 
     #region Methods
 
+    public async Task<Dictionary<PluginInstance, bool>> OnLoggerConfigUpdated()
+    {
+      _runningPluginMap.Values.AsParallel().ForAll(p => p.Plugin.OnMessage(PluginMessage.OnLoggerConfigUpdated));
+    }
+
     public void UnregisterChannelType(string remoteServiceType,
                                       Guid   sessionGuid,
                                       bool   requireLock)

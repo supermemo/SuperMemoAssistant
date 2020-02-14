@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/13 13:55
-// Modified On:  2019/02/25 06:46
+// Created On:   2020/01/23 08:17
+// Modified On:  2020/02/13 21:34
 // Modified By:  Alexis
 
 #endregion
@@ -31,6 +31,7 @@
 
 
 using System;
+using SuperMemoAssistant.Sys.Remoting;
 
 namespace SuperMemoAssistant.Interop.Plugins
 {
@@ -42,9 +43,10 @@ namespace SuperMemoAssistant.Interop.Plugins
     string ChannelName     { get; }
     bool   HasSettings     { get; }
 
-    void OnInjected();
-    void OnServicePublished(string interfaceTypeName);
-    void OnServiceRevoked(string   interfaceTypeName);
-    void ShowSettings();
+    void               OnInjected();
+    void               OnServicePublished(string interfaceTypeName);
+    void               OnServiceRevoked(string   interfaceTypeName);
+    RemoteTask<object> OnMessage(int             msg, params object[] parameters);
+    void               ShowSettings();
   }
 }

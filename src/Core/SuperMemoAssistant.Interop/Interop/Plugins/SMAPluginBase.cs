@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2020/01/23 08:17
-// Modified On:  2020/02/13 00:24
+// Modified On:  2020/02/13 21:30
 // Modified By:  Alexis
 
 #endregion
@@ -48,6 +48,7 @@ using SuperMemoAssistant.Services.IO.HotKeys;
 using SuperMemoAssistant.Services.IO.Keyboard;
 using SuperMemoAssistant.Services.IO.Logger;
 using SuperMemoAssistant.Sys;
+using SuperMemoAssistant.Sys.Remoting;
 
 namespace SuperMemoAssistant.Interop.Plugins
 {
@@ -206,6 +207,24 @@ namespace SuperMemoAssistant.Interop.Plugins
     }
 
     /// <inheritdoc />
+    public virtual RemoteTask<object> OnMessage(int intMsg, params object[] parameters)
+    {
+      PluginMessage msg = (PluginMessage)intMsg;
+
+      switch (msg)
+      {
+        case PluginMessage.OnLoggerConfigUpdated:
+          return OnLoggerConfigUpdated();
+
+        default:
+          LogTo.Debug($"Received unknown message {intMsg}. Is plugin up to date ?");
+          break;
+      }
+
+      return Task.FromResult<object>(null);
+    }
+
+    /// <inheritdoc />
     public virtual void ShowSettings()
     {
       // Ignored -- override for desired behavior
@@ -217,6 +236,21 @@ namespace SuperMemoAssistant.Interop.Plugins
 
 
     #region Methods
+
+    private async Task<object> OnLoggerConfigUpdated()
+    {
+      try
+      {
+        await Svc.Logger.ReloadConfigFromFile(Svc.SharedConfiguration);
+
+        return true;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Warning(ex, "Exception caught while reloading logger config");
+        return false;
+      }
+    }
 
     [Conditional("DEBUG")]
     [Conditional("DEBUG_IN_PROD")]

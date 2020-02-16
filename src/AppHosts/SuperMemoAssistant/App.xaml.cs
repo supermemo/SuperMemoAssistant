@@ -180,7 +180,11 @@ namespace SuperMemoAssistant
         {
           await $"SMA failed to start. Please check the logs in '{SMAFileSystem.LogDir.FullPath}' for details.".ErrorMsgBox();
           Shutdown(SMAExitCodes.ExitCodeSMAStartupError);
+
+          return;
         }
+
+        await SMAInstaller.Instance.Update();
       }
       else
       {

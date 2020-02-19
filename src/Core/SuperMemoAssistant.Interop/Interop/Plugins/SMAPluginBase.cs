@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2020/01/23 08:17
-// Modified On:  2020/02/13 21:30
+// Modified On:  2020/02/17 18:04
 // Modified By:  Alexis
 
 #endregion
@@ -56,9 +55,6 @@ namespace SuperMemoAssistant.Interop.Plugins
     where TPlugin : SMAPluginBase<TPlugin>
   {
     #region Properties & Fields - Non-Public
-
-    private readonly string _channelName;
-
 
     private ConcurrentDictionary<string, (IpcServerChannel ipcServer, IDisposable disposable)> RegisteredServicesMap { get; } =
       new ConcurrentDictionary<string, (IpcServerChannel, IDisposable)>();
@@ -99,8 +95,8 @@ namespace SuperMemoAssistant.Interop.Plugins
         Svc.HotKeyManager        = HotKeyManager.Instance.Initialize(Svc.Configuration, Svc.KeyboardHotKey);
 
         // Create Plugin's IPC Server
-        _channelName = RemotingServicesEx.GenerateIpcServerChannelName();
-        RemotingServicesEx.CreateIpcServer<ISMAPlugin, SMAPluginBase<TPlugin>>(this, _channelName);
+        ChannelName = RemotingServicesEx.GenerateIpcServerChannelName();
+        RemotingServicesEx.CreateIpcServer<ISMAPlugin, SMAPluginBase<TPlugin>>(this, ChannelName);
 
         LogTo.Debug($"Plugin {AssemblyName} initialized");
       }
@@ -163,7 +159,7 @@ namespace SuperMemoAssistant.Interop.Plugins
     /// <inheritdoc />
     public string AssemblyVersion => GetType().GetAssemblyVersion();
     /// <inheritdoc />
-    public string ChannelName => _channelName;
+    public string ChannelName { get; }
     /// <inheritdoc />
     public virtual bool HasSettings => false;
 
@@ -207,17 +203,15 @@ namespace SuperMemoAssistant.Interop.Plugins
     }
 
     /// <inheritdoc />
-    public virtual RemoteTask<object> OnMessage(int intMsg, params object[] parameters)
+    public virtual RemoteTask<object> OnMessage(PluginMessage msg, params object[] parameters)
     {
-      PluginMessage msg = (PluginMessage)intMsg;
-
       switch (msg)
       {
         case PluginMessage.OnLoggerConfigUpdated:
           return OnLoggerConfigUpdated();
 
         default:
-          LogTo.Debug($"Received unknown message {intMsg}. Is plugin up to date ?");
+          LogTo.Debug($"Received unknown message {msg}. Is plugin up to date ?");
           break;
       }
 

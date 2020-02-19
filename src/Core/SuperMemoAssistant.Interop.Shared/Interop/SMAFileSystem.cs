@@ -50,16 +50,22 @@ namespace SuperMemoAssistant.Interop
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
         SMAConst.Name
       );
+    
+    public static DirectoryPath AppDataRootDir =>
+      Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+        SMAConst.Name
+      );
 
-    public static DirectoryPath LogDir => AppRootDir.Combine("Logs");
+    public static DirectoryPath LogDir => AppDataRootDir.Combine("Logs");
 
-    public static DirectoryPath ConfigDir => AppRootDir.Combine("Configs");
+    public static DirectoryPath ConfigDir => AppDataRootDir.Combine("Configs");
 
     public static DirectoryPath SharedConfigDir => ConfigDir.Combine("Shared");
 
-    public static DirectoryPath DataDir => AppRootDir.Combine("Data");
+    public static DirectoryPath DataDir => AppDataRootDir.Combine("Data");
 
-    public static DirectoryPath PluginDir => AppRootDir.Combine("Plugins");
+    public static DirectoryPath PluginDir => AppDataRootDir.Combine("Plugins");
 
     public static DirectoryPath PluginPackageDir => PluginDir.Combine("Packages");
 

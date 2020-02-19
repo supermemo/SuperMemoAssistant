@@ -40,6 +40,7 @@ using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.Plugins;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.SMA;
+using SuperMemoAssistant.Sys.Remoting;
 
 namespace SuperMemoAssistant.Plugins
 {
@@ -172,7 +173,33 @@ namespace SuperMemoAssistant.Plugins
 
     public async Task<Dictionary<PluginInstance, bool>> OnLoggerConfigUpdated()
     {
-      _runningPluginMap.Values.AsParallel().ForAll(p => p.Plugin.OnMessage(PluginMessage.OnLoggerConfigUpdated));
+      try
+      {
+        var plugins = new List<PluginInstance>(_runningPluginMap.Values);
+        var remoteTasks = plugins.AsParallel().Select(p => p.Plugin.OnMessage(PluginMessage.OnLoggerConfigUpdated));
+
+        // ReSharper disable once ConstantConditionalAccessQualifier
+        var results = (await RemoteTask.WhenAll(remoteTasks))?.Cast<bool>()?.ToList();
+
+        if (results == null)
+          return null;
+
+        if (results.Count != plugins.Count)
+          throw new InvalidOperationException($"results.Count is {results.Count} while plugins.Count is {plugins.Count}");
+
+        Dictionary<PluginInstance, bool> pluginCallSuccessMap = new Dictionary<PluginInstance, bool>();
+
+        for (int i = 0; i < results.Count; i++)
+          pluginCallSuccessMap[plugins[i]] = results[i];
+
+        return pluginCallSuccessMap;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "Exception thrown in OnLoggerConfigUpdated");
+
+        return null;
+      }
     }
 
     public void UnregisterChannelType(string remoteServiceType,

@@ -112,8 +112,7 @@ namespace SuperMemoAssistant.Plugins
 
     #region Methods
 
-    private async Task OnSMStarted(object        sender,
-                                   SMProcessArgs e)
+    private async Task OnSMStarted(object sender, SMProcessArgs e)
     {
       LogTo.Debug($"Initializing {GetType().Name}");
 
@@ -126,12 +125,13 @@ namespace SuperMemoAssistant.Plugins
       await StartPlugins();
     }
 
-    private async Task OnSMStopped(object        sender,
-                                   SMProcessArgs e)
+    private void OnSMStopped(object        sender, SMProcessArgs e)
     {
       LogTo.Debug($"Cleaning up {GetType().Name}");
 
-      await StopPlugins();
+      StopPlugins().Wait();
+      
+      LogTo.Debug($"Cleaning up {GetType().Name}... Done");
     }
 
     public async Task StartPlugins()

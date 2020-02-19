@@ -38,7 +38,6 @@ using System.Runtime.Remoting;
 using System.Threading.Tasks;
 using EasyHook;
 using Sentry;
-using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.SMA.Hooks;
 using SuperMemoAssistant.SuperMemo;
 
@@ -145,12 +144,12 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         return assembly;
 
       var assemblyName = e.Name.Split(',').First() + ".dll";
-      var assemblyPath = SMAExecutableInfo.Instance.DirectoryPath.CombineFile(assemblyName);
-
-      if (assemblyPath.Exists())
+      var assemblyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, assemblyName);
+      
+      if (File.Exists(assemblyPath))
         try
         {
-          return Assembly.LoadFrom(assemblyPath.FullPath);
+          return Assembly.LoadFrom(assemblyPath);
         }
         catch (Exception ex)
         {
@@ -158,11 +157,10 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
           throw;
         }
-
-      OnException(new FileNotFoundException($"Assembly {assemblyName} could not be found at {assemblyPath}"));
+      
+      OnException(new FileNotFoundException($"Assembly {assemblyName} could not be found in {assemblyPath}"));
 
       return null;
-
     }
 
     #endregion

@@ -48,8 +48,7 @@ namespace SuperMemoAssistant.SMA
       try
       {
         if (OnSMStartingEvent != null)
-          await OnSMStartingEvent.InvokeAsync(this,
-                                              new SMEventArgs(_sm));
+          await OnSMStartingEvent.InvokeAsync(this, new SMEventArgs(_sm)).ConfigureAwait(false);
       }
       catch (Exception ex)
       {
@@ -62,14 +61,14 @@ namespace SuperMemoAssistant.SMA
     {
       try
       {
-        await SaveConfig(false);
+        await SaveConfig(false).ConfigureAwait(false);
 
         SMAUI.Initialize();
 
         if (OnSMStartedEvent != null)
           await OnSMStartedEvent.InvokeAsync(
             this,
-            new SMProcessArgs(_sm, SMProcess.Native));
+            new SMProcessArgs(_sm, SMProcess.Native)).ConfigureAwait(false);
       }
       catch (Exception ex)
       {
@@ -79,12 +78,11 @@ namespace SuperMemoAssistant.SMA
       }
     }
 
-    public async Task OnSMStopped()
+    public void OnSMStopped()
     {
       _sm = null;
 
-      if (OnSMStoppedEvent != null)
-        await OnSMStoppedEvent.InvokeAsync(this, null);
+      OnSMStoppedEvent?.Invoke(this, null);
     }
 
     private void OnSuperMemoWindowsAvailable()
@@ -101,7 +99,7 @@ namespace SuperMemoAssistant.SMA
 
     public event AsyncEventHandler<SMProcessArgs> OnSMStartedEvent;
     public event AsyncEventHandler<SMEventArgs>   OnSMStartingEvent;
-    public event AsyncEventHandler<SMProcessArgs> OnSMStoppedEvent;
+    public event EventHandler<SMProcessArgs> OnSMStoppedEvent;
 
     #endregion
   }

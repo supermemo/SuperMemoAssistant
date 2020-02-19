@@ -5,9 +5,11 @@
     <!-- version will be replaced by MSBuild -->
     <version>0.0.0.0</version>
     <title>SuperMemo Assistant</title>
-    <authors>Alexis,SuperMemo.wiki</authors>
+    <authors>SuperMemo.wiki</authors>
     <description>SuperMemo Assistant supercharges your SuperMemo with powerful features like Incremental PDF, import from Chrome and Firefox, and more.</description>
-    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <iconUrl>https://github.com/supermemo/Documentation/raw/master/docs/sma/content/images/icons/robot.ico</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <copyright></copyright>
     <dependencies />
   </metadata>

@@ -35,11 +35,13 @@ using System.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 using Anotar.Serilog;
+using Nito.AsyncEx;
 using Serilog;
 using Squirrel;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Models;
 using SuperMemoAssistant.Services.IO.Logger;
+using SuperMemoAssistant.Sys.Windows.Net;
 
 namespace SuperMemoAssistant.Installer
 {
@@ -60,7 +62,7 @@ namespace SuperMemoAssistant.Installer
 
     #region Properties & Fields - Non-Public
 
-    private AsyncLock _lock = new AsyncLock();
+    private readonly AsyncSemaphore _semaphore = new AsyncSemaphore(1);
 
     #endregion
 
@@ -142,13 +144,13 @@ namespace SuperMemoAssistant.Installer
 
       try
       {
-        CancellationTokenSource cts = new CancellationTokenSource(0);
-
-        if (await AsyncLock.LockAsync(cts) == false)
+        if (Wininet.HasNetworking() == false)
           return;
+      
+        CancellationTokenSource cts = new CancellationTokenSource(0);
+        cts.Cancel();
 
-        // Check connectivity
-
+        using (await _semaphore.LockAsync(cts.Token))
         using (var updateMgr = CreateUpdateMgr())
         {
           State = SMAUpdateState.Fetching;
@@ -182,6 +184,7 @@ namespace SuperMemoAssistant.Installer
           State = SMAUpdateState.Updated;
         }
       }
+      catch (TaskCanceledException) {}
       catch (Exception ex) // TODO: Update Squirrel UpdateManager to send sub-classed Exceptions
       {
         LogTo.Warning(ex, $"An exception was caught while {State.Name().ToLower()} update");
@@ -189,7 +192,7 @@ namespace SuperMemoAssistant.Installer
       }
       finally
       {
-        AsyncLock.Release();
+        _semaphore.Release();
       }
     }
 

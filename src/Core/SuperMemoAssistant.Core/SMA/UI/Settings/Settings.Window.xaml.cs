@@ -90,7 +90,7 @@ namespace SuperMemoAssistant.SMA.UI.Settings
         Core.Logger.ReloadConfig();
         Core.SharedConfiguration.Save(LoggerConfig);
 
-        PluginManager.Instance.OnLoggerConfigUpdated();
+        PluginManager.Instance.OnLoggerConfigUpdated().RunAsync(); // TODO: Display a notification when updating failed
       }
 
       base.OnClosed(e);

@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2020/01/23 08:17
-// Modified On:  2020/02/13 21:34
+// Modified On:  2020/02/17 17:23
 // Modified By:  Alexis
 
 #endregion
@@ -46,7 +45,7 @@ namespace SuperMemoAssistant.Interop.Plugins
     void               OnInjected();
     void               OnServicePublished(string interfaceTypeName);
     void               OnServiceRevoked(string   interfaceTypeName);
-    RemoteTask<object> OnMessage(int             msg, params object[] parameters);
+    RemoteTask<object> OnMessage(PluginMessage   msg, params object[] parameters);
     void               ShowSettings();
   }
 }

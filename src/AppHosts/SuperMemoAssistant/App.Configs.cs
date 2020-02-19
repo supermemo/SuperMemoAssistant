@@ -72,7 +72,7 @@ namespace SuperMemoAssistant
     {
       try
       {
-        return await SMA.Core.Configuration.Load<NativeDataCfg>(SMAFileSystem.AppRootDir)
+        return await SMA.Core.Configuration.Load<NativeDataCfg>(SMAExecutableInfo.Instance.DirectoryPath)
                         .ConfigureAwait(false);
       }
       catch (SMAException)

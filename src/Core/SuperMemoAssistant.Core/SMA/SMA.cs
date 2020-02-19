@@ -34,7 +34,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Anotar.Serilog;
-using AsyncEvent;
 using Process.NET;
 using SuperMemoAssistant.Exceptions;
 using SuperMemoAssistant.Interop.SuperMemo;
@@ -149,16 +148,6 @@ namespace SuperMemoAssistant.SMA
 
         _sm?.Dispose();
         _sm = null;
-
-        try
-        {
-          if (OnSMStoppedEvent != null)
-            await OnSMStoppedEvent.InvokeAsync(this, new SMProcessArgs(_sm, null)).ConfigureAwait(true);
-        }
-        catch (Exception pluginEx)
-        {
-          LogTo.Error(pluginEx, "Exception while notifying plugins OnSMStoppedEvent.");
-        }
 
         // TODO: Handle exception
 

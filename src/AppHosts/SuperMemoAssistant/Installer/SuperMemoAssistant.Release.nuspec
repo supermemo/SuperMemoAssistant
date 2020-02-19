@@ -7,7 +7,7 @@
     <title>SuperMemo Assistant</title>
     <authors>Alexis,SuperMemo.wiki</authors>
     <description>SuperMemo Assistant supercharges your SuperMemo with powerful features like Incremental PDF, import from Chrome and Firefox, and more.</description>
-    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <copyright></copyright>
     <dependencies />
   </metadata>

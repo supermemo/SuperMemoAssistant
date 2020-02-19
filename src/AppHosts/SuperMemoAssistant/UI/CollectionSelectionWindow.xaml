@@ -13,7 +13,7 @@
                  Title="Collection Selection"
                  TitleAlignment="Left"
                  TitleCharacterCasing="Normal"
-                 Icon="Resources/robot-24.ico"
+                 Icon="../Resources/robot-24.ico"
                  IconScalingMode="NoScaleSmallerFrame"
                  WindowStartupLocation="CenterScreen"
                  ResizeMode="CanResizeWithGrip"

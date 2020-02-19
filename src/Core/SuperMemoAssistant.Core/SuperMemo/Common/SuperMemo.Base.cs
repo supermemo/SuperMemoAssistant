@@ -32,8 +32,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Anotar.Serilog;
+using AsyncEvent;
 using Process.NET;
 using Process.NET.Memory;
 using SuperMemoAssistant.Interop.SuperMemo;
@@ -116,18 +118,16 @@ namespace SuperMemoAssistant.SuperMemo.Common
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "Failed to cleanup SMHookEngine");
+        LogTo.Error(ex, "Failed to cleanup SMHookEngine");
       }
 
       try
       {
-        Core.SMA.OnSMStopped().Wait();
+        Core.SMA.OnSMStopped();
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "An exception occured in one of OnSMStoppedEvent handlers");
+        LogTo.Error(ex, "An exception occured in one of OnSMStoppedEvent handlers");
       }
     }
 

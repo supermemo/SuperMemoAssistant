@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/23 01:32
-// Modified On:  2019/02/23 14:37
+// Modified On:  2020/02/17 17:46
 // Modified By:  Alexis
 
 #endregion
@@ -31,109 +30,18 @@
 
 
 using System;
-using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
 using Anotar.Serilog;
-using Nito.AsyncEx;
 
 namespace SuperMemoAssistant.Sys.Remoting
 {
-  public static class RemoteTaskEx
-  {
-    #region Methods
-
-    public static Task GetTask(this RemoteTask remoteTask)
-    {
-      AsyncManualResetEvent taskCompletedEvent = new AsyncManualResetEvent();
-
-      void Signal(Exception ex)
-      {
-        if (ex != null)
-        {
-          LogTo.Warning(ex, "Exception caught");
-          throw ex;
-        }
-
-        taskCompletedEvent.Set();
-      }
-
-      async Task WaitForSignal()
-      {
-        await taskCompletedEvent.WaitAsync();
-      }
-
-      remoteTask.SetCallback(new ActionProxy<Exception>(Signal));
-
-      return Task.Run(WaitForSignal);
-    }
-
-    public static TaskAwaiter GetAwaiter(this RemoteTask remoteTask)
-    {
-      return remoteTask.GetTask().GetAwaiter();
-    }
-    
-    public static RemoteTask ConfigureRemoteTask(this Task task, Action<Exception> onExceptionHandler)
-    {
-      return new RemoteTask(task, onExceptionHandler);
-    }
-
-    public static Task<T> GetTask<T>(this RemoteTask<T> remoteTask)
-    {
-      AsyncManualResetEvent taskCompletedEvent = new AsyncManualResetEvent();
-      T                     ret                = default;
-
-      void Signal(T         result,
-                  Exception ex)
-      {
-        if (ex != null)
-        {
-          LogTo.Warning(ex, "Exception caught");
-          throw ex;
-        }
-
-        ret = result;
-        taskCompletedEvent.Set();
-      }
-
-      async Task<T> WaitForSignal()
-      {
-        var cts = new CancellationTokenSource(60000);
-        await taskCompletedEvent.WaitAsync(cts.Token);
-
-        return ret;
-      }
-
-      remoteTask.SetCallback(new ActionProxy<T, Exception>(Signal));
-
-      return Task.Run(WaitForSignal);
-    }
-
-    public static TaskAwaiter<T> GetAwaiter<T>(this RemoteTask<T> remoteTask)
-    {
-      return remoteTask.GetTask().GetAwaiter();
-    }
-
-    public static T GetResult<T>(this RemoteTask<T> remoteTask)
-    {
-      return remoteTask.GetAwaiter().GetResult();
-    }
-    
-    public static RemoteTask<T> ConfigureRemoteTask<T>(this Task<T> task, Action<Exception> onExceptionHandler)
-    {
-      return new RemoteTask<T>(task, onExceptionHandler);
-    }
-
-    #endregion
-  }
-
-  public class RemoteTask : MarshalByRefObject
+  public partial class RemoteTask : MarshalByRefObject
   {
     #region Properties & Fields - Non-Public
 
-    private readonly Task _task;
+    private readonly Task              _task;
     private readonly Action<Exception> _onExceptionHandler;
-    private          bool _calledCallback = false;
+    private          bool              _calledCallback = false;
 
     private ActionProxy<Exception> _completedCallback;
 
@@ -146,7 +54,7 @@ namespace SuperMemoAssistant.Sys.Remoting
 
     public RemoteTask(Task task, Action<Exception> onExceptionHandler = null)
     {
-      _task = task;
+      _task               = task;
       _onExceptionHandler = onExceptionHandler;
       task.ContinueWith(OnTaskCompleted);
     }
@@ -172,7 +80,7 @@ namespace SuperMemoAssistant.Sys.Remoting
       {
         if (_calledCallback || _completedCallback == null)
           return;
-        
+
         if (completedTask.Exception != null)
         {
           if (_onExceptionHandler != null)
@@ -186,7 +94,10 @@ namespace SuperMemoAssistant.Sys.Remoting
         {
           _completedCallback.Invoke(completedTask.Exception);
         }
-        catch { /* ignored */ }
+        catch
+        {
+          /* ignored */
+        }
 
         _calledCallback = true;
       }
@@ -204,9 +115,9 @@ namespace SuperMemoAssistant.Sys.Remoting
   {
     #region Properties & Fields - Non-Public
 
-    private readonly Task<T> _task;
+    private readonly Task<T>           _task;
     private readonly Action<Exception> _onExceptionHandler;
-    private          bool    _calledCallback = false;
+    private          bool              _calledCallback = false;
 
     private ActionProxy<T, Exception> _completedCallback;
 
@@ -219,7 +130,7 @@ namespace SuperMemoAssistant.Sys.Remoting
 
     public RemoteTask(Task<T> task, Action<Exception> onExceptionHandler = null)
     {
-      _task = task;
+      _task               = task;
       _onExceptionHandler = onExceptionHandler;
       task.ContinueWith(OnTaskCompleted);
     }
@@ -249,7 +160,7 @@ namespace SuperMemoAssistant.Sys.Remoting
         T result = completedTask.Status == TaskStatus.RanToCompletion
           ? completedTask.Result
           : default;
-        
+
         if (completedTask.Exception != null)
         {
           if (_onExceptionHandler != null)

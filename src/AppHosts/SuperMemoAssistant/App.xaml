@@ -16,7 +16,7 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Olive.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
 
-        <ResourceDictionary Source="SMATaskbarIcon.xaml" />
+        <ResourceDictionary Source="UI/SMATaskbarIcon.xaml" />
       </ResourceDictionary.MergedDictionaries>
       
       <Style TargetType="{x:Type ListBoxItem}">

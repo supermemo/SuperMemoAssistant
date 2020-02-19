@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/10 11:47
+// Modified On:  2020/02/17 21:40
 // Modified By:  Alexis
 
 #endregion
@@ -33,7 +33,6 @@ using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Anotar.Serilog;
-using Nito.AsyncEx;
 using Process.NET.Memory;
 using Process.NET.Types;
 using SuperMemoAssistant.Extensions;
@@ -496,7 +495,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       });
     }
 
-    private Task OnSMStoppedEvent(object        sender,
+    private void OnSMStoppedEvent(object        sender,
                                   SMProcessArgs e)
     {
       LogTo.Debug($"Cleaning up {GetType().Name}");
@@ -512,7 +511,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       CurrentHookIdPtr         = null;
       LearningModePtr          = null;
 
-      return TaskConstants.Completed;
+      LogTo.Debug($"Cleaning up {GetType().Name}... Done");
     }
 
     private bool OnWindowCreated(byte[] newVal)

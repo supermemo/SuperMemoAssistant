@@ -31,3 +31,6 @@
 [submodule "src/Plugins/SuperMemoAssistant.Plugins.Import.BrowserExtension"]
 	path = src/Plugins/SuperMemoAssistant.Plugins.Import.BrowserExtension
 	url = https://github.com/supermemo/SuperMemoAssistant.Plugins.Import.BrowserPlugin.git
+[submodule "libs/Squirrel.Windows"]
+	path = libs/Squirrel.Windows
+	url = https://github.com/supermemo/Squirrel.Windows.git

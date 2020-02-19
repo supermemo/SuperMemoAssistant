@@ -40,7 +40,7 @@ namespace SuperMemoAssistant.Interop
   {
     #region Constants & Statics
 
-    private const string EntryAssemblyRegexPattern = @"SuperMemoAssistant\\app-([\d.]+|dev)\\(SuperMemoAssistant(?:\.PluginHost)?.exe)";
+    private const string EntryAssemblyRegexPattern = @"/app-([\d.]+|dev)/(SuperMemoAssistant(?:\.PluginHost)?.exe)";
 
     public static SMAExecutableInfo Instance { get; } = new SMAExecutableInfo();
 
@@ -54,7 +54,7 @@ namespace SuperMemoAssistant.Interop
     protected SMAExecutableInfo()
     {
       var entryAssemblyFilePath = new FilePath(Assembly.GetEntryAssembly().Location);
-      var regexPattern          = SMAFileSystem.AppRootDir.CombineFile(EntryAssemblyRegexPattern).FullPath;
+      var regexPattern          = SMAFileSystem.AppRootDir.FullPath + EntryAssemblyRegexPattern;
       var regex                 = new Regex(regexPattern);
       var match                 = regex.Match(entryAssemblyFilePath.FullPath);
 

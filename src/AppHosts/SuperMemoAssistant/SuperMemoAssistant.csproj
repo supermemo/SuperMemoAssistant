@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\packages\squirrel.windows.1.9.1\build\squirrel.windows.props" Condition="Exists('..\..\..\packages\squirrel.windows.1.9.1\build\squirrel.windows.props')" />
+  <Import Project="..\..\..\packages\SuperMemoAssistant.Installer.1.9.2.7\build\SuperMemoAssistant.Installer.props" Condition="Exists('..\..\..\packages\SuperMemoAssistant.Installer.1.9.2.7\build\SuperMemoAssistant.Installer.props')" />
   <Import Project="..\..\..\packages\PropertyChanged.Fody.3.2.5\build\PropertyChanged.Fody.props" Condition="Exists('..\..\..\packages\PropertyChanged.Fody.3.2.5\build\PropertyChanged.Fody.props')" />
   <Import Project="..\..\..\packages\ModuleInit.Fody.2.1.0\build\ModuleInit.Fody.props" Condition="Exists('..\..\..\packages\ModuleInit.Fody.2.1.0\build\ModuleInit.Fody.props')" />
   <Import Project="..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props" Condition="Exists('..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props')" />
@@ -61,7 +61,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-InProd|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug-InProd\</OutputPath>
+    <OutputPath>C:\Users\Lila\AppData\Local\SuperMemoAssistant\app-dev\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -153,8 +153,20 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Nito.AsyncEx.Coordination, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Nito.AsyncEx.Coordination.5.0.0\lib\netstandard2.0\Nito.AsyncEx.Coordination.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Tasks, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Nito.AsyncEx.Tasks.5.0.0\lib\netstandard2.0\Nito.AsyncEx.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.Collections.Deque, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Nito.Collections.Deque.1.0.4\lib\netstandard2.0\Nito.Collections.Deque.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.Disposables, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Nito.Disposables.2.0.1\lib\net461\Nito.Disposables.dll</HintPath>
+    </Reference>
     <Reference Include="NuGet.Squirrel, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\squirrel.windows.1.9.1\lib\Net45\NuGet.Squirrel.dll</HintPath>
+      <HintPath>..\..\..\packages\SuperMemoAssistant.Installer.1.9.2.7\lib\Net45\NuGet.Squirrel.dll</HintPath>
     </Reference>
     <Reference Include="PropertyChanged, Version=3.2.5.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\PropertyChanged.Fody.3.2.5\lib\net40\PropertyChanged.dll</HintPath>
@@ -180,8 +192,8 @@
     <Reference Include="Splat, Version=1.6.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Splat.1.6.2\lib\Net45\Splat.dll</HintPath>
     </Reference>
-    <Reference Include="Squirrel, Version=1.9.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\squirrel.windows.1.9.1\lib\Net45\Squirrel.dll</HintPath>
+    <Reference Include="Squirrel, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\SuperMemoAssistant.Installer.1.9.2.7\lib\Net45\Squirrel.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -329,7 +341,17 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\robot-flip.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Redists\msvcr110.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Redists\vcruntime140.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="..\..\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -340,26 +362,37 @@
     <Error Condition="!Exists('..\..\..\packages\ModuleInit.Fody.2.1.0\build\ModuleInit.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\ModuleInit.Fody.2.1.0\build\ModuleInit.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Fody.6.1.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.6.1.0\build\Fody.targets'))" />
     <Error Condition="!Exists('..\..\..\packages\PropertyChanged.Fody.3.2.5\build\PropertyChanged.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\PropertyChanged.Fody.3.2.5\build\PropertyChanged.Fody.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\squirrel.windows.1.9.1\build\squirrel.windows.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\squirrel.windows.1.9.1\build\squirrel.windows.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\squirrel.windows.1.9.1\build\squirrel.windows.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\squirrel.windows.1.9.1\build\squirrel.windows.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\SuperMemoAssistant.Installer.1.9.2.7\build\SuperMemoAssistant.Installer.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\SuperMemoAssistant.Installer.1.9.2.7\build\SuperMemoAssistant.Installer.props'))" />
+    <Error Condition="!Exists('..\..\..\packages\SuperMemoAssistant.Installer.1.9.2.7\build\SuperMemoAssistant.Installer.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\SuperMemoAssistant.Installer.1.9.2.7\build\SuperMemoAssistant.Installer.targets'))" />
   </Target>
   <Target Name="PackageDebug" Condition=" '$(Configuration)' == 'Debug-InProd'">
-    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+    <PropertyGroup>
+      <Squirrel>$(SquirrelToolsPath)\Squirrel.exe</Squirrel>
+      <NuGet>$(SolutionDir)tools\nuget.exe</NuGet>
+      <ReleaseDir>$(SolutionDir)releases</ReleaseDir>
+      <OutDir>$(SolutionDir)builds\</OutDir>
+      <SMADir>$(LocalAppData)\SuperMemoAssistant\app-dev</SMADir>
+      <SMAExe>$(SMADir)\SuperMemoAssistant.exe</SMAExe>
+      <SMAResources>$(ProjectDir)Resources\</SMAResources>
+    </PropertyGroup>
+    <MakeDir Directories="$(OutDir)" Condition="!Exists('$(OutDir)')" />
+    <GetAssemblyIdentity AssemblyFiles="$(SMAExe)">
       <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
     </GetAssemblyIdentity>
-    <Exec Command="nuget pack SuperMemoAssistant.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Debug-InProd -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
-    <Exec Command="squirrel --releasify $(OutDir)SuperMemoAssistant.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg --no-msi --framework-version=472 --setupIcon=Resource\robot-24.ico --baseUrl=sma/" />
+    <Exec Command="$(NuGet) pack Installer\SuperMemoAssistant.Debug.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Debug-InProd -OutputDirectory $(OutDir) -BasePath $(SMADir)" />
+    <Exec Command="$(Squirrel) ^&#xD;&#xA;    --releasify=$(OutDir)SuperMemoAssistant.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(4)).nupkg ^&#xD;&#xA;    --releaseDir=$(ReleaseDir) ^&#xD;&#xA;    --baseUrl=https://releases.supermemo.wiki/sma/ ^&#xD;&#xA;    --no-msi ^&#xD;&#xA;    --framework-version=472 ^&#xD;&#xA;    --setupIcon=$(SMAResources)robot-24.ico ^&#xD;&#xA;    --loadingGif=$(SMAResources)robot-flip.gif" />
   </Target>
   <Target Name="PackageRelease" Condition=" '$(Configuration)' == 'Release'">
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
       <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
     </GetAssemblyIdentity>
     <Exec Command="nuget pack SuperMemoAssistant.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
-    <Exec Command="squirrel --releasify $(OutDir)SuperMemoAssistant.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg --no-msi --framework-version=472 --setupIcon=Resource\robot-24.ico --baseUrl=sma/" />
+    <Exec Command="squirrel --releasify $(OutDir)SuperMemoAssistant.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg --no-msi --framework-version=472 --setupIcon=.\Resource\robot-24.ico --baseUrl=sma/ -g .\Resources\robot-flip.gif" />
   </Target>
   <Import Project="..\..\..\packages\Fody.6.1.0\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.6.1.0\build\Fody.targets')" />
-  <Import Project="..\..\..\packages\squirrel.windows.1.9.1\build\squirrel.windows.targets" Condition="Exists('..\..\..\packages\squirrel.windows.1.9.1\build\squirrel.windows.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /h /i /d /c /k /e /r /y "$(TargetDir)*" "%25LocalAppData%25\SuperMemoAssistant\app-dev\"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\..\..\packages\SuperMemoAssistant.Installer.1.9.2.7\build\SuperMemoAssistant.Installer.targets" Condition="Exists('..\..\..\packages\SuperMemoAssistant.Installer.1.9.2.7\build\SuperMemoAssistant.Installer.targets')" />
 </Project>

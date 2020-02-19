@@ -72,7 +72,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     public virtual void Dispose()
     {
-      OnSMStopped(null, null).Wait();
+      OnSMStopped(null, null);
     }
 
     #endregion
@@ -138,22 +138,22 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
       CommitFromFiles();
     }
 
-    private async Task OnSMStarting(object      sender,
-                                    SMEventArgs e)
+    private async Task OnSMStarting(object sender, SMEventArgs e)
     {
       LogTo.Debug($"Initializing {GetType().Name}");
 
-      await Task.Run((Action)Initialize);
+      await Task.Run((Action)Initialize).ConfigureAwait(false);
     }
 
-    private async Task OnSMStopped(object        sender,
-                                   SMProcessArgs e)
+    private void OnSMStopped(object sender, SMProcessArgs e)
     {
       LogTo.Debug($"Cleaning up {GetType().Name}");
 
       FileHandles.Clear();
 
-      await Task.Run((Action)Cleanup);
+      Cleanup();
+
+      LogTo.Debug($"Cleaning up {GetType().Name}... Done");
     }
 
     #endregion

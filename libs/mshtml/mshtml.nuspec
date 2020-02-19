@@ -1,0 +1,24 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <version>7.0.3300.1</version>
+    <authors>Microsoft</authors>
+    <owners>SuperMemo</owners>
+    <licenseUrl>https://www.microsoft.com/useterms</licenseUrl>
+    <projectUrl>https://github.com/supermemo/SuperMemoAssistant</projectUrl>
+
+    <id>SuperMemoAssistant.mshtml</id>
+    <title>Microsoft mshtml for SuperMemo Assistant</title>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A convenience nuget package to help SMA developers get started more easily</description>
+    <copyright>Copyright Microsoft© 2020</copyright>
+	
+    <dependencies>
+      <group targetFramework="net40">
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="Microsoft.mshtml.dll" target="lib\Net40" />
+  </files>
+</package>

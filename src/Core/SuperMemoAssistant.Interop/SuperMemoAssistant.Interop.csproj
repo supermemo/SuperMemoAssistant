@@ -59,6 +59,10 @@
     <Reference Include="Ben.Demystifier, Version=0.1.0.0, Culture=neutral, PublicKeyToken=a6d206e05440431a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Ben.Demystifier.0.1.4\lib\net45\Ben.Demystifier.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\..\..\packages\SuperMemoAssistant.mshtml.7.0.3300.1\lib\Net40\Microsoft.mshtml.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -218,6 +222,8 @@
     <Compile Include="Sys\Remoting\RemoteCancellationToken.cs" />
     <Compile Include="Sys\Remoting\RemoteCancellationTokenSource.cs" />
     <Compile Include="Sys\Remoting\RemoteTask.cs" />
+    <Compile Include="Sys\Remoting\RemoteTask.Static.cs" />
+    <Compile Include="Sys\Remoting\RemoteTaskEx.cs" />
     <Compile Include="Sys\Threading\DelayedTask.cs" />
     <Compile Include="Sys\Windows\Data\ElementIconConverter.cs" />
     <Compile Include="Sys\Windows\Data\NegateBooleanConverter.cs" />
@@ -322,6 +328,7 @@
     <Compile Include="Sys\Security\Cryptography\Crc32.cs" />
     <Compile Include="Sys\PerpetualMarshalByRefObject.cs" />
     <Compile Include="Sys\Span.cs" />
+    <Compile Include="Sys\Windows\Net\Wininet.cs" />
     <Compile Include="Sys\Windows\Search\WindowsSearch.cs" />
     <Compile Include="Sys\Windows\Search\WindowsSearchKind.cs" />
     <Compile Include="Sys\Windows\Search\WindowsSearchResult.cs" />
@@ -356,17 +363,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="MSHTML">
-      <Guid>{3050F1C5-98B5-11CF-BB82-00AA00BDCE0B}</Guid>
-      <VersionMajor>4</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Sys\UIAutomation\" />

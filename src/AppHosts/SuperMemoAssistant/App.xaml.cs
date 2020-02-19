@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2020/01/23 08:17
-// Modified On:  2020/02/12 22:29
+// Modified On:  2020/02/17 21:40
 // Modified By:  Alexis
 
 #endregion
@@ -31,7 +30,6 @@
 
 
 using System;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using Anotar.Serilog;
@@ -41,11 +39,9 @@ using SuperMemoAssistant.Installer;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Models;
-using SuperMemoAssistant.PluginHost;
 using SuperMemoAssistant.Services.UI.Extensions;
 using SuperMemoAssistant.Setup;
 using SuperMemoAssistant.SMA.Utils;
-using SuperMemoAssistant.Sys.IO;
 using SuperMemoAssistant.UI;
 
 namespace SuperMemoAssistant
@@ -123,6 +119,11 @@ namespace SuperMemoAssistant
       // Load system configs
       if (await LoadConfigs(out var nativeDataCfg, out var startupCfg) == false)
       {
+        errMsg =
+          $"At least one essential config file could not be loaded: nativeDataCfg ? {nativeDataCfg == null} ; startupCfg ? {startupCfg == null}";
+        LogTo.Warning(errMsg);
+        await errMsg.ErrorMsgBox();
+
         Shutdown(SMAExitCodes.ExitCodeConfigError);
         return;
       }
@@ -136,7 +137,7 @@ namespace SuperMemoAssistant
 
         if (smFinder.DialogResult == null || smFinder.DialogResult == false)
         {
-          LogTo.Warning("No valid SM executable file path defined. SMA cannot run.");
+          LogTo.Warning(errMsg);
 
           Shutdown(SMAExitCodes.ExitCodeSMExeError);
           return;
@@ -174,7 +175,7 @@ namespace SuperMemoAssistant
       // If a collection was defined, start SMA
       if (smCollection != null)
       {
-        SMA.Core.SMA.OnSMStoppedEvent += Instance_OnSMStoppedEvent;
+        SMA.Core.SMA.OnSMStoppedEvent += OnSMStoppedEvent;
 
         if (await SMA.Core.SMA.Start(nativeDataCfg, startupCfg, smCollection).ConfigureAwait(true) == false)
         {
@@ -184,7 +185,8 @@ namespace SuperMemoAssistant
           return;
         }
 
-        await SMAInstaller.Instance.Update();
+        if (SMAExecutableInfo.Instance.IsDev == false)
+          await SMAInstaller.Instance.Update();
       }
       else
       {
@@ -192,10 +194,18 @@ namespace SuperMemoAssistant
       }
     }
 
-    private Task Instance_OnSMStoppedEvent(object        sender,
-                                           SMProcessArgs e)
+    private void OnSMStoppedEvent(object sender, SMProcessArgs e)
     {
-      return Dispatcher.InvokeAsync(Shutdown).Task;
+      try
+      {
+        LogTo.Debug($"Cleaning up {GetType().Name}");
+
+        Dispatcher.Invoke(Shutdown);
+      }
+      finally
+      {
+        LogTo.Debug($"Cleaning up {GetType().Name}... Done");
+      }
     }
 
     private bool CheckSMALocation(out string error)

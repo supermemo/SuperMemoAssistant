@@ -65,7 +65,6 @@ namespace SuperMemoAssistant.Services.IO.Logger
       LoggerConfigPredicate configPredicate = null)
     {
       var loggerConfig = new LoggerConfiguration()
-                         .MinimumLevel.ControlledBy(levelSwitch)
                          .Enrich.WithExceptionDetails()
                          .Enrich.WithDemystifiedStackTraces()
                          .WriteTo.Debug(outputTemplate: OutputFormat)
@@ -88,6 +87,9 @@ namespace SuperMemoAssistant.Services.IO.Logger
       //  shared: false,
       //  outputTemplate: OutputFormat
       //);
+
+      if (levelSwitch != null)
+        loggerConfig = loggerConfig.MinimumLevel.ControlledBy(levelSwitch);
 
       if (configPredicate != null)
         loggerConfig = configPredicate(loggerConfig);

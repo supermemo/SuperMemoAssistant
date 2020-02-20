@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/23 15:22
-// Modified On:  2019/01/25 22:40
+// Modified On:  2020/02/20 02:58
 // Modified By:  Alexis
 
 #endregion
@@ -68,10 +67,10 @@ namespace SuperMemoAssistant.Plugins.PackageManager
 
     #region Constructors
 
-    internal PluginPackageManager(DirectoryPath                   pluginDirPath,
-                                  DirectoryPath                   pluginHomeDirPath,
-                                  DirectoryPath                   packageDirPath,
-                                  FilePath                        configFilePath,
+    internal PluginPackageManager(DirectoryPath                             pluginDirPath,
+                                  DirectoryPath                             pluginHomeDirPath,
+                                  DirectoryPath                             packageDirPath,
+                                  FilePath                                  configFilePath,
                                   Func<ISettings, SourceRepositoryProvider> providerCreator = null)
     {
       pluginDirPath  = pluginDirPath.Collapse();
@@ -134,7 +133,7 @@ namespace SuperMemoAssistant.Plugins.PackageManager
     ///   installed.
     /// </param>
     public IEnumerable<NuGetVersion> FindInstalledPluginVersions(string packageId,
-                                                          bool   verify = false)
+                                                                 bool   verify = false)
     {
       var pkgs = _pluginRepo.FindPackageById(packageId);
 
@@ -143,7 +142,7 @@ namespace SuperMemoAssistant.Plugins.PackageManager
 
       return pkgs.Select(p => p.Identity.Version);
     }
-    
+
     public PluginPackage<TMeta> FindInstalledPluginById(string pluginId) => _pluginRepo.FindPluginById(pluginId);
 
     public PluginPackage<TMeta> GetInstalledPlugin(PackageIdentity identity) => _pluginRepo[identity];
@@ -162,19 +161,20 @@ namespace SuperMemoAssistant.Plugins.PackageManager
     ///   <see langword="null" />
     /// </param>
     /// <param name="pluginAssemblies"></param>
-    public void GetInstalledPluginAssembliesFilePath(PackageIdentity packageIdentity,
-                                                                      out IEnumerable<FilePath> pluginAssemblies,
-                                                                      out IEnumerable<FilePath> dependenciesAssemblies,
-                                                                      NuGetFramework  targetFramework     = null)
+    public void GetInstalledPluginAssembliesFilePath(PackageIdentity           packageIdentity,
+                                                     out IEnumerable<FilePath> pluginAssemblies,
+                                                     out IEnumerable<FilePath> dependenciesAssemblies,
+                                                     NuGetFramework            targetFramework = null)
     {
       var project = _solution.GetPluginProject(packageIdentity.Id);
-      var plugin = _pluginRepo[packageIdentity];
+      var plugin  = _pluginRepo[packageIdentity];
 
       if (project == null || plugin == null)
         throw new ArgumentException($"No such plugin {packageIdentity.Id} {packageIdentity.Version.ToNormalizedString()}");
 
       pluginAssemblies = plugin.GetReferencedAssembliesFilePaths(project, targetFramework ?? _currentFramework);
-      dependenciesAssemblies = plugin.Dependencies.SelectMany(i => i.GetReferencedAssembliesFilePaths(project, targetFramework ?? _currentFramework));
+      dependenciesAssemblies =
+        plugin.Dependencies.SelectMany(i => i.GetReferencedAssembliesFilePaths(project, targetFramework ?? _currentFramework));
     }
 
     public Task<bool> UninstallPluginAsync(string            pluginId,

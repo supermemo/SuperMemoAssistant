@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 22:02
-// Modified On:  2019/02/26 01:31
+// Modified On:  2020/02/20 02:53
 // Modified By:  Alexis
 
 #endregion
@@ -47,16 +46,13 @@ namespace SuperMemoAssistant.Plugins
   {
     #region Properties & Fields - Non-Public
 
-    private PluginPackageManager<PluginMetadata> _packageManager = null;
-
-    private PluginPackageManager<PluginMetadata> PackageManager =>
-      _packageManager ??
-      (_packageManager = new PluginPackageManager<PluginMetadata>(
+    private PluginPackageManager<PluginMetadata> PackageManager { get; } =
+      new PluginPackageManager<PluginMetadata>(
         SMAFileSystem.PluginDir,
         SMAFileSystem.PluginHomeDir,
         SMAFileSystem.PluginPackageDir,
         SMAFileSystem.PluginConfigFile,
-        s => new NuGetSourceRepositoryProvider(s)));
+        s => new NuGetSourceRepositoryProvider(s));
 
     #endregion
 
@@ -67,7 +63,7 @@ namespace SuperMemoAssistant.Plugins
 
     public async Task<bool> InstallPlugin(
       PluginMetadata pluginMetadata,
-      NuGetVersion   version    = null,
+      NuGetVersion   version         = null,
       bool           allowPrerelease = false)
     {
       var pm = PackageManager;
@@ -80,7 +76,7 @@ namespace SuperMemoAssistant.Plugins
         pluginMetadata,
         new VersionRange(version),
         allowPrerelease);
-      
+
       if (success == false)
         return false;
 
@@ -88,7 +84,7 @@ namespace SuperMemoAssistant.Plugins
 
       if (pluginPackage == null)
         throw new InvalidOperationException($"Package {pluginMetadata.PackageName} installed successfully but couldn't be found");
-      
+
       _allPlugins.Add(new PluginInstance(pluginPackage));
 
       return true;

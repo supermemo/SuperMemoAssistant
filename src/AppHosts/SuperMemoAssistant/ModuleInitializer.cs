@@ -40,6 +40,7 @@ using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.HotKeys;
 using SuperMemoAssistant.Services.IO.Keyboard;
 using SuperMemoAssistant.Services.IO.Logger;
+using SuperMemoAssistant.Services.Sentry;
 using SuperMemoAssistant.SuperMemo.Common.Content.Layout;
 
 // ReSharper disable NotAccessedVariable
@@ -74,7 +75,7 @@ namespace SuperMemoAssistant
         var appType     = typeof(SuperMemoAssistant.App);
         var releaseName = $"SuperMemoAssistant@{appType.GetAssemblyVersion()}";
 
-        SentryInstance = Services.Sentry.SentryEx.Initialize(releaseName);
+        SentryInstance = SentryEx.Initialize(releaseName);
 
         SuperMemoAssistant.SMA.Core.Configuration  = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
         SuperMemoAssistant.SMA.Core.KeyboardHotKey = KeyboardHookService.Instance;

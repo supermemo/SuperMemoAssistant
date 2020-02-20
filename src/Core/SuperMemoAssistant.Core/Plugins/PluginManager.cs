@@ -125,7 +125,7 @@ namespace SuperMemoAssistant.Plugins
       await StartPlugins();
     }
 
-    private void OnSMStopped(object        sender, SMProcessArgs e)
+    private void OnSMStopped(object sender, SMProcessArgs e)
     {
       LogTo.Debug($"Cleaning up {GetType().Name}");
 

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <version>0.0.0.0</version>
+    <authors>SuperMemo.wiki</authors>
+    <owners>SuperMemo</owners>
+    <license type="expression">MIT</license>
+	<icon>robot-32.png</icon>
+    <projectUrl>https://github.com/supermemo/SuperMemoAssistant</projectUrl>
+
+    <id>SuperMemoAssistant.Services.Sentry</id>
+    <title>SuperMemoAssistant.Services.Sentry</title>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Falicitate bug reporting with Sentry</description>
+    <copyright></copyright>
+	
+    <dependencies>
+      <group targetFramework="net72">
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\AppHosts\SuperMemoAssistant\Resources\robot-32.png" target="" />
+    <file src="SuperMemoAssistant.Services.Sentry.dll" target="lib\Net40" />
+  </files>
+</package>

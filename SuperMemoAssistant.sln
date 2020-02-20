@@ -65,8 +65,6 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SuperMemoAssistant.Interop.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pdf.WpfPubl", "src\Plugins\SuperMemoAssistant.Plugins.PDF\libs\Patagames.Pdf.Wpf\Pdf.WpfPubl.csproj", "{380A4F46-413D-49B4-884F-21C7683F093C}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SuperMemoAssistant.Services.Sentry", "src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.shproj", "{77605834-E425-4F69-8B27-DCA82A04EB07}"
-EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SuperMemoAssistant.PluginHost.Shared", "src\Core\SuperMemoAssistant.PluginHost.Shared\SuperMemoAssistant.PluginHost.Shared.shproj", "{FE47A14F-9157-4917-82FB-7861A57B1822}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMemoAssistant.Services.UI", "src\Services\SuperMemoAssistant.Services.UI\SuperMemoAssistant.Services.UI.csproj", "{7F7B4A1F-01E1-440E-89DB-08F7D1D5A128}"
@@ -86,24 +84,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMemoAssistant.Plugins.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMemoAssistant.Plugins.Import.Interop", "src\Plugins\SuperMemoAssistant.Plugins.Import\libs\SuperMemoAssistant.Plugins.Import.Interop\SuperMemoAssistant.Plugins.Import.Interop.csproj", "{1B4B5809-4108-4C73-B3FB-3A7609D97704}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMemoAssistant.Services.Sentry", "src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.csproj", "{298D380E-E3C0-4D34-A128-8A9D0A4BF196}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Core\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.projitems*{149c5a9b-0588-41b9-8f77-c5d17a1cdfbe}*SharedItemsImports = 4
 		src\Core\SuperMemoAssistant.PluginHost.Shared\SuperMemoAssistant.PluginHost.Shared.projitems*{149c5a9b-0588-41b9-8f77-c5d17a1cdfbe}*SharedItemsImports = 4
-		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{390a9ff0-4b34-4869-af15-7ef7960d5d56}*SharedItemsImports = 4
 		libs\pngcs\pngcs.projitems*{4f65145f-6f0c-49cd-830a-a51a2a9c5f75}*SharedItemsImports = 13
 		libs\pngcs\pngcs.projitems*{677647e4-f052-41d0-915a-ad76da72463e}*SharedItemsImports = 4
 		src\Core\SuperMemoAssistant.PluginHost.Shared\SuperMemoAssistant.PluginHost.Shared.projitems*{7550628d-0630-4a42-b0b7-55d26f981365}*SharedItemsImports = 4
-		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{77605834-e425-4f69-8b27-dca82a04eb07}*SharedItemsImports = 13
-		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{c57d9489-0a27-4b18-818c-7cbb379acfd8}*SharedItemsImports = 4
-		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{c76cfa78-f820-4f05-9429-4a3a3c9c1414}*SharedItemsImports = 4
-		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{cd1238da-b610-40ad-995a-aa5a28fbbbfe}*SharedItemsImports = 4
-		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{cd2988da-b610-40ad-995a-aa5a28fbbbfe}*SharedItemsImports = 4
 		src\Core\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.projitems*{d4eff016-9a16-4560-8e1d-2a33d0de399f}*SharedItemsImports = 13
 		src\Core\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.projitems*{d5086d5e-84a6-4c0d-b6f2-d1b82c5fb487}*SharedItemsImports = 4
-		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{f8bb6993-25df-4173-bb3d-acee15c5a2b9}*SharedItemsImports = 4
-		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{f8bb6993-b610-40ad-995a-aa5a28fbbbfe}*SharedItemsImports = 4
-		src\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.projitems*{faecf9bb-9fd5-4fb1-a3a8-9f7caa57a1fe}*SharedItemsImports = 4
 		src\Core\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.projitems*{fd0e1be8-bed3-4ab0-a9c8-022a2dbc8450}*SharedItemsImports = 4
 		src\Core\SuperMemoAssistant.PluginHost.Shared\SuperMemoAssistant.PluginHost.Shared.projitems*{fe47a14f-9157-4917-82fb-7861a57b1822}*SharedItemsImports = 13
 	EndGlobalSection
@@ -808,6 +799,38 @@ Global
 		{1B4B5809-4108-4C73-B3FB-3A7609D97704}.Release|x64.ActiveCfg = Release|x86
 		{1B4B5809-4108-4C73-B3FB-3A7609D97704}.Release|x86.ActiveCfg = Release|x86
 		{1B4B5809-4108-4C73-B3FB-3A7609D97704}.Release|x86.Build.0 = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Coverage|Any CPU.ActiveCfg = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Coverage|Any CPU.Build.0 = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Coverage|x64.ActiveCfg = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Coverage|x64.Build.0 = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Coverage|x86.ActiveCfg = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Coverage|x86.Build.0 = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Debug|x64.ActiveCfg = Debug|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Debug|x86.ActiveCfg = Debug|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Debug|x86.Build.0 = Debug|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Debug-InProd|Any CPU.ActiveCfg = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Debug-InProd|Any CPU.Build.0 = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Debug-InProd|x64.ActiveCfg = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Debug-InProd|x64.Build.0 = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Debug-InProd|x86.ActiveCfg = Debug|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Debug-InProd|x86.Build.0 = Debug|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Mono Debug|Any CPU.ActiveCfg = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Mono Debug|Any CPU.Build.0 = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Mono Debug|x64.ActiveCfg = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Mono Debug|x64.Build.0 = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Mono Debug|x86.ActiveCfg = Debug|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Mono Debug|x86.Build.0 = Debug|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Mono Release|Any CPU.ActiveCfg = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Mono Release|Any CPU.Build.0 = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Mono Release|x64.ActiveCfg = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Mono Release|x64.Build.0 = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Mono Release|x86.ActiveCfg = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Mono Release|x86.Build.0 = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Release|Any CPU.ActiveCfg = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Release|x64.ActiveCfg = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Release|x86.ActiveCfg = Release|x86
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -832,7 +855,6 @@ Global
 		{149C5A9B-0588-41B9-8F77-C5D17A1CDFBE} = {DF29F7E8-943F-4EC9-9EB5-5C4E27BA9AB2}
 		{D4EFF016-9A16-4560-8E1D-2A33D0DE399F} = {DF29F7E8-943F-4EC9-9EB5-5C4E27BA9AB2}
 		{380A4F46-413D-49B4-884F-21C7683F093C} = {052AFAF6-318D-4D7F-AAEC-3C8A5667FFBC}
-		{77605834-E425-4F69-8B27-DCA82A04EB07} = {0EAE964B-EECF-45B0-8253-5FC75792D419}
 		{FE47A14F-9157-4917-82FB-7861A57B1822} = {DF29F7E8-943F-4EC9-9EB5-5C4E27BA9AB2}
 		{7F7B4A1F-01E1-440E-89DB-08F7D1D5A128} = {0EAE964B-EECF-45B0-8253-5FC75792D419}
 		{F8BB6993-B610-40AD-995A-AA5A28FBBBFE} = {943958D2-1308-4317-940F-60CAD3C74AC3}
@@ -840,6 +862,7 @@ Global
 		{CD1238DA-B610-40AD-995A-AA5A28FBBBFE} = {943958D2-1308-4317-940F-60CAD3C74AC3}
 		{390A9FF0-4B34-4869-AF15-7EF7960D5D56} = {943958D2-1308-4317-940F-60CAD3C74AC3}
 		{1B4B5809-4108-4C73-B3FB-3A7609D97704} = {943958D2-1308-4317-940F-60CAD3C74AC3}
+		{298D380E-E3C0-4D34-A128-8A9D0A4BF196} = {0EAE964B-EECF-45B0-8253-5FC75792D419}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF31D6F5-6E93-461B-8C5F-348439D19C6D}

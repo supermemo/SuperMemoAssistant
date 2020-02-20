@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/19 05:11
-// Modified On:  2019/01/19 05:20
+// Modified On:  2020/02/20 16:59
 // Modified By:  Alexis
 
 #endregion
@@ -44,8 +43,11 @@ namespace SuperMemoAssistant.Services.Sentry
   {
     #region Constants & Statics
 
-    public const string Id = "https://a63c3dad9552434598dae869d2026696@sentry.io/1362046";
-    private static User _user;
+    public const   string Id = "https://a63c3dad9552434598dae869d2026696@sentry.io/1362046";
+    private static User   _user;
+
+
+    public static string DeviceId { get; } = GetSystemFingerprint();
 
     #endregion
 
@@ -66,7 +68,7 @@ namespace SuperMemoAssistant.Services.Sentry
         _user = new User
         {
           Username = System.Security.Principal.WindowsIdentity.GetCurrent().Name,
-          Id       = GetSystemFingerprint()
+          Id       = DeviceId
         };
 
         var ret = SentrySdk.Init(o =>
@@ -74,15 +76,12 @@ namespace SuperMemoAssistant.Services.Sentry
 #if DEBUG
           //o.Debug = true;
 #endif
-          o.Dsn = new Dsn(Id);
-          o.Release = releaseName;
+          o.Dsn        = new Dsn(Id);
+          o.Release    = releaseName;
           o.BeforeSend = BeforeSend;
         });
 
-        SentrySdk.ConfigureScope(s =>
-          {
-            s.User = _user;
-          }
+        SentrySdk.ConfigureScope(s => { s.User = _user; }
         );
 
         return ret;

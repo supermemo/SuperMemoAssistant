@@ -117,10 +117,10 @@ namespace SuperMemoAssistant
 
       //
       // Load system configs
-      if (await LoadConfigs(out var nativeDataCfg, out var startupCfg) == false)
+      if (await LoadConfigs(out var nativeDataCfg, out var coreCfg) == false)
       {
         errMsg =
-          $"At least one essential config file could not be loaded: nativeDataCfg ? {nativeDataCfg == null} ; startupCfg ? {startupCfg == null}";
+          $"At least one essential config file could not be loaded: nativeDataCfg ? {nativeDataCfg == null} ; startupCfg ? {coreCfg == null}";
         LogTo.Warning(errMsg);
         await errMsg.ErrorMsgBox();
 
@@ -130,9 +130,9 @@ namespace SuperMemoAssistant
 
       //
       // Make sure SuperMemo exe path is correct. Prompt user to input the path otherwise.
-      if (SMASetup.ShouldFindSuperMemo(startupCfg, nativeDataCfg))
+      if (SMASetup.ShouldFindSuperMemo(coreCfg, nativeDataCfg))
       {
-        var smFinder = new Setup.SuperMemoFinder(nativeDataCfg, startupCfg);
+        var smFinder = new Setup.SuperMemoFinder(nativeDataCfg, coreCfg);
         smFinder.ShowDialog();
 
         if (smFinder.DialogResult == null || smFinder.DialogResult == false)
@@ -152,7 +152,7 @@ namespace SuperMemoAssistant
       //
       // Determine which collection to open
       SMCollection smCollection = null;
-      var          selectionWdw = new CollectionSelectionWindow(startupCfg);
+      var          selectionWdw = new CollectionSelectionWindow(coreCfg);
 
       // Try to open command line collection, if one was passed
       if (args.CollectionKnoPath != null && selectionWdw.ValidateSuperMemoPath())
@@ -176,8 +176,9 @@ namespace SuperMemoAssistant
       if (smCollection != null)
       {
         SMA.Core.SMA.OnSMStoppedEvent += OnSMStoppedEvent;
+        SMA.Core.CoreConfig = coreCfg;
 
-        if (await SMA.Core.SMA.Start(nativeDataCfg, startupCfg, smCollection).ConfigureAwait(true) == false)
+        if (await SMA.Core.SMA.Start(nativeDataCfg, smCollection).ConfigureAwait(true) == false)
         {
           await $"SMA failed to start. Please check the logs in '{SMAFileSystem.LogDir.FullPath}' for details.".ErrorMsgBox();
           Shutdown(SMAExitCodes.ExitCodeSMAStartupError);

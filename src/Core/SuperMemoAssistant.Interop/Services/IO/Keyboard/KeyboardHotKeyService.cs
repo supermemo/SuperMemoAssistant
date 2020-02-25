@@ -36,7 +36,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Input;
-using SuperMemoAssistant.Sys;
+using PluginManager.Interop.Sys;
 using SuperMemoAssistant.Sys.IO.Devices;
 using Message = SuperMemoAssistant.Sys.IO.Devices.Message;
 

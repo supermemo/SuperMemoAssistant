@@ -35,7 +35,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using SuperMemoAssistant.Exceptions;
 using SuperMemoAssistant.SMA.Configs;
-using SuperMemoAssistant.Sys.IO;
+using Extensions.System.IO;
 
 namespace SuperMemoAssistant.Setup
 {

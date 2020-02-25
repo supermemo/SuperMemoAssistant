@@ -5,7 +5,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{FD0E1BE8-BED3-4AB0-A9C8-022A2DBC8450}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -19,38 +19,27 @@
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>latest</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>latest</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-InProd|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug-InProd\</OutputPath>
-    <DefineConstants>TRACE;DEBUG_IN_PROD</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Anotar.Serilog, Version=5.1.0.0, Culture=neutral, PublicKeyToken=9d5b24f0733c26f7, processorArchitecture=MSIL">
@@ -58,6 +47,9 @@
     </Reference>
     <Reference Include="Ben.Demystifier, Version=0.1.0.0, Culture=neutral, PublicKeyToken=a6d206e05440431a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Ben.Demystifier.0.1.6\lib\net45\Ben.Demystifier.dll</HintPath>
+    </Reference>
+    <Reference Include="Extensions.System.IO, Version=0.1.0.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Extensions.System.IO.0.1.0.2\lib\net472\Extensions.System.IO.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\..\..\packages\SuperMemoAssistant.mshtml.7.0.3300.1\lib\Net40\Microsoft.mshtml.dll</HintPath>
@@ -89,6 +81,9 @@
     </Reference>
     <Reference Include="Nito.Disposables, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Nito.Disposables.2.0.1\lib\net461\Nito.Disposables.dll</HintPath>
+    </Reference>
+    <Reference Include="PluginManager.Interop, Version=0.2.1.13, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\PluginManager.Interop.0.2.1.13\lib\net472\PluginManager.Interop.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -172,8 +167,6 @@
     <Compile Include="Interop\Plugins\PluginApp.xaml.cs">
       <DependentUpon>PluginApp.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Interop\Plugins\ISMAPluginManager.cs" />
-    <Compile Include="Interop\Plugins\PluginHost.Assembly.cs" />
     <Compile Include="Interop\Plugins\PluginHost.cs" />
     <Compile Include="Interop\Plugins\PluginMessage.cs" />
     <Compile Include="Interop\SuperMemo\Content\Components\Base\ComponentSoundBase.cs" />
@@ -242,7 +235,6 @@
     <Compile Include="Extensions\BinaryReaderEx.cs" />
     <Compile Include="Extensions\DelegateEx.cs" />
     <Compile Include="Extensions\DictionaryEx.cs" />
-    <Compile Include="Extensions\DirectoryEx.cs" />
     <Compile Include="Extensions\EventHandlerEx.cs" />
     <Compile Include="Extensions\FileEx.cs" />
     <Compile Include="Extensions\IComponentEx.cs" />
@@ -329,7 +321,6 @@
     <Compile Include="Interop\SuperMemo\UI\IWdw.cs" />
     <Compile Include="Services\Configuration\ConfigurationService.cs" />
     <Compile Include="Sys\Security\Cryptography\Crc32.cs" />
-    <Compile Include="Sys\PerpetualMarshalByRefObject.cs" />
     <Compile Include="Sys\Span.cs" />
     <Compile Include="Sys\Windows\Net\Wininet.cs" />
     <Compile Include="Sys\Windows\Search\WindowsSearch.cs" />
@@ -378,8 +369,8 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\Fody.6.1.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.6.1.0\build\Fody.targets'))" />
     <Error Condition="!Exists('..\..\..\packages\PropertyChanged.Fody.3.2.6\build\PropertyChanged.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\PropertyChanged.Fody.3.2.6\build\PropertyChanged.Fody.props'))" />
+    <Error Condition="!Exists('..\..\..\packages\Fody.6.1.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.6.1.1\build\Fody.targets'))" />
   </Target>
-  <Import Project="..\..\..\packages\Fody.6.1.0\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.6.1.0\build\Fody.targets')" />
+  <Import Project="..\..\..\packages\Fody.6.1.1\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.6.1.1\build\Fody.targets')" />
 </Project>

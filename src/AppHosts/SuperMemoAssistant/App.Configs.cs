@@ -42,27 +42,27 @@ namespace SuperMemoAssistant
   {
     #region Methods
 
-    private Task<bool> LoadConfigs(out NativeDataCfg nativeDataCfg, out StartupCfg startupCfg)
+    private Task<bool> LoadConfigs(out NativeDataCfg nativeDataCfg, out CoreCfg coreCfg)
     {
       nativeDataCfg = LoadNativeDataConfig().Result;
-      startupCfg    = LoadStartupConfig().Result;
+      coreCfg    = LoadCoreConfig().Result;
 
-      if (nativeDataCfg == null || startupCfg == null)
+      if (nativeDataCfg == null || coreCfg == null)
         return Task.FromResult(false);
 
       return Task.FromResult(true);
     }
 
-    private async Task<StartupCfg> LoadStartupConfig()
+    private async Task<CoreCfg> LoadCoreConfig()
     {
       try
       {
-        return await SMA.Core.Configuration.Load<StartupCfg>()
-                        .ConfigureAwait(false) ?? new StartupCfg();
+        return await SMA.Core.Configuration.Load<CoreCfg>()
+                        .ConfigureAwait(false) ?? new CoreCfg();
       }
       catch (SMAException)
       {
-        await "Failed to open StartupCfg.json. Make sure file is unlocked and try again.".ErrorMsgBox();
+        await "Failed to open CoreCfg.json. Make sure file is unlocked and try again.".ErrorMsgBox();
 
         return null;
       }

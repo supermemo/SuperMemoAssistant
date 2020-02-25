@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/09/03 18:08
-// Modified On:  2020/01/11 20:31
+// Modified On:  2020/02/22 16:41
 // Modified By:  Alexis
 
 #endregion
@@ -32,10 +31,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Anotar.Serilog;
-using AsyncEvent;
+using PluginManager.Interop.Sys;
 using Process.NET;
 using Process.NET.Memory;
 using SuperMemoAssistant.Interop.SuperMemo;
@@ -43,7 +41,6 @@ using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Hooks;
 using SuperMemoAssistant.SuperMemo.Hooks;
-using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo.Common
 {
@@ -138,7 +135,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
     #region Properties & Fields - Public
 
-    public IProcess  SMProcess { get; private set; }
+    public IProcess SMProcess { get; private set; }
 
     #endregion
 
@@ -158,6 +155,11 @@ namespace SuperMemoAssistant.SuperMemo.Common
     }
     public ISuperMemoRegistry Registry => _registry;
     public ISuperMemoUI       UI       => _ui;
+
+    //
+    // ISuperMemo Methods
+
+    public Version AppVersion { get; private set; }
 
     #endregion
 
@@ -184,7 +186,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
       SMProcess               =  smProcess ?? throw new InvalidOperationException("Failed to start SuperMemo process");
       SMProcess.Native.Exited += OnSMExited;
-      
+
       Core.Natives = smProcess.Procedures;
 
       await OnPostInit();
@@ -192,16 +194,16 @@ namespace SuperMemoAssistant.SuperMemo.Common
       _hook.SignalWakeUp();
     }
 
-    protected virtual Task OnPreInit()
+    protected virtual async Task OnPreInit()
     {
-      return Core.SMA.OnSMStarting();
+      await Core.SMA.OnSMStarting();
     }
 
-    protected virtual Task OnPostInit()
+    protected virtual async Task OnPostInit()
     {
       _ignoreUserConfirmationPtr = SMProcess[Core.Natives.Globals.IgnoreUserConfirmationPtr];
 
-      return Core.SMA.OnSMStarted();
+      await Core.SMA.OnSMStarted();
     }
 
     protected virtual void OnSMExited(object    called,
@@ -225,18 +227,6 @@ namespace SuperMemoAssistant.SuperMemo.Common
         _registry.Video
       };
     }
-
-    #endregion
-
-
-
-
-    #region Methods Abs
-
-    //
-    // ISuperMemo Methods
-
-    public Version AppVersion { get; private set; }
 
     #endregion
   }

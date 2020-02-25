@@ -42,7 +42,7 @@ using Microsoft.Win32;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SMA.Configs;
-using SuperMemoAssistant.Sys.IO;
+using Extensions.System.IO;
 using SuperMemoAssistant.Sys.Windows.Input;
 
 namespace SuperMemoAssistant.UI
@@ -52,7 +52,7 @@ namespace SuperMemoAssistant.UI
   {
     #region Properties & Fields - Non-Public
 
-    private readonly StartupCfg _startupCfg;
+    private readonly CoreCfg _startupCfg;
 
     #endregion
 
@@ -61,7 +61,7 @@ namespace SuperMemoAssistant.UI
 
     #region Constructors
 
-    public CollectionSelectionWindow(StartupCfg startupCfg)
+    public CollectionSelectionWindow(CoreCfg startupCfg)
     {
       _startupCfg = startupCfg;
       SavedCollections = startupCfg.Collections;
@@ -95,11 +95,11 @@ namespace SuperMemoAssistant.UI
 
     public bool ValidateSuperMemoPath()
     {
-      if (new FilePath(_startupCfg.SMBinPath).Exists() == false)
+      if (new FilePath(_startupCfg.SuperMemo.SMBinPath).Exists() == false)
       {
         Forge.Forms.Show.Window().For(
           new Alert(
-            $"Invalid file path for sm executable file: '{_startupCfg.SMBinPath}' could not be found.",
+            $"Invalid file path for sm executable file: '{_startupCfg.SuperMemo.SMBinPath}' could not be found.",
             "Error")
         );
         return false;
@@ -150,7 +150,7 @@ namespace SuperMemoAssistant.UI
 
     private void SaveConfig()
     {
-      SuperMemoAssistant.SMA.Core.Configuration.Save<StartupCfg>(_startupCfg).Wait();
+      SuperMemoAssistant.SMA.Core.Configuration.Save<CoreCfg>(_startupCfg).Wait();
     }
 
     private void OpenSelectedCollection()
@@ -222,7 +222,7 @@ namespace SuperMemoAssistant.UI
     private void BtnOptions_Click(object          sender,
                                   RoutedEventArgs e)
     {
-      Forge.Forms.Show.Window().For<StartupCfg>(_startupCfg).Wait();
+      Forge.Forms.Show.Window().For<CoreCfg>(_startupCfg).Wait();
 
       SaveConfig();
     }

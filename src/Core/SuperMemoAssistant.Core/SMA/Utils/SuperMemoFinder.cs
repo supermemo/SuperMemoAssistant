@@ -42,7 +42,7 @@ using SuperMemoAssistant.Exceptions;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.SMA.Configs;
 using SuperMemoAssistant.SuperMemo;
-using SuperMemoAssistant.Sys.IO;
+using Extensions.System.IO;
 using SuperMemoAssistant.Sys.Windows.Search;
 
 namespace SuperMemoAssistant.SMA.Utils

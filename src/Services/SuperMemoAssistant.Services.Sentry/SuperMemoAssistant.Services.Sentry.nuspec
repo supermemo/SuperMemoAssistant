@@ -5,7 +5,7 @@
     <authors>SuperMemo.wiki</authors>
     <owners>SuperMemo</owners>
     <license type="expression">MIT</license>
-	<icon>robot-32.png</icon>
+    <iconUrl>https://github.com/supermemo/Documentation/raw/master/docs/sma/content/images/icons/robot.ico</iconUrl>
     <projectUrl>https://github.com/supermemo/SuperMemoAssistant</projectUrl>
 
     <id>SuperMemoAssistant.Services.Sentry</id>
@@ -20,7 +20,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\AppHosts\SuperMemoAssistant\Resources\robot-32.png" target="" />
-    <file src="SuperMemoAssistant.Services.Sentry.dll" target="lib\Net40" />
+    <file src="SuperMemoAssistant.Services.Sentry.dll" target="lib\Net72" />
   </files>
 </package>

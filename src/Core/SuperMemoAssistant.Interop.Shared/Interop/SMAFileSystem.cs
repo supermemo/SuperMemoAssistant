@@ -32,7 +32,7 @@
 
 using System;
 using System.IO;
-using SuperMemoAssistant.Sys.IO;
+using Extensions.System.IO;
 
 namespace SuperMemoAssistant.Interop
 {
@@ -75,9 +75,9 @@ namespace SuperMemoAssistant.Interop
 
     public static FilePath PluginConfigFile => PluginDir.CombineFile("plugins.json");
 
-    public static FilePath PluginHostExeFile => GetSMAExeFilePath(SMAConst.Assembly.PluginHostExe);
+    public static FilePath PluginHostExeFile => GetAppExeFilePath(SMAConst.Assembly.PluginHostExe);
 
-    public static FilePath InjectionLibFile => GetSMAExeFilePath(SMAConst.Assembly.SMInjectionLib);
+    public static FilePath InjectionLibFile => GetAppExeFilePath(SMAConst.Assembly.SMInjectionLib);
 
     #endregion
 
@@ -86,12 +86,12 @@ namespace SuperMemoAssistant.Interop
 
     #region Methods
 
-    private static FilePath GetSMAExeFilePath(string filename)
+    private static FilePath GetAppExeFilePath(string filename)
     {
       if (SMAExecutableInfo.Instance.ExecutableType == SMAExecutableType.SuperMemoAssistant)
         return SMAExecutableInfo.Instance.DirectoryPath.CombineFile(filename);
 
-      throw new InvalidOperationException("PluginHostExeFile getter is only available for SuperMemoAssistant");
+      throw new InvalidOperationException("GetAppExeFilePath getter is only available for SuperMemoAssistant");
     }
 
     #endregion

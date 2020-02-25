@@ -256,7 +256,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
         pId,
         Process.NET.Memory.MemoryType.Remote,
         true,
-        Core.SMA.StartupConfig.PatternsHintAddresses,
+        Core.SMA.CoreConfig.SuperMemo.PatternsHintAddresses,
         nativeData);
     }
 

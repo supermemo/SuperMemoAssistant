@@ -52,7 +52,7 @@ namespace SuperMemoAssistant.Setup
   {
     #region Properties & Fields - Non-Public
 
-    private readonly StartupCfg    _startupCfg;
+    private readonly CoreCfg    _startupCfg;
     private readonly NativeDataCfg _nativeDataCfg;
 
     #endregion
@@ -62,12 +62,12 @@ namespace SuperMemoAssistant.Setup
 
     #region Constructors
 
-    public SuperMemoFinder(NativeDataCfg nativeDataCfg, StartupCfg startupCfg)
+    public SuperMemoFinder(NativeDataCfg nativeDataCfg, CoreCfg startupCfg)
     {
       _nativeDataCfg = nativeDataCfg;
       _startupCfg    = startupCfg;
 
-      SMExeFilePath = new SuperMemoFilePath(startupCfg.SMBinPath, nativeDataCfg);
+      SMExeFilePath = new SuperMemoFilePath(startupCfg.SuperMemo.SMBinPath, nativeDataCfg);
       SMExeSuggestedFilePaths = SuperMemoFinderUtil.SearchSuperMemoInDefaultLocations()
                                                    .Select(fp => fp.FullPathWin)
                                                    .ToHashSet();
@@ -111,8 +111,8 @@ namespace SuperMemoAssistant.Setup
 
     private void Accept()
     {
-      _startupCfg.SMBinPath = SMExeFilePath;
-      SuperMemoAssistant.SMA.Core.Configuration.Save<StartupCfg>(_startupCfg).Wait();
+      _startupCfg.SuperMemo.SMBinPath = SMExeFilePath;
+      SuperMemoAssistant.SMA.Core.Configuration.Save<CoreCfg>(_startupCfg).Wait();
 
       DialogResult = true;
 

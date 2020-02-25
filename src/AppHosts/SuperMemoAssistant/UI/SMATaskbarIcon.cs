@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/01/29 12:00
+// Modified On:  2020/02/21 22:59
 // Modified By:  Alexis
 
 #endregion
@@ -82,13 +82,14 @@ namespace SuperMemoAssistant.UI
 
     #region Methods
 
-    private Task OnSMStarted(object        sender,
-                             SMProcessArgs eventArgs)
+    private async Task OnSMStarted(object        sender,
+                                   SMProcessArgs eventArgs)
     {
-      TbIcon.ToolTipText = $"SuperMemoAssistant - {SMA.Core.SM.Collection.Name}";
-      TbIcon.Visibility  = Visibility.Visible;
-
-      return Task.CompletedTask;
+      await Application.Current.Dispatcher.InvokeAsync(() =>
+      {
+        TbIcon.ToolTipText = $"SuperMemoAssistant - {SMA.Core.SM.Collection.Name}";
+        TbIcon.Visibility  = Visibility.Visible;
+      });
     }
 
     private void Initialized(object    sender,
@@ -128,7 +129,7 @@ namespace SuperMemoAssistant.UI
     {
       var tbIcon = (TaskbarIcon)sender;
 
-      var runningPlugins = PluginManager.Instance.AllPlugins
+      var runningPlugins = SMAPluginManager.Instance.AllPlugins
                                         .Where(p => p.HasSettings)
                                         .OrderBy(p => p.Metadata.DisplayName)
                                         .ToList();

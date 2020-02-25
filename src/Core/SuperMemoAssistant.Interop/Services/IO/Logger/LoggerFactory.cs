@@ -37,7 +37,7 @@ using Serilog.Core;
 using Serilog.Exceptions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Services.Configuration;
-using SuperMemoAssistant.Sys.IO;
+using Extensions.System.IO;
 
 namespace SuperMemoAssistant.Services.IO.Logger
 {

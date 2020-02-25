@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/01/29 12:37
+// Modified On:  2020/02/22 16:33
 // Modified By:  Alexis
 
 #endregion
@@ -36,9 +36,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using Anotar.Serilog;
 using MoreLinq;
+using Nito.AsyncEx;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
@@ -59,6 +61,17 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
     : SMHookIOBase,
       IElementRegistry
   {
+    #region Constants & Statics
+
+    private const int WaitForElementAnyTriggerId     = int.MinValue;
+    private const int WaitForElementUpdatedTriggerId = int.MinValue;
+    private const int WaitForElementCreatedTriggerId = int.MaxValue;
+
+    #endregion
+
+
+
+
     #region Properties & Fields - Non-Public
 
     //
@@ -66,8 +79,13 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
 
     private readonly Mutex _addMutex = new Mutex();
 
-    private readonly ManualResetEventSlim _waitForElementEvent = new ManualResetEventSlim();
-    private          int                  _waitForElementId    = -1;
+    private readonly AsyncManualResetEvent _waitForElementCreatedEvent = new AsyncManualResetEvent();
+    private readonly AsyncManualResetEvent _waitForElementUpdatedEvent = new AsyncManualResetEvent();
+    private readonly AsyncManualResetEvent _waitForElementAnyEvent     = new AsyncManualResetEvent();
+    private readonly ManualResetEventSlim  _waitForElementIdEvent      = new ManualResetEventSlim();
+
+    private int _waitForElementId       = -1;
+    private int _waitForElementResultId = -1;
 
 
     //
@@ -106,6 +124,17 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
         Collection.GetInfoFilePath(SMConst.Files.ElementsInfoFileName),
       };
     }
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public int LastCreatedElementId { get; private set; }
+    public int LastUpdatedElementId { get; private set; }
+    public int LastElementId        { get; private set; }
 
     #endregion
 
@@ -553,16 +582,28 @@ Exception: {ex}",
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "Error while signaling Element Created event");
+        LogTo.Error(ex, "Error while signaling Element Created event");
       }
       finally
       {
-        if (el.Id == _waitForElementId)
+        LastElementId = LastCreatedElementId = el.Id;
+
+        if (_waitForElementId == WaitForElementCreatedTriggerId || _waitForElementId == WaitForElementAnyTriggerId)
+        {
+          _waitForElementId       = -1;
+          _waitForElementResultId = el.Id;
+
+          _waitForElementCreatedEvent.Set();
+        }
+
+        else if (el.Id == _waitForElementId)
         {
           _waitForElementId = -1;
-          _waitForElementEvent.Set();
+
+          _waitForElementIdEvent.Set();
         }
+
+        _waitForElementAnyEvent.Set();
       }
     }
 
@@ -576,38 +617,136 @@ Exception: {ex}",
           OnElementDeleted?.Invoke(new SMElementArgs(Core.SM, el));
 
         else
-          OnElementModified?.Invoke(new SMElementChangedArgs(Core.SM,
-                                                             el,
-                                                             flags));
+          OnElementModified?.Invoke(new SMElementChangedArgs(Core.SM, el, flags));
       }
       catch (Exception ex)
       {
         var eventType = deleted ? "Deleted" : "Modified";
 
-        LogTo.Error(ex,
-                    $"Error while signaling Element {eventType} event");
+        LogTo.Error(ex, $"Error while signaling Element {eventType} event");
       }
       finally
       {
-        if (el.Id == _waitForElementId)
+        LastElementId = el.Id;
+
+        if (_waitForElementId == WaitForElementCreatedTriggerId && flags.HasFlag(ElementFieldFlags.Deleted) && el.Deleted == false)
+        {
+          LastCreatedElementId    = el.Id;
+          _waitForElementId       = -1;
+          _waitForElementResultId = el.Id;
+
+          _waitForElementCreatedEvent.Set();
+        }
+
+        else if (_waitForElementId == WaitForElementUpdatedTriggerId || _waitForElementId == WaitForElementAnyTriggerId)
+        {
+          LastUpdatedElementId    = el.Id;
+          _waitForElementId       = -1;
+          _waitForElementResultId = el.Id;
+
+          _waitForElementUpdatedEvent.Set();
+        }
+
+        else if (el.Id == _waitForElementId)
         {
           _waitForElementId = -1;
-          _waitForElementEvent.Set();
+
+          _waitForElementIdEvent.Set();
         }
+
+        _waitForElementAnyEvent.Set();
       }
     }
 
+    public Task<int> WaitForNextElement(int timeOutMs = 3000)
+    {
+      using (var cts = new CancellationTokenSource(timeOutMs))
+        return WaitForNextElement(cts.Token);
+    }
+
+    public async Task<int> WaitForNextElement(CancellationToken ct)
+    {
+      try
+      {
+        _waitForElementId = int.MinValue;
+        _waitForElementAnyEvent.Reset();
+
+        await _waitForElementAnyEvent.WaitAsync(ct);
+
+        return ct.IsCancellationRequested ? -1 : _waitForElementResultId;
+      }
+      finally
+      {
+        _waitForElementId = -1;
+      }
+    }
+
+    public Task<int> WaitForNextCreatedElement(int timeOutMs = 3000)
+    {
+      using (var cts = new CancellationTokenSource(timeOutMs))
+        return WaitForNextCreatedElement(cts.Token);
+    }
+
+    public async Task<int> WaitForNextCreatedElement(CancellationToken ct)
+    {
+      try
+      {
+        _waitForElementId = int.MaxValue;
+        _waitForElementCreatedEvent.Reset();
+
+        await _waitForElementCreatedEvent.WaitAsync(ct);
+
+        return ct.IsCancellationRequested ? -1 : _waitForElementResultId;
+      }
+      finally
+      {
+        _waitForElementId = -1;
+      }
+    }
+
+    public Task<int> WaitForNextUpdatedElement(int timeOutMs = 3000)
+    {
+      using (var cts = new CancellationTokenSource(timeOutMs))
+        return WaitForNextUpdatedElement(cts.Token);
+    }
+
+    public async Task<int> WaitForNextUpdatedElement(CancellationToken ct)
+    {
+      try
+      {
+        _waitForElementId = int.MinValue;
+        _waitForElementUpdatedEvent.Reset();
+
+        await _waitForElementUpdatedEvent.WaitAsync(ct);
+
+        return ct.IsCancellationRequested ? -1 : _waitForElementResultId;
+      }
+      finally
+      {
+        _waitForElementId = -1;
+      }
+    }
+
+    // TODO: Make this thread-safe
+    // TODO: Make this async
     private bool WaitForElement(int elemId, string title)
     {
-      _waitForElementEvent.Reset();
-      _waitForElementId = elemId;
+      try
+      {
+        _waitForElementIdEvent.Reset();
+        _waitForElementId = elemId;
 
-      var elem = this[elemId];
+        var elem = this[elemId];
 
-      if (elem == null || elem.Title != title)
-        return _waitForElementEvent.Wait(3000);
+        if (elem != null && elem.Title == title)
+          return true;
 
-      return true;
+        return _waitForElementIdEvent.Wait(3000);
+      }
+      finally
+      {
+        _waitForElementId = -1;
+      }
     }
 
     #endregion

@@ -41,6 +41,8 @@ namespace SuperMemoAssistant.SuperMemo
     ElWdw_GoToElement,
     ElWdw_PasteElement,
     ElWdw_AppendElement,
+    ElWdw_GenerateExtract,
+    ElWdw_GenerateClozeDeletion,
     ElWdw_AddElementFromText,
     ElWdw_DeleteCurrentElement,
     ElWdw_GetText,

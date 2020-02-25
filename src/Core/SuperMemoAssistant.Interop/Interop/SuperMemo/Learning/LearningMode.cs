@@ -30,8 +30,11 @@
 
 
 
+using System;
+
 namespace SuperMemoAssistant.Interop.SuperMemo.Learning
 {
+  [Serializable]
   public enum LearningMode
   {
     None         = 0,

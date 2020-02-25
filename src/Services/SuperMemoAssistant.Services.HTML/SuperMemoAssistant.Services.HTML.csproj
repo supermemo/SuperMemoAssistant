@@ -9,7 +9,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{A95DA3C0-54C5-4BB9-84CB-E8B69E712A62}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -24,7 +24,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <LangVersion>latest</LangVersion>
@@ -36,16 +36,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-InProd|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug-InProd\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <LangVersion>latest</LangVersion>
     <ErrorReport>prompt</ErrorReport>
@@ -159,7 +149,6 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\Fody.6.1.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.6.1.0\build\Fody.targets'))" />
     <Error Condition="!Exists('..\..\..\packages\cef.redist.x64.79.1.36\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\cef.redist.x64.79.1.36\build\cef.redist.x64.props'))" />
     <Error Condition="!Exists('..\..\..\packages\cef.redist.x86.79.1.36\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\cef.redist.x86.79.1.36\build\cef.redist.x86.props'))" />
     <Error Condition="!Exists('..\..\..\packages\CefSharp.Common.79.1.360\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\CefSharp.Common.79.1.360\build\CefSharp.Common.props'))" />
@@ -167,12 +156,13 @@
     <Error Condition="!Exists('..\..\..\packages\CefSharp.OffScreen.79.1.360\build\CefSharp.OffScreen.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\CefSharp.OffScreen.79.1.360\build\CefSharp.OffScreen.props'))" />
     <Error Condition="!Exists('..\..\..\packages\CefSharp.OffScreen.79.1.360\build\CefSharp.OffScreen.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\CefSharp.OffScreen.79.1.360\build\CefSharp.OffScreen.targets'))" />
     <Error Condition="!Exists('..\..\..\packages\PropertyChanged.Fody.3.2.6\build\PropertyChanged.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\PropertyChanged.Fody.3.2.6\build\PropertyChanged.Fody.props'))" />
+    <Error Condition="!Exists('..\..\..\packages\Fody.6.1.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.6.1.1\build\Fody.targets'))" />
   </Target>
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
-  <Import Project="..\..\..\packages\Fody.6.1.0\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.6.1.0\build\Fody.targets')" />
   <Import Project="..\..\..\packages\CefSharp.Common.79.1.360\build\CefSharp.Common.targets" Condition="Exists('..\..\..\packages\CefSharp.Common.79.1.360\build\CefSharp.Common.targets')" />
   <Import Project="..\..\..\packages\CefSharp.OffScreen.79.1.360\build\CefSharp.OffScreen.targets" Condition="Exists('..\..\..\packages\CefSharp.OffScreen.79.1.360\build\CefSharp.OffScreen.targets')" />
+  <Import Project="..\..\..\packages\Fody.6.1.1\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.6.1.1\build\Fody.targets')" />
 </Project>

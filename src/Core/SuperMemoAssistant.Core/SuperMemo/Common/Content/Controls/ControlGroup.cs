@@ -34,12 +34,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using PluginManager.Interop.Sys;
 using Process.NET;
 using Process.NET.Memory;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
 using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
 {

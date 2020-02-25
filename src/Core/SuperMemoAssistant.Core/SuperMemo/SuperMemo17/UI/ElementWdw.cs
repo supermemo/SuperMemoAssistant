@@ -41,6 +41,7 @@ using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
+using SuperMemoAssistant.Interop.SuperMemo.Learning;
 using SuperMemoAssistant.Interop.SuperMemo.UI.Element;
 using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SuperMemo.Common.Content.Controls;
@@ -204,8 +205,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        return Core.Natives.ElWind.AddElementFromText(ElementWdwPtr.Read<IntPtr>(),
-                                                      elementDesc);
+        return Core.Natives.ElWind.SetElementFromDescription(
+          ElementWdwPtr.Read<IntPtr>(),
+          elementDesc);
       }
       catch (Win32Exception ex)
       {
@@ -216,6 +218,39 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       {
         LogTo.Error(ex, "SM internal method call threw an exception.");
         return false;
+      }
+    }
+
+    public int GenerateExtract(ElementType elementType, bool memorize = true, bool askUserToScheduleInterval = false)
+    {
+      try
+      {
+        return Core.Natives.ElWind.GenerateExtract(
+          ElementWdwPtr.Read<IntPtr>(),
+          elementType,
+          memorize,
+          askUserToScheduleInterval);
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "Native method call threw an exception.");
+        return -1;
+      }
+    }
+
+    public int GenerateCloze(bool memorize = true, bool askUserToScheduleInterval = false)
+    {
+      try
+      {
+        return Core.Natives.ElWind.GenerateCloze(
+          ElementWdwPtr.Read<IntPtr>(),
+          memorize,
+          askUserToScheduleInterval);
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "Native method call threw an exception.");
+        return -1;
       }
     }
 
@@ -641,7 +676,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       get => CurrentHookIdPtr.Read<int>();
       set => CurrentHookIdPtr.Write<int>(0, value);
     }
-    public int CurrentLearningMode => LearningModePtr.Read<int>();
+    public LearningMode CurrentLearningMode => (LearningMode)LearningModePtr.Read<int>();
 
     /// <inheritdoc />
     public event Action<SMDisplayedElementChangedArgs> OnElementChanged;

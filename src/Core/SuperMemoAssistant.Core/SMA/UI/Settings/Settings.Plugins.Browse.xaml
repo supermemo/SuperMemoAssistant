@@ -4,16 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:settings="clr-namespace:SuperMemoAssistant.SMA.UI.Settings"
+             xmlns:fa5="http://schemas.fontawesome.com/icons/"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance settings:BrowsePluginSettings}">
   <UserControl.Resources>
     <ResourceDictionary>
+      <BooleanToVisibilityConverter x:Key="BoolToVis" />
+      <settings:UninstallPluginVisibilityConverter x:Key="UninstallPluginVisibilityConverter" />
     </ResourceDictionary>
   </UserControl.Resources>
 
   <Grid>
-    <!--<ListBox x:Name="lbPlugins"
+    <ListBox x:Name="lbPlugins"
+             ItemContainerStyle="{DynamicResource UnfocusableListBoxItem}"
              ItemsSource="{Binding Plugins}">
       <ListBox.ItemTemplate>
         <DataTemplate>
@@ -28,14 +32,14 @@
               <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            --><!--Icon--><!--
+            <!--Icon-->
             <Image Width="64"
                    Height="64"
                    Grid.Row="0"
                    Grid.Column="0"
                    Grid.RowSpan="2">
               <Image.Source>
-                <Binding Path="Icon">
+                <Binding Path="Metadata.Icon">
                   <Binding.TargetNullValue>
                     <ImageSource>/SuperMemoAssistant.Core;component/Resources/plugin-default.png</ImageSource>
                   </Binding.TargetNullValue>
@@ -43,7 +47,7 @@
               </Image.Source>
             </Image>
 
-            --><!--Title line--><!--
+            <!--Title line-->
             <Grid Grid.Row="0"
                   Grid.Column="1"
                   Margin="16 0 0 0">
@@ -54,14 +58,14 @@
                 <ColumnDefinition Width="auto" />
               </Grid.ColumnDefinitions>
 
-              --><!--Title--><!--
+              <!--Title-->
               <TextBlock Grid.Column="0"
                          VerticalAlignment="Bottom"
-                         Text="{Binding DisplayName}"
+                         Text="{Binding Metadata.DisplayName}"
                          FontSize="18"
                          FontWeight="DemiBold" />
 
-              --><!--Version--><!--
+              <!--Version-->
               <TextBlock Grid.Column="1"
                          VerticalAlignment="Bottom"
                          Margin="8 0 0 2"
@@ -71,13 +75,13 @@
               <StackPanel Grid.Column="3"
                           Orientation="Horizontal">
 
-                --><!--Uninstall--><!--
+                <!--Uninstall-->
                 <Button Name="BtnPluginUninstall"
                         Width="26"
                         Height="26"
                         Margin="8 0 0 0"
                         VerticalAlignment="Center"
-                        Visibility="{Binding Metadata.IsDevelopment, Converter={StaticResource UPVisibilityConverter}}"
+                        Visibility="{Binding Metadata.IsDevelopment, Converter={StaticResource UninstallPluginVisibilityConverter}}"
                         Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
                         CommandParameter="{Binding}"
                         Command="{Binding DataContext.PluginUninstallCommand, ElementName=lbPlugins}">
@@ -88,16 +92,33 @@
                                   Foreground="{Binding Path=Foreground, ElementName=BtnPluginSettings}" />
                 </Button>
 
-                --><!--Install/Update--><!--
-                <Button Name="BtnPluginInstallUpdate"
+                <!--Install-->
+                <Button Name="BtnPluginInstall"
                         Width="26"
                         Height="26"
                         Margin="8 0 0 0"
                         VerticalAlignment="Center"
-                        Visibility="{Binding Metadata.IsDevelopment, Converter={StaticResource UPVisibilityConverter}}"
+                        Visibility="{Binding Metadata.IsDevelopment, Converter={StaticResource UninstallPluginVisibilityConverter}}"
                         Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
                         CommandParameter="{Binding}"
-                        Command="{Binding DataContext.PluginUninstallCommand, ElementName=lbPlugins}">
+                        Command="{Binding DataContext.PluginInstallCommand, ElementName=lbPlugins}">
+                  <fa5:SvgAwesome Width="14"
+                                  Height="14"
+                                  VerticalAlignment="Center"
+                                  Icon="Solid_Save"
+                                  Foreground="{Binding Path=Foreground, ElementName=BtnPluginSettings}" />
+                  </Button>
+
+                <!--Update-->
+                <Button Name="BtnPluginUpdate"
+                        Width="26"
+                        Height="26"
+                        Margin="8 0 0 0"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding Metadata.IsDevelopment, Converter={StaticResource UninstallPluginVisibilityConverter}}"
+                        Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
+                        CommandParameter="{Binding}"
+                        Command="{Binding DataContext.PluginUpdateCommand, ElementName=lbPlugins}">
                   <fa5:SvgAwesome Width="14"
                                   Height="14"
                                   VerticalAlignment="Center"
@@ -115,6 +136,6 @@
           </Grid>
         </DataTemplate>
       </ListBox.ItemTemplate>
-    </ListBox>-->
+    </ListBox>
   </Grid>
 </UserControl>

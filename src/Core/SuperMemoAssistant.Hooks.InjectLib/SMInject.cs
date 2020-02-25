@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2020/01/12 12:01
+// Modified On:  2020/02/25 15:34
 // Modified By:  Alexis
 
 #endregion
@@ -62,6 +61,11 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
 
     #region Constructors
+
+    static SMInject()
+    {
+      RemotingConfiguration.CustomErrorsMode = CustomErrorsModes.Off;
+    }
 
     public SMInject(RemoteHooking.IContext context,
                     string                 channelName,
@@ -145,7 +149,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
       var assemblyName = e.Name.Split(',').First() + ".dll";
       var assemblyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, assemblyName);
-      
+
       if (File.Exists(assemblyPath))
         try
         {
@@ -157,7 +161,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
           throw;
         }
-      
+
       OnException(new FileNotFoundException($"Assembly {assemblyName} could not be found in {assemblyPath}"));
 
       return null;

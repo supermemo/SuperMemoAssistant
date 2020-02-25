@@ -36,7 +36,7 @@ using System.Threading.Tasks;
 using Anotar.Serilog;
 using Newtonsoft.Json;
 using SuperMemoAssistant.Exceptions;
-using SuperMemoAssistant.Sys.IO;
+using Extensions.System.IO;
 
 namespace SuperMemoAssistant.Services.Configuration
 {

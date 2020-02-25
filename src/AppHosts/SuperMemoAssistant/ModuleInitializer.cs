@@ -71,11 +71,15 @@ namespace SuperMemoAssistant
 
         SuperMemoAssistant.SMA.Core.Logger = LoggerFactory.Create(SMAConst.Name, SuperMemoAssistant.SMA.Core.SharedConfiguration, Services.Sentry.SentryEx.LogToSentry);
 
+#pragma warning disable CS0436 // Type conflicts with imported type
+        Logger.ReloadAnotarLogger(typeof(SuperMemoAssistant.ModuleInitializer));
+#pragma warning restore CS0436 // Type conflicts with imported type
+
         // ReSharper disable once RedundantNameQualifier
         var appType     = typeof(SuperMemoAssistant.App);
         var releaseName = $"SuperMemoAssistant@{appType.GetAssemblyVersion()}";
 
-        SentryInstance = SentryEx.Initialize(releaseName);
+        SentryInstance = SentryEx.Initialize("https://a63c3dad9552434598dae869d2026696@sentry.io/1362046", releaseName);
 
         SuperMemoAssistant.SMA.Core.Configuration  = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
         SuperMemoAssistant.SMA.Core.KeyboardHotKey = KeyboardHookService.Instance;
@@ -84,7 +88,7 @@ namespace SuperMemoAssistant
 
         object tmp;
         tmp = LayoutManager.Instance;
-        tmp = PluginManager.Instance;
+        tmp = SMAPluginManager.Instance;
       }
       catch (SMAException ex)
       {

@@ -31,6 +31,7 @@
 
 
 using System;
+using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -186,6 +187,24 @@ namespace SuperMemoAssistant.Services.IO.Logger
     private void LogFirstChanceException(object _, FirstChanceExceptionEventArgs e)
     {
       LogTo.Error(e.Exception, "First chance exception");
+    }
+    
+    // See https://github.com/Fody/Anotar/issues/114
+    public static void ReloadAnotarLogger<T>()
+    {
+      ReloadAnotarLogger(typeof(T));
+    }
+    
+    // See https://github.com/Fody/Anotar/issues/114
+    public static void ReloadAnotarLogger(Type classType)
+    {
+      FieldInfo field;
+      
+      if ((field = classType.GetField("AnotarLogger", BindingFlags.NonPublic | BindingFlags.Static)) != null)
+      {
+        var logger = Log.ForContext(classType);
+        field.SetValue(null, logger);
+      }
     }
 
     #endregion

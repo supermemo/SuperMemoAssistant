@@ -11,18 +11,6 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Interop\SMAConst.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interop\SMAExecutableInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)PluginHost\HostConst.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interop\SMAFileSystem.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Sys\IO\DirectoryPath.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Sys\IO\FilePath.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Sys\IO\NormalizedPath.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Sys\IO\PathCollection.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Sys\IO\PathEqualityComparer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Sys\IO\PathKind.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Sys\IO\RelativePathResolver.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Interop\Plugins\" />
-    <Folder Include="$(MSBuildThisFileDirectory)PluginHost\" />
   </ItemGroup>
 </Project>

@@ -37,3 +37,6 @@
 [submodule "libs/MSBuild.Tools"]
 	path = libs/MSBuild.Tools
 	url = https://github.com/alexis-/MSBuild.Tools.git
+[submodule "libs/Extensions.System.IO"]
+	path = libs/Extensions.System.IO
+	url = https://github.com/alexis-/Extensions.System.IO.git

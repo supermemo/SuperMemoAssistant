@@ -68,7 +68,7 @@ namespace SuperMemoAssistant.SMA
         if (OnSMStartedEvent != null)
           await OnSMStartedEvent.InvokeAsync(
             this,
-            new SMProcessArgs(_sm, SMProcess.Native)).ConfigureAwait(false);
+            new SMProcessArgs(_sm, SMProcess.Native)).ConfigureAwait(true);
       }
       catch (Exception ex)
       {

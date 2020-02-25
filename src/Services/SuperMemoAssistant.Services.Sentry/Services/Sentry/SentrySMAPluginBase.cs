@@ -55,6 +55,7 @@ namespace SuperMemoAssistant.Services.Sentry
 
     /// <inheritdoc />
     protected SentrySMAPluginBase(
+      string                 sentryId,
       DebuggerAttachStrategy debuggerAttachStrategy = DebuggerAttachStrategy.Never)
       : base(debuggerAttachStrategy)
     {
@@ -62,7 +63,7 @@ namespace SuperMemoAssistant.Services.Sentry
       // ReSharper disable once VirtualMemberCallInConstructor
       var releaseName = $"{Name}@{pluginType.GetAssemblyVersion()}";
 
-      _sentry = SentryEx.Initialize(releaseName);
+      _sentry = SentryEx.Initialize(sentryId, releaseName);
     }
 
     public override void Dispose()

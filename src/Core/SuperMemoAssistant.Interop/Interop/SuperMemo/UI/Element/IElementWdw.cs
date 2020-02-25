@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/10 11:48
+// Modified On:  2020/02/22 15:54
 // Modified By:  Alexis
 
 #endregion
@@ -34,6 +34,7 @@ using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
+using SuperMemoAssistant.Interop.SuperMemo.Learning;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.UI.Element
 {
@@ -46,12 +47,12 @@ namespace SuperMemoAssistant.Interop.SuperMemo.UI.Element
     int      CurrentElementId { get; }
     IElement CurrentElement   { get; }
 
-    short LimitChildrenCount    { get; }
-    int   CurrentConceptGroupId { get; }
-    int   CurrentRootId         { get; set; }
-    int   CurrentHookId         { get; set; }
-    int   CurrentConceptId      { get; }
-    int CurrentLearningMode   { get; }
+    short        LimitChildrenCount    { get; }
+    int          CurrentConceptGroupId { get; }
+    int          CurrentRootId         { get; set; }
+    int          CurrentHookId         { get; set; }
+    int          CurrentConceptId      { get; }
+    LearningMode CurrentLearningMode   { get; }
 
     bool SetCurrentConcept(int conceptId);
     bool GoToElement(int       elementId);
@@ -61,18 +62,22 @@ namespace SuperMemoAssistant.Interop.SuperMemo.UI.Element
     int  AppendElement(ElementType elementType);
     bool AddElementFromText(string elementDesc);
 
+    int GenerateExtract(ElementType elementType,
+                        bool        memorize                  = true,
+                        bool        askUserToScheduleInterval = false);
+
+    int GenerateCloze(bool memorize                  = true,
+                      bool askUserToScheduleInterval = false);
+
     bool Delete();
     bool Done();
 
     event Action<SMDisplayedElementChangedArgs> OnElementChanged;
-    bool                                        NextElementInLearningQueue();
-    bool                                        SetElementState(int    state);
-    bool                                        PostponeRepetition(int interval);
 
-    bool ForceRepetition(int  interval,
-                         bool adjustPriority);
-
-    bool ForceRepetitionAndResume(int  interval,
-                                  bool adjustPriority);
+    bool NextElementInLearningQueue();
+    bool SetElementState(int          state);
+    bool PostponeRepetition(int       interval);
+    bool ForceRepetition(int          interval, bool adjustPriority);
+    bool ForceRepetitionAndResume(int interval, bool adjustPriority);
   }
 }

@@ -36,11 +36,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Anotar.Serilog;
+using PluginManager.Interop.Sys;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Hooks;
-using SuperMemoAssistant.Sys;
 using SuperMemoAssistant.Sys.SparseClusteredArray;
 
 namespace SuperMemoAssistant.SuperMemo.Hooks

@@ -31,6 +31,7 @@
 
 
 using System;
+using PluginManager.Interop.Sys;
 
 namespace SuperMemoAssistant.Sys.Remoting
 {

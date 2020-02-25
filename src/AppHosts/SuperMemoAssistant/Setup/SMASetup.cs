@@ -39,12 +39,12 @@ namespace SuperMemoAssistant.Setup
   {
     #region Methods
 
-    public static bool ShouldFindSuperMemo(StartupCfg startupCfg, NativeDataCfg nativeDataCfg)
+    public static bool ShouldFindSuperMemo(CoreCfg startupCfg, NativeDataCfg nativeDataCfg)
     {
-      return string.IsNullOrWhiteSpace(startupCfg.SMBinPath)
+      return string.IsNullOrWhiteSpace(startupCfg.SuperMemo.SMBinPath)
         || SuperMemoFinderUtil.CheckSuperMemoExecutable(
           nativeDataCfg,
-          startupCfg.SMBinPath,
+          startupCfg.SuperMemo.SMBinPath,
           out _,
           out _) == false;
     }

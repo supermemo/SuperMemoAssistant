@@ -31,6 +31,8 @@
 
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Anotar.Serilog;
 using Process.NET.Execution;
 using Process.NET.Memory;
@@ -171,7 +173,66 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
-      public bool AddElementFromText(IntPtr elementWdwPtr, string elementDesc)
+      public int GenerateExtract(IntPtr elementWdwPtr, ElementType elementType, bool memorize = true, bool askUserToScheduleInterval = false)
+      {
+        using (var cts = new CancellationTokenSource(5000))
+          try
+          {
+            var waitForElemIdTask = Core.SM.Registry.Element.WaitForNextCreatedElement(cts.Token);
+
+            NativeMethod.ElWdw_GenerateExtract.ExecuteOnMainThread(
+              elementWdwPtr,
+              (byte)elementType,
+              memorize,
+              askUserToScheduleInterval);
+
+            return waitForElemIdTask.Result;
+          }
+          catch (AggregateException aggEx) when (aggEx.InnerException is TaskCanceledException)
+          {
+            LogTo.Warning("Couldn't find element id for GenerateExtract");
+
+            return -1;
+          }
+          catch (Exception ex)
+          {
+            LogTo.Error(ex, "Native method call threw an exception.");
+            cts.Cancel();
+
+            return -1;
+          }
+      }
+
+      public int GenerateCloze(IntPtr elementWdwPtr, bool memorize = true, bool askUserToScheduleInterval = false)
+      {
+        using (var cts = new CancellationTokenSource(5000))
+          try
+          {
+            var waitForElemIdTask = Core.SM.Registry.Element.WaitForNextCreatedElement(cts.Token);
+            
+            NativeMethod.ElWdw_GenerateClozeDeletion.ExecuteOnMainThread(
+              elementWdwPtr,
+              memorize,
+              askUserToScheduleInterval);
+
+            return waitForElemIdTask.Result;
+          }
+          catch (AggregateException aggEx) when (aggEx.InnerException is TaskCanceledException)
+          {
+            LogTo.Warning("Couldn't find element id for GenerateExtract");
+
+            return -1;
+          }
+          catch (Exception ex)
+          {
+            LogTo.Error(ex, "Native method call threw an exception.");
+            cts.Cancel();
+
+            return -1;
+          }
+      }
+
+      public bool SetElementFromDescription(IntPtr elementWdwPtr, string elementDesc)
       {
         try
         {

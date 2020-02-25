@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2020/02/12 22:50
-// Modified On:  2020/02/13 20:08
+// Modified On:  2020/02/22 17:58
 // Modified By:  Alexis
 
 #endregion
@@ -31,7 +30,6 @@
 
 
 using System;
-using System.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 using Anotar.Serilog;
@@ -49,11 +47,11 @@ namespace SuperMemoAssistant.Installer
   {
     #region Constants & Statics
 
-    private static string  UpdateUrl     { get; }
-    private static ILogger Logger        { get; } = LoggerFactory.CreateSerilog("SuperMemoAssistant.Installer");
-    
-    public static bool UpdateEnabled { get; }
-    public static SMAInstaller Instance { get; } = new SMAInstaller();
+    private static ILogger      Logger   { get; } = LoggerFactory.CreateSerilog("SuperMemoAssistant.Installer");
+    public static  SMAInstaller Instance { get; } = new SMAInstaller();
+
+    public static bool   UpdateEnabled => SuperMemoAssistant.SMA.Core.CoreConfig.Updates.EnableCoreUpdates;
+    public static string UpdateUrl     => SuperMemoAssistant.SMA.Core.CoreConfig.Updates.CoreUpdateUrl;
 
     #endregion
 
@@ -70,12 +68,6 @@ namespace SuperMemoAssistant.Installer
 
 
     #region Constructors
-
-    static SMAInstaller()
-    {
-      UpdateEnabled = bool.TryParse(ConfigurationManager.AppSettings["EnableUpdates"], out var updateEnabled) && updateEnabled;
-      UpdateUrl     = ConfigurationManager.AppSettings["UpdateUrl"];
-    }
 
     private SMAInstaller() { }
 
@@ -146,7 +138,7 @@ namespace SuperMemoAssistant.Installer
       {
         if (Wininet.HasNetworking() == false)
           return;
-      
+
         CancellationTokenSource cts = new CancellationTokenSource(0);
         cts.Cancel();
 
@@ -184,7 +176,7 @@ namespace SuperMemoAssistant.Installer
           State = SMAUpdateState.Updated;
         }
       }
-      catch (TaskCanceledException) {}
+      catch (TaskCanceledException) { }
       catch (Exception ex) // TODO: Update Squirrel UpdateManager to send sub-classed Exceptions
       {
         LogTo.Warning(ex, $"An exception was caught while {State.Name().ToLower()} update");

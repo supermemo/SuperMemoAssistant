@@ -43,7 +43,6 @@ namespace SuperMemoAssistant.Services.Sentry
   {
     #region Constants & Statics
 
-    public const   string Id = "https://a63c3dad9552434598dae869d2026696@sentry.io/1362046";
     private static User   _user;
 
 
@@ -61,7 +60,7 @@ namespace SuperMemoAssistant.Services.Sentry
       return config.WriteTo.Sentry();
     }
 
-    public static IDisposable Initialize(string releaseName)
+    public static IDisposable Initialize(string sentryId, string releaseName)
     {
       try
       {
@@ -76,7 +75,7 @@ namespace SuperMemoAssistant.Services.Sentry
 #if DEBUG
           //o.Debug = true;
 #endif
-          o.Dsn        = new Dsn(Id);
+          o.Dsn        = new Dsn(sentryId);
           o.Release    = releaseName;
           o.BeforeSend = BeforeSend;
         });

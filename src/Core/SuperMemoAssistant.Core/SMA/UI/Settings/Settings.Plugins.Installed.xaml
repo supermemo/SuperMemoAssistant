@@ -4,10 +4,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:plugins="clr-namespace:SuperMemoAssistant.Plugins"
              xmlns:fa5="http://schemas.fontawesome.com/icons/"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:settings="clr-namespace:SuperMemoAssistant.SMA.UI.Settings"
+             xmlns:models="clr-namespace:SuperMemoAssistant.Plugins.Models"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance settings:InstalledPluginSettings}">
@@ -24,7 +24,7 @@
              ItemContainerStyle="{DynamicResource UnfocusableListBoxItem}"
              ItemsSource="{Binding Plugins}">
       <ListBox.ItemTemplate>
-        <DataTemplate DataType="plugins:PluginInstance">
+        <DataTemplate DataType="models:PluginInstance">
           <Grid Height="76" Margin="6">
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="auto" />

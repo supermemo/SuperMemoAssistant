@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,18 +21,15 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/08/07 23:24
-// Modified On:  2019/08/08 11:25
+// Modified On:  2020/02/21 20:04
 // Modified By:  Alexis
 
 #endregion
 
 
 
-#if DEBUG
-using System.IO;
-#endif
 
+using Anotar.Serilog;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.SuperMemo.Common.Elements;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types;
@@ -89,11 +86,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
           return Elements[id] = new Task(id);
       }
 
-#if DEBUG
-      throw new InvalidDataException("Unknown object type");
-#else
+      LogTo.Warning($"Creating element with unknown type {elementType} for element id {id}");
+
       return new Topic(id);
-#endif
     }
 
     #endregion

@@ -31,7 +31,7 @@
 
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.Plugins;
-using SuperMemoAssistant.Sys.IO;
+using Extensions.System.IO;
 
 namespace SuperMemoAssistant.Services.Configuration
 {

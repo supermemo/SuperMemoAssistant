@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/10 12:03
+// Modified On:  2020/02/25 15:33
 // Modified By:  Alexis
 
 #endregion
@@ -32,8 +32,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting;
 using System.Threading.Tasks;
 using Anotar.Serilog;
+using Extensions.System.IO;
+using PluginManager.Interop.Sys;
 using Process.NET;
 using SuperMemoAssistant.Exceptions;
 using SuperMemoAssistant.Interop.SuperMemo;
@@ -44,8 +47,6 @@ using SuperMemoAssistant.SuperMemo;
 using SuperMemoAssistant.SuperMemo.Common;
 using SuperMemoAssistant.SuperMemo.Common.Content.Layout;
 using SuperMemoAssistant.SuperMemo.SuperMemo17;
-using SuperMemoAssistant.Sys;
-using SuperMemoAssistant.Sys.IO;
 
 namespace SuperMemoAssistant.SMA
 {
@@ -68,6 +69,11 @@ namespace SuperMemoAssistant.SMA
 
 
     #region Constructors
+
+    static SMA()
+    {
+      RemotingConfiguration.CustomErrorsMode = CustomErrorsModes.Off;
+    }
 
     /// <summary>
     ///   Create an instance of the wrapper that will start a SM instance and attach the
@@ -118,7 +124,6 @@ namespace SuperMemoAssistant.SMA
 
     public async Task<bool> Start(
       NativeDataCfg nativeDataCfg,
-      StartupCfg    startupCfg,
       SMCollection  collection)
     {
       try
@@ -126,7 +131,7 @@ namespace SuperMemoAssistant.SMA
         if (_sm != null)
           throw new InvalidOperationException("_sm is already instantiated");
 
-        await LoadConfig(collection, startupCfg);
+        await LoadConfig(collection);
 
         var nativeData = CheckSuperMemoExecutable(nativeDataCfg);
 
@@ -161,14 +166,14 @@ namespace SuperMemoAssistant.SMA
                                                Version      smVersion)
     {
       if (SM17.Versions.Contains(smVersion))
-        return new SM17(collection, StartupConfig.SMBinPath);
+        return new SM17(collection, CoreConfig.SuperMemo.SMBinPath);
 
       throw new SMAException($"Unsupported SM version {smVersion}");
     }
 
     private NativeData CheckSuperMemoExecutable(NativeDataCfg nativeDataCfg)
     {
-      var smFile = new FilePath(StartupConfig.SMBinPath);
+      var smFile = new FilePath(CoreConfig.SuperMemo.SMBinPath);
 
       if (SuperMemoFinder.CheckSuperMemoExecutable(nativeDataCfg, smFile, out var nativeData, out var ex) == false)
         throw ex;

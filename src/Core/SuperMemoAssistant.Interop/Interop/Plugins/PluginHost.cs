@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/03/02 22:06
+// Modified On:  2020/02/25 12:18
 // Modified By:  Alexis
 
 #endregion
@@ -33,168 +32,56 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 using Anotar.Serilog;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.PluginHost;
-using SuperMemoAssistant.Sys;
-using SuperMemoAssistant.Sys.IO;
+using PluginManager.Interop.Contracts;
+using PluginManager.Interop.PluginHost;
+using PluginManager.Interop.Sys;
+using SuperMemoAssistant.Interop.SuperMemo;
 
 namespace SuperMemoAssistant.Interop.Plugins
 {
-  public partial class PluginHost : PerpetualMarshalByRefObject, IDisposable
+  public class PluginHost : PluginHostBase<ISuperMemoAssistant>
   {
     #region Properties & Fields - Non-Public
 
-    private readonly ISMAPlugin _plugin;
+    protected override HashSet<Type> CoreInterfaceTypes { get; } = new HashSet<Type>
+    {
+      typeof(ISuperMemoAssistant)
+      // Insert subsequent versions here
+    };
 
-    private bool _hasExited;
+    protected override HashSet<Type> PluginMgrInterfaceTypes { get; } = new HashSet<Type>
+    {
+      typeof(IPluginManager<ISuperMemoAssistant>)
+      // Insert subsequent versions here
+    };
 
     #endregion
 
-
+    
 
 
     #region Constructors
 
-    [LogToFatalOnException]
     public PluginHost(
       string  pluginPackageName,
       Guid    sessionGuid,
       string  smaChannelName,
       Process smaProcess,
       bool    isDev)
-    {
-      // Connect to SMA
-      var pluginMgr = RemotingServicesEx.ConnectToIpcServer<ISMAPluginManager>(smaChannelName);
-
-      if (pluginMgr == null)
-      {
-        Exit(HostConst.ExitIpcConnectionError);
-        return;
-      }
-
-      // Get required assemblies name
-      IEnumerable<string> pluginAssemblies;
-      IEnumerable<string> dependenciesAssemblies;
-
-      if (isDev)
-      {
-        var homePath       = new DirectoryPath(AppDomain.CurrentDomain.BaseDirectory);
-        var pluginFilePath = homePath.CombineFile(pluginPackageName + ".dll");
-
-        pluginAssemblies = new List<string>
-        {
-          pluginFilePath.FullPath
-        };
-        dependenciesAssemblies = new List<string>();
-      }
-
-      else if (pluginMgr.GetAssembliesPathsForPlugin(
-        sessionGuid,
-        out pluginAssemblies,
-        out dependenciesAssemblies) == false)
-      {
-        Exit(HostConst.ExitCouldNotGetAssembliesPaths);
-        return;
-      }
-
-      // Setup assembly resolution
-      AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
-
-      // Load & create plugin
-      _plugin = LoadAssembliesAndCreatePluginInstance(
-        dependenciesAssemblies,
-        pluginAssemblies);
-
-      if (_plugin == null)
-      {
-        Exit(HostConst.ExitNoPluginTypeFound);
-        return;
-      }
-
-      // Connect plugin to SMA
-      var sma = pluginMgr.ConnectPlugin(
-        _plugin.ChannelName,
-        sessionGuid);
-
-      if (sma == null)
-      {
-        Exit(HostConst.ExitCouldNotConnectPlugin);
-        return;
-      }
-
-      // Inject properties
-      InjectPropertyDependencies(_plugin, sma, pluginMgr, sessionGuid, isDev);
-
-      _plugin.OnInjected();
-
-      // Start monitoring SMA process
-      if (StartMonitoringSMAProcess(smaProcess) == false)
-        Exit(HostConst.ExitParentExited);
-    }
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-      _plugin?.Dispose();
-    }
+      : base(pluginPackageName, sessionGuid, smaChannelName, smaProcess, isDev)
+    { }
 
     #endregion
 
 
 
 
-    #region Methods
+    #region Methods Impl
 
-    private bool StartMonitoringSMAProcess(Process smaProc)
+    protected override void MonitorPluginMgrProcess(object param)
     {
-      if (smaProc.HasExited)
-        return false;
-
-      Task.Factory.StartNew(MonitorSMAProcess,
-                            smaProc,
-                            TaskCreationOptions.LongRunning);
-
-      smaProc.Exited += (o, ev) => OnSMAStopped();
-
-      return true;
-    }
-
-    private void MonitorSMAProcess(object param)
-    {
-      Process smaProc = (Process)param;
-
-      try
-      {
-        while (_hasExited == false && smaProc.HasExited == false)
-        {
-          smaProc.Refresh();
-
-          Thread.Sleep(500);
-        }
-
-        if (smaProc.HasExited)
-          OnSMAStopped();
-      }
-      catch (Exception ex)
-      {
-        LogTo.Error(ex, "Exception thrown while monitoring SMA process. Exiting");
-        OnSMAStopped();
-      }
-    }
-
-    private void OnSMAStopped()
-    {
-      Exit(0);
-    }
-
-    private void Exit(int code)
-    {
-      _hasExited = true;
-
-      Environment.Exit(code);
+      base.MonitorPluginMgrProcess(param);
     }
 
     #endregion

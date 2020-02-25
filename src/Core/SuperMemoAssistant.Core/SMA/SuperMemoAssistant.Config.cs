@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/10 10:57
+// Modified On:  2020/02/22 17:55
 // Modified By:  Alexis
 
 #endregion
@@ -46,7 +46,7 @@ namespace SuperMemoAssistant.SMA
     #region Properties & Fields - Public
 
     public CollectionCfg CollectionConfig { get; set; }
-    public StartupCfg    StartupConfig    { get; set; }
+    public CoreCfg       CoreConfig       => Core.CoreConfig;
 
     #endregion
 
@@ -65,10 +65,9 @@ namespace SuperMemoAssistant.SMA
         }).RunAsync();
     }
 
-    private async Task LoadConfig(SMCollection collection, StartupCfg startupCfg)
+    private async Task LoadConfig(SMCollection collection)
     {
       Core.CollectionConfiguration = new CollectionConfigurationService(collection, "Core");
-      StartupConfig                = startupCfg;
 
       // CollectionsCfg
       CollectionConfig = await Core.CollectionConfiguration.Load<CollectionCfg>() ?? new CollectionCfg();
@@ -80,7 +79,7 @@ namespace SuperMemoAssistant.SMA
       {
         var tasks = new[]
         {
-          Core.Configuration.Save<StartupCfg>(StartupConfig),
+          Core.Configuration.Save<CoreCfg>(CoreConfig),
           Core.CollectionConfiguration.Save<CollectionCfg>(CollectionConfig),
         };
 

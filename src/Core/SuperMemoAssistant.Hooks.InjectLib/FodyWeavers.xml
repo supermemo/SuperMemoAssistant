@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
   <Costura>
-    <ExcludeAssemblies>
+    <!--<ExcludeAssemblies>
       EasyHook
       JetBrains.Annotations
       Newtonsoft.Json
@@ -9,7 +9,8 @@
       Sentry*
       SuperMemoAssistant.Hooks.Common
       System.*
-    </ExcludeAssemblies>
+    </ExcludeAssemblies>-->
+    <IncludeAssemblies></IncludeAssemblies>
     <Unmanaged32Assemblies>
       SuperMemoAssistant.Hooks.NativeLib
     </Unmanaged32Assemblies>

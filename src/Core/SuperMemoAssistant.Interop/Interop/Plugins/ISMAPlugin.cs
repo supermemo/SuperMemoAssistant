@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/17 17:23
+// Modified On:  2020/02/25 11:12
 // Modified By:  Alexis
 
 #endregion
@@ -29,23 +29,16 @@
 
 
 
-using System;
+using PluginManager.Interop.Contracts;
 using SuperMemoAssistant.Sys.Remoting;
 
 namespace SuperMemoAssistant.Interop.Plugins
 {
-  public interface ISMAPlugin : IDisposable
+  public interface ISMAPlugin : IPluginBase
   {
-    string Name            { get; }
-    string AssemblyName    { get; }
-    string AssemblyVersion { get; }
-    string ChannelName     { get; }
-    bool   HasSettings     { get; }
+    bool HasSettings { get; }
 
-    void               OnInjected();
-    void               OnServicePublished(string interfaceTypeName);
-    void               OnServiceRevoked(string   interfaceTypeName);
-    RemoteTask<object> OnMessage(PluginMessage   msg, params object[] parameters);
+    RemoteTask<object> OnMessage(PluginMessage msg, params object[] parameters);
     void               ShowSettings();
   }
 }

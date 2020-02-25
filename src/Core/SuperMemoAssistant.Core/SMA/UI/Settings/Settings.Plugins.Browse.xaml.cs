@@ -30,19 +30,36 @@
 
 
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Controls;
+using PluginManager.PackageManager.Models;
+using SuperMemoAssistant.Plugins.Models;
+using SuperMemoAssistant.Plugins.Services;
 
 namespace SuperMemoAssistant.SMA.UI.Settings
 {
+
   /// <summary>Interaction logic for Settings.xaml</summary>
   public partial class BrowsePluginSettings : UserControl
   {
     #region Constructors
-
+    
     public BrowsePluginSettings()
     {
+      DataContext = this;
+
       InitializeComponent();
     }
+
+    public async Task RefreshOnlinePlugins()
+    {
+      var onlinePlugins = await PluginRepositoryService.Instance.ListPlugins().ConfigureAwait(true);
+
+      //Plugins = onlinePlugins;
+    }
+
+    public List<LocalPluginPackage<PluginMetadata>> Plugins {get; private set;}
 
     #endregion
   }

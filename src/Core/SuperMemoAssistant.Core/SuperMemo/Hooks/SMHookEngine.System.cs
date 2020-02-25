@@ -82,12 +82,12 @@ But most likely, NativeLib exists and failed to load other assemblies or librari
 
     public override Dictionary<string, int> GetPatternsHintAddresses()
     {
-      return Core.SMA.StartupConfig.PatternsHintAddresses;
+      return Core.SMA.CoreConfig.SuperMemo.PatternsHintAddresses;
     }
 
     public override void SetPatternsHintAddresses(Dictionary<string, int> hintAddrs)
     {
-      Core.SMA.StartupConfig.PatternsHintAddresses = hintAddrs;
+      Core.SMA.CoreConfig.SuperMemo.PatternsHintAddresses = hintAddrs;
       Core.SMA.SaveConfig(false);
     }
 

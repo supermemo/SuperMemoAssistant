@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/10 12:02
+// Modified On:  2020/02/22 17:55
 // Modified By:  Alexis
 
 #endregion
@@ -33,6 +33,7 @@ using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.HotKeys;
 using SuperMemoAssistant.Services.IO.Keyboard;
 using SuperMemoAssistant.Services.IO.Logger;
+using SuperMemoAssistant.SMA.Configs;
 using SuperMemoAssistant.SuperMemo.Common;
 using SuperMemoAssistant.SuperMemo.Hooks;
 using SuperMemoAssistant.SuperMemo.Natives;
@@ -43,10 +44,12 @@ namespace SuperMemoAssistant.SMA
   {
     #region Constants & Statics
 
-    public static SMA SMA     { get; set; }
-    public static SuperMemoCore      SM      { get; set; }
-    public static SMHookEngine       Hook    { get; set; }
-    public static SMNatives          Natives { get; set; }
+    public static SMA           SMA     { get; set; }
+    public static SuperMemoCore SM      { get; set; }
+    public static SMHookEngine  Hook    { get; set; }
+    public static SMNatives     Natives { get; set; }
+
+    public static CoreCfg CoreConfig { get; set; }
 
     public static Logger Logger { get; set; }
 

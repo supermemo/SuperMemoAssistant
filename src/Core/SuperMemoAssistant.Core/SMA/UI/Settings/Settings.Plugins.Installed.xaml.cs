@@ -38,7 +38,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Anotar.Serilog;
 using Forge.Forms;
+using PluginManager.Models;
 using SuperMemoAssistant.Plugins;
+using SuperMemoAssistant.Plugins.Models;
 using SuperMemoAssistant.Services.UI.Extensions;
 using SuperMemoAssistant.Sys.Windows.Input;
 
@@ -60,9 +62,9 @@ namespace SuperMemoAssistant.SMA.UI.Settings
 
     public InstalledPluginSettings()
     {
-      InitializeComponent();
-
       DataContext = this;
+
+      InitializeComponent();
     }
 
     #endregion
@@ -72,7 +74,7 @@ namespace SuperMemoAssistant.SMA.UI.Settings
 
     #region Properties & Fields - Public
 
-    public ReadOnlyObservableCollection<PluginInstance> Plugins => PluginManager.Instance.AllPlugins;
+    public ReadOnlyObservableCollection<PluginInstance> Plugins => SMAPluginManager.Instance.AllPlugins;
 
     public ICommand PluginShowSettingsCommand => new AsyncRelayCommand<PluginInstance>(PluginShowSettings);
 
@@ -112,11 +114,11 @@ namespace SuperMemoAssistant.SMA.UI.Settings
       switch (pluginInstance.Status)
       {
         case PluginStatus.Stopped:
-          await PluginManager.Instance.StartPlugin(pluginInstance);
+          await SMAPluginManager.Instance.StartPlugin(pluginInstance);
           break;
 
         case PluginStatus.Connected:
-          await PluginManager.Instance.StopPlugin(pluginInstance);
+          await SMAPluginManager.Instance.StopPlugin(pluginInstance);
           break;
 
         default:
@@ -126,12 +128,12 @@ namespace SuperMemoAssistant.SMA.UI.Settings
 
     private bool CanPluginPlayPause(PluginInstance pluginInstance)
     {
-      return PluginManager.Instance.CanPluginStartOrPause(pluginInstance);
+      return SMAPluginManager.Instance.CanPluginStartOrPause(pluginInstance);
     }
 
     private async Task PluginUpdate(PluginInstance pluginInstance)
     {
-      await PluginManager.Instance.InstallPlugin(null);
+      await SMAPluginManager.Instance.InstallPlugin(null, null);
     }
 
     private bool CanPluginUpdate(PluginInstance pluginInstance)
@@ -141,7 +143,7 @@ namespace SuperMemoAssistant.SMA.UI.Settings
 
     private async Task PluginUninstall(PluginInstance pluginInstance)
     {
-      await PluginManager.Instance.UninstallPlugin(pluginInstance);
+      await SMAPluginManager.Instance.UninstallPlugin(pluginInstance);
     }
 
     private bool CanPluginUninstall(PluginInstance pluginInstance)
@@ -169,7 +171,7 @@ namespace SuperMemoAssistant.SMA.UI.Settings
           return;
         }
 
-        await PluginManager.Instance.StopPlugin(pluginInstance);
+        await SMAPluginManager.Instance.StopPlugin(pluginInstance);
       }
 
       pluginInstance.Metadata.Enabled = false;

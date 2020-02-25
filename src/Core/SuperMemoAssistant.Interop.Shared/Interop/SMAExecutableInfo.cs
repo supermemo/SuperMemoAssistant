@@ -32,7 +32,7 @@
 
 using System.Reflection;
 using System.Text.RegularExpressions;
-using SuperMemoAssistant.Sys.IO;
+using Extensions.System.IO;
 
 namespace SuperMemoAssistant.Interop
 {

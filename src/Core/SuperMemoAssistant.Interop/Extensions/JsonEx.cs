@@ -33,7 +33,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using SuperMemoAssistant.Sys.IO;
+using Extensions.System.IO;
 
 namespace SuperMemoAssistant.Extensions
 {

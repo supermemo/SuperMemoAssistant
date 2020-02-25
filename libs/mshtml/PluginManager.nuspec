@@ -1,0 +1,24 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <version>0.0.0.0</version>
+    <authors>Alexis</authors>
+    <owners>inco</owners>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/alexis-/PluginManager</projectUrl>
+
+    <id>PluginManager</id>
+    <title>PluginManager.NET</title>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A plugin manager for .NET projects</description>
+    <copyright>Copyright Microsoft© 2020</copyright>
+	
+    <dependencies>
+      <group targetFramework="net72">
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="../bin/Release/PluginManager.dll" target="lib\Net72" />
+  </files>
+</package>

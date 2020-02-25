@@ -34,7 +34,7 @@ using System;
 using System.Globalization;
 using System.Windows;
 using FontAwesome5;
-using SuperMemoAssistant.Plugins;
+using PluginManager.Models;
 using SuperMemoAssistant.Sys.Windows.Data;
 
 namespace SuperMemoAssistant.SMA.UI.Settings

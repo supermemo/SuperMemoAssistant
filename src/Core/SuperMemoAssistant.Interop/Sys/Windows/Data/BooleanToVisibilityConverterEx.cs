@@ -36,7 +36,7 @@ using System.Windows.Data;
 
 namespace SuperMemoAssistant.Sys.Windows.Data
 {
-  [ValueConversion(typeof(bool), typeof(bool))]
+  [ValueConversion(typeof(bool), typeof(Visibility))]
   public class BooleanToVisibilityConverterEx : IValueConverter
   {
     #region IValueConverter Members
@@ -46,6 +46,9 @@ namespace SuperMemoAssistant.Sys.Windows.Data
                           object                           parameter,
                           System.Globalization.CultureInfo culture)
     {
+      if (value == null)
+        return Visibility.Collapsed;
+
       if (!(value is bool show))
         throw new InvalidOperationException("Value must be of type bool");
 

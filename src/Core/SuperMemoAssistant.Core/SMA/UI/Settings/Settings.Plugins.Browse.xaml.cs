@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/26 19:42
-// Modified On:  2019/02/26 22:00
+// Modified On:  2020/03/04 18:18
 // Modified By:  Alexis
 
 #endregion
@@ -30,36 +29,70 @@
 
 
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
-using PluginManager.PackageManager.Models;
-using SuperMemoAssistant.Plugins.Models;
-using SuperMemoAssistant.Plugins.Services;
+using SuperMemoAssistant.Extensions;
+using SuperMemoAssistant.SMA.UI.ViewModels;
 
 namespace SuperMemoAssistant.SMA.UI.Settings
 {
-
-  /// <summary>Interaction logic for Settings.xaml</summary>
+  /// <summary>
+  ///   List available plugins from the online Plugin repository. User can choose to install,
+  ///   uninstall, update them
+  /// </summary>
   public partial class BrowsePluginSettings : UserControl
   {
+    #region Properties & Fields - Non-Public
+
+    /// <summary>
+    /// This View Model is a singleton to preserve the state of the package manager across UI navigation operations
+    /// </summary>
+    private PluginManagerViewModel ViewModel => PluginManagerViewModel.Instance;
+
+    #endregion
+
+
+
+
     #region Constructors
-    
+
     public BrowsePluginSettings()
     {
-      DataContext = this;
-
+      DataContext = ViewModel;
       InitializeComponent();
+
+      ViewModel.RefreshPlugins(false).RunAsync();
+
+      Unloaded += OnControlUnloaded;
     }
 
-    public async Task RefreshOnlinePlugins()
+    #endregion
+
+
+
+
+    #region Methods
+
+    /// <summary>Cleanup this control when it is unloaded</summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void OnControlUnloaded(object sender, RoutedEventArgs e)
     {
-      var onlinePlugins = await PluginRepositoryService.Instance.ListPlugins().ConfigureAwait(true);
-
-      //Plugins = onlinePlugins;
+      //ViewModel.CancelTasks(); // TODO: Only on Cancel button
     }
 
-    public List<LocalPluginPackage<PluginMetadata>> Plugins {get; private set;}
+    /// <summary>
+    ///   Automatically scroll to bottom when text is updated. TextBox is buggy as hell, and it
+    ///   seems impossible to preserve the vertical scrollbar position on update. The TextBox will
+    ///   scroll to the top when it is focused.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void tbOperationLogs_TextChanged(object sender, TextChangedEventArgs e)
+    {
+      tbOperationLogs.ScrollToEnd();
+      tbOperationLogs.CaretIndex = tbOperationLogs.Text.Length;
+    }
 
     #endregion
   }

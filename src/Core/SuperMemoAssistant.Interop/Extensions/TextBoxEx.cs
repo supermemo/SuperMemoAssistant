@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2020/01/24 17:29
-// Modified On:  2020/01/24 17:31
+// Modified On:  2020/03/04 16:03
 // Modified By:  Alexis
 
 #endregion
@@ -31,6 +30,7 @@
 
 
 using System;
+using System.Runtime.InteropServices;
 using System.Windows.Controls;
 
 namespace SuperMemoAssistant.Extensions
@@ -50,6 +50,11 @@ namespace SuperMemoAssistant.Extensions
       count = res.Length;
 
       return res;
+    }
+
+    public static bool IsScrolledToEnd(this TextBox tb)
+    {
+      return tb.VerticalOffset > tb.ExtentHeight - tb.ViewportHeight - tb.FontSize;
     }
 
     #endregion

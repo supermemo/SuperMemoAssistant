@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/25 11:57
+// Modified On:  2020/03/05 22:13
 // Modified By:  Alexis
 
 #endregion
@@ -29,26 +29,32 @@
 
 
 
+using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 using Extensions.System.IO;
 using PluginManager;
 using PluginManager.Contracts;
 using PluginManager.Interop.Contracts;
+using PluginManager.Logger;
 using PluginManager.PackageManager.Models;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.Plugins;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Plugins.Models;
-using SuperMemoAssistant.Plugins.Services;
 using SuperMemoAssistant.SMA;
 
 // ReSharper disable RedundantTypeArgumentsOfMethod
 
 namespace SuperMemoAssistant.Plugins
 {
-  using TPluginManager = PluginManagerBase<SMAPluginManager, PluginInstance, PluginMetadata, IPluginManager<ISuperMemoAssistant>, ISuperMemoAssistant, ISMAPlugin>;
+  using TPluginManager =
+    PluginManagerBase<SMAPluginManager, PluginInstance, PluginMetadata, IPluginManager<ISuperMemoAssistant>, ISuperMemoAssistant, ISMAPlugin
+    >;
 
   public partial class SMAPluginManager : TPluginManager, IPluginLocations
   {
@@ -61,10 +67,19 @@ namespace SuperMemoAssistant.Plugins
 
 
 
+    #region Properties & Fields - Non-Public
+
+    private readonly PluginManagerLogAdapter          _logAdapter = new PluginManagerLogAdapter();
+    private          DispatcherSynchronizationContext _uiSynchronizationContext;
+
+    #endregion
+
+
+
+
     #region Constructors
 
     private SMAPluginManager()
-      : base(new PluginManagerLogAdapter())
     {
       Core.SMA.OnSMStartedEvent += OnSMStarted;
       Core.SMA.OnSMStoppedEvent += OnSMStopped;
@@ -79,13 +94,22 @@ namespace SuperMemoAssistant.Plugins
 
     private async Task OnSMStarted(object sender, SMProcessArgs e)
     {
-      await base.OnStarted();
+      _uiSynchronizationContext = new DispatcherSynchronizationContext(Application.Current.Dispatcher);
+      await base.Initialize();
     }
 
     private void OnSMStopped(object sender, SMProcessArgs e)
     {
-      base.OnStopped();
+      base.Cleanup();
     }
+
+    /// <summary>Adds an additional handler for <see cref="SMAPluginManager" /> log output</summary>
+    /// <param name="logger">The log handler</param>
+    public void AddLogger(Action<string> logger) => _logAdapter.AddLogger(logger);
+
+    /// <summary>Removes <paramref name="logger" /> from list of log output handlers</summary>
+    /// <param name="logger">The log handler</param>
+    public void RemoveLogger(Action<string> logger) => _logAdapter.RemoveLogger(logger);
 
     #endregion
 
@@ -133,8 +157,12 @@ namespace SuperMemoAssistant.Plugins
 
     /// <inheritdoc />
     public override IPluginLocations Locations => this;
+
     /// <inheritdoc />
-    public override IPluginRepositoryService<PluginMetadata> RepoService => PluginRepositoryService.Instance;
+    public override ILogAdapter LogAdapter => _logAdapter;
+
+    /// <inheritdoc />
+    public override SynchronizationContext UISynchronizationContext => _uiSynchronizationContext;
 
     #endregion
 

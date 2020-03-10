@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/25 11:57
+// Modified On:  2020/02/27 15:53
 // Modified By:  Alexis
 
 #endregion
@@ -29,13 +29,21 @@
 
 
 
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using PluginManager.PackageManager;
+using PluginManager.PackageManager.Models;
 using PluginManager.Services;
+using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Plugins.Models;
 using SuperMemoAssistant.Services.Sentry;
 using SuperMemoAssistant.SMA;
+
+// ReSharper disable PossibleMultipleEnumeration
 
 namespace SuperMemoAssistant.Plugins.Services
 {
@@ -50,9 +58,21 @@ namespace SuperMemoAssistant.Plugins.Services
 
 
 
+    #region Properties & Fields - Non-Public
+
+    private Dictionary<string, (DateTime createdAt, IEnumerable<PluginPackage<PluginMetadata>> plugins)> SearchCacheMap { get; }
+
+    #endregion
+
+
+
+
     #region Constructors
 
-    protected PluginRepositoryService() { }
+    protected PluginRepositoryService()
+    {
+      SearchCacheMap = new Dictionary<string, (DateTime, IEnumerable<PluginPackage<PluginMetadata>>)>();
+    }
 
     #endregion
 
@@ -61,8 +81,11 @@ namespace SuperMemoAssistant.Plugins.Services
 
     #region Properties Impl - Public
 
-    public override string UpdateUrl     => Core.CoreConfig.Updates.PluginsUpdateUrl;
-    public override bool   UpdateEnabled => Core.CoreConfig.Updates.EnablePluginsUpdates;
+    /// <inheritdoc />
+    public override string UpdateUrl => Core.CoreConfig.Updates.PluginsUpdateUrl;
+
+    /// <inheritdoc />
+    public override bool UpdateEnabled => Core.CoreConfig.Updates.EnablePluginsUpdates;
 
     #endregion
 
@@ -72,16 +95,69 @@ namespace SuperMemoAssistant.Plugins.Services
     #region Methods Impl
 
     /// <inheritdoc />
-    public override Dictionary<string, PluginMetadata> ToIdMetadataDictionary(List<PluginMetadata> metadatas)
+    protected override string GetPackageIdFromMetadata(PluginMetadata metadata)
     {
-      return metadatas.ToDictionary(k => k.PackageName);
+      return metadata.PackageName;
     }
 
-    public override void SetHttpClientHeaders(HttpClient client)
+    /// <inheritdoc />
+    protected override void SetHttpClientHeaders(HttpClient client)
     {
       base.SetHttpClientHeaders(client);
 
       client.DefaultRequestHeaders.Add("AnonymizedDeviceId", SentryEx.DeviceId);
+    }
+
+    #endregion
+
+
+
+
+    #region Methods
+
+    /// <summary>
+    ///   Search available NuGet repositories for all packages matching
+    ///   <paramref name="searchTerm" /> and <paramref name="enablePrerelease" />. Only NuGet packages
+    ///   that are also indexed by the API pointed to by <see cref="UpdateUrl" /> will be included.
+    /// </summary>
+    /// <param name="searchTerm">Part or totality of the package name to look for</param>
+    /// <param name="enablePrerelease">Whether to include packages that are marked as pre-release</param>
+    /// <param name="packageManager">The package manager</param>
+    /// <param name="forceRefresh">Whether to invalidate cache or not</param>
+    /// <param name="expireAfterSec">Delay after which a cached search is considered expired</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>All available packages or <see langword="null" /></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public async Task<IEnumerable<PluginPackage<PluginMetadata>>> SearchPlugins(
+      string                               searchTerm,
+      bool                                 enablePrerelease,
+      PluginPackageManager<PluginMetadata> packageManager,
+      bool                                 forceRefresh      = false,
+      int                                  expireAfterSec    = 1800,
+      CancellationToken                    cancellationToken = default)
+    {
+      var cachedSearch = SearchCacheMap.SafeGet(searchTerm);
+
+      if (forceRefresh == false && cachedSearch != default && IsCacheExpired(cachedSearch.createdAt, expireAfterSec) == false)
+        return cachedSearch.plugins;
+
+      ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) => true;
+      ServicePointManager.SecurityProtocol                    =  SecurityProtocolType.Tls12;
+
+      var plugins = await SearchPlugins(searchTerm, enablePrerelease, packageManager, cancellationToken).ConfigureAwait(false);
+
+      SearchCacheMap[searchTerm] = (DateTime.Now, plugins);
+
+      return plugins;
+    }
+
+    /// <summary>Checks whether <paramref name="createdAt" /> is considered expired</summary>
+    /// <param name="createdAt">The DateTime at which the cache entry was created</param>
+    /// <param name="expireAfterSec">Delay after which a cached entry is considered expired</param>
+    /// <returns>whether <paramref name="createdAt" /> is considered expired</returns>
+    private static bool IsCacheExpired(DateTime createdAt, int expireAfterSec)
+    {
+      return createdAt.AddSeconds(expireAfterSec) < DateTime.Now;
     }
 
     #endregion

@@ -66,7 +66,6 @@ namespace SuperMemoAssistant.Services.IO.Logger
     {
       var loggerConfig = new LoggerConfiguration()
                          .Enrich.WithExceptionDetails()
-                         .Enrich.WithDemystifiedStackTraces()
                          .WriteTo.Debug(outputTemplate: OutputFormat)
                          .WriteTo.Async(
                            a =>

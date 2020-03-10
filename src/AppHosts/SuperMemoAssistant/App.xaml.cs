@@ -41,6 +41,7 @@ using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Models;
 using SuperMemoAssistant.Services.UI.Extensions;
 using SuperMemoAssistant.Setup;
+using SuperMemoAssistant.SMA.UI.DataTemplates;
 using SuperMemoAssistant.SMA.Utils;
 using SuperMemoAssistant.UI;
 

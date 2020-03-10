@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 22:02
-// Modified On:  2019/02/26 15:04
+// Modified On:  2020/03/05 23:47
 // Modified By:  Alexis
 
 #endregion
@@ -30,28 +29,25 @@
 
 
 
-using System;
-using System.Collections.ObjectModel;
-using System.Runtime.Remoting;
-using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using Anotar.Serilog;
-using Forge.Forms;
-using PluginManager.Models;
-using SuperMemoAssistant.Plugins;
-using SuperMemoAssistant.Plugins.Models;
-using SuperMemoAssistant.Services.UI.Extensions;
-using SuperMemoAssistant.Sys.Windows.Input;
+using SuperMemoAssistant.SMA.UI.ViewModels;
 
 namespace SuperMemoAssistant.SMA.UI.Settings
 {
-  /// <summary>Interaction logic for Settings.xaml</summary>
+  /// <summary>
+  ///   Show all plugins installed for the current user. User can choose to start, stop,
+  ///   uninstall, update, or show the settings for each plugin
+  /// </summary>
   public partial class InstalledPluginSettings : UserControl
   {
     #region Properties & Fields - Non-Public
 
-    private bool _ignoreEnabledChanged;
+    /// <summary>
+    ///   This View Model is a singleton to preserve the state of the package manager across UI
+    ///   navigation operations
+    /// </summary>
+    private PluginManagerViewModel ViewModel => PluginManagerViewModel.Instance;
 
     #endregion
 
@@ -62,29 +58,11 @@ namespace SuperMemoAssistant.SMA.UI.Settings
 
     public InstalledPluginSettings()
     {
-      DataContext = this;
-
+      DataContext = ViewModel;
       InitializeComponent();
+
+      Unloaded += OnControlUnloaded;
     }
-
-    #endregion
-
-
-
-
-    #region Properties & Fields - Public
-
-    public ReadOnlyObservableCollection<PluginInstance> Plugins => SMAPluginManager.Instance.AllPlugins;
-
-    public ICommand PluginShowSettingsCommand => new AsyncRelayCommand<PluginInstance>(PluginShowSettings);
-
-    public ICommand PluginPlayPauseCommand => new AsyncRelayCommand<PluginInstance>(PluginPlayPause, CanPluginPlayPause, HandleException);
-
-    public ICommand PluginUninstallCommand => new AsyncRelayCommand<PluginInstance>(PluginUninstall, CanPluginUninstall, HandleException);
-
-    public ICommand PluginUpdateCommand => new AsyncRelayCommand<PluginInstance>(PluginUpdate, CanPluginUpdate, HandleException);
-
-    public ICommand PluginEnableDisableCommand => new AsyncRelayCommand<PluginInstance>(PluginEnableDisable, null, HandleException);
 
     #endregion
 
@@ -93,106 +71,25 @@ namespace SuperMemoAssistant.SMA.UI.Settings
 
     #region Methods
 
-    private async Task PluginShowSettings(PluginInstance pluginInstance)
+    /// <summary>Cleanup this control when it is unloaded</summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void OnControlUnloaded(object sender, RoutedEventArgs e)
     {
-      try
-      {
-        pluginInstance.Plugin.ShowSettings();
-      }
-      catch (RemotingException)
-      {
-        await "Remote plugin unreachable. Try restarting SMA.".ErrorMsgBox();
-      }
-      catch (Exception ex)
-      {
-        HandleException(ex);
-      }
+      //ViewModel.CancelTasks(); // TODO: Only on Cancel button
     }
 
-    private async Task PluginPlayPause(PluginInstance pluginInstance)
+    /// <summary>
+    ///   Automatically scroll to bottom when text is updated. TextBox is buggy as hell, and it
+    ///   seems impossible to preserve the vertical scrollbar position on update. The TextBox will
+    ///   scroll to the top when it is focused.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void tbOperationLogs_TextChanged(object sender, TextChangedEventArgs e)
     {
-      switch (pluginInstance.Status)
-      {
-        case PluginStatus.Stopped:
-          await SMAPluginManager.Instance.StartPlugin(pluginInstance);
-          break;
-
-        case PluginStatus.Connected:
-          await SMAPluginManager.Instance.StopPlugin(pluginInstance);
-          break;
-
-        default:
-          throw new InvalidOperationException($"Invalid plugin status {pluginInstance.Status}");
-      }
-    }
-
-    private bool CanPluginPlayPause(PluginInstance pluginInstance)
-    {
-      return SMAPluginManager.Instance.CanPluginStartOrPause(pluginInstance);
-    }
-
-    private async Task PluginUpdate(PluginInstance pluginInstance)
-    {
-      await SMAPluginManager.Instance.InstallPlugin(null, null);
-    }
-
-    private bool CanPluginUpdate(PluginInstance pluginInstance)
-    {
-      return pluginInstance?.Metadata.IsDevelopment == false;
-    }
-
-    private async Task PluginUninstall(PluginInstance pluginInstance)
-    {
-      await SMAPluginManager.Instance.UninstallPlugin(pluginInstance);
-    }
-
-    private bool CanPluginUninstall(PluginInstance pluginInstance)
-    {
-      return pluginInstance?.Metadata.IsDevelopment == false;
-    }
-
-    private async Task PluginEnableDisable(PluginInstance pluginInstance)
-    {
-      if (_ignoreEnabledChanged)
-      {
-        _ignoreEnabledChanged = false;
-        return;
-      }
-
-      if (pluginInstance.Metadata.Enabled)
-        return;
-
-      if (pluginInstance.Status != PluginStatus.Stopped)
-      {
-        if (await PromptUserConfirmation($"{pluginInstance.Metadata.DisplayName} will be stopped. Continue ?") == false)
-        {
-          _ignoreEnabledChanged           = true;
-          pluginInstance.Metadata.Enabled = true;
-          return;
-        }
-
-        await SMAPluginManager.Instance.StopPlugin(pluginInstance);
-      }
-
-      pluginInstance.Metadata.Enabled = false;
-    }
-
-    private void HandleException(Exception ex)
-    {
-      LogTo.Error(ex, "Exception occured during a user requested operation on a plugin");
-      Dispatcher.Invoke(
-        () => Show.Window().For(new Alert($"Operation failed: {ex.Message}"))
-      );
-    }
-
-    private async Task<bool> PromptUserConfirmation(string message)
-    {
-      return await Dispatcher.InvokeAsync(
-        () => Show.Window().For(new Prompt<bool>
-        {
-          Message = message
-        }).Result.Model.Confirmed
-      );
+      tbOperationLogs.ScrollToEnd();
+      tbOperationLogs.CaretIndex = tbOperationLogs.Text.Length;
     }
 
     #endregion

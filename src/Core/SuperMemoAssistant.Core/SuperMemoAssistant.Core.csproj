@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\..\packages\LoadAssembliesOnStartup.Fody.4.4.0\build\LoadAssembliesOnStartup.Fody.props" Condition="Exists('..\..\..\packages\LoadAssembliesOnStartup.Fody.4.4.0\build\LoadAssembliesOnStartup.Fody.props')" />
   <Import Project="..\..\..\packages\PropertyChanged.Fody.3.2.6\build\PropertyChanged.Fody.props" Condition="Exists('..\..\..\packages\PropertyChanged.Fody.3.2.6\build\PropertyChanged.Fody.props')" />
-  <Import Project="..\..\..\packages\LoadAssembliesOnStartup.Fody.4.3.0\build\LoadAssembliesOnStartup.Fody.props" Condition="Exists('..\..\..\packages\LoadAssembliesOnStartup.Fody.4.3.0\build\LoadAssembliesOnStartup.Fody.props')" />
   <Import Project="..\..\..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props" Condition="Exists('..\..\..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props')" />
   <Import Project="..\..\..\packages\Microsoft.NetFramework.Analyzers.2.9.8\build\Microsoft.NetFramework.Analyzers.props" Condition="Exists('..\..\..\packages\Microsoft.NetFramework.Analyzers.2.9.8\build\Microsoft.NetFramework.Analyzers.props')" />
   <Import Project="..\..\..\packages\Microsoft.NetCore.Analyzers.2.9.8\build\Microsoft.NetCore.Analyzers.props" Condition="Exists('..\..\..\packages\Microsoft.NetCore.Analyzers.2.9.8\build\Microsoft.NetCore.Analyzers.props')" />
@@ -46,6 +46,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <LangVersion>latest</LangVersion>
+    <NoWarn>CS0067;CA1801</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-InProd|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -71,11 +72,14 @@
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
+    <Reference Include="DeviceId, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\DeviceId.4.5.0\lib\net40\DeviceId.dll</HintPath>
+    </Reference>
     <Reference Include="EasyHook, Version=2.7.7097.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\EasyHook.2.7.7097\lib\net40\EasyHook.dll</HintPath>
     </Reference>
-    <Reference Include="Extensions.System.IO, Version=0.1.0.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Extensions.System.IO.0.1.0.2\lib\net472\Extensions.System.IO.dll</HintPath>
+    <Reference Include="Extensions.System.IO, Version=0.1.0.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Extensions.System.IO.0.1.0.3\lib\net472\Extensions.System.IO.dll</HintPath>
     </Reference>
     <Reference Include="FastMember, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\FastMember.1.5.0\lib\net461\FastMember.dll</HintPath>
@@ -86,17 +90,17 @@
     <Reference Include="FlaUI.UIA3, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\FlaUI.UIA3.2.0.0-rc1\lib\net45\FlaUI.UIA3.dll</HintPath>
     </Reference>
-    <Reference Include="FontAwesome5, Version=1.0.0.0, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FontAwesome5.1.0.11\lib\net40\FontAwesome5.dll</HintPath>
+    <Reference Include="FontAwesome5, Version=2.0.4.0, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FontAwesome5.2.0.4\lib\net40\FontAwesome5.dll</HintPath>
     </Reference>
-    <Reference Include="FontAwesome5.WPF, Version=1.0.11.91, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FontAwesome5.1.0.11\lib\net40\FontAwesome5.WPF.dll</HintPath>
+    <Reference Include="FontAwesome5.Net40, Version=2.0.4.0, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FontAwesome5.2.0.4\lib\net40\FontAwesome5.Net40.dll</HintPath>
     </Reference>
     <Reference Include="Forge.Forms, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Forge.Forms.1.1.1\lib\net461\Forge.Forms.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.11.20.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\HtmlAgilityPack.1.11.20\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.11.21.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\HtmlAgilityPack.1.11.21\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Humanizer, Version=2.4.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Humanizer.Core.2.4.2\lib\netstandard2.0\Humanizer.dll</HintPath>
@@ -198,19 +202,55 @@
     <Reference Include="NuGet.Versioning, Version=5.4.0.3, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NuGet.Versioning.5.4.0\lib\net472\NuGet.Versioning.dll</HintPath>
     </Reference>
-    <Reference Include="PluginManager.Core, Version=0.2.1.16, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\PluginManager.Core.0.2.1.16\lib\net472\PluginManager.Core.dll</HintPath>
+    <Reference Include="PluginManager.Core, Version=0.2.1.98, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\PluginManager.Core.0.2.1.98\lib\net472\PluginManager.Core.dll</HintPath>
     </Reference>
-    <Reference Include="PluginManager.Interop, Version=0.2.1.13, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\PluginManager.Interop.0.2.1.13\lib\net472\PluginManager.Interop.dll</HintPath>
+    <Reference Include="PluginManager.Interop, Version=0.2.1.35, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\PluginManager.Interop.0.2.1.35\lib\net472\PluginManager.Interop.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PropertyChanged, Version=3.2.6.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\PropertyChanged.Fody.3.2.6\lib\net40\PropertyChanged.dll</HintPath>
     </Reference>
+    <Reference Include="Sentry, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Sentry.2.1.0\lib\net461\Sentry.dll</HintPath>
+    </Reference>
+    <Reference Include="Sentry.PlatformAbstractions, Version=1.1.0.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Sentry.PlatformAbstractions.1.1.0\lib\net471\Sentry.PlatformAbstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Sentry.Protocol, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Sentry.Protocol.2.1.0\lib\net46\Sentry.Protocol.dll</HintPath>
+    </Reference>
+    <Reference Include="Sentry.Serilog, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Sentry.Serilog.2.1.0\lib\net461\Sentry.Serilog.dll</HintPath>
+    </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Serilog.2.9.0\lib\net46\Serilog.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Exceptions, Version=5.4.0.0, Culture=neutral, PublicKeyToken=fc5550082a9c642c, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Serilog.Exceptions.5.4.0\lib\net472\Serilog.Exceptions.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Async, Version=1.4.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Serilog.Sinks.Async.1.4.0\lib\net461\Serilog.Sinks.Async.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Debug, Version=1.0.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Serilog.Sinks.Debug.1.0.1\lib\net46\Serilog.Sinks.Debug.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.File, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Serilog.Sinks.File.4.1.0\lib\net45\Serilog.Sinks.File.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.RollingFile, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Serilog.Sinks.RollingFile.3.3.0\lib\net45\Serilog.Sinks.RollingFile.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperMemoAssistant.Interop, Version=2.0.3.17, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\SuperMemoAssistant.Interop.2.0.3.17\lib\net472\SuperMemoAssistant.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperMemoAssistant.Services.Sentry, Version=1.0.1.14, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\SuperMemoAssistant.Services.Sentry.1.0.1.14\lib\Net472\SuperMemoAssistant.Services.Sentry.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperMemoAssistant.Services.UI, Version=2.0.3.13, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\SuperMemoAssistant.Services.UI.2.0.3.13\lib\net472\SuperMemoAssistant.Services.UI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -236,6 +276,9 @@
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection.Metadata, Version=1.4.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Reflection.Metadata.1.8.0\lib\netstandard2.0\System.Reflection.Metadata.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\System.Runtime.CompilerServices.Unsafe.4.7.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
@@ -264,7 +307,9 @@
   <ItemGroup>
     <Compile Include="AsyncErrorHandler.cs" />
     <Compile Include="ForcedAssemblies.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Plugins\Models\PluginInstance.cs" />
+    <Compile Include="Plugins\SMAPluginManager.Packages.cs" />
     <Compile Include="Plugins\SMAPluginManager.Process.cs" />
     <Compile Include="Plugins\SMAPluginManager.Service.cs" />
     <Compile Include="Plugins\SMAPluginManager.cs" />
@@ -284,11 +329,19 @@
     <Compile Include="SMA\CoreEx.Hook.cs" />
     <Compile Include="SMA\SuperMemoAssistant.Config.cs" />
     <Compile Include="SMA\SuperMemoAssistant.Events.cs" />
-    <Compile Include="SMA\UI\Layout\TextEditorEx.cs" />
+    <Compile Include="SMA\UI\Converters\NuGetVersionConverter.cs" />
+    <Compile Include="SMA\UI\DataTemplates\OnlinePluginPackageDataTemplate.xaml.cs">
+      <DependentUpon>OnlinePluginPackageDataTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMA\UI\DataTemplates\LocalPluginPackageDataTemplate.xaml.cs">
+      <DependentUpon>LocalPluginPackageDataTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMA\UI\Settings\Layout\TextEditorEx.cs" />
+    <Compile Include="SMA\UI\Settings\Models\PluginManagerStatus.cs" />
     <Compile Include="SMA\UI\Settings\Settings.Layouts.xaml.cs">
       <DependentUpon>Settings.Layouts.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SMA\UI\Settings\Settings.Plugins.Converters.cs" />
+    <Compile Include="SMA\UI\Converters\Settings.Plugins.Converters.cs" />
     <Compile Include="SMA\UI\Settings\Settings.Plugins.Installed.xaml.cs">
       <DependentUpon>Settings.Plugins.Installed.xaml</DependentUpon>
     </Compile>
@@ -298,10 +351,11 @@
     <Compile Include="SMA\UI\Settings\Settings.Window.xaml.cs">
       <DependentUpon>Settings.Window.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SMA\UI\Layout\LayoutEditorWindow.xaml.cs">
+    <Compile Include="SMA\UI\Settings\Layout\LayoutEditorWindow.xaml.cs">
       <DependentUpon>LayoutEditorWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SMA\UI\SMAUI.cs" />
+    <Compile Include="SMA\UI\ViewModels\PluginManagerViewModel.cs" />
     <Compile Include="SMA\Utils\AssemblyCheck.cs" />
     <Compile Include="SMA\Utils\SuperMemoFinder.cs" />
     <Compile Include="SuperMemo\Common\Content\Content\ContentEx.cs" />
@@ -420,14 +474,8 @@
     <Compile Include="Sys\UIAutomation\FocusSnapshot.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="PluginHost.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="app.config" />
     <Content Include="EasyHook32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EasyHook32Svc.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="EasyLoad32.dll">
@@ -460,18 +508,6 @@
       <Project>{501257d3-f788-4a5d-b990-16c01ff71926}</Project>
       <Name>Process.NET</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Core\SuperMemoAssistant.Interop\SuperMemoAssistant.Interop.csproj">
-      <Project>{FD0E1BE8-BED3-4AB0-A9C8-022A2DBC8450}</Project>
-      <Name>SuperMemoAssistant.Interop</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.csproj">
-      <Project>{298d380e-e3c0-4d34-a128-8a9d0a4bf196}</Project>
-      <Name>SuperMemoAssistant.Services.Sentry</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Services\SuperMemoAssistant.Services.UI\SuperMemoAssistant.Services.UI.csproj">
-      <Project>{7f7b4a1f-01e1-440e-89db-08f7d1d5a128}</Project>
-      <Name>SuperMemoAssistant.Services.UI</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SuperMemoAssistant.Hooks.Common\SuperMemoAssistant.Hooks.Common.csproj">
       <Project>{cc5b9485-9ef1-4133-9242-719d263700ae}</Project>
       <Name>SuperMemoAssistant.Hooks.Common</Name>
@@ -481,6 +517,18 @@
     <Resource Include="Resources\plugin-default.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="SMA\UI\DataTemplates\PluginInstanceDataTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMA\UI\DataTemplates\OnlinePluginPackageDataTemplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SMA\UI\DataTemplates\LocalPluginPackageDataTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SMA\UI\Settings\Settings.Layouts.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -497,7 +545,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SMA\UI\Layout\LayoutEditorWindow.xaml">
+    <Page Include="SMA\UI\Settings\Layout\LayoutEditorWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -541,9 +589,9 @@
     <Error Condition="!Exists('..\..\..\packages\Microsoft.NetFramework.Analyzers.2.9.8\build\Microsoft.NetFramework.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Microsoft.NetFramework.Analyzers.2.9.8\build\Microsoft.NetFramework.Analyzers.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\LoadAssembliesOnStartup.Fody.4.3.0\build\LoadAssembliesOnStartup.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\LoadAssembliesOnStartup.Fody.4.3.0\build\LoadAssembliesOnStartup.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\PropertyChanged.Fody.3.2.6\build\PropertyChanged.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\PropertyChanged.Fody.3.2.6\build\PropertyChanged.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Fody.6.1.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.6.1.1\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\LoadAssembliesOnStartup.Fody.4.4.0\build\LoadAssembliesOnStartup.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\LoadAssembliesOnStartup.Fody.4.4.0\build\LoadAssembliesOnStartup.Fody.props'))" />
   </Target>
   <Import Project="..\..\..\packages\Fody.6.1.1\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.6.1.1\build\Fody.targets')" />
 </Project>

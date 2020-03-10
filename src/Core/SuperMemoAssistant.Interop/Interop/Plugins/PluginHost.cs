@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/25 12:18
+// Modified On:  2020/03/05 13:51
 // Modified By:  Alexis
 
 #endregion
@@ -32,10 +32,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Anotar.Serilog;
 using PluginManager.Interop.Contracts;
 using PluginManager.Interop.PluginHost;
-using PluginManager.Interop.Sys;
 using SuperMemoAssistant.Interop.SuperMemo;
 
 namespace SuperMemoAssistant.Interop.Plugins
@@ -58,7 +56,7 @@ namespace SuperMemoAssistant.Interop.Plugins
 
     #endregion
 
-    
+
 
 
     #region Constructors
@@ -69,8 +67,7 @@ namespace SuperMemoAssistant.Interop.Plugins
       string  smaChannelName,
       Process smaProcess,
       bool    isDev)
-      : base(pluginPackageName, sessionGuid, smaChannelName, smaProcess, isDev)
-    { }
+      : base(pluginPackageName, sessionGuid, smaChannelName, smaProcess, isDev) { }
 
     #endregion
 

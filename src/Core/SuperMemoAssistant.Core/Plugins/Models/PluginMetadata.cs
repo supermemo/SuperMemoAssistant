@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 22:02
-// Modified On:  2019/02/25 23:20
+// Modified On:  2020/02/27 12:50
 // Modified By:  Alexis
 
 #endregion
@@ -33,6 +32,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Media;
 using Newtonsoft.Json;
 using SuperMemoAssistant.Extensions;
 
@@ -45,22 +45,16 @@ namespace SuperMemoAssistant.Plugins.Models
   {
     #region Properties & Fields - Public
 
-    public bool     Enabled       { get; set; }
-    public string   DisplayName   { get; set; }
-    public string   PackageName   { get; set; }
-    public string   Description   { get; set; }
-    public string   Author        { get; set; }
-    public DateTime UpdatedAt     { get; set; }
-    public string   IconBase64    { get; set; }
-    public bool     IsDevelopment { get; set; }
-
-    [JsonIgnore]
-    public int Rating { get; set; }
-
-    [JsonIgnore]
-    public Image Icon => IconBase64 == null
-      ? null
-      : ImageEx.FromBase64(IconBase64);
+    public bool      Enabled       { get; set; } = true;
+    public string    DisplayName   { get; set; }
+    public string    PackageName   { get; set; }
+    public string    Description   { get; set; }
+    public string    Author        { get; set; }
+    public DateTime? UpdatedAt     { get; set; }
+    public string    IconBase64    { get; set; }
+    public bool      IsDevelopment { get; set; }
+    public int       DownloadCount { get; set; }
+    public int       Rating        { get; set; }
 
     #endregion
 

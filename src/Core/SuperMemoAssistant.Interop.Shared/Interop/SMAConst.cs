@@ -53,5 +53,7 @@ namespace SuperMemoAssistant.Interop
 
       #endregion
     }
+
+    public const string SuperMemoPluginPackagePrefix = "SuperMemoAssistant.Plugins.";
   }
 }

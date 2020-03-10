@@ -78,6 +78,15 @@ namespace SuperMemoAssistant.Plugins.Models
         Metadata.DisplayName = plugin.Name;
 
       base.OnConnected(plugin);
+
+      OnPropertyChanged(nameof(HasSettings));
+    }
+
+    public override void OnStopped()
+    {
+      base.OnStopped();
+
+      OnPropertyChanged(nameof(HasSettings));
     }
 
     /// <inheritdoc />

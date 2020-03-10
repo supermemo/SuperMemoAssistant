@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <version>0.0.0.0</version>
+    <authors>Alexis</authors>
+    <owners>SuperMemo</owners>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/supermemo/SuperMemoAssistant</projectUrl>
+    <iconUrl>https://github.com/supermemo/Documentation/raw/master/docs/sma/content/images/icons/robot.ico</iconUrl>
+
+    <id>SuperMemoAssistant.Services.HTML</id>
+    <title>SuperMemo Assistant HTML Service</title>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Provides HTML services to SuperMemo Assistant Plugins.</description>
+    <tags>SuperMemo SuperMemoAssistant Plugin Plugins Service Services</tags>
+    <copyright></copyright>
+	
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="PresentationFramework" />
+      <frameworkAssembly assemblyName="PresentationCore" />
+      <frameworkAssembly assemblyName="System.Runtime.Remoting" />
+      <frameworkAssembly assemblyName="System.Web" />
+      <frameworkAssembly assemblyName="System.Xaml" />
+      <frameworkAssembly assemblyName="WindowsBase" />
+    </frameworkAssemblies>
+
+    <dependencies>
+      <group targetFramework="net472">
+        <dependency id="CefSharp.OffScreen" version="79.1.360" />
+        <dependency id="FontAwesome5" version="1.0.11" />
+        <dependency id="Forge.Forms" version="1.1.1" />
+        <dependency id="HtmlAgilityPack" version="1.11.20" />
+        <dependency id="SuperMemoAssistant.Interop" version="2.0.3.17" />
+        <dependency id="Svg" version="3.0.102" />
+      </group>
+    </dependencies>
+  </metadata>
+
+  <files>
+    <file src="SuperMemoAssistant.Services.HTML.dll" target="lib\net472" />
+  </files>
+</package>

@@ -85,17 +85,20 @@
     <Reference Include="DeltaCompressionDotNet.PatchApi, Version=1.1.0.0, Culture=neutral, PublicKeyToken=3e8888ee913ed789, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\DeltaCompressionDotNet.1.1.0\lib\net20\DeltaCompressionDotNet.PatchApi.dll</HintPath>
     </Reference>
-    <Reference Include="Extensions.System.IO, Version=0.1.0.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Extensions.System.IO.0.1.0.2\lib\net472\Extensions.System.IO.dll</HintPath>
+    <Reference Include="DeviceId, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\DeviceId.4.5.0\lib\net40\DeviceId.dll</HintPath>
+    </Reference>
+    <Reference Include="Extensions.System.IO, Version=0.1.0.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Extensions.System.IO.0.1.0.3\lib\net472\Extensions.System.IO.dll</HintPath>
     </Reference>
     <Reference Include="FastMember, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\FastMember.1.5.0\lib\net461\FastMember.dll</HintPath>
     </Reference>
-    <Reference Include="FontAwesome5, Version=1.0.0.0, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FontAwesome5.1.0.11\lib\net40\FontAwesome5.dll</HintPath>
+    <Reference Include="FontAwesome5, Version=2.0.4.0, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FontAwesome5.2.0.4\lib\net40\FontAwesome5.dll</HintPath>
     </Reference>
-    <Reference Include="FontAwesome5.WPF, Version=1.0.11.91, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FontAwesome5.1.0.11\lib\net40\FontAwesome5.WPF.dll</HintPath>
+    <Reference Include="FontAwesome5.Net40, Version=2.0.4.0, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FontAwesome5.2.0.4\lib\net40\FontAwesome5.Net40.dll</HintPath>
     </Reference>
     <Reference Include="Forge.Forms, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Forge.Forms.1.1.1\lib\net461\Forge.Forms.dll</HintPath>
@@ -123,6 +126,10 @@
     </Reference>
     <Reference Include="Microsoft.Build" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\..\..\packages\SuperMemoAssistant.mshtml.7.0.3300.1\lib\Net40\Microsoft.mshtml.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.Web.XmlTransform, Version=3.0.0.34420, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Microsoft.Web.Xdt.3.0.0\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
     </Reference>
@@ -213,17 +220,44 @@
     <Reference Include="NuGet.Versioning, Version=5.4.0.3, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NuGet.Versioning.5.4.0\lib\net472\NuGet.Versioning.dll</HintPath>
     </Reference>
-    <Reference Include="PluginManager.Core, Version=0.2.1.16, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\PluginManager.Core.0.2.1.16\lib\net472\PluginManager.Core.dll</HintPath>
+    <Reference Include="PluginManager.Core, Version=0.2.1.98, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\PluginManager.Core.0.2.1.98\lib\net472\PluginManager.Core.dll</HintPath>
     </Reference>
-    <Reference Include="PluginManager.Interop, Version=0.2.1.13, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\PluginManager.Interop.0.2.1.13\lib\net472\PluginManager.Interop.dll</HintPath>
+    <Reference Include="PluginManager.Interop, Version=0.2.1.35, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\PluginManager.Interop.0.2.1.35\lib\net472\PluginManager.Interop.dll</HintPath>
     </Reference>
     <Reference Include="PropertyChanged, Version=3.2.6.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\PropertyChanged.Fody.3.2.6\lib\net40\PropertyChanged.dll</HintPath>
     </Reference>
+    <Reference Include="Sentry, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Sentry.2.1.0\lib\net461\Sentry.dll</HintPath>
+    </Reference>
+    <Reference Include="Sentry.PlatformAbstractions, Version=1.1.0.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Sentry.PlatformAbstractions.1.1.0\lib\net471\Sentry.PlatformAbstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Sentry.Protocol, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Sentry.Protocol.2.1.0\lib\net46\Sentry.Protocol.dll</HintPath>
+    </Reference>
+    <Reference Include="Sentry.Serilog, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Sentry.Serilog.2.1.0\lib\net461\Sentry.Serilog.dll</HintPath>
+    </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Serilog.2.9.0\lib\net46\Serilog.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Exceptions, Version=5.4.0.0, Culture=neutral, PublicKeyToken=fc5550082a9c642c, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Serilog.Exceptions.5.4.0\lib\net472\Serilog.Exceptions.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Async, Version=1.4.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Serilog.Sinks.Async.1.4.0\lib\net461\Serilog.Sinks.Async.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Debug, Version=1.0.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Serilog.Sinks.Debug.1.0.1\lib\net46\Serilog.Sinks.Debug.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.File, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Serilog.Sinks.File.4.1.0\lib\net45\Serilog.Sinks.File.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.RollingFile, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Serilog.Sinks.RollingFile.3.3.0\lib\net45\Serilog.Sinks.RollingFile.dll</HintPath>
     </Reference>
     <Reference Include="SharpCompress, Version=0.17.1.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\SharpCompress.0.17.1\lib\net45\SharpCompress.dll</HintPath>
@@ -233,6 +267,15 @@
     </Reference>
     <Reference Include="Squirrel, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\SuperMemoAssistant.Installer.1.9.2.7\lib\Net45\Squirrel.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperMemoAssistant.Interop, Version=2.0.3.17, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\SuperMemoAssistant.Interop.2.0.3.17\lib\net472\SuperMemoAssistant.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperMemoAssistant.Services.Sentry, Version=1.0.1.14, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\SuperMemoAssistant.Services.Sentry.1.0.1.14\lib\Net472\SuperMemoAssistant.Services.Sentry.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperMemoAssistant.Services.UI, Version=2.0.3.13, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\SuperMemoAssistant.Services.UI.2.0.3.13\lib\net472\SuperMemoAssistant.Services.UI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -259,6 +302,9 @@
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection.Metadata, Version=1.4.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Reflection.Metadata.1.8.0\lib\netstandard2.0\System.Reflection.Metadata.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\System.Runtime.CompilerServices.Unsafe.4.7.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
@@ -358,18 +404,6 @@
       <Project>{CC5B9485-9EF1-4133-9242-719D263700AE}</Project>
       <Name>SuperMemoAssistant.Hooks.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\SuperMemoAssistant.Interop\SuperMemoAssistant.Interop.csproj">
-      <Project>{fd0e1be8-bed3-4ab0-a9c8-022a2dbc8450}</Project>
-      <Name>SuperMemoAssistant.Interop</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Services\SuperMemoAssistant.Services.Sentry\SuperMemoAssistant.Services.Sentry.csproj">
-      <Project>{298d380e-e3c0-4d34-a128-8a9d0a4bf196}</Project>
-      <Name>SuperMemoAssistant.Services.Sentry</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Services\SuperMemoAssistant.Services.UI\SuperMemoAssistant.Services.UI.csproj">
-      <Project>{7F7B4A1F-01E1-440E-89DB-08F7D1D5A128}</Project>
-      <Name>SuperMemoAssistant.Services.UI</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
@@ -428,34 +462,34 @@
       <Squirrel>$(SquirrelToolsPath)\Squirrel.exe</Squirrel>
       <NuGet>$(SolutionDir)tools\nuget.exe</NuGet>
       <ReleaseDir>$(SolutionDir)releases</ReleaseDir>
-      <OutDir>$(SolutionDir)builds\</OutDir>
+      <NupkgDir>$(SolutionDir)releases\nupkg</NupkgDir>
       <SMADir>$(LocalAppData)\SuperMemoAssistant\app-dev</SMADir>
       <SMAExe>$(SMADir)\SuperMemoAssistant.exe</SMAExe>
       <SMAResources>$(ProjectDir)Resources\</SMAResources>
     </PropertyGroup>
-    <MakeDir Directories="$(OutDir)" Condition="!Exists('$(OutDir)')" />
+    <MakeDir Directories="$(NupkgDir)" Condition="!Exists('$(NupkgDir)')" />
     <GetAssemblyIdentity AssemblyFiles="$(SMAExe)">
       <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
     </GetAssemblyIdentity>
-    <Exec Command="$(NuGet) pack Installer\SuperMemoAssistant.Debug.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Debug-InProd -OutputDirectory $(OutDir) -BasePath $(SMADir)" />
-    <Exec Command="$(Squirrel) --releasify=$(OutDir)SuperMemoAssistant.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(4)).nupkg --releaseDir=$(ReleaseDir) --baseUrl=https://releases.supermemo.wiki/sma/ --no-msi --framework-version=472 --setupIcon=$(SMAResources)robot-24.ico --loadingGif=$(SMAResources)robot-flip.gif" />
+    <Exec Command="$(NuGet) pack Installer\SuperMemoAssistant.Debug.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Debug-InProd -OutputDirectory $(NupkgDir) -BasePath $(SMADir)" />
+    <Exec Command="$(Squirrel) --releasify=$(NupkgDir)SuperMemoAssistant.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(4)).nupkg --releaseDir=$(ReleaseDir) --baseUrl=https://releases.supermemo.wiki/sma/ --no-msi --framework-version=472 --setupIcon=$(SMAResources)robot-24.ico --loadingGif=$(SMAResources)robot-flip.gif" />
   </Target>
   <Target Name="PackageRelease" Condition=" '$(Configuration)' == 'Release' and $(RunNuPack) == 'True' ">
     <PropertyGroup>
       <Squirrel>$(SquirrelToolsPath)\Squirrel.exe</Squirrel>
       <NuGet>$(SolutionDir)tools\nuget.exe</NuGet>
       <ReleaseDir>$(SolutionDir)releases</ReleaseDir>
-      <OutDir>$(SolutionDir)builds\</OutDir>
+      <NupkgDir>$(SolutionDir)releases\nupkg</NupkgDir>
       <SMADir>$(LocalAppData)\SuperMemoAssistant\app-dev</SMADir>
       <SMAExe>$(SMADir)\SuperMemoAssistant.exe</SMAExe>
       <SMAResources>$(ProjectDir)Resources\</SMAResources>
     </PropertyGroup>
-    <MakeDir Directories="$(OutDir)" Condition="!Exists('$(OutDir)')" />
+    <MakeDir Directories="$(NupkgDir)" Condition="!Exists('$(NupkgDir)')" />
     <GetAssemblyIdentity AssemblyFiles="$(SMAExe)">
       <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
     </GetAssemblyIdentity>
-    <Exec Command="$(NuGet) pack Installer\SuperMemoAssistant.Debug.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(OutDir) -BasePath $(SMADir)" />
-    <Exec Command="$(Squirrel) --releasify=$(OutDir)SuperMemoAssistant.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(4)).nupkg --releaseDir=$(ReleaseDir) --baseUrl=https://releases.supermemo.wiki/sma/ --no-msi --framework-version=472 --setupIcon=$(SMAResources)robot-24.ico --loadingGif=$(SMAResources)robot-flip.gif" />
+    <Exec Command="$(NuGet) pack Installer\SuperMemoAssistant.Debug.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(NupkgDir) -BasePath $(SMADir)" />
+    <Exec Command="$(Squirrel) --releasify=$(NupkgDir)SuperMemoAssistant.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(4)).nupkg --releaseDir=$(ReleaseDir) --baseUrl=https://releases.supermemo.wiki/sma/ --no-msi --framework-version=472 --setupIcon=$(SMAResources)robot-24.ico --loadingGif=$(SMAResources)robot-flip.gif" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>

@@ -33,6 +33,8 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
+[assembly: System.Windows.ThemeInfo(System.Windows.ResourceDictionaryLocation.None, System.Windows.ResourceDictionaryLocation.SourceAssembly)]
+
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
@@ -63,7 +65,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.2.31")]
-[assembly: AssemblyFileVersion("2.0.2.31")]
+[assembly: AssemblyVersion("2.0.3.198")]
+[assembly: AssemblyFileVersion("2.0.3.198")]
 
-[assembly: AssemblyInformationalVersion("2.0.2")]
+[assembly: AssemblyInformationalVersion("2.0.3")]

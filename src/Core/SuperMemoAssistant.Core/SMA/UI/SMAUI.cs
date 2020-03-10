@@ -33,6 +33,7 @@
 using System.Windows;
 using System.Windows.Input;
 using SuperMemoAssistant.Services.IO.Keyboard;
+using SuperMemoAssistant.SMA.UI.DataTemplates;
 using SuperMemoAssistant.SMA.UI.Settings;
 using SuperMemoAssistant.Sys.IO.Devices;
 
@@ -62,6 +63,13 @@ namespace SuperMemoAssistant.SMA.UI
         DebugInjectLib
       );
 #endif
+      
+      // Set default data templates
+      Application.Current.Dispatcher.InvokeAsync(() =>
+      {
+        Application.Current.Resources.MergedDictionaries.Add(new OnlinePluginPackageDataTemplate().Resources);
+        Application.Current.Resources.MergedDictionaries.Add(new LocalPluginPackageDataTemplate().Resources);
+      });
     }
 
     private static void ShowGlobalSettings()

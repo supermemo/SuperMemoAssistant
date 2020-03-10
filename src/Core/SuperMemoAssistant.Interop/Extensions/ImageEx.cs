@@ -46,8 +46,7 @@ namespace SuperMemoAssistant.Extensions
     {
       using (MemoryStream ms = new MemoryStream())
       {
-        image.Save(ms,
-                   format);
+        image.Save(ms, format);
         return Convert.ToBase64String(ms.ToArray());
       }
     }

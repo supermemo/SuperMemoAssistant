@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/01/27 13:37
+// Modified On:  2020/03/05 22:23
 // Modified By:  Alexis
 
 #endregion
@@ -35,9 +35,13 @@ using System.Text.RegularExpressions;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 using Anotar.Serilog;
+using SuperMemoAssistant.Extensions;
 
-namespace SuperMemoAssistant.Sys.Converters.Controls
+namespace SuperMemoAssistant.Sys.Windows.Data
 {
+  /// <summary>
+  /// Converts a pure base64 string, or a "data:image/(type),(base64)" formatted string to a <see cref="BitmapImage"/>
+  /// </summary>
   public class ImageSourceBase64Converter : IValueConverter
   {
     #region Constants & Statics
@@ -51,6 +55,7 @@ namespace SuperMemoAssistant.Sys.Converters.Controls
 
     #region Methods Impl
 
+    /// <inheritdoc/>
     public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
       if (value == null)
@@ -59,15 +64,17 @@ namespace SuperMemoAssistant.Sys.Converters.Controls
       if (!(value is string strData))
         return value;
 
-      var match = RE_Base64.Match(strData);
+      if (string.IsNullOrWhiteSpace(strData))
+        return null;
 
-      if (match.Success == false || string.IsNullOrWhiteSpace(match.Groups["data"].Value))
-        return strData;
+      var match = RE_Base64.Match(strData);
+      var base64 = match.Success == false || string.IsNullOrWhiteSpace(match.Groups["data"].Value)
+        ? strData
+        : match.Groups["data"].Value;
 
       try
       {
-        var base64 = match.Groups["data"].Value;
-        var binData = System.Convert.FromBase64String(base64);
+        byte[] binData = System.Convert.FromBase64String(base64);
 
         BitmapImage image = new BitmapImage();
 
@@ -76,9 +83,9 @@ namespace SuperMemoAssistant.Sys.Converters.Controls
           ms.Position = 0;
           image.BeginInit();
           image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-          image.CacheOption = BitmapCacheOption.OnLoad;
-          image.UriSource = null;
-          image.StreamSource = ms;
+          image.CacheOption   = BitmapCacheOption.OnLoad;
+          image.UriSource     = null;
+          image.StreamSource  = ms;
           image.EndInit();
         }
 
@@ -86,14 +93,19 @@ namespace SuperMemoAssistant.Sys.Converters.Controls
 
         return image;
       }
+      catch (FormatException ex)
+      {
+        LogTo.Warning(ex, $"the provided value is not in a valid base64 format: '{base64.Truncate(30)}'");
+      }
       catch (NotSupportedException ex)
       {
-        LogTo.Warning(ex, "Faield to convert image");
+        LogTo.Warning(ex, $"Failed to convert image from base64: '{base64.Truncate(30)}'");
       }
 
       return null;
     }
-
+    
+    /// <inheritdoc/>
     public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
       return value;

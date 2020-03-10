@@ -54,6 +54,15 @@ namespace SuperMemoAssistant.Extensions
       }
     }
 
+    /// <summary>
+    /// Convenience task for async methods that aren't implemented
+    /// </summary>
+    /// <returns></returns>
+    public static Task ThrowNotImplementedException()
+    {
+      throw new NotImplementedException();
+    }
+
     #endregion
   }
 }

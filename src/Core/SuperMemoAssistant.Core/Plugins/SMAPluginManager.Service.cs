@@ -48,7 +48,7 @@ namespace SuperMemoAssistant.Plugins
     {
       try
       {
-        var plugins     = new List<PluginInstance>(_runningPluginMap.Values);
+        var plugins     = new List<PluginInstance>(RunningPluginMap.Values);
         var remoteTasks = plugins.AsParallel().Select(p => p.Plugin.OnMessage(PluginMessage.OnLoggerConfigUpdated));
 
         // ReSharper disable once ConstantConditionalAccessQualifier

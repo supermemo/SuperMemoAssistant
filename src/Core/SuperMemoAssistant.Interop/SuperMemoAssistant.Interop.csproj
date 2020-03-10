@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" InitialTargets="MSBuildToolsReadSuo">
+  <Import Project="..\..\..\packages\MSBuild.Tools.0.1.5\build\MSBuild.Tools.props" Condition="Exists('..\..\..\packages\MSBuild.Tools.0.1.5\build\MSBuild.Tools.props')" />
   <Import Project="..\..\..\packages\PropertyChanged.Fody.3.2.6\build\PropertyChanged.Fody.props" Condition="Exists('..\..\..\packages\PropertyChanged.Fody.3.2.6\build\PropertyChanged.Fody.props')" />
   <Import Project="..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props" Condition="Exists('..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -29,6 +30,7 @@
     <LangVersion>latest</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Debug\SuperMemoAssistant.Interop.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
@@ -40,16 +42,14 @@
     <LangVersion>latest</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Release\SuperMemoAssistant.Interop.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Anotar.Serilog, Version=5.1.0.0, Culture=neutral, PublicKeyToken=9d5b24f0733c26f7, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Anotar.Serilog.Fody.5.1.0\lib\net452\Anotar.Serilog.dll</HintPath>
     </Reference>
-    <Reference Include="Ben.Demystifier, Version=0.1.0.0, Culture=neutral, PublicKeyToken=a6d206e05440431a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Ben.Demystifier.0.1.6\lib\net45\Ben.Demystifier.dll</HintPath>
-    </Reference>
-    <Reference Include="Extensions.System.IO, Version=0.1.0.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Extensions.System.IO.0.1.0.2\lib\net472\Extensions.System.IO.dll</HintPath>
+    <Reference Include="Extensions.System.IO, Version=0.1.0.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Extensions.System.IO.0.1.0.3\lib\net472\Extensions.System.IO.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\..\..\packages\SuperMemoAssistant.mshtml.7.0.3300.1\lib\Net40\Microsoft.mshtml.dll</HintPath>
@@ -82,8 +82,8 @@
     <Reference Include="Nito.Disposables, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Nito.Disposables.2.0.1\lib\net461\Nito.Disposables.dll</HintPath>
     </Reference>
-    <Reference Include="PluginManager.Interop, Version=0.2.1.13, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\PluginManager.Interop.0.2.1.13\lib\net472\PluginManager.Interop.dll</HintPath>
+    <Reference Include="PluginManager.Interop, Version=0.2.1.35, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\PluginManager.Interop.0.2.1.35\lib\net472\PluginManager.Interop.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -92,9 +92,6 @@
     </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Serilog.2.9.0\lib\net46\Serilog.dll</HintPath>
-    </Reference>
-    <Reference Include="Serilog.Enrichers.Demystify, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Serilog.Enrichers.Demystify.0.1.0-dev-00016\lib\net45\Serilog.Enrichers.Demystify.dll</HintPath>
     </Reference>
     <Reference Include="Serilog.Exceptions, Version=5.4.0.0, Culture=neutral, PublicKeyToken=fc5550082a9c642c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Serilog.Exceptions.5.4.0\lib\net472\Serilog.Exceptions.dll</HintPath>
@@ -150,6 +147,7 @@
   <ItemGroup>
     <Compile Include="Exceptions\SMAException.cs" />
     <Compile Include="Extensions\ButtonEx.cs" />
+    <Compile Include="Extensions\CollectionEx.cs" />
     <Compile Include="Extensions\DependencyObjectEx.cs" />
     <Compile Include="Extensions\ElemCreationResultEx.cs" />
     <Compile Include="Extensions\EnumEx.cs" />
@@ -209,7 +207,8 @@
     <Compile Include="Sys\Collections\BiDictionary.cs" />
     <Compile Include="Sys\ComponentModel\PropertyChangedDelegate.cs" />
     <Compile Include="Sys\COM\InternetExplorer\IEComHelper.cs" />
-    <Compile Include="Sys\Converters\Controls\ImageSourceBase64Converter.cs" />
+    <Compile Include="Sys\Windows\Behaviors\TextBlockEx.cs" />
+    <Compile Include="Sys\Windows\Data\ImageSourceBase64Converter.cs" />
     <Compile Include="Sys\Converters\Json\ObjectToStringJsonConverter.cs" />
     <Compile Include="Sys\EmptyDisposable.cs" />
     <Compile Include="Sys\ForceAssemblyReference.cs" />
@@ -222,6 +221,7 @@
     <Compile Include="Sys\Remoting\RemoteTaskEx.cs" />
     <Compile Include="Sys\Threading\DelayedTask.cs" />
     <Compile Include="Sys\Windows\Data\ElementIconConverter.cs" />
+    <Compile Include="Sys\Windows\Data\IsNullConverter.cs" />
     <Compile Include="Sys\Windows\Data\NegateBooleanConverter.cs" />
     <Compile Include="Sys\Windows\Data\BooleanToVisibilityConverterEx.cs" />
     <Compile Include="Sys\Windows\Data\OneWayValueConverter.cs" />
@@ -322,6 +322,7 @@
     <Compile Include="Services\Configuration\ConfigurationService.cs" />
     <Compile Include="Sys\Security\Cryptography\Crc32.cs" />
     <Compile Include="Sys\Span.cs" />
+    <Compile Include="Sys\Windows\Markup\GenericTypeMarkupExtension.cs" />
     <Compile Include="Sys\Windows\Net\Wininet.cs" />
     <Compile Include="Sys\Windows\Search\WindowsSearch.cs" />
     <Compile Include="Sys\Windows\Search\WindowsSearchKind.cs" />
@@ -332,9 +333,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <None Include="SuperMemoAssistant.Interop.nuspec">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="SuperMemoAssistant.Interop.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <None Include="FodyWeavers.xml">
@@ -364,6 +363,17 @@
   </ItemGroup>
   <Import Project="..\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="NuPack" AfterTargets="Build" Condition=" $(RunNuPack) == 'True' ">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
+    </GetAssemblyIdentity>
+    <ItemGroup>
+      <!-- If your .NET version is <3.5 and you get build error, move this ItemGroup outside of Target -->
+      <NuGetExe Include="$(SolutionDir)tools\nuget.exe" />
+      <VersionNumber Include="@(myAssemblyInfo->'%(Version)')" />
+    </ItemGroup>
+    <Exec Command="&quot;%(NuGetExe.FullPath)&quot; pack $(AssemblyName).nuspec -Version @(VersionNumber) -Properties Configuration=$(Configuration) -OutputDirectory $(SolutionDir)releases\nupkg -BasePath $(OutDir)" />
+  </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
@@ -371,6 +381,9 @@
     <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\PropertyChanged.Fody.3.2.6\build\PropertyChanged.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\PropertyChanged.Fody.3.2.6\build\PropertyChanged.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Fody.6.1.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.6.1.1\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\MSBuild.Tools.0.1.5\build\MSBuild.Tools.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\MSBuild.Tools.0.1.5\build\MSBuild.Tools.props'))" />
+    <Error Condition="!Exists('..\..\..\packages\MSBuild.Tools.0.1.5\build\MSBuild.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\MSBuild.Tools.0.1.5\build\MSBuild.Tools.targets'))" />
   </Target>
   <Import Project="..\..\..\packages\Fody.6.1.1\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.6.1.1\build\Fody.targets')" />
+  <Import Project="..\..\..\packages\MSBuild.Tools.0.1.5\build\MSBuild.Tools.targets" Condition="Exists('..\..\..\packages\MSBuild.Tools.0.1.5\build\MSBuild.Tools.targets')" />
 </Project>

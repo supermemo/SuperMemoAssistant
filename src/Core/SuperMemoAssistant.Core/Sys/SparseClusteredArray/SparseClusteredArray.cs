@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/15 23:24
-// Modified On:  2018/12/13 12:53
+// Modified On:  2020/03/05 18:49
 // Modified By:  Alexis
 
 #endregion
@@ -38,14 +37,12 @@ using SuperMemoAssistant.Extensions;
 
 namespace SuperMemoAssistant.Sys.SparseClusteredArray
 {
-  /// <summary></summary>
-  /// <typeparam name="T"></typeparam>
   public partial class SparseClusteredArray<T>
   {
     #region Properties & Fields - Non-Public
 
-    internal ReaderWriterLockSlim Lock     { get; }      = new ReaderWriterLockSlim();
-    internal List<Segment>        Segments { get; set; } = new List<Segment>();
+    internal ReaderWriterLockSlim Lock     { get; } = new ReaderWriterLockSlim();
+    internal List<Segment>        Segments { get; } = new List<Segment>();
 
     #endregion
 
@@ -70,10 +67,6 @@ namespace SuperMemoAssistant.Sys.SparseClusteredArray
 
     // TODO: Remove(Bounds bounds)
 
-    /// <summary></summary>
-    /// <param name="data"></param>
-    /// <param name="position"></param>
-    /// <param name="dataSegment"></param>
     public void Write(T[]    data,
                       int    position,
                       Bounds dataSegment)
@@ -110,9 +103,6 @@ namespace SuperMemoAssistant.Sys.SparseClusteredArray
       }
     }
 
-    /// <summary></summary>
-    /// <param name="data"></param>
-    /// <param name="position"></param>
     public void Write(T[] data,
                       int position)
     {
@@ -316,8 +306,7 @@ namespace SuperMemoAssistant.Sys.SparseClusteredArray
         case RelativePosition.AfterOverlap:
         case RelativePosition.Within:
         default:
-          throw new InvalidOperationException(String.Format("Invalid RelativePosition {0}, this shouldn't happen",
-                                                            relPos));
+          throw new InvalidOperationException($"Invalid RelativePosition {relPos}, this shouldn't happen");
       }
     }
 

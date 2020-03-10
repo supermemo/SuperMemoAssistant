@@ -52,7 +52,7 @@ namespace SuperMemoAssistant.SMA
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex, "Exception while notifying starting");
+        LogTo.Error(ex, "Exception while notifying subscribers of OnSMStarting");
         throw;
       }
     }
@@ -72,7 +72,7 @@ namespace SuperMemoAssistant.SMA
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex, "Exception while notifying started");
+        LogTo.Error(ex, "Exception while notifying subscribers of OnSMStarted");
 
         throw;
       }
@@ -82,7 +82,15 @@ namespace SuperMemoAssistant.SMA
     {
       _sm = null;
 
-      OnSMStoppedEvent?.Invoke(this, null);
+      try
+      {
+        OnSMStoppedEvent?.Invoke(this, null);
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "Exception thrown while notifying subscribers of OnSMStoppedEvent. Killing process");
+        System.Diagnostics.Process.GetCurrentProcess().Kill();
+      }
     }
 
     private void OnSuperMemoWindowsAvailable()

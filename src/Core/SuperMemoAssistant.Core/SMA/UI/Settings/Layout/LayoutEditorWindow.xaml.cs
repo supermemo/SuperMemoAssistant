@@ -42,7 +42,7 @@ using SuperMemoAssistant.SuperMemo.Common.Content.Layout;
 using SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts;
 using SuperMemoAssistant.Sys.Threading;
 
-namespace SuperMemoAssistant.SMA.UI.Layout
+namespace SuperMemoAssistant.SMA.UI.Settings.Layout
 {
   /// <summary>Interaction logic for LayoutEditorWindow.xaml</summary>
   public partial class LayoutEditorWindow : MetroWindow, INotifyPropertyChanged

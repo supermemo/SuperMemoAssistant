@@ -158,7 +158,7 @@ namespace SuperMemoAssistant.Extensions
       if (values == null || values.Any() == false)
         return defaultRet;
 
-      separator = separator ?? string.Empty;
+      separator ??= string.Empty;
 
       return string.Join(separator, values);
       // ReSharper restore PossibleMultipleEnumeration
@@ -176,14 +176,31 @@ namespace SuperMemoAssistant.Extensions
         else
           encodedText.Append(c);
 
-      return encodedText.Replace("&#65534;",
-                                 "-\r\n")
+      return encodedText.Replace("&#65534;", "-\r\n")
                         .ToString();
     }
 
     public static string UrlEncode(this string text)
     {
       return WebUtility.UrlDecode(text);
+    }
+
+    public static string Before(this string str, string separator)
+    {
+      var idx = str.IndexOf(separator, StringComparison.Ordinal);
+
+      return idx >= 0
+        ? (idx == 0 ? string.Empty : str.Substring(0, idx))
+        : null;
+    }
+
+    public static string After(this string str, string separator)
+    {
+      var idx = str.IndexOf(separator, StringComparison.Ordinal);
+
+      return idx >= 0
+        ? str.Substring(idx + separator.Length)
+        : null;
     }
 
     #endregion

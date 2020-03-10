@@ -58,9 +58,10 @@
                     Margin="20 0 0 0"
                     Command="{Binding DataContext.DeleteCommand, ElementName=lbCollections}"
                     CommandParameter="{Binding}">
-              <fa5:SvgAwesome Icon="Solid_Trash"
-                              Width="16"
-                              Height="16"
+              <fa5:SvgAwesome Icon="Solid_Times"
+                              Foreground="Red"
+                              Width="19"
+                              Height="19"
                               VerticalAlignment="Center" />
             </Button>
           </Grid>
@@ -80,7 +81,8 @@
               <Setter Property="Template">
                 <Setter.Value>
                   <ControlTemplate>
-                    <TextBlock>No collection yet :-( Add one by pressing the "Browse" button.</TextBlock>
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center">No collection yet :-( Add one by pressing the "Browse" button.</TextBlock>
                   </ControlTemplate>
                 </Setter.Value>
               </Setter>

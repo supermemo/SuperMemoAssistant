@@ -81,10 +81,6 @@ ReadPointScrollTop=0
 {7}
 End Element #1";
 
-    private const string ElementRepHistFmt = @"Begin RepHist #1
-ElNo=1 Rep=1 Date={1} Hour={2:0.000} Int=0 Grade=10 Laps=0 Priority={3}
-End RepHist #1";
-
     #endregion
 
 

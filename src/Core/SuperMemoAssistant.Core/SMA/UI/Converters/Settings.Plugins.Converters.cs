@@ -32,12 +32,11 @@
 
 using System;
 using System.Globalization;
-using System.Windows;
 using FontAwesome5;
 using PluginManager.Models;
 using SuperMemoAssistant.Sys.Windows.Data;
 
-namespace SuperMemoAssistant.SMA.UI.Settings
+namespace SuperMemoAssistant.SMA.UI.Converters
 {
   public class StartPauseIconPluginStatusConverter : OneWayValueConverter
   {
@@ -62,27 +61,6 @@ namespace SuperMemoAssistant.SMA.UI.Settings
         default:
           return EFontAwesomeIcon.Solid_Play;
       }
-    }
-
-    #endregion
-  }
-  
-  public class UninstallPluginVisibilityConverter : OneWayValueConverter
-  {
-    #region Methods Impl
-
-    /// <inheritdoc />
-    public override object Convert(object      value,
-                                   Type        targetType,
-                                   object      parameter,
-                                   CultureInfo culture)
-    {
-      if (!(value is bool isDevelopment))
-        throw new ArgumentException($"{nameof(value)} must be of type bool");
-
-      return isDevelopment
-        ? Visibility.Collapsed
-        : Visibility.Visible;
     }
 
     #endregion

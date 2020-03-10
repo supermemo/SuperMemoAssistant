@@ -64,26 +64,22 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       return new[]
       {
         LocalHook.Create(
-          LocalHook.GetProcAddress("kernel32.dll",
-                                   "CreateFileW"),
+          LocalHook.GetProcAddress("kernel32.dll", "CreateFileW"),
           new Win32.CreateFileWDlg(CreateFile_Hooked),
           this
         ),
         LocalHook.Create(
-          LocalHook.GetProcAddress("kernel32.dll",
-                                   "SetFilePointer"),
+          LocalHook.GetProcAddress("kernel32.dll", "SetFilePointer"),
           new Win32.SetFilePointerDlg(SetFilePointer_Hooked),
           this
         ),
         LocalHook.Create(
-          LocalHook.GetProcAddress("kernel32.dll",
-                                   "WriteFile"),
+          LocalHook.GetProcAddress("kernel32.dll", "WriteFile"),
           new Win32.WriteFileDlg(WriteFile_Hooked),
           this
         ),
         LocalHook.Create(
-          LocalHook.GetProcAddress("kernel32.dll",
-                                   "CloseHandle"),
+          LocalHook.GetProcAddress("kernel32.dll", "CloseHandle"),
           new Win32.CloseHandleDlg(CloseHandle_Hooked),
           this
         )

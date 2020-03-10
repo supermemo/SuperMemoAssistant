@@ -9,17 +9,21 @@
     <projectUrl>https://github.com/supermemo/SuperMemoAssistant</projectUrl>
 
     <id>SuperMemoAssistant.Services.Sentry</id>
-    <title>SuperMemoAssistant.Services.Sentry</title>
+    <title>SuperMemo Assistant Sentry ServiceSentry</title>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Falicitate bug reporting with Sentry</description>
+    <description>Facilitate bug reporting with Sentry</description>
     <copyright></copyright>
 	
     <dependencies>
-      <group targetFramework="net72">
+      <group targetFramework="net472">
+        <dependency id="DeviceId" version="4.5.0" />
+        <dependency id="Sentry.Serilog" version="2.0.3" />
+        <dependency id="Serilog" version="2.9.0" />
+        <dependency id="SuperMemoAssistant.Interop" version="2.0.3.17" />
       </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="SuperMemoAssistant.Services.Sentry.dll" target="lib\Net72" />
+    <file src="SuperMemoAssistant.Services.Sentry.dll" target="lib\Net472" />
   </files>
 </package>

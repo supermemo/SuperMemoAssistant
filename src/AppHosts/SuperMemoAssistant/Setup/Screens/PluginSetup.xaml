@@ -1,0 +1,241 @@
+﻿<local:SMASetupScreenBase x:Class="SuperMemoAssistant.Setup.Screens.PluginSetup"
+                          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                          xmlns:local="clr-namespace:SuperMemoAssistant.Setup"
+                          xmlns:viewModels="clr-namespace:SuperMemoAssistant.SMA.UI.ViewModels;assembly=SuperMemoAssistant.Core"
+                          xmlns:data="clr-namespace:SuperMemoAssistant.Sys.Windows.Data;assembly=SuperMemoAssistant.Interop"
+                          xmlns:models="clr-namespace:SuperMemoAssistant.SMA.UI.Settings.Models;assembly=SuperMemoAssistant.Core"
+                          xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                          xmlns:behaviors="clr-namespace:SuperMemoAssistant.Sys.Windows.Behaviors;assembly=SuperMemoAssistant.Interop"
+                          xmlns:fa5="http://schemas.fontawesome.com/icons/"
+                          mc:Ignorable="d"
+                          d:DataContext="{d:DesignInstance viewModels:PluginManagerViewModel}">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <data:IsNullConverter x:Key="IsNull" />
+      <data:BooleanToVisibilityConverterEx x:Key="BoolToVis" />
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <Grid VerticalAlignment="Stretch">
+
+    <Grid HorizontalAlignment="Stretch">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <!--The listbox which displays available plugins-->
+      <ListBox x:Name="lbPlugins"
+               Grid.Row="1"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+               HorizontalContentAlignment="Stretch"
+               ItemContainerStyle="{DynamicResource UnfocusableListBoxItem}"
+               ItemsSource="{Binding Plugins}">
+        <ListBox.Style>
+          <Style TargetType="{x:Type ListBox}">
+            <Style.Triggers>
+              <!-- ReSharper disable Xaml.BindingWithContextNotResolved -->
+
+              <!--When no plugins are available display a message-->
+              <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                  <Condition Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=Items.Count}"
+                             Value="0" />
+                  <Condition
+                    Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ItemsSource, Converter={StaticResource IsNull}}"
+                    Value="False" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Template">
+                  <Setter.Value>
+                    <ControlTemplate>
+                      <TextBlock HorizontalAlignment="Center"
+                                 VerticalAlignment="Center">
+                        No plugins available yet :-( This might be a bug, request assistance to our friendly community.
+                      </TextBlock>
+                    </ControlTemplate>
+                  </Setter.Value>
+                </Setter>
+              </MultiDataTrigger>
+              <!-- ReSharper restore Xaml.BindingWithContextNotResolved -->
+            </Style.Triggers>
+          </Style>
+        </ListBox.Style>
+      </ListBox>
+
+      <Grid.Style>
+        <Style TargetType="{x:Type Grid}">
+          <Setter Property="Visibility" Value="Collapsed" />
+
+          <Style.Triggers>
+
+            <!--Visibility depends on the Status property-->
+            <DataTrigger Binding="{Binding Status}" Value="{x:Static models:PluginManagerStatus.Display}">
+              <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+
+          </Style.Triggers>
+        </Style>
+      </Grid.Style>
+    </Grid>
+
+    <!--An error message-->
+    <TextBlock HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch">
+      <TextBlock.Style>
+        <Style TargetType="{x:Type TextBlock}">
+
+          <!--Default visibility-->
+          <Setter Property="Visibility" Value="Collapsed" />
+
+          <!--Default error message-->
+          <Setter Property="Text"
+                  Value="An unknown error occured and plugins couldn't be downloaded. Check your logs and ask for assistance if the issue persists." />
+
+          <Style.Triggers>
+            <!--Visible when status is Error-->
+            <DataTrigger Binding="{Binding Status}" Value="{x:Static models:PluginManagerStatus.Error}">
+              <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+
+            <!--When ErrorMessage is set-->
+            <DataTrigger Binding="{Binding ErrorMessage, Converter={StaticResource IsNull}}" Value="False">
+              <Setter Property="Text" Value="{Binding ErrorMessage}" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </TextBlock.Style>
+    </TextBlock>
+
+    <!--A loading animation, without text/logs-->
+    <mah:ProgressRing Width="70" Height="70"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      IsActive="{Binding RefreshCommand.IsExecuting}">
+      <mah:ProgressRing.Style>
+        <Style TargetType="{x:Type mah:ProgressRing}">
+
+          <!--Default visibility-->
+          <Setter Property="Visibility" Value="Collapsed" />
+
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding Status}" Value="{x:Static models:PluginManagerStatus.Refresh}">
+
+              <!--Visible when status is Refresh-->
+              <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </mah:ProgressRing.Style>
+    </mah:ProgressRing>
+
+    <!--A loading animation, with accompanying logs-->
+    <Grid HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          Background="#66FFFFFF">
+
+      <Grid.RowDefinitions>
+        <RowDefinition Height="100" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <!--The header is visible for all the duration of the install process, and after a failed install.
+      It contains a description of the current operation and status-->
+      <Grid Grid.Row="0"
+            VerticalAlignment="Bottom"
+            HorizontalAlignment="Center">
+
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="auto" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+          <RowDefinition Height="auto" />
+          <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <!--The install animation, message and cancel button are only visible while installing-->
+        <mah:ProgressRing Grid.Row="0" Grid.RowSpan="2" Grid.Column="0"
+                          Width="70" Height="70"
+                          Margin="0 5 50 5"
+                          Visibility="{Binding IsTaskRunning, Converter={StaticResource BoolToVis}}" />
+
+        <TextBlock Grid.Row="0" Grid.Column="1"
+                   Text="Operation in progress, this might take up to a few minutes."
+                   FontSize="15"
+                   behaviors:TextBlockEx.MaxLines="1"
+                   Visibility="{Binding IsTaskRunning, Converter={StaticResource BoolToVis}}" />
+
+        <Button Grid.Row="1" Grid.Column="1"
+                Content="Cancel install"
+                Command="{Binding CancelCommand}"
+                Visibility="{Binding IsTaskRunning, Converter={StaticResource BoolToVis}}" />
+
+        <!--The error warning sign, message, and back to the list button are only visible after a failed install-->
+        <fa5:SvgAwesome Grid.Row="0" Grid.RowSpan="2" Grid.Column="0"
+                        Icon="Solid_ExclamationTriangle"
+                        Foreground="Red"
+                        Width="70" Height="70"
+                        Margin="0 5 50 5"
+                        Visibility="{Binding IsTaskRunning, Converter={StaticResource BoolToVis}, ConverterParameter=True}" />
+
+        <TextBlock Grid.Row="0" Grid.Column="1"
+                   Text="Operation failed, please check the logs and report this issue if it persists."
+                   FontSize="15"
+                   behaviors:TextBlockEx.MaxLines="2"
+                   Visibility="{Binding IsTaskRunning, Converter={StaticResource BoolToVis}, ConverterParameter=True}" />
+
+        <Button Grid.Row="1" Grid.Column="1"
+                Content="Back to the list"
+                Command="{Binding BackToTheListCommand}"
+                Visibility="{Binding IsTaskRunning, Converter={StaticResource BoolToVis}, ConverterParameter=True}" />
+
+      </Grid>
+
+      <!--The install logs are visible for all the duration of the install process, and after a failed install-->
+      <TextBox Name="tbOperationLogs"
+               Grid.Row="1"
+               Margin="0 30 0 0"
+               VerticalAlignment="Stretch"
+               HorizontalAlignment="Stretch"
+               VerticalScrollBarVisibility="Auto"
+               IsReadOnly="True"
+               TextWrapping="NoWrap"
+               AcceptsReturn="True"
+               IsReadOnlyCaretVisible="True"
+               TextChanged="tbOperationLogs_TextChanged"
+               Text="{Binding OperationLogs, Mode=OneWay}" />
+
+      <!--The grid is visible only during install and uninstall-->
+      <Grid.Style>
+        <Style TargetType="{x:Type Grid}">
+
+          <!--Default visibility-->
+          <Setter Property="Visibility" Value="Collapsed" />
+
+          <Style.Triggers>
+            <!--Visible when status is Install-->
+            <DataTrigger Binding="{Binding Status}" Value="{x:Static models:PluginManagerStatus.Install}">
+              <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+
+            <!--Visible when status is Uninstall-->
+            <DataTrigger Binding="{Binding Status}" Value="{x:Static models:PluginManagerStatus.Uninstall}">
+              <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+
+            <!--Visible when status is Update-->
+            <DataTrigger Binding="{Binding Status}" Value="{x:Static models:PluginManagerStatus.Update}">
+              <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Grid.Style>
+
+    </Grid>
+  </Grid>
+</local:SMASetupScreenBase>

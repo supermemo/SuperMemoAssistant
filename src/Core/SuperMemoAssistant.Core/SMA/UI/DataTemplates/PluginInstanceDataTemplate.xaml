@@ -152,6 +152,7 @@
           <!--Enabled-->
           <mah:ToggleSwitch Margin="8 0 0 0"
                             VerticalAlignment="Center"
+                            Visibility="Collapsed"
                             IsChecked="{Binding Metadata.Enabled}"
                             OffLabel="Disabled"
                             OnLabel="Enabled"

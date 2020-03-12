@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/03/11 15:25
+// Modified On:  2020/03/10 22:30
 // Modified By:  Alexis
 
 #endregion
@@ -29,27 +29,45 @@
 
 
 
-using System.Collections.ObjectModel;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
-using Newtonsoft.Json;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Sys.ComponentModel;
+using Extensions.System.IO;
+using SuperMemoAssistant.Exceptions;
+using SuperMemoAssistant.SMA.Configs;
 
-namespace SuperMemoAssistant.SMA.Configs
+namespace SuperMemoAssistant.Setup.Models
 {
-  /// <summary>The main config file for SMA Core</summary>
-  public class CoreCfg : INotifyPropertyChangedEx
+  public class SuperMemoFilePath : INotifyDataErrorInfo
   {
+    #region Properties & Fields - Non-Public
+
+    private readonly SMAException _ex;
+
+    #endregion
+
+
+
+
+    #region Constructors
+
+    public SuperMemoFilePath(FilePath filePath, NativeDataCfg nativeDataCfg)
+    {
+      FilePath = filePath;
+
+      HasErrors = SMA.Utils.SuperMemoFinder.CheckSuperMemoExecutable(nativeDataCfg, filePath, out _, out var ex) == false;
+      _ex       = ex;
+    }
+
+    #endregion
+
+
+
+
     #region Properties & Fields - Public
 
-    public SuperMemoCfg SuperMemo { get; set; } = new SuperMemoCfg();
-    public UpdateCfg    Updates   { get; set; } = new UpdateCfg();
-
-    /// <summary>Whether user has agreed to the terms of license during the setup</summary>
-    public bool HasAgreedToTermsOfLicense { get; set; } = false;
-
-    /// <summary>User's saved SM collections</summary>
-    public ObservableCollection<SMCollection> Collections { get; set; } = new ObservableCollection<SMCollection>();
+    public FilePath FilePath { get; }
 
     #endregion
 
@@ -59,8 +77,37 @@ namespace SuperMemoAssistant.SMA.Configs
     #region Properties Impl - Public
 
     /// <inheritdoc />
-    [JsonIgnore]
-    public bool IsChanged { get; set; }
+    public bool HasErrors { get; }
+
+    #endregion
+
+
+
+
+    #region Methods Impl
+
+    public override string ToString()
+    {
+      return FilePath?.FullPathWin ?? string.Empty;
+    }
+
+    /// <inheritdoc />
+    public IEnumerable GetErrors(string propertyName)
+    {
+      return new List<string> { _ex.Message };
+    }
+
+    #endregion
+
+
+
+
+    #region Methods
+
+    public static implicit operator string(SuperMemoFilePath smFilePath)
+    {
+      return smFilePath.ToString();
+    }
 
     #endregion
 
@@ -70,7 +117,7 @@ namespace SuperMemoAssistant.SMA.Configs
     #region Events
 
     /// <inheritdoc />
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
     #endregion
   }

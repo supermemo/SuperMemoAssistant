@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2020/02/12 22:20
-// Modified On:  2020/02/12 22:21
+// Modified On:  2020/03/10 23:21
 // Modified By:  Alexis
 
 #endregion
@@ -30,24 +29,59 @@
 
 
 
-using SuperMemoAssistant.SMA.Configs;
-using SuperMemoFinderUtil = SuperMemoAssistant.SMA.Utils.SuperMemoFinder;
+using System.ComponentModel;
+using System.Windows.Controls;
 
 namespace SuperMemoAssistant.Setup
 {
-  public static class SMASetup
+  public abstract class SMASetupScreenBase : UserControl, ISMASetupScreen
   {
     #region Methods
 
-    public static bool ShouldFindSuperMemo(CoreCfg startupCfg, NativeDataCfg nativeDataCfg)
+    /// <summary>
+    ///   Raises the <see cref="PropertyChanged" /> event for Property
+    ///   <paramref name="propName" />
+    /// </summary>
+    /// <param name="propName">The changed property's name</param>
+    protected void OnPropertyChanged(string propName)
     {
-      return string.IsNullOrWhiteSpace(startupCfg.SuperMemo.SMBinPath)
-        || SuperMemoFinderUtil.CheckSuperMemoExecutable(
-          nativeDataCfg,
-          startupCfg.SuperMemo.SMBinPath,
-          out _,
-          out _) == false;
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
     }
+
+    #endregion
+
+
+
+
+    #region Methods Abs
+
+    /// <inheritdoc />
+    public abstract bool IsSetup { get; }
+
+    /// <inheritdoc />
+    public abstract string ListTitle { get; }
+
+    /// <inheritdoc />
+    public abstract string WindowTitle { get; }
+
+    /// <inheritdoc />
+    public abstract string Description { get; }
+
+    /// <inheritdoc />
+    public abstract void OnDisplayed();
+
+    /// <inheritdoc />
+    public abstract void OnNext();
+
+    #endregion
+
+
+
+
+    #region Events
+
+    /// <inheritdoc />
+    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
   }

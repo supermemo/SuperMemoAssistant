@@ -32,13 +32,18 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Data.Xml.Dom;
+using Windows.UI.Notifications;
 using Anotar.Serilog;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Nito.AsyncEx;
 using Serilog;
 using Squirrel;
 using SuperMemoAssistant.Extensions;
+using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Models;
 using SuperMemoAssistant.Services.IO.Logger;
+using SuperMemoAssistant.Sys.Windows;
 using SuperMemoAssistant.Sys.Windows.Net;
 
 namespace SuperMemoAssistant.Installer
@@ -51,7 +56,7 @@ namespace SuperMemoAssistant.Installer
     public static  SMAInstaller Instance { get; } = new SMAInstaller();
 
     public static bool   UpdateEnabled => SuperMemoAssistant.SMA.Core.CoreConfig.Updates.EnableCoreUpdates;
-    public static string UpdateUrl     => SuperMemoAssistant.SMA.Core.CoreConfig.Updates.CoreUpdateUrl;
+    public static string UpdateUrl     => SuperMemoAssistant.SMA.Core.CoreConfig?.Updates.CoreUpdateUrl;
 
     #endregion
 
@@ -134,6 +139,8 @@ namespace SuperMemoAssistant.Installer
       if (UpdateEnabled == false)
         return;
 
+      ReleaseEntry updateVersion = null;
+
       try
       {
         if (Wininet.HasNetworking() == false)
@@ -161,6 +168,8 @@ namespace SuperMemoAssistant.Installer
             return;
           }
 
+          updateVersion = updateInfo.FutureReleaseEntry;
+
           State = SMAUpdateState.Downloading;
 
           await updateMgr.DownloadReleases(updateInfo.ReleasesToApply, progress => ProgressPct = progress);
@@ -185,7 +194,57 @@ namespace SuperMemoAssistant.Installer
       finally
       {
         _semaphore.Release();
+
+        if (updateVersion != null)
+          NotifyUpdateResult(updateVersion);
       }
+    }
+
+    private void NotifyUpdateResult(ReleaseEntry updateVersion)
+    {
+      var msg = State == SMAUpdateState.Updated
+        ? $"SMA has been updated to version {updateVersion.Version}. Restart SMA to use the new version."
+        : $"An error occured while updating SMA to version {updateVersion.Version}. Check the logs for more information.";
+
+      ToastContent toastContent = new ToastContent
+      {
+        Visual = new ToastVisual
+        {
+          BindingGeneric = new ToastBindingGeneric
+          {
+            Children =
+            {
+              new AdaptiveText
+              {
+                Text = msg
+              }
+            }
+          }
+        }
+      };
+
+      if (State == SMAUpdateState.Error)
+      {
+        toastContent.Actions = new ToastActionsCustom
+        {
+          Buttons =
+          {
+            new ToastButton("Open the logs folder", SMAFileSystem.LogDir.FullPathWin)
+            {
+              ActivationType = ToastActivationType.Protocol
+            }
+          }
+        };
+      }
+
+      var doc = new XmlDocument();
+      doc.LoadXml(toastContent.GetContent());
+
+      // And create the toast notification
+      var toast = new ToastNotification(doc);
+
+      // And then show it
+      DesktopNotificationManager.CreateToastNotifier().Show(toast);
     }
 
     #endregion

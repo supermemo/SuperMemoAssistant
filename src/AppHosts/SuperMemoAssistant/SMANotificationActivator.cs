@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/03/11 00:41
+// Modified On:  2020/03/11 18:37
 // Modified By:  Alexis
 
 #endregion
@@ -29,17 +29,41 @@
 
 
 
-namespace SuperMemoAssistant.Models
-{
-  public static class SMAExitCodes
-  {
-    #region Constants & Statics
+using System.Runtime.InteropServices;
+using System.Windows;
+using Anotar.Serilog;
+using Microsoft.QueryStringDotNET;
+using SuperMemoAssistant.Sys.Windows;
 
-    public const int ExitCodeParametersError = 1;
-    public const int ExitCodeDependencyError = 2;
-    public const int ExitCodeConfigError     = 3;
-    public const int ExitCodeSMASetupError   = 4;
-    public const int ExitCodeSMAStartupError = 5;
+namespace SuperMemoAssistant
+{
+  /// <summary>Handles user actions from Windows Toast Desktop notifications</summary>
+  [ClassInterface(ClassInterfaceType.None)]
+  [ComSourceInterfaces(typeof(INotificationActivationCallback))]
+  [Guid("85DE7F06-9588-4EE6-ABB0-F212B01647FE")]
+  [ComVisible(true)]
+  public class SMANotificationActivator : NotificationActivator
+  {
+    #region Methods Impl
+
+    /// <inheritdoc />
+    public override void OnActivated(string arguments, NotificationUserInput userInput, string appUserModelId)
+    {
+      Application.Current.Dispatcher.Invoke(delegate
+      {
+        if (arguments.Length == 0)
+          return;
+
+        QueryString args = QueryString.Parse(arguments);
+
+        switch (args["action"])
+        {
+          default:
+            LogTo.Debug($"Unknown notification action {args["action"]}");
+            break;
+        }
+      });
+    }
 
     #endregion
   }

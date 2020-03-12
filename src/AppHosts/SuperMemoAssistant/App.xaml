@@ -20,14 +20,14 @@
 
         <ResourceDictionary Source="pack://application:,,,/SuperMemoAssistant.Core;component/SMA/UI/DataTemplates/PluginInstanceDataTemplate.xaml" />
       </ResourceDictionary.MergedDictionaries>
-      
-      <Style TargetType="{x:Type ListBoxItem}">
+
+      <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource MetroListBoxItem}">
         <Setter Property="mah:ItemHelper.ActiveSelectionBackgroundBrush" Value="{DynamicResource AccentColorBrush3}" />
         <Setter Property="mah:ItemHelper.HoverBackgroundBrush" Value="{DynamicResource AccentColorBrush4}" />
         <Setter Property="Focusable" Value="True" />
       </Style>
-      
-      <Style x:Key="UnfocusableListBoxItem" TargetType="{x:Type ListBoxItem}">
+
+      <Style x:Key="UnfocusableListBoxItem" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource MetroListBoxItem}">
         <Setter Property="mah:ItemHelper.ActiveSelectionBackgroundBrush" Value="{DynamicResource AccentColorBrush3}" />
         <Setter Property="mah:ItemHelper.HoverBackgroundBrush" Value="{DynamicResource AccentColorBrush4}" />
         <Setter Property="Focusable" Value="False" />
@@ -36,6 +36,7 @@
       <Style x:Key="SMAButton" TargetType="{x:Type Button}" BasedOn="{StaticResource MetroButton}">
         <Setter Property="FontSize" Value="13" />
         <Setter Property="FontWeight" Value="DemiBold" />
+        <Setter Property="Padding" Value="16 8 16 8" />
       </Style>
       
       <Style TargetType="{x:Type Button}" BasedOn="{StaticResource SMAButton}">

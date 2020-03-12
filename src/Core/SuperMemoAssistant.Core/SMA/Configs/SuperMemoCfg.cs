@@ -51,7 +51,7 @@ namespace SuperMemoAssistant.SMA.Configs
     [Action("BrowseFile", "Browse", Placement = Placement.Inline)]
     public string SMBinPath { get; set; }
 
-    [Field(Name = "Skip procedures pattern scanning (trust hint addresses)")]
+    //[Field(Name = "Skip procedures pattern scanning (trust hint addresses)")]
     public bool TrustHintAddresses { get;                       set; } = false;
     public Dictionary<string, int> PatternsHintAddresses { get; set; } = new Dictionary<string, int>();
 

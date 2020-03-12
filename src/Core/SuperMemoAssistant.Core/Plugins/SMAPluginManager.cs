@@ -83,6 +83,8 @@ namespace SuperMemoAssistant.Plugins
     {
       Core.SMA.OnSMStartedEvent += OnSMStarted;
       Core.SMA.OnSMStoppedEvent += OnSMStopped;
+
+      base.Initialize(false).Wait();
     }
 
     #endregion
@@ -94,8 +96,10 @@ namespace SuperMemoAssistant.Plugins
 
     private async Task OnSMStarted(object sender, SMProcessArgs e)
     {
+      // ReSharper disable once AssignNullToNotNullAttribute
       _uiSynchronizationContext = new DispatcherSynchronizationContext(Application.Current.Dispatcher);
-      await base.Initialize();
+
+      await StartPlugins().ConfigureAwait(false);
     }
 
     private void OnSMStopped(object sender, SMProcessArgs e)

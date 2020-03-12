@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" InitialTargets="MSBuildToolsReadSuo">
-  <Import Project="..\..\..\packages\MSBuild.Tools.0.1.5\build\MSBuild.Tools.props" Condition="Exists('..\..\..\packages\MSBuild.Tools.0.1.5\build\MSBuild.Tools.props')" />
+  <Import Project="..\..\..\packages\MSBuild.Tools.0.1.6\build\MSBuild.Tools.props" Condition="Exists('..\..\..\packages\MSBuild.Tools.0.1.6\build\MSBuild.Tools.props')" />
   <Import Project="..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props" Condition="Exists('..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -175,9 +175,9 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props'))" />
     <Error Condition="!Exists('..\..\..\packages\Fody.6.1.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fody.6.1.1\build\Fody.targets'))" />
-    <Error Condition="!Exists('..\..\..\packages\MSBuild.Tools.0.1.5\build\MSBuild.Tools.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\MSBuild.Tools.0.1.5\build\MSBuild.Tools.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\MSBuild.Tools.0.1.5\build\MSBuild.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\MSBuild.Tools.0.1.5\build\MSBuild.Tools.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\MSBuild.Tools.0.1.6\build\MSBuild.Tools.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\MSBuild.Tools.0.1.6\build\MSBuild.Tools.props'))" />
+    <Error Condition="!Exists('..\..\..\packages\MSBuild.Tools.0.1.6\build\MSBuild.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\MSBuild.Tools.0.1.6\build\MSBuild.Tools.targets'))" />
   </Target>
   <Import Project="..\..\..\packages\Fody.6.1.1\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.6.1.1\build\Fody.targets')" />
-  <Import Project="..\..\..\packages\MSBuild.Tools.0.1.5\build\MSBuild.Tools.targets" Condition="Exists('..\..\..\packages\MSBuild.Tools.0.1.5\build\MSBuild.Tools.targets')" />
+  <Import Project="..\..\..\packages\MSBuild.Tools.0.1.6\build\MSBuild.Tools.targets" Condition="Exists('..\..\..\packages\MSBuild.Tools.0.1.6\build\MSBuild.Tools.targets')" />
 </Project>

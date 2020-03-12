@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/03/11 00:41
+// Modified On:  2020/03/11 12:31
 // Modified By:  Alexis
 
 #endregion
@@ -29,18 +29,32 @@
 
 
 
-namespace SuperMemoAssistant.Models
+using System.ComponentModel;
+
+namespace SuperMemoAssistant.Setup
 {
-  public static class SMAExitCodes
+  /// <summary>Contract interface for setup screens</summary>
+  public interface ISMASetupScreen : INotifyPropertyChanged
   {
-    #region Constants & Statics
+    /// <summary>Whether this setup step is done</summary>
+    bool IsSetup { get; }
 
-    public const int ExitCodeParametersError = 1;
-    public const int ExitCodeDependencyError = 2;
-    public const int ExitCodeConfigError     = 3;
-    public const int ExitCodeSMASetupError   = 4;
-    public const int ExitCodeSMAStartupError = 5;
+    /// <summary>The title to display in the setup step list</summary>
+    string ListTitle { get; }
 
-    #endregion
+    /// <summary>The title to display in the setup window title bar</summary>
+    string WindowTitle { get; }
+
+    /// <summary>Description of the current setup step</summary>
+    string Description { get; }
+
+    /// <summary>Called when this screen is displayed</summary>
+    void OnDisplayed();
+
+    /// <summary>
+    ///   Called when this screen is about to be swapped out for the next one (or the end of
+    ///   the setup process)
+    /// </summary>
+    void OnNext();
   }
 }

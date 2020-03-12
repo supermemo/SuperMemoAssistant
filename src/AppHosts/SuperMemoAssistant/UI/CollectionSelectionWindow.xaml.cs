@@ -222,7 +222,7 @@ namespace SuperMemoAssistant.UI
     private void BtnOptions_Click(object          sender,
                                   RoutedEventArgs e)
     {
-      Forge.Forms.Show.Window().For<CoreCfg>(_startupCfg).Wait();
+      Forge.Forms.Show.Window().For<SuperMemoCfg>(_startupCfg.SuperMemo).Wait();
 
       SaveConfig();
     }
@@ -231,8 +231,7 @@ namespace SuperMemoAssistant.UI
                                 KeyEventArgs e)
     {
       if (e.Key == Key.Enter && btnOpen.IsEnabled)
-        btnOpen_Click(sender,
-                      e);
+        btnOpen_Click(sender, e);
 
       else if (e.Key == Key.Escape)
         Close();

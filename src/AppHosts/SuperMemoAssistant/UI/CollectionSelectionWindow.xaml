@@ -8,13 +8,13 @@
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
                  mc:Ignorable="d"
-                 Height="450" Width="700"
                  DataContext="{Binding RelativeSource={RelativeSource Self}}"
+                 Height="450" Width="700"
+                 Icon="../Resources/robot-24.ico"
+                 IconScalingMode="NoScaleSmallerFrame"
                  Title="Collection Selection"
                  TitleAlignment="Left"
                  TitleCharacterCasing="Normal"
-                 Icon="../Resources/robot-24.ico"
-                 IconScalingMode="NoScaleSmallerFrame"
                  WindowStartupLocation="CenterScreen"
                  ResizeMode="CanResizeWithGrip"
                  ShowIconOnTitleBar="True"
@@ -34,7 +34,7 @@
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="*" />
-      <RowDefinition Height="50" />
+      <RowDefinition Height="auto" />
     </Grid.RowDefinitions>
 
     <ListBox Name="lbCollections"
@@ -56,6 +56,7 @@
             <TextBlock Grid.Column="2" VerticalAlignment="Center" FontSize="14" Text="{Binding LastOpen}" />
             <Button Grid.Column="3"
                     Margin="20 0 0 0"
+                    Padding="4 0 4 0"
                     Command="{Binding DataContext.DeleteCommand, ElementName=lbCollections}"
                     CommandParameter="{Binding}">
               <fa5:SvgAwesome Icon="Solid_Times"
@@ -67,11 +68,13 @@
           </Grid>
         </DataTemplate>
       </ListBox.ItemTemplate>
+
       <ListBox.ItemContainerStyle>
-        <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+        <Style TargetType="{x:Type ListBoxItem}">
           <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>
         </Style>
       </ListBox.ItemContainerStyle>
+
       <ListBox.Style>
         <Style TargetType="{x:Type ListBox}">
           <Style.Triggers>

@@ -41,8 +41,8 @@ using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Models;
 using SuperMemoAssistant.Services.UI.Extensions;
 using SuperMemoAssistant.Setup;
-using SuperMemoAssistant.SMA.UI.DataTemplates;
 using SuperMemoAssistant.SMA.Utils;
+using SuperMemoAssistant.Sys.Windows;
 using SuperMemoAssistant.UI;
 
 namespace SuperMemoAssistant
@@ -99,7 +99,7 @@ namespace SuperMemoAssistant
       if (SMAInstaller.HandleEvent(args, out var firstRun))
       {
         if (firstRun)
-          await "SuperMemo Assistant has been successfully installed.".MsgBox("Installation");
+          MessageBox.Show("SuperMemo Assistant has been successfully installed.", "Installation success");
 
         Shutdown();
         return;
@@ -128,21 +128,22 @@ namespace SuperMemoAssistant
         Shutdown(SMAExitCodes.ExitCodeConfigError);
         return;
       }
+      
+      SMA.Core.CoreConfig = coreCfg;
 
       //
-      // Make sure SuperMemo exe path is correct. Prompt user to input the path otherwise.
-      if (SMASetup.ShouldFindSuperMemo(coreCfg, nativeDataCfg))
+      // Setup toast notifications (TODO: setup ToastActivatorCLSID on shortcut https://github.com/WindowsNotifications/desktop-toasts/blob/472a3f9f5849fbc62bf5cad769421d4299c47f51/CS/DesktopToastsSetupProject/Product.wxs)
+      DesktopNotificationManager.RegisterAumidAndComServer<SMANotificationActivator>("SuperMemoAssistant");
+      DesktopNotificationManager.RegisterActivator<SMANotificationActivator>();
+
+      //
+      // Check if SMA is setup, and run the setup wizard if it isn't
+      if (SMASetup.Run(nativeDataCfg, coreCfg) == false)
       {
-        var smFinder = new Setup.SuperMemoFinder(nativeDataCfg, coreCfg);
-        smFinder.ShowDialog();
+        LogTo.Warning("SMA Setup canceled. Exiting.");
 
-        if (smFinder.DialogResult == null || smFinder.DialogResult == false)
-        {
-          LogTo.Warning(errMsg);
-
-          Shutdown(SMAExitCodes.ExitCodeSMExeError);
-          return;
-        }
+        Shutdown(SMAExitCodes.ExitCodeSMASetupError);
+        return;
       }
 
       //
@@ -177,7 +178,6 @@ namespace SuperMemoAssistant
       if (smCollection != null)
       {
         SMA.Core.SMA.OnSMStoppedEvent += OnSMStoppedEvent;
-        SMA.Core.CoreConfig = coreCfg;
 
         if (await SMA.Core.SMA.Start(nativeDataCfg, smCollection).ConfigureAwait(true) == false)
         {

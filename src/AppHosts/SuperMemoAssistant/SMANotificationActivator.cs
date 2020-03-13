@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/03/11 18:37
+// Modified On:  2020/03/13 01:48
 // Modified By:  Alexis
 
 #endregion
@@ -33,6 +33,8 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using Anotar.Serilog;
 using Microsoft.QueryStringDotNET;
+using SuperMemoAssistant.Extensions;
+using SuperMemoAssistant.Plugins;
 using SuperMemoAssistant.Sys.Windows;
 
 namespace SuperMemoAssistant
@@ -40,10 +42,19 @@ namespace SuperMemoAssistant
   /// <summary>Handles user actions from Windows Toast Desktop notifications</summary>
   [ClassInterface(ClassInterfaceType.None)]
   [ComSourceInterfaces(typeof(INotificationActivationCallback))]
-  [Guid("85DE7F06-9588-4EE6-ABB0-F212B01647FE")]
+  [Guid("55832db8-45ea-5ead-9291-9549b25a5f0c")]
   [ComVisible(true)]
   public class SMANotificationActivator : NotificationActivator
   {
+    #region Constants & Statics
+
+    public const string AppUserModelId = "com.squirrel.SuperMemoAssistant.SuperMemoAssistant";
+
+    #endregion
+
+
+
+
     #region Methods Impl
 
     /// <inheritdoc />
@@ -56,15 +67,48 @@ namespace SuperMemoAssistant
 
         QueryString args = QueryString.Parse(arguments);
 
+        if (args.Contains("action") == false)
+        {
+          LogTo.Warning($"Received a Toast activation without an action argument: '{arguments}'");
+          return;
+        }
+
         switch (args["action"])
         {
+          // Restart plugin after crash
+          case SMAPluginManager.ToastActionRestartAfterCrash:
+            if (args.Contains(SMAPluginManager.ToastActionParameterPluginId) == false)
+            {
+              LogTo.Error($"Received a ToastActionRestartAfterCrash toast activation without a plugin id parameter: '{arguments}'");
+              return;
+            }
+
+            var packageId = args[SMAPluginManager.ToastActionParameterPluginId];
+            SMAPluginManager.Instance.StartPlugin(packageId).RunAsync();
+            break;
+
           default:
-            LogTo.Debug($"Unknown notification action {args["action"]}");
+            LogTo.Warning($"Unknown notification action {args["action"]}: '{arguments}'");
             break;
         }
       });
     }
 
     #endregion
+
+
+
+
+#if false
+    /// <summary>
+    /// Helper function to get the Squirrel-generated CLSID
+    /// </summary>
+    /// <returns></returns>
+    public static string GetActivatorCLSID()
+    {
+      return Utility.CreateGuidFromHash(AppUserModelId).ToString();
+    }
+
+#endif
   }
 }

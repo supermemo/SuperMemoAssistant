@@ -29,12 +29,14 @@
 
 
 
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using Anotar.Serilog;
 using MahApps.Metro.Controls;
+using SuperMemoAssistant.Services.UI.Extensions;
 using SuperMemoAssistant.Setup.Screens;
 using SuperMemoAssistant.SMA.Configs;
 using SuperMemoAssistant.Sys.Windows.Input;
@@ -59,6 +61,7 @@ namespace SuperMemoAssistant.Setup
       {
         new TermsOfLicense(startupCfg),
         new SuperMemoFinder(nativeDataCfg, startupCfg),
+        new ImportCollections(startupCfg),
         new PluginSetup(),
       };
 
@@ -139,14 +142,24 @@ namespace SuperMemoAssistant.Setup
 
     private void ShowScreen(SMASetupScreenBase screen)
     {
-      CurrentScreen?.OnNext();
+      try
+      {
+        CurrentScreen?.OnNext();
 
-      CurrentScreen = screen;
-      CurrentScreen?.OnDisplayed();
+        CurrentScreen = screen;
+        CurrentScreen?.OnDisplayed();
 
-      Title = CurrentScreen?.WindowTitle != null
-        ? $"SMA Setup: {CurrentScreen.WindowTitle}"
-        : "SMA Setup";
+        Title = CurrentScreen?.WindowTitle != null
+          ? $"SMA Setup: {CurrentScreen.WindowTitle}"
+          : "SMA Setup";
+      }
+      catch (Exception ex)
+      {
+        var errMsg = $"An exception occured while showing screen {screen?.ListTitle}";
+
+        LogTo.Error(ex, errMsg);
+        errMsg.ErrorMsgBox().Wait();
+      }
     }
 
     private SMASetupScreenBase FindNextScreen()
@@ -154,7 +167,7 @@ namespace SuperMemoAssistant.Setup
       return Screens.FirstOrDefault(s => s.IsSetup == false);
     }
 
-    private void SMASetup_Initialized(object sender, System.EventArgs e)
+    private void SMASetup_Loaded(object sender, System.EventArgs e)
     {
       ShowScreen(FindNextScreen());
     }

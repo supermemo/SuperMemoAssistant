@@ -19,6 +19,15 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
+    <UpdateAssemblyVersion>True</UpdateAssemblyVersion>
+    <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
+    <UpdateAssemblyInfoVersion>True</UpdateAssemblyInfoVersion>
+    <AssemblyVersionSettings>IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease</AssemblyVersionSettings>
+    <UpdatePackageVersion>False</UpdatePackageVersion>
+    <AssemblyInfoVersionType>SettingsVersion</AssemblyInfoVersionType>
+    <InheritWinAppVersionFrom>None</InheritWinAppVersionFrom>
+    <AssemblyFileVersionSettings>IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease</AssemblyFileVersionSettings>
+    <AssemblyInfoVersionSettings>IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.None</AssemblyInfoVersionSettings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -208,6 +217,7 @@
     <Compile Include="Sys\Collections\ObservableHashSet.cs" />
     <Compile Include="Sys\ComponentModel\PropertyChangedDelegate.cs" />
     <Compile Include="Sys\COM\InternetExplorer\IEComHelper.cs" />
+    <Compile Include="Sys\IO\IniFile.cs" />
     <Compile Include="Sys\Windows\Behaviors\TextBlockEx.cs" />
     <Compile Include="Sys\Windows\Data\BooleanToVisibilityHiddenConverterEx.cs" />
     <Compile Include="Sys\Windows\Data\ImageSourceBase64Converter.cs" />

@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/03/05 22:13
+// Modified On:  2020/03/13 02:07
 // Modified By:  Alexis
 
 #endregion
@@ -35,18 +35,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using Windows.Data.Xml.Dom;
+using Windows.UI.Notifications;
 using Extensions.System.IO;
+using Microsoft.QueryStringDotNET;
+using Microsoft.Toolkit.Uwp.Notifications;
 using PluginManager;
 using PluginManager.Contracts;
 using PluginManager.Interop.Contracts;
 using PluginManager.Logger;
 using PluginManager.PackageManager.Models;
+using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.Interop.Plugins;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Plugins.Models;
 using SuperMemoAssistant.SMA;
+using SuperMemoAssistant.Sys.Windows;
 
 // ReSharper disable RedundantTypeArgumentsOfMethod
 
@@ -61,6 +67,9 @@ namespace SuperMemoAssistant.Plugins
     #region Constants & Statics
 
     public static SMAPluginManager Instance { get; } = new SMAPluginManager();
+
+    public const string ToastActionRestartAfterCrash = "PluginRestartAfterCrash";
+    public const string ToastActionParameterPluginId = "PluginId";
 
     #endregion
 
@@ -121,6 +130,58 @@ namespace SuperMemoAssistant.Plugins
 
 
     #region IPluginManagerBase
+
+    /// <inheritdoc />
+    protected override void OnPluginCrashed(PluginInstance pluginInstance)
+    {
+      ToastContent toastContent = new ToastContent
+      {
+        Visual = new ToastVisual
+        {
+          BindingGeneric = new ToastBindingGeneric
+          {
+            Children =
+            {
+              new AdaptiveText
+              {
+                Text = $"{pluginInstance.ToString().CapitalizeFirst()} has crashed."
+              }
+            }
+          }
+        },
+        Actions = new ToastActionsCustom
+        {
+          Buttons =
+          {
+            // Restart action
+            new ToastButton("Restart",
+                            new QueryString
+                            {
+                              { "action", ToastActionRestartAfterCrash },
+                              { ToastActionParameterPluginId, pluginInstance.Package.Id }
+                            }.ToString())
+            {
+              ActivationType = ToastActivationType.Background
+            },
+
+            // Open logs folder action
+            new ToastButton("Open the logs folder", SMAFileSystem.LogDir.FullPathWin)
+            {
+              ActivationType = ToastActivationType.Protocol
+            }
+          }
+        }
+      };
+
+      var doc = new XmlDocument();
+      doc.LoadXml(toastContent.GetContent());
+
+      // And create the toast notification
+      var toast = new ToastNotification(doc);
+
+      // And then show it
+      DesktopNotificationManager.CreateToastNotifier().Show(toast);
+    }
 
     /// <inheritdoc />
     public override string GetPluginHostTypeAssemblyName(PluginInstance pluginInstance)

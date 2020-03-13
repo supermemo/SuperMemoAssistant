@@ -101,6 +101,7 @@
                       Height="26"
                       Margin="8 0 0 0"
                       VerticalAlignment="Center"
+                      ToolTip="Make a copy of this layout"
                       Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
                       CommandParameter="{Binding}"
                       Command="{Binding DataContext.CloneCommand, ElementName=lbLayouts}">
@@ -112,11 +113,12 @@
               </Button>
 
               <!--Edit-->
-              <Button Name="BtnPluginPlayPause"
+              <Button Name="BtnEdit"
                       Width="26"
                       Height="26"
                       Margin="8 0 0 0"
                       VerticalAlignment="Center"
+                      ToolTip="Make a copy of this layout"
                       Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
                       CommandParameter="{Binding}"
                       Command="{Binding DataContext.EditCommand, ElementName=lbLayouts}">
@@ -128,11 +130,12 @@
               </Button>
 
               <!--Delete-->
-              <Button Name="BtnPluginSettings"
+              <Button Name="BtnDelete"
                       Width="26"
                       Height="26"
                       Margin="8 0 0 0"
                       VerticalAlignment="Center"
+                      ToolTip="Delete this layout"
                       Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
                       CommandParameter="{Binding}"
                       Command="{Binding DataContext.DeleteCommand, ElementName=lbLayouts}">

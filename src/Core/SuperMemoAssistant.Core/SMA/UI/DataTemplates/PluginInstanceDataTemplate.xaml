@@ -4,7 +4,9 @@
                     xmlns:fa5="http://schemas.fontawesome.com/icons/"
                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:converters="clr-namespace:SuperMemoAssistant.SMA.UI.Converters"
-                    xmlns:data="clr-namespace:SuperMemoAssistant.Sys.Windows.Data;assembly=SuperMemoAssistant.Interop">
+                    xmlns:data="clr-namespace:SuperMemoAssistant.Sys.Windows.Data;assembly=SuperMemoAssistant.Interop"
+                    xmlns:pluginModels="clr-namespace:PluginManager.Models;assembly=PluginManager.Core"
+                    xmlns:behaviors="clr-namespace:SuperMemoAssistant.Sys.Windows.Behaviors;assembly=SuperMemoAssistant.Interop">
 
   <!-- ReSharper disable InconsistentNaming -->
   <data:BooleanToVisibilityConverterEx x:Key="BoolToVis" />
@@ -46,29 +48,56 @@
       <!--Title line-->
       <Grid Grid.Row="0"
             Grid.Column="1"
+            Height="26"
             Margin="16 0 0 0">
+
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="auto" />
           <ColumnDefinition Width="auto" />
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
-        <!--Title-->
-        <TextBlock Grid.Column="0"
-                   VerticalAlignment="Bottom"
-                   Text="{Binding Metadata.DisplayName}"
-                   FontSize="18"
-                   FontWeight="DemiBold" />
+        <StackPanel Grid.Column="0"
+                    Height="18"
+                    Orientation="Horizontal">
 
-        <!--Version-->
-        <TextBlock Grid.Column="1"
-                   VerticalAlignment="Bottom"
-                   Margin="8 0 0 2"
-                   Text="{Binding Package.Version}"
-                   FontSize="12" />
+          <!--Title-->
+          <TextBlock VerticalAlignment="Bottom"
+                     Text="{Binding Metadata.DisplayName}"
+                     FontSize="18"
+                     FontWeight="DemiBold" />
 
-        <StackPanel Grid.Column="3"
+          <!--Version-->
+          <TextBlock VerticalAlignment="Bottom"
+                     Margin="8 0 0 2"
+                     Text="{Binding Package.Version}"
+                     FontSize="12" />
+
+          <!--Official badge-->
+          <TextBlock VerticalAlignment="Center"
+                     Margin="8 0"
+                     Padding="4, 2"
+                     FontSize="13"
+                     Text="Official"
+                     FontWeight="DemiBold"
+                     Background="LightSlateGray"
+                     Foreground="White"
+                     Visibility="{Binding Metadata.IsOfficial, Converter={StaticResource BoolToVis}}" />
+
+          <!--Verified badge-->
+          <TextBlock VerticalAlignment="Center"
+                     Margin="8 0"
+                     Padding="4, 2"
+                     FontSize="13"
+                     Text="Default"
+                     FontWeight="DemiBold"
+                     Background="BlueViolet"
+                     Foreground="White"
+                     Visibility="{Binding Metadata.IsVerified, Converter={StaticResource BoolToVis}}" />
+
+        </StackPanel>
+
+        <StackPanel Grid.Column="2"
                     Orientation="Horizontal">
 
           <!--Update-->
@@ -84,6 +113,7 @@
                   Height="26"
                   Margin="8 0 0 0"
                   VerticalAlignment="Center"
+                  ToolTip="Update"
                   Visibility="{Binding Package.HasPendingUpdates, Converter={StaticResource BoolToVis}}"
                   Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
                   Foreground="DarkSlateBlue"
@@ -103,9 +133,21 @@
                   Height="26"
                   Margin="8 0 0 0"
                   VerticalAlignment="Center"
-                  Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
                   CommandParameter="{Binding}"
                   Command="{Binding DataContext.PlayPauseCommand, ElementName=lbPlugins}">
+            <Button.Style>
+              <Style TargetType="{x:Type Button}"
+                     BasedOn="{StaticResource MahApps.Metro.Styles.MetroCircleButtonStyle}">
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Status}" Value="{x:Static pluginModels:PluginStatus.Connected}">
+                    <Setter Property="ToolTip" Value="Stop the plugin" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding Status}" Value="{x:Static pluginModels:PluginStatus.Stopped}">
+                    <Setter Property="ToolTip" Value="Start the plugin" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Button.Style>
             <fa5:SvgAwesome Width="14"
                             Height="14"
                             VerticalAlignment="Center"
@@ -121,6 +163,7 @@
                   VerticalAlignment="Center"
                   Visibility="{Binding HasSettings, Converter={StaticResource BoolToVis}}"
                   Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
+                  ToolTip="Plugin's Settings"
                   CommandParameter="{Binding}"
                   Command="{Binding DataContext.ShowSettingsCommand, ElementName=lbPlugins}">
             <fa5:SvgAwesome Width="14"
@@ -140,6 +183,7 @@
                   Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
                   Foreground="Red"
                   BorderBrush="Red"
+                  ToolTip="Uninstall"
                   CommandParameter="{Binding Package}"
                   Command="{Binding DataContext.UninstallCommand, ElementName=lbPlugins}">
             <fa5:SvgAwesome Width="14"
@@ -160,12 +204,16 @@
                             CheckChangedCommandParameter="{Binding}"
                             CheckChangedCommand="{Binding DataContext.EnableDisableCommand, ElementName=lbPlugins}" />
         </StackPanel>
+
       </Grid>
 
       <TextBlock Grid.Row="1"
                  Grid.Column="1"
+                 VerticalAlignment="Top"
                  Margin="16 0 0 0"
                  TextTrimming="CharacterEllipsis"
+                 TextWrapping="Wrap"
+                 behaviors:TextBlockEx.MaxLines="3"
                  Text="{Binding Metadata.Description}" />
     </Grid>
   </DataTemplate>

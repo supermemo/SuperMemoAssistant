@@ -132,10 +132,10 @@ namespace SuperMemoAssistant
       SMA.Core.CoreConfig = coreCfg;
 
       //
-      // Setup toast notifications (TODO: setup ToastActivatorCLSID on shortcut https://github.com/WindowsNotifications/desktop-toasts/blob/472a3f9f5849fbc62bf5cad769421d4299c47f51/CS/DesktopToastsSetupProject/Product.wxs)
-      DesktopNotificationManager.RegisterAumidAndComServer<SMANotificationActivator>("SuperMemoAssistant");
+      // Setup toast notifications
+      DesktopNotificationManager.RegisterAumidAndComServer<SMANotificationActivator>(SMANotificationActivator.AppUserModelId);
       DesktopNotificationManager.RegisterActivator<SMANotificationActivator>();
-
+      
       //
       // Check if SMA is setup, and run the setup wizard if it isn't
       if (SMASetup.Run(nativeDataCfg, coreCfg) == false)

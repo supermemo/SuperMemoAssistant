@@ -29,10 +29,10 @@
 
 
 
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Newtonsoft.Json;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.Sys.Collections.Microsoft.EntityFrameworkCore.ChangeTracking;
 using SuperMemoAssistant.Sys.ComponentModel;
 
 namespace SuperMemoAssistant.SMA.Configs
@@ -48,8 +48,11 @@ namespace SuperMemoAssistant.SMA.Configs
     /// <summary>Whether user has agreed to the terms of license during the setup</summary>
     public bool HasAgreedToTermsOfLicense { get; set; } = false;
 
+    /// <summary>Whether user has gone through the import collection setup step</summary>
+    public bool HasImportedCollections { get; set; } = false;
+
     /// <summary>User's saved SM collections</summary>
-    public ObservableCollection<SMCollection> Collections { get; set; } = new ObservableCollection<SMCollection>();
+    public ObservableHashSet<SMCollection> Collections { get; } = new ObservableHashSet<SMCollection>();
 
     #endregion
 

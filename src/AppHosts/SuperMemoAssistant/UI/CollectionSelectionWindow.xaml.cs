@@ -31,7 +31,6 @@
 
 
 using System;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -43,6 +42,7 @@ using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.SMA.Configs;
 using Extensions.System.IO;
+using SuperMemoAssistant.Sys.Collections.Microsoft.EntityFrameworkCore.ChangeTracking;
 using SuperMemoAssistant.Sys.Windows.Input;
 
 namespace SuperMemoAssistant.UI
@@ -82,7 +82,7 @@ namespace SuperMemoAssistant.UI
     #region Properties & Fields - Public
 
     public SMCollection                       Collection       { get; set; }
-    public ObservableCollection<SMCollection> SavedCollections { get; }
+    public ObservableHashSet<SMCollection> SavedCollections { get; }
 
     public ICommand DeleteCommand => new RelayCommand<SMCollection>(DeleteCollection);
 
@@ -222,7 +222,7 @@ namespace SuperMemoAssistant.UI
     private void BtnOptions_Click(object          sender,
                                   RoutedEventArgs e)
     {
-      Forge.Forms.Show.Window().For<SuperMemoCfg>(_startupCfg.SuperMemo).Wait();
+      _startupCfg.SuperMemo.ShowWindow().Wait();
 
       SaveConfig();
     }

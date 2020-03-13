@@ -57,6 +57,7 @@
             <Button Grid.Column="3"
                     Margin="20 0 0 0"
                     Padding="4 0 4 0"
+                    ToolTip="Removes the collection from the list (without deleting any file)"
                     Command="{Binding DataContext.DeleteCommand, ElementName=lbCollections}"
                     CommandParameter="{Binding}">
               <fa5:SvgAwesome Icon="Solid_Times"

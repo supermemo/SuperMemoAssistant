@@ -43,6 +43,7 @@ namespace SuperMemoAssistant.SMA.Configs
 
     [Field(Name = "Collapse Element window Title bar")]
     public bool CollapseElementWdwTitleBar { get; set; }
+
     [Field(Name = "Collapse KT window Title bar")]
     public bool CollapseKnowledgeTreeWdwTitleBar { get; set; }
 

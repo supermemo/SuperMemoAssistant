@@ -67,6 +67,13 @@ namespace SuperMemoAssistant.Plugins
                    .Instance.SearchPlugins(searchTerm, enablePrerelease, PackageManager, forceRefresh, expireAfterSec, cancellationToken)
                    .ConfigureAwait(false);
     }
+    
+    /// <summary>Saves the local plugin repository state to file</summary>
+    /// <returns>Success of operation</returns>
+    public Task<bool> SaveConfigAsync()
+    {
+      return PackageManager.SaveConfigAsync();
+    }
 
     #endregion
   }

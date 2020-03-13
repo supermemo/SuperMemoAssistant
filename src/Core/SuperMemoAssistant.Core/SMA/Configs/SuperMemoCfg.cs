@@ -34,16 +34,20 @@ using System.ComponentModel;
 using Forge.Forms;
 using Forge.Forms.Annotations;
 using Microsoft.Win32;
+using SuperMemoAssistant.Services.UI.Configuration;
 
 namespace SuperMemoAssistant.SMA.Configs
 {
   [Form(Mode                   = DefaultFields.None)]
   [Title("Settings", IsVisible = "{Env DialogHostContext}")]
+  [DialogAction("cancel",
+                "Cancel",
+                IsCancel = true)]
   [DialogAction("save",
                 "Save",
                 IsDefault = true,
                 Validates = true)]
-  public class SuperMemoCfg : IActionHandler, INotifyPropertyChanged
+  public class SuperMemoCfg : CfgBase<SuperMemoCfg>, INotifyPropertyChanged
   {
     #region Properties & Fields - Public
 
@@ -62,7 +66,7 @@ namespace SuperMemoAssistant.SMA.Configs
 
     #region Methods Impl
 
-    public void HandleAction(IActionContext actionContext)
+    public override void HandleAction(IActionContext actionContext)
     {
       var action = actionContext.Action as string;
 
@@ -80,6 +84,8 @@ namespace SuperMemoAssistant.SMA.Configs
             : SMBinPath;
           break;
       }
+
+      base.HandleAction(actionContext);
     }
 
     #endregion

@@ -42,13 +42,13 @@ namespace SuperMemoAssistant.Services.UI.Interceptors
 
     /// <inheritdoc />
     [LogToErrorOnException]
-    public IActionContext InterceptAction(IActionContext ctxt)
+    public IActionContext InterceptAction(IActionContext context)
     {
-      if (ctxt.Action is ElementPicker.ElementPickerAction == false
-        || ctxt.Model is IElementPickerCallback == false)
-        return ctxt;
+      if (context.Action is ElementPicker.ElementPickerAction == false
+        || context.Model is IElementPickerCallback == false)
+        return context;
 
-      var m = (IElementPickerCallback)ctxt.Model;
+      var m = (IElementPickerCallback)context.Model;
 
       var elemPicker = new ElementPicker();
 

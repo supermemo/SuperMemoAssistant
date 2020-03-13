@@ -31,10 +31,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using Anotar.Serilog;
 using PluginManager.PackageManager;
 using PluginManager.PackageManager.Models;
 using PluginManager.Services;
@@ -93,6 +96,41 @@ namespace SuperMemoAssistant.Plugins.Services
 
 
     #region Methods Impl
+    
+    /// <inheritdoc />
+    public override async Task<List<PluginMetadata>> FetchPluginMetadataList(CancellationToken cancellationToken = default)
+    {
+      var metadatas = await base.FetchPluginMetadataList(cancellationToken).ConfigureAwait(false);
+
+      if (metadatas == null)
+        return null;
+
+      var idMetadataMap = metadatas.ToDictionary(GetPackageIdFromMetadata);
+
+      Application.Current.Dispatcher.Invoke(() =>
+      {
+        foreach (var pluginInst in SMAPluginManager.Instance.AllPlugins.Where(p => p.IsDevelopment == false))
+        {
+          var newMeta = idMetadataMap.SafeGet(pluginInst.Package.Id);
+
+          if (newMeta == null)
+            continue;
+
+          pluginInst.Metadata.Author      = newMeta.Author;
+          pluginInst.Metadata.DisplayName = newMeta.DisplayName;
+          pluginInst.Metadata.Description = newMeta.Description;
+          pluginInst.Metadata.IconBase64  = newMeta.IconBase64;
+          pluginInst.Metadata.Labels      = newMeta.Labels;
+          pluginInst.Metadata.Rating      = newMeta.Rating;
+          pluginInst.Metadata.UpdatedAt   = newMeta.UpdatedAt;
+        }
+      });
+
+      if (await SMAPluginManager.Instance.SaveConfigAsync().ConfigureAwait(false) == false)
+        LogTo.Warning("Failed to save the local plugin repository file after updating the plugins' metadata");
+
+      return metadatas;
+    }
 
     /// <inheritdoc />
     protected override string GetPackageIdFromMetadata(PluginMetadata metadata)

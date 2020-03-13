@@ -65,6 +65,11 @@ namespace SuperMemoAssistant.Plugins.Models
       set => Metadata.Enabled = value;
     }
 
+    public override string ToString()
+    {
+      return $"{Denomination} {Metadata?.DisplayName ?? Package.Id}";
+    }
+
     #endregion
 
 
@@ -82,9 +87,9 @@ namespace SuperMemoAssistant.Plugins.Models
       OnPropertyChanged(nameof(HasSettings));
     }
 
-    public override void OnStopped()
+    public override void OnStopped(bool crashed)
     {
-      base.OnStopped();
+      base.OnStopped(crashed);
 
       OnPropertyChanged(nameof(HasSettings));
     }

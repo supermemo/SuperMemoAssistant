@@ -19,6 +19,7 @@
                             x:Key="OnlinePluginPackage" />
 
     <data:ImageSourceBase64Converter x:Key="ImageSourceBase64Converter" />
+    <data:BooleanToVisibilityConverterEx x:Key="BoolToVis" />
     <converters:NuGetVersionConverter x:Key="NuGetVersionConverter" />
 
     <DataTemplate DataType="{StaticResource OnlinePluginPackage}">
@@ -65,7 +66,7 @@
                       Height="18"
                       Orientation="Horizontal">
 
-              <!--Title-->
+            <!--Title-->
             <TextBlock VerticalAlignment="Bottom"
                        Text="{Binding Metadata.DisplayName}"
                        FontSize="18"
@@ -77,13 +78,14 @@
                        Text="{Binding LatestOnlineVersion, Converter={StaticResource NuGetVersionConverter}}"
                        FontSize="12" />
 
-            <!--Download count-->
+            <!--Separator-->
             <Border BorderBrush="LightGray"
                     BorderThickness="1 0 0 0"
                     Height="16"
                     VerticalAlignment="Bottom"
                     Margin="8 0 0 2" />
 
+            <!--Download count-->
             <fa5:SvgAwesome Width="12"
                             Height="12"
                             Margin="6 0 0 4"
@@ -94,6 +96,28 @@
                        Margin="8 0 0 2"
                        Text="{Binding TotalDownloadCount}"
                        FontSize="12" />
+
+            <!--Official badge-->
+            <TextBlock VerticalAlignment="Center"
+                       Margin="8 0"
+                       Padding="4, 2"
+                       FontSize="13"
+                       Text="Official"
+                       FontWeight="DemiBold"
+                       Background="LightSlateGray"
+                       Foreground="White"
+                       Visibility="{Binding Metadata.IsOfficial, Converter={StaticResource BoolToVis}}" />
+
+            <!--Verified badge-->
+            <TextBlock VerticalAlignment="Center"
+                       Margin="8 0"
+                       Padding="4, 2"
+                       FontSize="13"
+                       Text="Default"
+                       FontWeight="DemiBold"
+                       Background="BlueViolet"
+                       Foreground="White"
+                       Visibility="{Binding Metadata.IsVerified, Converter={StaticResource BoolToVis}}" />
 
           </StackPanel>
 
@@ -112,6 +136,7 @@
                     Height="26"
                     Margin="8 0 0 0"
                     VerticalAlignment="Center"
+                    ToolTip="Install"
                     Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
                     Foreground="DarkSlateBlue"
                     BorderBrush="DarkSlateBlue"

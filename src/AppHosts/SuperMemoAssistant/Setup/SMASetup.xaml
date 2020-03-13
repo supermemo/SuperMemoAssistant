@@ -23,7 +23,7 @@
         ShowIconOnTitleBar="True"
         Style="{DynamicResource CleanWindowStyleKey}"
         GlowBrush="{DynamicResource AccentColorBrush}"
-        Initialized="SMASetup_Initialized"
+        Loaded="SMASetup_Loaded"
         KeyDown="MetroWindow_KeyDown">
 
   <mah:MetroWindow.Resources>

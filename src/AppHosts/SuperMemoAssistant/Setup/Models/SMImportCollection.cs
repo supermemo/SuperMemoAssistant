@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/03/13 02:13
+// Modified On:  2020/03/12 23:11
 // Modified By:  Alexis
 
 #endregion
@@ -29,22 +29,36 @@
 
 
 
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.IO;
 
-namespace SuperMemoAssistant.Plugins
+namespace SuperMemoAssistant.Setup.Models
 {
-  public partial class SMAPluginManager
+  /// <summary>A container for the importable collections</summary>
+  public class SMImportCollection : INotifyPropertyChanged
   {
-    #region Constants & Statics
+    #region Constructors
 
-    public override int PluginStopTimeout => 3000;
+    public SMImportCollection(string collectionPath)
+    {
+      Name           = Path.GetFileName(collectionPath);
+      CollectionPath = collectionPath;
+    }
 
-#if DEBUG
-    public override int PluginConnectTimeout => 300000;
-#else
-    public override int PluginConnectTimeout => 10000;
-#endif
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public bool IsChecked { get; set; } = true;
+
+    public bool IsEnabled { get; set; } = true;
+
+    public string Name { get; set; }
+
+    public string CollectionPath { get; set; }
 
     #endregion
 
@@ -53,18 +67,17 @@ namespace SuperMemoAssistant.Plugins
 
     #region Methods
 
-    /// <summary>Start plugin <paramref name="packageId" /></summary>
-    /// <param name="packageId">The plugin's package id to start</param>
-    /// <returns>Success of operation</returns>
-    public async Task<bool> StartPlugin(string packageId)
-    {
-      var pluginInstance = AllPlugins.FirstOrDefault(p => p.Package.Id == packageId);
+    public string GetKnoFilePath() => CollectionPath + ".kno";
 
-      if (pluginInstance == null)
-        return false;
+    #endregion
 
-      return await StartPlugin(pluginInstance).ConfigureAwait(false);
-    }
+
+
+
+    #region Events
+
+    /// <inheritdoc />
+    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
   }

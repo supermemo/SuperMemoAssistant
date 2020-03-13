@@ -35,13 +35,24 @@ using System;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Core
 {
+  /// <summary>
+  /// Represents a SuperMemo collection on disk
+  /// </summary>
   [Serializable]
   public class SMCollection : IEquatable<SMCollection>
   {
     #region Constructors
 
+    /// <summary>
+    /// Instantiates a new SM collection
+    /// </summary>
     public SMCollection() { }
 
+    /// <summary>
+    /// Instantiates a new SM collection. Name is inferred from the .kno file name
+    /// </summary>
+    /// <param name="knoFilePath">File path to a .kno SuperMemo collection file</param>
+    /// <param name="lastOpen">The last time that collection was open (usually DateTime.Now for a newly imported collection)</param>
     public SMCollection(string   knoFilePath,
                         DateTime lastOpen)
     {
@@ -49,7 +60,13 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
       Path     = System.IO.Path.GetDirectoryName(knoFilePath);
       LastOpen = lastOpen;
     }
-
+    
+    /// <summary>
+    /// Instantiates a new SM collection
+    /// </summary>
+    /// <param name="name">The .kno file name (without the .kno extension)</param>
+    /// <param name="dirPath">Directory path to where a <paramref name="name"/> .kno SuperMemo collection file is located</param>
+    /// <param name="lastOpen">The last time that collection was open (usually DateTime.Now for a newly imported collection)</param>
     public SMCollection(string   name,
                         string   dirPath,
                         DateTime lastOpen)
@@ -66,8 +83,19 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
 
     #region Properties & Fields - Public
 
+    /// <summary>
+    /// The collection's name (equals the .kno filename without extension)
+    /// </summary>
     public string   Name     { get; set; }
+
+    /// <summary>
+    /// The collection's path
+    /// </summary>
     public string   Path     { get; set; }
+
+    /// <summary>
+    /// When was the last time this collection was open in SMA
+    /// </summary>
     public DateTime LastOpen { get; set; }
 
     #endregion
@@ -117,12 +145,24 @@ namespace SuperMemoAssistant.Interop.SuperMemo.Core
 
     #region Methods
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
+    /// <returns></returns>
     public static bool operator ==(SMCollection left,
                                    SMCollection right)
     {
       return Equals(left, right);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
+    /// <returns></returns>
     public static bool operator !=(SMCollection left,
                                    SMCollection right)
     {

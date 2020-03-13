@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/27 12:50
+// Modified On:  2020/03/12 21:13
 // Modified By:  Alexis
 
 #endregion
@@ -30,31 +30,74 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Media;
+using System.Linq;
 using Newtonsoft.Json;
-using SuperMemoAssistant.Extensions;
 
 // ReSharper disable NonReadonlyMemberInGetHashCode
 
 namespace SuperMemoAssistant.Plugins.Models
 {
+  /// <summary>Contains the metadata associated to each plugin</summary>
   public class PluginMetadata
     : IEquatable<PluginMetadata>, INotifyPropertyChanged
   {
+    #region Constants & Statics
+
+    public const string OfficialLabel = "Official";
+    public const string VerifiedLabel = "Verified";
+
+    #endregion
+
+
+
+
     #region Properties & Fields - Public
 
-    public bool      Enabled       { get; set; } = true;
-    public string    DisplayName   { get; set; }
-    public string    PackageName   { get; set; }
-    public string    Description   { get; set; }
-    public string    Author        { get; set; }
-    public DateTime? UpdatedAt     { get; set; }
-    public string    IconBase64    { get; set; }
-    public bool      IsDevelopment { get; set; }
-    public int       DownloadCount { get; set; }
-    public int       Rating        { get; set; }
+    /// <summary>Author(s) of the plugin</summary>
+    public string Author { get; set; }
+
+    /// <summary>The friendly name for the Plugin (as opposed to the package name)</summary>
+    public string DisplayName { get; set; }
+
+    /// <summary>The description for what the plugin does</summary>
+    public string Description { get; set; }
+
+    /// <summary>Whether the plugin is enabled or not</summary>
+    public bool Enabled { get; set; } = true;
+
+    /// <summary>A base64-encoded string representing the plugin's icon</summary>
+    public string IconBase64 { get; set; }
+
+    /// <summary>
+    ///   Whether this is a development plugin (as opposed to one installed from the NuGet
+    ///   repository)
+    /// </summary>
+    public bool IsDevelopment { get; set; }
+
+    /// <summary>The plugin's labels (e.g. "Official", "Verified")</summary>
+    public IEnumerable<string> Labels { get; set; } = Array.Empty<string>();
+
+    /// <summary>The assembly package name</summary>
+    public string PackageName { get; set; }
+
+    /// <summary>The user rating for the plugin</summary>
+    public int Rating { get; set; }
+
+    /// <summary>When was the plugin last updated</summary>
+    public DateTime? UpdatedAt { get; set; }
+
+    /// <summary>Whether this is an official (SuperMemo.wiki) plugin</summary>
+    [JsonIgnore]
+    public bool IsOfficial => Labels?.Contains(OfficialLabel) ?? false;
+
+    /// <summary>
+    ///   Whether the plugin has been verified by the SuperMemo.wiki team. This is a minor
+    ///   endorsement
+    /// </summary>
+    [JsonIgnore]
+    public bool IsVerified => Labels?.Contains(VerifiedLabel) ?? false;
 
     #endregion
 
@@ -103,12 +146,20 @@ namespace SuperMemoAssistant.Plugins.Models
 
     #region Methods
 
+    /// <summary></summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
+    /// <returns></returns>
     public static bool operator ==(PluginMetadata left,
                                    PluginMetadata right)
     {
       return Equals(left, right);
     }
 
+    /// <summary></summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
+    /// <returns></returns>
     public static bool operator !=(PluginMetadata left,
                                    PluginMetadata right)
     {
@@ -122,6 +173,7 @@ namespace SuperMemoAssistant.Plugins.Models
 
     #region Events
 
+    /// <inheritdoc />
     public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion

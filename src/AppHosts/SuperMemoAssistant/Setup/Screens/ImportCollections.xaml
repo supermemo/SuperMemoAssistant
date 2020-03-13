@@ -1,0 +1,65 @@
+﻿<setup:SMASetupScreenBase x:Class="SuperMemoAssistant.Setup.Screens.ImportCollections"
+                          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                          xmlns:setup="clr-namespace:SuperMemoAssistant.Setup"
+                          xmlns:models="clr-namespace:SuperMemoAssistant.Setup.Models"
+                          mc:Ignorable="d"
+                          DataContext="{Binding RelativeSource={RelativeSource Self}}">
+  <Grid>
+
+
+    <ListBox Name="lbCollections"
+             Grid.Row="0"
+             HorizontalContentAlignment="Stretch"
+             ItemsSource="{Binding Collections}"
+             Grid.IsSharedSizeScope="True">
+      <ListBox.ItemTemplate>
+        <DataTemplate DataType="{x:Type models:SMImportCollection}">
+          <Grid Margin="4">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="auto" />
+              <ColumnDefinition Width="auto" SharedSizeGroup="Name" />
+              <ColumnDefinition Width="5*" />
+            </Grid.ColumnDefinitions>
+
+            <CheckBox Grid.Column="0" Margin="0 0 8 0" VerticalAlignment="Center" FontSize="14"
+                      IsEnabled="{Binding IsEnabled}" IsChecked="{Binding IsChecked}" />
+            <TextBlock Grid.Column="1" Margin="0 0 16 0" VerticalAlignment="Center" FontSize="14" Text="{Binding Name}" />
+            <TextBlock Grid.Column="2" Margin="0" VerticalAlignment="Center" FontSize="14"
+                       Text="{Binding CollectionPath}" />
+          </Grid>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+
+      <ListBox.ItemContainerStyle>
+        <Style TargetType="{x:Type ListBoxItem}">
+          <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />
+        </Style>
+      </ListBox.ItemContainerStyle>
+
+      <ListBox.Style>
+        <Style TargetType="{x:Type ListBox}">
+          <Style.Triggers>
+            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+            <DataTrigger Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=Items.Count}"
+                         Value="0">
+              <Setter Property="Template">
+                <Setter.Value>
+                  <ControlTemplate>
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                      You don't appear to have created any collection in SuperMemo yet :-(
+                    </TextBlock>
+                  </ControlTemplate>
+                </Setter.Value>
+              </Setter>
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </ListBox.Style>
+    </ListBox>
+
+  </Grid>
+</setup:SMASetupScreenBase>

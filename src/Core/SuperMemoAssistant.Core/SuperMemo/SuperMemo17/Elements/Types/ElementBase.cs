@@ -285,7 +285,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
       } while (itEl.NextSibling != null);
       */
     }
-
+    
+    /// <summary>
+    ///   Raises the <see cref="PropertyChanged" /> event for Property
+    ///   <paramref name="propertyName" />. Called by Fody.PropertyChanged
+    /// </summary>
+    /// <param name="propertyName">The changed property's name</param>
+    /// <param name="before">The old value</param>
+    /// <param name="after">The new value</param>
     protected virtual void OnPropertyChanged(string propertyName, object before, object after)
     {
 #if DEBUG && !DEBUG_IN_PROD

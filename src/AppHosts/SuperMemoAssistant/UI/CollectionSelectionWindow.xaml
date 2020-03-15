@@ -34,6 +34,7 @@
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="*" />
+      <RowDefinition Height="130"/>
       <RowDefinition Height="auto" />
     </Grid.RowDefinitions>
 
@@ -97,6 +98,38 @@
     </ListBox>
 
     <Grid Grid.Row="1">
+      <StackPanel>
+      <TextBlock Name="QuoteBodyTextBlock"
+                   VerticalAlignment="Center"
+                   Margin="3 5 3 5"
+                   HorizontalAlignment="Center"
+                   FontSize="15.5"
+                   TextWrapping="Wrap"
+                   FontStyle="Italic"
+                  >
+          &quot;Good learning is inherently pleasurable, and without pleasure there is no good learning.&quot;
+      </TextBlock>
+      <TextBlock Name="QuoteAuthorTextBlock"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   FontSize="13">
+          Piotr Wozniak
+      </TextBlock>
+      <TextBlock VerticalAlignment="Center"
+                 HorizontalAlignment="Center"
+                 FontSize="13">
+        <Hyperlink Name="TitleHyperlink"
+                   RequestNavigate="TitleLink_RequestNavigate"
+                   NavigateUri="https://supermemo.guru/wiki/Pleasure_of_learning">
+          <TextBlock Name="QuoteTitleTextBlock">
+             Pleasure of Learning
+          </TextBlock>
+        </Hyperlink>
+      </TextBlock>
+      </StackPanel>
+    </Grid>
+
+    <Grid Grid.Row="2">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="150" />
         <ColumnDefinition Width="*" />

@@ -253,7 +253,6 @@ namespace SuperMemoAssistant.UI
       {
         try
         {
-          Console.WriteLine("quotes.tsv found");
           var lines = File.ReadAllLines(quoteFile.FullPath);
           // First line is the heading.
           if (lines.Length <= 1)
@@ -290,10 +289,6 @@ namespace SuperMemoAssistant.UI
         {
           LogTo.Error(ex, $"Exception caught while opening file {quoteFile.FullPath}");
         }
-      }
-      else
-      {
-        Console.WriteLine("quotes.tsv not found");
       }
     }
 

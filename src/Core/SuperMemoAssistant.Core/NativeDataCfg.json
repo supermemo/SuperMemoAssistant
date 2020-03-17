@@ -308,8 +308,8 @@
       "Globals_LimitChildrenCountPtr": "0x00CA3770", // TContents.ArrangeFolders => call TContents.ArrangeFolders ; jmp ; mvzx word ptr ds:[00CA0768]
       "Globals_CurrentConceptGroupIdPtr": "0x00CA3774", // gvar_00CA076C:TConcept (Above 2 Integer & 1 TConcept)
       "Globals_CurrentRootIdPtr": "0x00CA3778", // gvar_00CA0770:Integer
-      "Globals_CurrentHookIdPtr": "0x00CA977C", // gvar_00CA0774:Integer
-      "Globals_CurrentConceptIdPtr": "0x00CA9794", // ???? CurrentHookIdPtr + 0x18
+      "Globals_CurrentHookIdPtr": "0x00CA377C", // gvar_00CA0774:Integer
+      "Globals_CurrentConceptIdPtr": "0x00CA3794", // ???? CurrentHookIdPtr + 0x18
       "Globals_IgnoreUserConfirmationPtr": "0x00CA63A9", // ???? TContents.DeleteCurrentElement => TContents.MakeVisible ; mov eax,[00CA3389] || or Unit206.TRegistry.GetUniqueName => call TRegistry.CleanRegistryText ; ... ; mov eax,[00CA3389]
       "ElWdw_ComponentData_ComponentDataArrOffset": "0x003F", // TComponentData::ComponentArray:TComponentDataArray
       "ElWdw_ComponentData_ComponentDataArrItemLength": "0x000D", // ????

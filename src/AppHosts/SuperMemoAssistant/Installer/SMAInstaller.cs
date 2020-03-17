@@ -30,10 +30,6 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Data.Xml.Dom;
@@ -211,41 +207,6 @@ namespace SuperMemoAssistant.Installer
         if (updateVersion != null)
           NotifyUpdateResult(updateVersion);
       }
-    }
-
-    /// <summary>
-    ///   Adds the new releases' release notes to the ChangeLog file (see
-    ///   <see cref="SMAFileSystem.SMAChangeLogFile" />)
-    /// </summary>
-    /// <param name="releaseEntries">The new packages</param>
-    /// <param name="packageDir">The package dir</param>
-    /// <returns></returns>
-    private async Task AddReleaseNotesToChangeLog(List<ReleaseEntry> releaseEntries, string packageDir)
-    {
-      StringBuilder releaseNotes = new StringBuilder();
-
-      foreach (var releaseEntry in releaseEntries.OrderByDescending(re => re.Version))
-        try
-        {
-          releaseNotes.AppendLine($"\n\nSMA {releaseEntry.Version.Version}\n--------------\n");
-          releaseNotes.AppendLine(releaseEntry.GetReleaseNotes(packageDir));
-        }
-        catch (ArgumentException)
-        {
-          // Thrown by Squirrel when releaseNotes is empty or doesn't exist
-        }
-
-      string changeLog;
-
-      using (var fs = File.Open(SMAFileSystem.SMAChangeLogFile.FullPath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.Read))
-      using (var reader = new StreamReader(fs))
-        changeLog = await reader.ReadToEndAsync();
-
-      releaseNotes.AppendLine(changeLog);
-
-      using (var fs = File.Open(SMAFileSystem.SMAChangeLogFile.FullPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write))
-      using (var writer = new StreamWriter(fs))
-        await writer.WriteAsync(releaseNotes.ToString());
     }
 
     /// <summary>Sends a Windows desktop notification toast about the success or failure of the update</summary>

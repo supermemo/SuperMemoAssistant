@@ -31,6 +31,8 @@
 - Added CfgBase with reset on cancel
 - Added automatic version configuration
 - Added more documentation
+- Updated: ChangeLogs
+- Updated: Packages
 - Fixed: Collection Selection &gt; Options, and other option windows can now be canceled and revert changes #117
 - Several other minor updates
 </releaseNotes>

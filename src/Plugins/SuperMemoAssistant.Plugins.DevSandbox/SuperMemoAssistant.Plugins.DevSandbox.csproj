@@ -66,7 +66,7 @@
       <HintPath>..\..\..\packages\FastMember.1.5.0\lib\net461\FastMember.dll</HintPath>
     </Reference>
     <Reference Include="Forge.Forms, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Forge.Forms.1.1.1\lib\net461\Forge.Forms.dll</HintPath>
+      <HintPath>..\..\..\packages\Forge.Forms.1.1.2\lib\net461\Forge.Forms.dll</HintPath>
     </Reference>
     <Reference Include="Humanizer, Version=2.4.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Humanizer.Core.2.4.2\lib\netstandard2.0\Humanizer.dll</HintPath>
@@ -87,8 +87,8 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="PluginManager.Interop, Version=0.2.1.35, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\PluginManager.Interop.0.2.1.35\lib\net472\PluginManager.Interop.dll</HintPath>
+    <Reference Include="PluginManager.Interop, Version=0.2.1.36, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\PluginManager.Interop.0.2.1.36\lib\net472\PluginManager.Interop.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -125,8 +125,8 @@
     <Reference Include="Serilog.Sinks.RollingFile, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Serilog.Sinks.RollingFile.3.3.0\lib\net45\Serilog.Sinks.RollingFile.dll</HintPath>
     </Reference>
-    <Reference Include="SuperMemoAssistant.Interop, Version=2.0.3.17, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\SuperMemoAssistant.Interop.2.0.3.17\lib\net472\SuperMemoAssistant.Interop.dll</HintPath>
+    <Reference Include="SuperMemoAssistant.Interop, Version=2.0.3.32, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\SuperMemoAssistant.Interop.2.0.3.32\lib\net472\SuperMemoAssistant.Interop.dll</HintPath>
     </Reference>
     <Reference Include="SuperMemoAssistant.Services.Sentry, Version=1.0.1.14, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\SuperMemoAssistant.Services.Sentry.1.0.1.14\lib\Net472\SuperMemoAssistant.Services.Sentry.dll</HintPath>

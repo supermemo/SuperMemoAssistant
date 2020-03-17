@@ -31,9 +31,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using SuperMemoAssistant.Sys.Security.Cryptography;
 
 // ReSharper disable LocalizableElement
 
@@ -42,6 +44,17 @@ namespace SuperMemoAssistant.Extensions
   public static class StringEx
   {
     #region Methods
+    
+    public static string GetCrc32(this string content)
+    {
+      Crc32  crc32 = new Crc32();
+      string hash  = string.Empty;
+
+      using (MemoryStream ms = new MemoryStream(Encoding.Default.GetBytes(content)))
+        foreach (byte b in crc32.ComputeHash(ms)) hash += b.ToString("x2").ToLower();
+
+      return hash;
+    }
 
     public static string[] SplitLines(this string str, StringSplitOptions options = StringSplitOptions.None)
     {

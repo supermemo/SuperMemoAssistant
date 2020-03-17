@@ -82,11 +82,11 @@ namespace SuperMemoAssistant.SMA.UI.Controls
 
     /// <summary>Read the ChangeLogs embedded resource</summary>
     /// <returns></returns>
-    private string LoadChangeLogs()
+    public static string LoadChangeLogs()
     {
       string changeLogs;
 
-      using (Stream stream = GetType().Assembly.GetManifestResourceStream(ChangeLogsAssemblyPath))
+      using (Stream stream = typeof(ChangeLogControl).Assembly.GetManifestResourceStream(ChangeLogsAssemblyPath))
       using (StreamReader reader = new StreamReader(stream))
         changeLogs = reader.ReadToEnd();
 

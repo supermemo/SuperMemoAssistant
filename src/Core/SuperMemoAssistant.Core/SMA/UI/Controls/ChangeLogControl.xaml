@@ -3,10 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:SuperMemoAssistant.SMA.UI.Controls"
              mc:Ignorable="d"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
-  <Grid Margin="16">
+  <Grid Margin="16" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="*" />
@@ -38,16 +37,20 @@
       </TextBlock>
     </StackPanel>
 
-    <TextBox Grid.Row="1" Grid.Column="0"
-             Grid.ColumnSpan="2"
-             Text="{Binding ChangeLog, Mode=OneWay}"
-             FontSize="13"
-             AcceptsReturn="True"
-             TextWrapping="Wrap"
-             IsReadOnly="True"
-             IsReadOnlyCaretVisible="True"
-             VerticalScrollBarVisibility="Auto"
-             Margin="0 16 0 0" />
+    <Grid Grid.Row="1" Grid.Column="0"
+          Grid.ColumnSpan="2">
+
+      <TextBox Text="{Binding ChangeLog, Mode=OneWay}"
+               FontSize="13"
+               AcceptsReturn="True"
+               TextWrapping="NoWrap"
+               IsReadOnly="True"
+               IsReadOnlyCaretVisible="True"
+               VerticalScrollBarVisibility="Auto"
+               ScrollViewer.CanContentScroll="True"
+               Margin="0 16 0 0" />
+
+    </Grid>
 
   </Grid>
 

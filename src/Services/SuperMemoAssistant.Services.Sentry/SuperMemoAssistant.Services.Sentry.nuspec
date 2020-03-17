@@ -19,7 +19,7 @@
         <dependency id="DeviceId" version="4.5.0" />
         <dependency id="Sentry.Serilog" version="2.0.3" />
         <dependency id="Serilog" version="2.9.0" />
-        <dependency id="SuperMemoAssistant.Interop" version="2.0.3.17" />
+        <dependency id="SuperMemoAssistant.Interop" version="2.0.3.32" />
       </group>
     </dependencies>
   </metadata>

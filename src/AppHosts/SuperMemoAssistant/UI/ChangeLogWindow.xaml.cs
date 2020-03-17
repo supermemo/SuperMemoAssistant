@@ -35,8 +35,8 @@ using System.Windows.Input;
 using Anotar.Serilog;
 using MahApps.Metro.Controls;
 using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop;
 using SuperMemoAssistant.SMA.Configs;
+using SuperMemoAssistant.SMA.UI.Controls;
 
 namespace SuperMemoAssistant.UI
 {
@@ -61,10 +61,8 @@ namespace SuperMemoAssistant.UI
     {
       try
       {
-        if (SMAFileSystem.SMAChangeLogFile.Exists() == false)
-          return;
-
-        var changeLogCrc32 = FileEx.GetCrc32(SMAFileSystem.SMAChangeLogFile.FullPath);
+        var changeLogs = ChangeLogControl.LoadChangeLogs();
+        var changeLogCrc32 = changeLogs.GetCrc32();
 
         if (changeLogCrc32 != cfg.Updates.ChangeLogLastCrc32)
         {

@@ -89,7 +89,8 @@
       <HintPath>..\..\..\packages\Nito.Disposables.2.0.1\lib\net461\Nito.Disposables.dll</HintPath>
     </Reference>
     <Reference Include="PluginManager.Interop, Version=0.2.1.35, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\PluginManager.Interop.0.2.1.35\lib\net472\PluginManager.Interop.dll</HintPath>
+      <HintPath>..\..\..\packages\PluginManager.Interop.0.2.1.36\lib\net472\PluginManager.Interop.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="Sentry, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
@@ -123,7 +124,8 @@
       <HintPath>..\..\..\packages\Serilog.Sinks.RollingFile.3.3.0\lib\net45\Serilog.Sinks.RollingFile.dll</HintPath>
     </Reference>
     <Reference Include="SuperMemoAssistant.Interop, Version=2.0.3.17, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\SuperMemoAssistant.Interop.2.0.3.17\lib\net472\SuperMemoAssistant.Interop.dll</HintPath>
+      <HintPath>..\..\..\packages\SuperMemoAssistant.Interop.2.0.3.32\lib\net472\SuperMemoAssistant.Interop.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">

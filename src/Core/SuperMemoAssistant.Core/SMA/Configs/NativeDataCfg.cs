@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2020/01/11 19:30
-// Modified On:  2020/01/11 19:37
+// Modified On:  2020/03/13 14:21
 // Modified By:  Alexis
 
 #endregion
@@ -32,8 +31,19 @@
 
 using System.Collections.Generic;
 using SuperMemoAssistant.SuperMemo;
+using SuperMemoAssistant.SuperMemo.Natives;
+
+// ReSharper disable InvalidXmlDocComment
 
 namespace SuperMemoAssistant.SMA.Configs
 {
+  /// <summary>
+  ///   Contains all the offsets and method patterns used to place native calls on SuperMemo.
+  ///   Offset definitions are used to find global variables in SMA core see
+  ///   <see cref="SMNatives" />. These definitions are also forwarded to the InjectLib which uses
+  ///   the method signatures
+  ///   <see cref="SuperMemoAssistant.Hooks.InjectLib.SMInject.ScanSMMethods" />.
+  ///   https://wiki.alliedmods.net/Signature_Scanning
+  /// </summary>
   public class NativeDataCfg : Dictionary<string, NativeData> { }
 }

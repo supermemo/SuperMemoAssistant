@@ -43,6 +43,11 @@ namespace SuperMemoAssistant.Extensions
   {
     #region Methods
 
+    public static string[] SplitLines(this string str, StringSplitOptions options = StringSplitOptions.None)
+    {
+      return str.Split(new[] { "\r\n", "\n", "\r" }, options);
+    }
+
     public static string TrimStart(this string str, params string[] starts)
     {
       var start = starts.FirstOrDefault(str.StartsWith);

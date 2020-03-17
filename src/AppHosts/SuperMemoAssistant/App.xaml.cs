@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/17 21:40
+// Modified On:  2020/03/13 14:23
 // Modified By:  Alexis
 
 #endregion
@@ -52,7 +52,8 @@ namespace SuperMemoAssistant
   {
     #region Properties & Fields - Non-Public
 
-    private TaskbarIcon _taskbarIcon;
+    private TaskbarIcon        _taskbarIcon;
+    private SplashScreenWindow _splashScreen;
 
     #endregion
 
@@ -61,9 +62,13 @@ namespace SuperMemoAssistant
 
     #region Methods Impl
 
+    /// <summary>The application main stopping point</summary>
+    /// <param name="e"></param>
     protected override void OnExit(ExitEventArgs e)
     {
       _taskbarIcon?.Dispose();
+      _splashScreen?.Close();
+      _splashScreen = null;
 
       SMA.Core.Logger?.Shutdown();
 #pragma warning disable CS0436 // Type conflicts with imported type
@@ -80,6 +85,9 @@ namespace SuperMemoAssistant
 
     #region Methods
 
+    /// <summary>The application main starting point</summary>
+    /// <param name="o"></param>
+    /// <param name="e"></param>
     private async void Application_Startup(object           o,
                                            StartupEventArgs e)
     {
@@ -95,7 +103,7 @@ namespace SuperMemoAssistant
     private async Task LoadApp(SMAParameters args)
     {
       //
-      // Installer events
+      // Installer events https://github.com/Squirrel/Squirrel.Windows/blob/master/docs/using/custom-squirrel-events.md
       if (SMAInstaller.HandleEvent(args, out var firstRun))
       {
         if (firstRun)
@@ -117,7 +125,7 @@ namespace SuperMemoAssistant
       }
 
       //
-      // Load system configs
+      // Load main configuration files
       if (await LoadConfigs(out var nativeDataCfg, out var coreCfg) == false)
       {
         errMsg =
@@ -128,14 +136,14 @@ namespace SuperMemoAssistant
         Shutdown(SMAExitCodes.ExitCodeConfigError);
         return;
       }
-      
+
       SMA.Core.CoreConfig = coreCfg;
 
       //
-      // Setup toast notifications
+      // Setup Windows Toast notifications
       DesktopNotificationManager.RegisterAumidAndComServer<SMANotificationActivator>(SMANotificationActivator.AppUserModelId);
       DesktopNotificationManager.RegisterActivator<SMANotificationActivator>();
-      
+
       //
       // Check if SMA is setup, and run the setup wizard if it isn't
       if (SMASetup.Run(nativeDataCfg, coreCfg) == false)
@@ -150,6 +158,10 @@ namespace SuperMemoAssistant
       // (Optional) Start the debug Key logger (logs key strokes with modifiers, e.g. ctrl, alt, ..)
       if (args.KeyLogger)
         SMA.Core.KeyboardHotKey.MainCallback = hk => LogTo.Debug($"Key pressed: {hk}");
+
+      //
+      // Show the change logs if necessary
+      ChangeLogWindow.ShowIfUpdated(coreCfg);
 
       //
       // Determine which collection to open
@@ -174,15 +186,28 @@ namespace SuperMemoAssistant
       }
 
       //
-      // If a collection was defined, start SMA
+      // If a collection was selected, start SMA
       if (smCollection != null)
       {
+        _splashScreen = new SplashScreenWindow();
+        _splashScreen.Show();
+
+        SMA.Core.SMA.OnSMStartedEvent += OnSMStartedEvent;
         SMA.Core.SMA.OnSMStoppedEvent += OnSMStoppedEvent;
 
-        if (await SMA.Core.SMA.Start(nativeDataCfg, smCollection).ConfigureAwait(true) == false)
+        Exception ex;
+
+        if ((ex = await SMA.Core.SMA.Start(nativeDataCfg, smCollection).ConfigureAwait(true)) != null)
         {
-          await $"SMA failed to start. Please check the logs in '{SMAFileSystem.LogDir.FullPath}' for details.".ErrorMsgBox();
-          Shutdown(SMAExitCodes.ExitCodeSMAStartupError);
+          await Dispatcher.InvokeAsync(async () =>
+          {
+            _splashScreen?.Close();
+            _splashScreen = null;
+
+            await $"SMA failed to start: {ex.Message}".ErrorMsgBox();
+
+            Shutdown(SMAExitCodes.ExitCodeSMAStartupError);
+          });
 
           return;
         }
@@ -194,6 +219,25 @@ namespace SuperMemoAssistant
       {
         Shutdown();
       }
+    }
+
+    /// <summary>Called when SuperMemo's Element window is loaded</summary>
+    private void ElementWdw_OnAvailable()
+    {
+      Dispatcher.Invoke(() =>
+      {
+        _splashScreen?.Close();
+        _splashScreen = null;
+      });
+
+      SMA.Core.SM.UI.ElementWdw.OnAvailable -= ElementWdw_OnAvailable;
+    }
+
+    private Task OnSMStartedEvent(object sender, SMProcessArgs eventArgs)
+    {
+      SMA.Core.SM.UI.ElementWdw.OnAvailable += ElementWdw_OnAvailable;
+
+      return Task.CompletedTask;
     }
 
     private void OnSMStoppedEvent(object sender, SMProcessArgs e)
@@ -210,6 +254,9 @@ namespace SuperMemoAssistant
       }
     }
 
+    /// <summary>Validates the location of SMA on disk</summary>
+    /// <param name="error">Error result (if any)</param>
+    /// <returns>Whether SMA is in the valid location on disk</returns>
     private bool CheckSMALocation(out string error)
     {
       error = null;

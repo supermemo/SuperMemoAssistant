@@ -101,6 +101,7 @@
     <Compile Include="Delphi.cs" />
     <Compile Include="SMInject.Hooks.cs" />
     <Compile Include="HookedFunction.cs" />
+    <Compile Include="SMInject.Hooks.Windows.cs" />
     <Compile Include="SMInject.Services.cs" />
     <Compile Include="SMInject.Hooks.IO.cs" />
     <Compile Include="Win32.cs" />

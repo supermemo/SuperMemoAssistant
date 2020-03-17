@@ -118,6 +118,9 @@
     <Compile Include="SMA\CoreEx.Hook.cs" />
     <Compile Include="SMA\SuperMemoAssistant.Config.cs" />
     <Compile Include="SMA\SuperMemoAssistant.Events.cs" />
+    <Compile Include="SMA\UI\Controls\ChangeLogControl.xaml.cs">
+      <DependentUpon>ChangeLogControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SMA\UI\Converters\NuGetVersionConverter.cs" />
     <Compile Include="SMA\UI\DataTemplates\OnlinePluginPackageDataTemplate.xaml.cs">
       <DependentUpon>OnlinePluginPackageDataTemplate.xaml</DependentUpon>
@@ -264,6 +267,8 @@
     <Compile Include="Sys\Windows\NotificationManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\ChangeLogs" />
+    <Resource Include="Resources\robot-64.png" />
     <None Include="app.config" />
     <Content Include="NativeDataCfg.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -289,6 +294,10 @@
     <Resource Include="Resources\plugin-default.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="SMA\UI\Controls\ChangeLogControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SMA\UI\DataTemplates\PluginInstanceDataTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -404,17 +413,18 @@
       <Version>2.1.0</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Interop">
-      <Version>2.0.3.26</Version>
+      <Version>2.0.3.31</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.Sentry">
       <Version>1.0.1.14</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.UI">
-      <Version>2.0.3.18</Version>
+      <Version>2.0.3.20</Version>
     </PackageReference>
     <PackageReference Include="System.Security.Cryptography.Pkcs">
       <Version>4.7.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

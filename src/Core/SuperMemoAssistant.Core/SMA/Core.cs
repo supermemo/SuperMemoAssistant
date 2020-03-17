@@ -29,6 +29,7 @@
 
 
 
+using System;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.HotKeys;
 using SuperMemoAssistant.Services.IO.Keyboard;
@@ -43,6 +44,8 @@ namespace SuperMemoAssistant.SMA
   public static class Core
   {
     #region Constants & Statics
+
+    public static string SMAVersion { get; set; }
 
     public static SMA           SMA     { get; set; }
     public static SuperMemoCore SM      { get; set; }

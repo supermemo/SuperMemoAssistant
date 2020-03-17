@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/24 23:46
-// Modified On:  2019/02/24 23:48
+// Modified On:  2020/03/13 13:29
 // Modified By:  Alexis
 
 #endregion
@@ -39,9 +38,11 @@ namespace SuperMemoAssistant.Hooks.InjectLib
   // ReSharper disable once ClassNeverInstantiated.Global
   public partial class SMInject
   {
-    #region Properties & Fields - Non-Public
+    #region Constants & Statics
 
-    private List<LocalHook> LocalHooks { get; } = new List<LocalHook>();
+    public const int SwShowNormal = 1;
+
+    private LocalHook _showWindowHook;
 
     #endregion
 
@@ -50,35 +51,42 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
     #region Methods
 
-    private void InstallHooks()
-    {
-      LocalHooks.AddRange(InstallIOHooks());
-      LocalHooks.AddRange(InstallWindowHooks());
+    //
+    // Setup windows related hooks
 
-      foreach (LocalHook lh in LocalHooks)
-        lh.ThreadACL.SetExclusiveACL(new[] { 0 });
+    /// <summary>
+    /// Creates the hooks
+    /// </summary>
+    /// <returns>Created hooks to be unloaded at shutdown</returns>
+    private IEnumerable<LocalHook> InstallWindowHooks()
+    {
+      _showWindowHook = LocalHook.Create(
+        LocalHook.GetProcAddress("user32.dll", "ShowWindow"),
+        new Win32.CreateShowWindowDlg(ShowWindow_Hooked),
+        this
+      );
+      _showWindowHook.ThreadACL.SetExclusiveACL(new[] { 0 });
+
+      return Array.Empty<LocalHook>();
     }
 
-    private void CleanupHooks()
+    /// <summary>
+    /// Cancel SuperMemo's splash screen then unload the hook
+    /// </summary>
+    /// <param name="inHwnd">The window handle</param>
+    /// <param name="inNCmdShow">The display mode</param>
+    /// <returns></returns>
+    private bool ShowWindow_Hooked(IntPtr inHwnd, int inNCmdShow)
     {
-      try
+      if (inNCmdShow == SwShowNormal)
       {
-        foreach (var lh in LocalHooks)
-          lh?.Dispose();
+        _showWindowHook.Dispose();
+        _showWindowHook = null;
 
-        LocalHook.Release();
+        return true;
       }
-      catch (Exception ex)
-      {
-        try
-        {
-          OnException(ex);
-        }
-        catch
-        {
-          // ignored
-        }
-      }
+
+      return Win32.ShowWindow(inHwnd, inNCmdShow);
     }
 
     #endregion

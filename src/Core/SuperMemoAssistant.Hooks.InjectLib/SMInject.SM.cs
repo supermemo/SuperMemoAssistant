@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/09/03 18:08
-// Modified On:  2020/01/11 20:58
+// Modified On:  2020/03/13 14:29
 // Modified By:  Alexis
 
 #endregion
@@ -68,6 +67,11 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
     #region Methods
 
+    /// <summary>
+    ///   Scan SuperMemo to find the methods matching the signatures provided by
+    ///   <paramref name="nativeData" />. Also sets up the WndProc detour.
+    /// </summary>
+    /// <param name="nativeData">The offsets and method signatures for the running SuperMemo version</param>
     private unsafe void InstallSM(NativeData nativeData)
     {
       _smProcess = new ProcessSharp(System.Diagnostics.Process.GetCurrentProcess(),
@@ -106,7 +110,13 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       SMA.SetPatternsHintAddresses(hintAddrs);
     }
 
-
+    /// <summary>
+    ///   This is a detour from SuperMemo's WndProc method. This is used to hijack the main
+    ///   thread and execute code in SuperMemo in a thread-safe way
+    /// </summary>
+    /// <param name="_"></param>
+    /// <param name="msgPtr">The WndProc message</param>
+    /// <param name="handled">Whether the message has been handled</param>
     private unsafe void WndProc(int          _,
                                 Delphi.TMsg* msgPtr,
                                 bool*        handled)
@@ -117,7 +127,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         {
           SMA.Debug($"Received WndProc message {msgPtr->msg} with wParam {msgPtr->wParam}.");
         }
-        catch (RemotingException) {}
+        catch (RemotingException) { }
 
         if (msgPtr == null
           || msgPtr->msg == (int)WindowsMessages.Quit
@@ -166,6 +176,12 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       }
     }
 
+    /// <summary>Calls method <paramref name="method" /> in SuperMemo</summary>
+    /// <param name="method">The method to call</param>
+    /// <param name="parameters">The method's parameters to pass along with the call</param>
+    /// <returns>
+    ///   The returned value (eax register) from the call to <paramref name="method" />
+    /// </returns>
     protected int CallNativeMethod(NativeMethod method,
                                    dynamic[]    parameters)
     {
@@ -182,15 +198,18 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
       for (var i = 0; i < parameters.Length; i++)
       {
-        var p          = parameters[i];
+        var p             = parameters[i];
         var dynMarshalled = MarshalValue.Marshal(_smProcess, p);
 
         if (dynMarshalled is IMarshalledValue marshalled)
+        {
           marshalledParameters[i] = marshalled;
+        }
 
         else
         {
-          OnException(new ArgumentException($"CallNativeMethod: Parameter n°{i} '{p}' could not be marshalled for method {method}", nameof(p)));
+          OnException(new ArgumentException($"CallNativeMethod: Parameter n°{i} '{p}' could not be marshalled for method {method}",
+                                            nameof(p)));
           return -1;
         }
       }

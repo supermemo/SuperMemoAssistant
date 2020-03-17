@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/25 15:03
+// Modified On:  2020/03/15 17:34
 // Modified By:  Alexis
 
 #endregion
@@ -39,6 +39,7 @@ namespace SuperMemoAssistant.SMA.Configs
     public bool   EnablePluginsUpdates { get; set; } = true;
     public string CoreUpdateUrl        { get; set; } = "https://releases.supermemo.wiki/sma/core/";
     public string PluginsUpdateUrl     { get; set; } = "https://releases.supermemo.wiki/sma/plugins/";
+    public string ChangeLogLastCrc32    { get; set; }
 
     #endregion
   }

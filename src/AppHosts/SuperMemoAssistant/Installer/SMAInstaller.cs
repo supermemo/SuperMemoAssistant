@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/22 17:58
+// Modified On:  2020/03/15 17:29
 // Modified By:  Alexis
 
 #endregion
@@ -30,6 +30,10 @@
 
 
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Data.Xml.Dom;
@@ -48,6 +52,9 @@ using SuperMemoAssistant.Sys.Windows.Net;
 
 namespace SuperMemoAssistant.Installer
 {
+  /// <summary>
+  /// Handles the updating process for SMA, and events sent from the installer itself (e.g. OnInstalled, OnUpdated, etc.)
+  /// </summary>
   public sealed class SMAInstaller
   {
     #region Constants & Statics
@@ -55,8 +62,8 @@ namespace SuperMemoAssistant.Installer
     private static ILogger      Logger   { get; } = LoggerFactory.CreateSerilog("SuperMemoAssistant.Installer");
     public static  SMAInstaller Instance { get; } = new SMAInstaller();
 
-    public static bool   UpdateEnabled => SuperMemoAssistant.SMA.Core.CoreConfig.Updates.EnableCoreUpdates;
-    public static string UpdateUrl     => SuperMemoAssistant.SMA.Core.CoreConfig?.Updates.CoreUpdateUrl;
+    public static bool   UpdateEnabled => SMA.Core.CoreConfig.Updates.EnableCoreUpdates;
+    public static string UpdateUrl     => SMA.Core.CoreConfig?.Updates.CoreUpdateUrl;
 
     #endregion
 
@@ -95,6 +102,10 @@ namespace SuperMemoAssistant.Installer
 
     private static UpdateManager CreateUpdateMgr() => new UpdateManager(UpdateUrl);
 
+    /// <summary>Handles event notifications from the installer (e.g. installed, updated, etc.)</summary>
+    /// <param name="parameters">The command line parameters</param>
+    /// <param name="firstRun">Whether SMA is run for the first time</param>
+    /// <returns>Whether an event has been handled (in which case the program should exit)</returns>
     public static bool HandleEvent(SMAParameters parameters, out bool firstRun)
     {
       firstRun = parameters.SquirrelFirstRun;
@@ -130,6 +141,8 @@ namespace SuperMemoAssistant.Installer
       return firstRun;
     }
 
+    /// <summary>Run the SMA update process</summary>
+    /// <returns></returns>
     public async Task Update()
     {
       // TODO: Ensure only one Update is running across all instances of SMA (in case SMA is closed during the update process)
@@ -200,6 +213,43 @@ namespace SuperMemoAssistant.Installer
       }
     }
 
+    /// <summary>
+    ///   Adds the new releases' release notes to the ChangeLog file (see
+    ///   <see cref="SMAFileSystem.SMAChangeLogFile" />)
+    /// </summary>
+    /// <param name="releaseEntries">The new packages</param>
+    /// <param name="packageDir">The package dir</param>
+    /// <returns></returns>
+    private async Task AddReleaseNotesToChangeLog(List<ReleaseEntry> releaseEntries, string packageDir)
+    {
+      StringBuilder releaseNotes = new StringBuilder();
+
+      foreach (var releaseEntry in releaseEntries.OrderByDescending(re => re.Version))
+        try
+        {
+          releaseNotes.AppendLine($"\n\nSMA {releaseEntry.Version.Version}\n--------------\n");
+          releaseNotes.AppendLine(releaseEntry.GetReleaseNotes(packageDir));
+        }
+        catch (ArgumentException)
+        {
+          // Thrown by Squirrel when releaseNotes is empty or doesn't exist
+        }
+
+      string changeLog;
+
+      using (var fs = File.Open(SMAFileSystem.SMAChangeLogFile.FullPath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.Read))
+      using (var reader = new StreamReader(fs))
+        changeLog = await reader.ReadToEndAsync();
+
+      releaseNotes.AppendLine(changeLog);
+
+      using (var fs = File.Open(SMAFileSystem.SMAChangeLogFile.FullPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write))
+      using (var writer = new StreamWriter(fs))
+        await writer.WriteAsync(releaseNotes.ToString());
+    }
+
+    /// <summary>Sends a Windows desktop notification toast about the success or failure of the update</summary>
+    /// <param name="updateVersion">The final release version</param>
     private void NotifyUpdateResult(ReleaseEntry updateVersion)
     {
       var msg = State == SMAUpdateState.Updated
@@ -224,7 +274,6 @@ namespace SuperMemoAssistant.Installer
       };
 
       if (State == SMAUpdateState.Error)
-      {
         toastContent.Actions = new ToastActionsCustom
         {
           Buttons =
@@ -235,7 +284,6 @@ namespace SuperMemoAssistant.Installer
             }
           }
         };
-      }
 
       var doc = new XmlDocument();
       doc.LoadXml(toastContent.GetContent());

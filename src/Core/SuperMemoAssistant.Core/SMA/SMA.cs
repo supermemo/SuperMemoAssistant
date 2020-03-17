@@ -34,6 +34,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting;
 using System.Threading.Tasks;
+using System.Windows;
 using Anotar.Serilog;
 using Extensions.System.IO;
 using PluginManager.Interop.Sys;
@@ -41,6 +42,7 @@ using Process.NET;
 using SuperMemoAssistant.Exceptions;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
+using SuperMemoAssistant.Services.UI.Extensions;
 using SuperMemoAssistant.SMA.Configs;
 using SuperMemoAssistant.SMA.Utils;
 using SuperMemoAssistant.SuperMemo;
@@ -122,7 +124,7 @@ namespace SuperMemoAssistant.SMA
     //
     // Collection loading management
 
-    public async Task<bool> Start(
+    public async Task<Exception> Start(
       NativeDataCfg nativeDataCfg,
       SMCollection  collection)
     {
@@ -156,10 +158,10 @@ namespace SuperMemoAssistant.SMA
 
         // TODO: Handle exception
 
-        return false;
+        return ex;
       }
 
-      return true;
+      return null;
     }
 
     private SuperMemoCore InstantiateSuperMemo(SMCollection collection,

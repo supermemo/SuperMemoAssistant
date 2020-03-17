@@ -285,5 +285,155 @@
       "ElWdw_ForceRepetitionExt": "55 8B EC 81 C4 ? ? ? ? 88 4D F7 89 55 F8 89 45 FC 8D 4D 81",
       "ElWdw_RestoreLearningMode": "55 8B EC 51 89 45 FC 8B 45 FC 80 B8 ? ? ? ? ? 75 1E"
     }
+  },
+
+  "EB898123": {
+    "SMVersion": "18.04",
+    "Pointers": {
+      "ElWdw_InstancePtr": "0x00CA95D0", // gvar_00CA95D0:TElWind (2nd)
+      "ElWdw_ElementIdPtr": "0x0DB1", // TElWind::LoadedElement
+      "ElWdw_ObjectsPtr": "0x0FA1", // TElWind::Objects:TObjects
+      "ElWdw_ComponentsDataPtr": "0x1131", // TElWind::ComponentData:TComponentData
+      "ElWdw_RecentGradePtr": "0x1135", // TElWind::RecentGrade:ShortInt
+      "ElWdw_FocusedComponentPtr": "0x1219", // TElWind::TheCurrentComponent:byte
+      "ElWdw_LearningModePtr": "0x121F", // TElWind::LearningMode:TLearningMode
+      "SMMain_InstancePtr": "0x00CA61C0", // gvar_00CA31B8:TSMMain (above TContents)
+      "Registry_TextRegistryInstance": "0x4E2", // TDatabase::TextRegistry:TTextRegistry
+      "Registry_ImageRegistryInstance": "0x4FA", // TDatabase::ImageRegistry:TImageRegistry
+      "Registry_SoundRegistryInstance": "0x4FE", // TDatabase::SoundRegistry:TSoundRegistry
+      "Registry_VideoRegistryInstance": "0x502", // TDatabase::VideoRegistry:TVideoRegistry
+      "Registry_BinaryRegistryInstance": "0x50E", // TDatabase::BinaryRegistry:TBinaryRegistry
+      "Registry_TemplateRegistryInstance": "0x512", // TDatabase::TemplateRegistry:TTemplateRegistry
+      "Registry_ConceptRegistryInstance": "0x522", // TDatabase::ConceptRegistry:TConceptRegistry
+      "Globals_LimitChildrenCountPtr": "0x00CA3770", // TContents.ArrangeFolders => call TContents.ArrangeFolders ; jmp ; mvzx word ptr ds:[00CA0768]
+      "Globals_CurrentConceptGroupIdPtr": "0x00CA3774", // gvar_00CA076C:TConcept (Above 2 Integer & 1 TConcept)
+      "Globals_CurrentRootIdPtr": "0x00CA3778", // gvar_00CA0770:Integer
+      "Globals_CurrentHookIdPtr": "0x00CA977C", // gvar_00CA0774:Integer
+      "Globals_CurrentConceptIdPtr": "0x00CA9794", // ???? CurrentHookIdPtr + 0x18
+      "Globals_IgnoreUserConfirmationPtr": "0x00CA63A9", // ???? TContents.DeleteCurrentElement => TContents.MakeVisible ; mov eax,[00CA3389] || or Unit206.TRegistry.GetUniqueName => call TRegistry.CleanRegistryText ; ... ; mov eax,[00CA3389]
+      "ElWdw_ComponentData_ComponentDataArrOffset": "0x003F", // TComponentData::ComponentArray:TComponentDataArray
+      "ElWdw_ComponentData_ComponentDataArrItemLength": "0x000D", // ????
+      "ElWdw_ComponentData_ComponentCountPtr": "0x000A", // TComponentData::DComponentNo:byte
+      "ElWdw_ComponentData_IsModifiedPtr": "0x0013", // TComponentData::TheModifiedStatus:Boolean
+      "Database_InstancePtr": "0x00CA60D0", // gvar_00CA30C8:TDatabase
+      "Control_ParentOffset": "0x0040", // TControl::FParent:TWinControl
+      "Control_WindowProcOffset": "0x0048", // TControl::FWindowProc:TWndMethod
+      "Control_HandleOffset": "0x0288", // TWinControl::FHandle:HWND
+      "Control_LeftOffset": "0x0050", // TControl::FLeft:Integer
+      "Control_TopOffset": "0x0054", // TControl::FTop:Integer
+      "Control_WidthOffset": "0x0058", // TControl::FWidth:Integer
+      "Control_HeightOffset": "0x005C", // TControl::FHeight:Integer
+      "Application_InstancePtr": "0x00BB11E8", // Application:TApplication
+      "Application_OnMessageOffset": "0x120" // TApplication::FOnMessage:TMessageEvent
+    },
+    "NativeCallPatterns": {
+      "ElWdw_GoToElement": { // TElWind::NewElement
+        "Pattern": "E8 ? ? ? ? 80 7D FB 24",
+        "Offset": 1
+      },
+      "ElWdw_PasteElement": { // TElWind::PasteElement
+        "Pattern": "E8 ? ? ? ? EB 05 E8 ? ? ? ? 59 59 5D C3 8B C0",
+        "Offset": 1
+      },
+      "ElWdw_AppendElement": { // TElWind::AppendElement
+        "Pattern": "E8 ? ? ? ? A1 ? ? ? ? 8B 00 8B 4D F8 B2 01",
+        "Offset": 1
+      },
+      "ElWdw_AddElementFromText": { // TElWind::AddElementFromText
+        "Pattern": "E8 ? ? ? ? 8B 45 FC E8 ? ? ? ? 8D 45 D4",
+        "Offset": 1
+      },
+      "ElWdw_GenerateClozeDeletion": { // TElWind::GenerateClozeDeletion
+        "Pattern": "E8 ? ? ? ? 59 59 5D C3 55 8B EC 83 C4 F8 89 55 F8 89 45 FC 6A 00 B1 01",
+        "Offset": 1
+      },
+      "ElWdw_DeleteCurrentElement": { // TElWind::DeleteCurrentElement
+        "Pattern": "E8 ? ? ? ? A1 ? ? ? ? 8B 00 8B 55 F8 E8 ? ? ? ? 84 C0 75 04",
+        "Offset": 1
+      },
+      "ElWdw_GetText": { // TElWind::GetText
+        "Pattern": "E8 ? ? ? ? 8A 45 F3 84 C0",
+        "Offset": 1
+      },
+      "ElWdw_EnterUpdateLock": { // TElWind::EnterUpdateLock
+        "Pattern": "E8 ? ? ? ? 8D 4D E6",
+        "Offset": 1
+      },
+      "ElWdw_QuitUpdateLock": { // TElWind::QuitUpdateLock
+        "Pattern": "E8 ? ? ? ? C6 45 FA 01 EB 0C",
+        "Offset": 1
+      },
+      "ElWdw_NextElementInLearningQueue": { // ???? TElWind::GoRandomTest or TElWind::Forget => Last call
+        "Pattern": "E8 ? ? ? ? 59 5D C3 33 D2 8B 45 FC E8 ? ? ? ? B2 02",
+        "Offset": 1
+      },
+      "ElWdw_SetElementState": { // TElWind::SetElementState
+        "Pattern": "E8 ? ? ? ? EB 7C B2 02",
+        "Offset": 1
+      },
+      "ElWdw_ScheduleInInterval": { // TElWind::ScheduleInInterval
+        "Pattern": "E8 ? ? ? ? 80 BD ? ? ? ? ? 75 45 8D 45 8E",
+        "Offset": 1
+      },
+      "ElWdw_ExecuteUncommittedRepetition": { // TElWind::ExecuteUncommittedRepetition
+        "Pattern": "E8 ? ? ? ? 8D 45 EB 50",
+        "Offset": 1
+      },
+      "TCompData_GetType": { // TComponentData::GetType
+        "Pattern": "E8 ? ? ? ? 3A 45 EF",
+        "Offset": 1
+      },
+      "TCompData_GetText": { // TComponentData::GetText
+        "Pattern": "E8 ? ? ? ? 83 7D F4 00 74 25 8B 0D ? ? ? ?",
+        "Offset": 1
+      },
+      "TCompData_SetText": { // TComponentData::SetText
+        "Pattern": "E8 ? ? ? ? 0F BE 55 F3",
+        "Offset": 1
+      },
+      "TCompData_GetTextRegMember": { // TComponentData::GetTextItem
+        "Pattern": "E8 ? ? ? ? 89 45 E8 8A 55 DE",
+        "Offset": 1
+      },
+      "TCompData_SetTextRegMember": { // TComponentData::SetTextItem
+        "Pattern": "E8 ? ? ? ? 88 45 F3 E9 ? ? ? ?",
+        "Offset": 1
+      },
+      "TCompData_GetImageRegMember": { // TComponentData::GetImageItem
+        "Pattern": "E8 ? ? ? ? 89 45 F4 8B 45 F4 8B E5 5D C3 90 55 8B EC 83 C4 F4 89 4D F4 88 55 FB 89 45 FC 8B 45 FC 8B 80 ? ? ? ? 8B 4D F4 8A 55 FB E8 ? ? ? ? 8B E5 5D C3 90 55 8B EC 51",
+        "Offset": 1
+      },
+      "TCompData_SetImageRegMember": { // TComponentData::SetImageItem
+        "Pattern": "E8 ? ? ? ? 88 45 F3 EB 4A",
+        "Offset": 1
+      },
+      "TRegistry_AddMember": { // TRegistry::AddMember
+        "Pattern": "E8 ? ? ? ? 89 45 E8 8D 55 EC",
+        "Offset": 1
+      },
+      "TRegistry_ImportFile": { // TRegistry::ImportFile
+        "Pattern": "E8 ? ? ? ? 89 45 D8 8B 4D F4",
+        "Offset": 1
+      },
+      "TSMMain_SelectDefaultConcept": { // TSMMain::SelectDefaultConcept
+        "Pattern": "E8 ? ? ? ? B1 01 8B 55 F8 8B 45 FC E8 ? ? ? ? 33 C0",
+        "Offset": 1
+      }
+    },
+    "NativeDataPatterns": {},
+    "NativeFunctionPatterns": {
+      // GenerateExtract
+      "ElWdw_GenerateExtract": "55 8B EC 83 C4 EC 53 56 57 88 4D FA 88 55 FB 89 45 FC 33 C0",
+      // ???? TElWind::DoneClick => Last call
+      "ElWdw_Done": "55 8B EC 81 C4 ? ? ? ? 53 56 57 89 45 FC 33 C0 55 68 ? ? ? ? 64 FF 30 64 89 20 E8 ? ? ? ?",
+      // TElWind::PasteArticle
+      "ElWdw_PasteArticle": "55 8B EC 51 89 45 FC 33 D2 8B 45 FC E8 ? ? ? ? 84 C0",
+      // TElWind::SetText => Manually select the signature
+      "ElWdw_SetText": "55 8B EC 83 C4 F4 89 4D F4 88 55 FB 89 45 FC 8B 45 F4 E8 ? ? ? ? 33 C0 55 68 ? ? ? ? 64 FF 30 64 89 20 8B 45 FC 8B 80 ? ? ? ? 8B 4D F4 8A 55 FB E8 ? ? ? ? 33 C0 5A 59 59 64 89 10 68 ? ? ? ? 8D 45 F4 E8 ? ? ? ? C3",
+      // TElWind::ForceRepetitionExt
+      "ElWdw_ForceRepetitionExt": "55 8B EC 81 C4 ? ? ? ? 88 4D F7 89 55 F8 89 45 FC 8D 4D 81",
+      // ???? TElWind::MIForgetClick or TElWind::MIJumpIntervalClick => Last call
+      "ElWdw_RestoreLearningMode": "55 8B EC 51 89 45 FC 8B 45 FC 80 B8 ? ? ? ? ? 75 1E"
+    }
   }
 }

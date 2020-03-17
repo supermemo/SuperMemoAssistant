@@ -1,0 +1,51 @@
+﻿<mah:MetroWindow x:Class="SuperMemoAssistant.UI.SplashScreenWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                 xmlns:gif="http://wpfanimatedgif.codeplex.com"
+                 mc:Ignorable="d"
+                 DataContext="{Binding RelativeSource={RelativeSource Self}}"
+                 Height="400" Width="400"
+                 WindowTransitionsEnabled="False"
+                 ShowInTaskbar="False"
+                 ShowTitleBar="False"
+                 ShowCloseButton="False"
+                 ShowActivated="False"
+                 ShowMaxRestoreButton="False"
+                 ShowMinButton="False"
+                 BorderThickness="0"
+                 WindowStartupLocation="CenterScreen"
+                 ResizeMode="NoResize"
+                 Topmost="True"
+                 Style="{DynamicResource CleanWindowStyleKey}"
+                 GlowBrush="{DynamicResource AccentColorBrush}"
+                 MouseDown="MetroWindow_MouseDown"
+                 Background="#111111">
+  <Grid>
+
+    <Grid x:Name="Overlay" Panel.ZIndex="1000">
+
+      <TextBlock Text="{Binding SMAVersion}"
+                 FontSize="12"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Top"
+                 Padding="2"
+                 Margin="8"
+                 Foreground="#9942B983">
+        <TextBlock.Background>
+          <SolidColorBrush Color="White" Opacity=".03" />
+        </TextBlock.Background>
+      </TextBlock>
+
+    </Grid>
+
+    <Image Stretch="None"
+           HorizontalAlignment="Center"
+           VerticalAlignment="Center"
+           gif:ImageBehavior.AutoStart="True"
+           gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/robot-flashing.gif" />
+
+  </Grid>
+</mah:MetroWindow>

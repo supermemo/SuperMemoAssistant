@@ -31,14 +31,22 @@
 - Added CfgBase with reset on cancel
 - Added automatic version configuration
 - Added more documentation
-- Updated: ChangeLogs
+- Updated: ChangeLogs is now an embedded resource
+- Updated: NuSpec dependencies version
 - Updated: Packages
+- Updated: ChangeLogs
+- Fixed: Change Log window now displays correctly
+- Fixed: Wrong offsets for Hook and Concept in NativeDataCfg.json
 - Fixed: Collection Selection &gt; Options, and other option windows can now be canceled and revert changes #117
+- Misc: Cleaned up SMAInstaller from legacy Change Log code
 - Several other minor updates
 </releaseNotes>
   </metadata>
   <files>
     <file src="*.*" target="lib\net45\" exclude="*.pdb;*.nupkg;*.vshost.*" />
     <file src="SuperMemoAssistant*.pdb" target="lib\net45\" />
+    <file src="PluginManager*.pdb" target="lib\net45\" />
+    <file src="Process.NET*.pdb" target="lib\net45\" />
+    <file src="Squirrel*.pdb" target="lib\net45\" />
   </files>
 </package>

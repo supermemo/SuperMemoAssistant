@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" InitialTargets="MSBuildToolsReadSuo">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\..\..\packages\MSBuild.Tools.0.1.6\build\MSBuild.Tools.props" Condition="Exists('..\..\..\packages\MSBuild.Tools.0.1.6\build\MSBuild.Tools.props')" />
   <Import Project="..\..\..\packages\MSBuild.Tools.0.1.7\build\MSBuild.Tools.props" Condition="Exists('..\..\..\packages\MSBuild.Tools.0.1.7\build\MSBuild.Tools.props')" />
   <Import Project="..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props" Condition="Exists('..\..\..\packages\Anotar.Serilog.Fody.5.1.0\build\Anotar.Serilog.Fody.props')" />

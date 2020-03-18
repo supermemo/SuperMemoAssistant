@@ -405,6 +405,8 @@ namespace SuperMemoAssistant.SMA.UI.ViewModels
                                                            CancellationTokenSource.Token)
                                         .ConfigureAwait(true)) == false)
             return;
+
+        await PluginMgr.StartPlugin(PluginInstances.FirstOrDefault(pi => pi.Package == plugin)).ConfigureAwait(true);
       }
       catch (InvalidOperationException ex1) when (ex1.InnerException is NuGetProtocolException)
       {

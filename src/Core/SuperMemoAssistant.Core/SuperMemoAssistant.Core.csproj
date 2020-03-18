@@ -382,6 +382,11 @@
     <PackageReference Include="FlaUI.UIA3">
       <Version>2.0.0-rc1</Version>
     </PackageReference>
+    <PackageReference Include="Fody">
+      <Version>6.1.1</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="FontAwesome5">
       <Version>2.0.4</Version>
     </PackageReference>
@@ -403,7 +408,7 @@
       <Version>3.3.2</Version>
     </PackageReference>
     <PackageReference Include="PluginManager.Core">
-      <Version>0.2.1.104</Version>
+      <Version>0.2.1.110</Version>
     </PackageReference>
     <PackageReference Include="PropertyChanged.Fody">
       <Version>3.2.6</Version>

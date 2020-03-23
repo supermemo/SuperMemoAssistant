@@ -79,6 +79,8 @@ namespace SuperMemoAssistant.Interop
 
     public static FilePath InjectionLibFile => GetAppExeFilePath(SMAConst.Assembly.SMInjectionLib);
 
+    public static FilePath UpdaterExeFile => AppRootDir.CombineFile(SMAConst.Assembly.Updater);
+
     #endregion
 
 

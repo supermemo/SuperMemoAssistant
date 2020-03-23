@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/03/15 17:16
+// Modified On:  2020/03/22 16:11
 // Modified By:  Alexis
 
 #endregion
@@ -62,6 +62,9 @@ namespace SuperMemoAssistant.Interop
 
       /// <summary>SuperMemo injection library</summary>
       public const string SMInjectionLib = "SuperMemoAssistant.Hooks.InjectLib.dll";
+
+      /// <summary>The updater executable file name</summary>
+      public const string Updater = "Update.exe";
 
       #endregion
     }

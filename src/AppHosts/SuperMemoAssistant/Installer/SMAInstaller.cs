@@ -68,7 +68,7 @@ namespace SuperMemoAssistant.Installer
 
     #region Properties & Fields - Non-Public
 
-    private readonly AsyncSemaphore _semaphore = new AsyncSemaphore(1);
+    public AsyncSemaphore Semaphore { get; } = new AsyncSemaphore(1);
 
     #endregion
 
@@ -110,7 +110,13 @@ namespace SuperMemoAssistant.Installer
         using (var mgr = CreateUpdateMgr())
         {
           Logger.Information($"SuperMemo Assistant version {parameters.SquirrelInstalled} installed. Creating shortcuts.");
+
           mgr.CreateShortcutForThisExe();
+
+          mgr.CreateShortcutsForExecutable(
+            SMAFileSystem.UpdaterExeFile.FullPathWin,
+            ShortcutLocation.StartMenu,
+            false, null, null);
 
           return true;
         }
@@ -119,7 +125,12 @@ namespace SuperMemoAssistant.Installer
         using (var mgr = CreateUpdateMgr())
         {
           Logger.Information($"SuperMemo Assistant version {parameters.SquirrelUninstalled} uninstalled. Removing shortcuts.");
+
           mgr.RemoveShortcutForThisExe();
+
+          mgr.RemoveShortcutsForExecutable(
+            SMAFileSystem.UpdaterExeFile.FullPathWin,
+            ShortcutLocation.StartMenu);
 
           return true;
         }
@@ -141,8 +152,6 @@ namespace SuperMemoAssistant.Installer
     /// <returns></returns>
     public async Task Update()
     {
-      // TODO: Ensure only one Update is running across all instances of SMA (in case SMA is closed during the update process)
-      // TODO: Offer manual updates
       // TODO: Add option to wait for user confirmation to update
 
       if (UpdateEnabled == false)
@@ -158,12 +167,12 @@ namespace SuperMemoAssistant.Installer
         CancellationTokenSource cts = new CancellationTokenSource(0);
         cts.Cancel();
 
-        using (await _semaphore.LockAsync(cts.Token))
+        using (await Semaphore.LockAsync(cts.Token))
         using (var updateMgr = CreateUpdateMgr())
         {
           State = SMAUpdateState.Fetching;
 
-          var updateInfo = await updateMgr.CheckForUpdate(false, progress => ProgressPct = progress);
+          var updateInfo = await updateMgr.CheckForUpdate(true, false, progress => ProgressPct = progress);
 
           if (updateInfo?.ReleasesToApply == null)
           {
@@ -202,7 +211,7 @@ namespace SuperMemoAssistant.Installer
       }
       finally
       {
-        _semaphore.Release();
+        Semaphore.Release();
 
         if (updateVersion != null)
           NotifyUpdateResult(updateVersion);

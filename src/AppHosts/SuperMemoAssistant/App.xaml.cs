@@ -44,6 +44,7 @@ using SuperMemoAssistant.Setup;
 using SuperMemoAssistant.SMA.Utils;
 using SuperMemoAssistant.Sys.Windows;
 using SuperMemoAssistant.UI;
+using SuperMemoAssistant.Utils;
 
 namespace SuperMemoAssistant
 {
@@ -66,6 +67,8 @@ namespace SuperMemoAssistant
     /// <param name="e"></param>
     protected override void OnExit(ExitEventArgs e)
     {
+      SMAInstaller.Instance.Semaphore.Wait();
+
       _taskbarIcon?.Dispose();
       _splashScreen?.Close();
       _splashScreen = null;
@@ -93,8 +96,14 @@ namespace SuperMemoAssistant
     {
       _taskbarIcon = (TaskbarIcon)FindResource("TbIcon");
 
+      if (ApplicationSingleton.IsOnlyInstance(_ => LogTo.Warning("SuperMemoAssistant is already running. Exiting."), e.Args) == false)
+      {
+        Shutdown(SMAExitCodes.ExitCodeSMAAlreadyRunning);
+        return;
+      }
+
       if (Parser.Default.ParseArguments<SMAParameters>(e.Args) is Parsed<SMAParameters> parsed)
-        await LoadApp(parsed.Value);
+        await LoadApp(parsed.Value).ConfigureAwait(false);
 
       else
         Shutdown(SMAExitCodes.ExitCodeParametersError);
@@ -118,7 +127,7 @@ namespace SuperMemoAssistant
       if (AssemblyCheck.CheckRequired(out var errMsg) == false || CheckSMALocation(out errMsg) == false)
       {
         LogTo.Warning(errMsg);
-        await errMsg.ErrorMsgBox();
+        await errMsg.ErrorMsgBox().ConfigureAwait(false);
 
         Shutdown(SMAExitCodes.ExitCodeDependencyError);
         return;
@@ -126,12 +135,14 @@ namespace SuperMemoAssistant
 
       //
       // Load main configuration files
-      if (await LoadConfigs(out var nativeDataCfg, out var coreCfg) == false)
+      var (success, nativeDataCfg, coreCfg) = await LoadConfigs().ConfigureAwait(true);
+
+      if (success == false)
       {
         errMsg =
           $"At least one essential config file could not be loaded: nativeDataCfg ? {nativeDataCfg == null} ; startupCfg ? {coreCfg == null}";
         LogTo.Warning(errMsg);
-        await errMsg.ErrorMsgBox();
+        await errMsg.ErrorMsgBox().ConfigureAwait(false);
 
         Shutdown(SMAExitCodes.ExitCodeConfigError);
         return;
@@ -197,23 +208,21 @@ namespace SuperMemoAssistant
 
         Exception ex;
 
-        if ((ex = await SMA.Core.SMA.Start(nativeDataCfg, smCollection).ConfigureAwait(true)) != null)
+        if (true && (ex = await SMA.Core.SMA.Start(nativeDataCfg, smCollection).ConfigureAwait(true)) != null)
         {
-          await Dispatcher.InvokeAsync(async () =>
-          {
-            _splashScreen?.Close();
-            _splashScreen = null;
+          
+          _splashScreen?.Close();
+          _splashScreen = null;
 
-            await $"SMA failed to start: {ex.Message}".ErrorMsgBox();
+          await $"SMA failed to start: {ex.Message}".ErrorMsgBox().ConfigureAwait(false);
 
-            Shutdown(SMAExitCodes.ExitCodeSMAStartupError);
-          });
+          Shutdown(SMAExitCodes.ExitCodeSMAStartupError);
 
           return;
         }
 
         if (SMAExecutableInfo.Instance.IsDev == false)
-          await SMAInstaller.Instance.Update();
+          await SMAInstaller.Instance.Update().ConfigureAwait(false);
       }
       else
       {

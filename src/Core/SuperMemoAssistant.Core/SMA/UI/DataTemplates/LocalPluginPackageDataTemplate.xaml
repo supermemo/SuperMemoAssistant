@@ -154,7 +154,7 @@
                     Height="26"
                     Margin="8 0 0 0"
                     VerticalAlignment="Center"
-                    ToolTip="Install"
+                    ToolTip="Delete"
                     Visibility="{Binding Metadata.IsDevelopment, Converter={StaticResource BoolToVis}, ConverterParameter=True}"
                     Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
                     Foreground="Red"

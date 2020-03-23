@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/03/11 00:41
+// Modified On:  2020/03/19 01:50
 // Modified By:  Alexis
 
 #endregion
@@ -29,18 +29,20 @@
 
 
 
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
 namespace SuperMemoAssistant.Models
 {
-  public static class SMAExitCodes
-  {
-    #region Constants & Statics
+  [DataContract]
+  internal class AppPayload
 
-    public const int ExitCodeParametersError   = 1;
-    public const int ExitCodeDependencyError   = 2;
-    public const int ExitCodeConfigError       = 3;
-    public const int ExitCodeSMASetupError     = 4;
-    public const int ExitCodeSMAStartupError   = 5;
-    public const int ExitCodeSMAAlreadyRunning = 6;
+  {
+    #region Properties & Fields - Public
+
+    /// <summary>A list of command line arguments.</summary>
+    [DataMember]
+    public List<string> CommandLineArguments { get; set; } = new List<string>();
 
     #endregion
   }

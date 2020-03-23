@@ -213,7 +213,7 @@ namespace SuperMemoAssistant.UI
       OpenSelectedCollection();
     }
 
-    private void btnOpen_Click(object          sender,
+    private void BtnOpen_Click(object          sender,
                                RoutedEventArgs e)
     {
       OpenSelectedCollection();
@@ -227,11 +227,18 @@ namespace SuperMemoAssistant.UI
       SaveConfig();
     }
 
+    private void BtnUpdates_Click(object sender, RoutedEventArgs e)
+    {
+      _startupCfg.Updates.ShowWindow().Wait();
+
+      SaveConfig();
+    }
+
     private void Window_KeyDown(object       sender,
                                 KeyEventArgs e)
     {
       if (e.Key == Key.Enter && btnOpen.IsEnabled)
-        btnOpen_Click(sender, e);
+        BtnOpen_Click(sender, e);
 
       else if (e.Key == Key.Escape)
         Close();

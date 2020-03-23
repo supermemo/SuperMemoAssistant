@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2020/02/12 22:20
-// Modified On:  2020/02/12 22:20
+// Modified On:  2020/03/23 04:02
 // Modified By:  Alexis
 
 #endregion
@@ -42,28 +41,27 @@ namespace SuperMemoAssistant
   {
     #region Methods
 
-    private Task<bool> LoadConfigs(out NativeDataCfg nativeDataCfg, out CoreCfg coreCfg)
+    private async Task<(bool success, NativeDataCfg nativeDataCfg, CoreCfg coreCfg)> LoadConfigs()
     {
-      nativeDataCfg = LoadNativeDataConfig().Result;
-      coreCfg    = LoadCoreConfig().Result;
+      var nativeDataCfg = await LoadNativeDataConfig().ConfigureAwait(false);
+      var coreCfg       = await LoadCoreConfig().ConfigureAwait(false);
 
       if (nativeDataCfg == null || coreCfg == null)
-        return Task.FromResult(false);
+        return (false, null, null);
 
-      return Task.FromResult(true);
+      return (true, nativeDataCfg, coreCfg);
     }
 
     private async Task<CoreCfg> LoadCoreConfig()
     {
       try
       {
-        return await SMA.Core.Configuration.Load<CoreCfg>()
+        return await SMA.Core.Configuration
+                        .Load<CoreCfg>()
                         .ConfigureAwait(false) ?? new CoreCfg();
       }
       catch (SMAException)
       {
-        await "Failed to open CoreCfg.json. Make sure file is unlocked and try again.".ErrorMsgBox();
-
         return null;
       }
     }
@@ -72,13 +70,12 @@ namespace SuperMemoAssistant
     {
       try
       {
-        return await SMA.Core.Configuration.Load<NativeDataCfg>(SMAExecutableInfo.Instance.DirectoryPath)
+        return await SMA.Core.Configuration
+                        .Load<NativeDataCfg>(SMAExecutableInfo.Instance.DirectoryPath)
                         .ConfigureAwait(false);
       }
       catch (SMAException)
       {
-        await "Failed to load native data config file.".ErrorMsgBox();
-
         return null;
       }
     }

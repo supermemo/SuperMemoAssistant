@@ -191,7 +191,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 
       void UpdateFlag(object sender, PropertyChangedEventArgs e)
       {
-        var fieldFlag = ElementBase.FieldFlagMapping.SafeGet(e.PropertyName);
+        var fieldFlag = ElementBase.FieldFlagMapping.SafeRead(e.PropertyName);
 
         flags |= fieldFlag;
       }

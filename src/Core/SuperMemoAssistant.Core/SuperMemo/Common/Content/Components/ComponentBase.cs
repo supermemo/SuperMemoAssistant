@@ -162,8 +162,8 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Components
       if (Equals(oldValue,
                  value))
       {
-        ComponentFieldFlags newFlag = FieldFlagMapping.SafeGet(name,
-                                                               ComponentFieldFlags.None);
+        ComponentFieldFlags newFlag = FieldFlagMapping.SafeRead(name,
+                                                                ComponentFieldFlags.None);
 
         if (newFlag != ComponentFieldFlags.None)
           flag |= newFlag;

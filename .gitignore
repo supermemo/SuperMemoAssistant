@@ -302,3 +302,4 @@ __pycache__/
 /src/Core/SuperMemoAssistant.Hooks.InjectLib/EasyLoad32.dll
 /src/Core/SuperMemoAssistant.Hooks.InjectLib/EasyLoad64.dll
 /src/Core/SuperMemoAssistant.Core/PluginHost.exe
+/nuget.config

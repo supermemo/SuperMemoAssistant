@@ -36,6 +36,7 @@ using Newtonsoft.Json;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Services.UI.Configuration;
 using SuperMemoAssistant.Sys.Collections;
+using AutoMapperIgnore = AutoMapper.Configuration.Annotations.IgnoreAttribute;
 
 namespace SuperMemoAssistant.SMA.Configs
 {
@@ -95,11 +96,11 @@ namespace SuperMemoAssistant.SMA.Configs
 
     /// <summary>Proxy to display the update combo box</summary>
     [IgnoreMap]
-    [Field(Name                                                     = "SMA Update Channel")]
-    [SelectFrom("{Binding CoreUpdateChannels.Values}", SelectionType = SelectionType.ComboBoxEditable)]
-    public string CoreUpdateUrlField
+    [Field(Name                                                    = "SMA Update Channel")]
+    [SelectFrom("{Binding CoreUpdateChannels.Keys}", SelectionType = SelectionType.ComboBoxEditable)]
+    public string CoreUpdateChannelField
     {
-      get => CoreUpdateChannels.Reverse.SafeGet(CoreUpdateUrl);
+      get => CoreUpdateChannels.Reverse.SafeGet(CoreUpdateUrl) ?? CoreDefaultChannel;
       set => CoreUpdateUrl = CoreUpdateChannels.SafeGet(value) ?? GetDefaultCoreUpdateUrl();
     }
 
@@ -107,6 +108,7 @@ namespace SuperMemoAssistant.SMA.Configs
     // Config only
 
     /// <summary>All Core update channels</summary>
+    [IgnoreMap]
     [JsonProperty]
     public BiDictionary<string, string> CoreUpdateChannels { get; set; } = new BiDictionary<string, string>
     {
@@ -124,6 +126,7 @@ namespace SuperMemoAssistant.SMA.Configs
     public string PluginsUpdateUrl { get; set; } = "https://releases.supermemo.wiki/sma/plugins/";
 
     /// <summary>The CRC32 of the ChangeLog last displayed</summary>
+    [IgnoreMap]
     [JsonProperty]
     public string ChangeLogLastCrc32 { get; set; }
 

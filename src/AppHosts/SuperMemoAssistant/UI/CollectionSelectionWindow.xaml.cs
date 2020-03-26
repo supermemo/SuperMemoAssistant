@@ -57,7 +57,7 @@ namespace SuperMemoAssistant.UI
     #region Properties & Fields - Non-Public
 
     private readonly CoreCfg _startupCfg;
-    private static readonly string[] SentenceEndingPunctuation = new[] { ".", "!", "?" };
+    private static readonly string[] SentenceEndingPunctuation = { ".", "!", "?" };
 
     #endregion
 
@@ -255,7 +255,8 @@ namespace SuperMemoAssistant.UI
     {
       // Tab separated file with a heading
       // Quote, Author, Url, Title
-      var quoteFile = SMAFileSystem.AppRootDir.CombineFile("quotes.tsv");
+      var quoteFile = SMAFileSystem.GetAppExeFilePath("quotes.tsv");
+
       if (quoteFile.Exists())
       {
         try

@@ -88,7 +88,7 @@ namespace SuperMemoAssistant.Interop
 
     #region Methods
 
-    private static FilePath GetAppExeFilePath(string filename)
+    public static FilePath GetAppExeFilePath(string filename)
     {
       if (SMAExecutableInfo.Instance.ExecutableType == SMAExecutableType.SuperMemoAssistant)
         return SMAExecutableInfo.Instance.DirectoryPath.CombineFile(filename);

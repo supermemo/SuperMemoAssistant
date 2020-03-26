@@ -329,7 +329,7 @@
       <Version>2.1.1</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Installer">
-      <Version>1.9.4.63</Version>
+      <Version>1.9.4.64</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Interop">
       <Version>2.0.4.10</Version>

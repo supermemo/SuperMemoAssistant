@@ -44,6 +44,10 @@ using SuperMemoAssistant.SMA.Configs;
 using Extensions.System.IO;
 using SuperMemoAssistant.Sys.Collections.Microsoft.EntityFrameworkCore.ChangeTracking;
 using SuperMemoAssistant.Sys.Windows.Input;
+using SuperMemoAssistant.Interop;
+using System.Diagnostics;
+using System.Windows.Navigation;
+using Anotar.Serilog;
 
 namespace SuperMemoAssistant.UI
 {
@@ -53,6 +57,7 @@ namespace SuperMemoAssistant.UI
     #region Properties & Fields - Non-Public
 
     private readonly CoreCfg _startupCfg;
+    private static readonly string[] SentenceEndingPunctuation = new[] { ".", "!", "?" };
 
     #endregion
 
@@ -72,6 +77,7 @@ namespace SuperMemoAssistant.UI
         lbCollections.SelectedIndex = 0;
 
       Loaded += CollectionSelectionWindow_Loaded;
+      Loaded += ShowQuoteOfTheDay;
     }
 
     #endregion
@@ -81,7 +87,7 @@ namespace SuperMemoAssistant.UI
 
     #region Properties & Fields - Public
 
-    public SMCollection                       Collection       { get; set; }
+    public SMCollection Collection { get; set; }
     public ObservableHashSet<SMCollection> SavedCollections { get; }
 
     public ICommand DeleteCommand => new RelayCommand<SMCollection>(DeleteCollection);
@@ -134,7 +140,7 @@ namespace SuperMemoAssistant.UI
     private SMCollection CreateCollection(string knoFilePath)
     {
       string filePath = Path.GetDirectoryName(knoFilePath);
-      string name     = Path.GetFileNameWithoutExtension(knoFilePath);
+      string name = Path.GetFileNameWithoutExtension(knoFilePath);
 
       return new SMCollection(name, filePath, DateTime.Now);
     }
@@ -177,13 +183,13 @@ namespace SuperMemoAssistant.UI
       Close();
     }
 
-    private void btnBrowse_Click(object          sender,
+    private void btnBrowse_Click(object sender,
                                  RoutedEventArgs e)
     {
       OpenFileDialog dlg = new OpenFileDialog
       {
         DefaultExt = ".kno",
-        Filter     = "SM Collection (*.kno)|*.kno|All files (*.*)|*.*"
+        Filter = "SM Collection (*.kno)|*.kno|All files (*.*)|*.*"
       };
 
       var filePath = dlg.ShowDialog().GetValueOrDefault(false)
@@ -193,7 +199,7 @@ namespace SuperMemoAssistant.UI
       if (filePath != null)
       {
         var newCollection = CreateCollection(filePath);
-        var duplicate     = _startupCfg.Collections.FirstOrDefault(c => c == newCollection);
+        var duplicate = _startupCfg.Collections.FirstOrDefault(c => c == newCollection);
 
         if (duplicate != null)
           duplicate.LastOpen = DateTime.Now;
@@ -219,7 +225,7 @@ namespace SuperMemoAssistant.UI
       OpenSelectedCollection();
     }
 
-    private void BtnOptions_Click(object          sender,
+    private void BtnOptions_Click(object sender,
                                   RoutedEventArgs e)
     {
       _startupCfg.SuperMemo.ShowWindow().Wait();
@@ -242,6 +248,61 @@ namespace SuperMemoAssistant.UI
 
       else if (e.Key == Key.Escape)
         Close();
+    }
+
+    private void ShowQuoteOfTheDay(object sender,
+                                   RoutedEventArgs e)
+    {
+      // Tab separated file with a heading
+      // Quote, Author, Url, Title
+      var quoteFile = SMAFileSystem.AppRootDir.CombineFile("quotes.tsv");
+      if (quoteFile.Exists())
+      {
+        try
+        {
+          var lines = File.ReadAllLines(quoteFile.FullPath);
+          // First line is the heading.
+          if (lines.Length <= 1)
+          {
+            return;
+          }
+
+          var randInt = new Random();
+          var randomLineNumber = randInt.Next(1, lines.Length - 1);
+          var quoteLine = lines[randomLineNumber];
+          var splitQuoteLine = quoteLine.Split('\t');
+
+          // Check that the chosen line has 4 fields
+          if (splitQuoteLine.Length == 4)
+          {
+            // If the quote doesn't end with sentence ending punctuation, add a full stop.
+            if (!SentenceEndingPunctuation.Any(p => splitQuoteLine[0].EndsWith(p)))
+            {
+              splitQuoteLine[0] += ".";
+            }
+
+            QuoteBodyTextBlock.Text = $"\"{splitQuoteLine[0]}\"";
+            QuoteAuthorTextBlock.Text = splitQuoteLine[1];
+            TitleHyperlink.NavigateUri = new Uri(splitQuoteLine[2]);
+            QuoteTitleTextBlock.Text = splitQuoteLine[3];
+
+          }
+        }
+        catch (IOException ex)
+        {
+          LogTo.Warning(ex, $"IOException when trying to open {quoteFile.FullPath}");
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, $"Exception caught while opening file {quoteFile.FullPath}");
+        }
+      }
+    }
+
+    private void TitleLink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+    {
+      Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+      e.Handled = true;
     }
 
     private void CollectionSelectionWindow_Loaded(object          sender,

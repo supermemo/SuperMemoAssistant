@@ -74,10 +74,12 @@ namespace SuperMemoAssistant
 #pragma warning disable CS0436 // Type conflicts with imported type
         Logger.ReloadAnotarLogger(typeof(SuperMemoAssistant.ModuleInitializer));
 #pragma warning restore CS0436 // Type conflicts with imported type
-
+        
         // ReSharper disable once RedundantNameQualifier
-        var appType     = typeof(SuperMemoAssistant.App);
-        var releaseName = $"SuperMemoAssistant@{appType.GetAssemblyVersion()}";
+        var appType = typeof(SuperMemoAssistant.App);
+        SuperMemoAssistant.SMA.Core.SMAVersion = appType.GetAssemblyVersion();
+
+        var releaseName = $"SuperMemoAssistant@{SuperMemoAssistant.SMA.Core.SMAVersion}";
 
         SentryInstance = SentryEx.Initialize("https://a63c3dad9552434598dae869d2026696@sentry.io/1362046", releaseName);
 

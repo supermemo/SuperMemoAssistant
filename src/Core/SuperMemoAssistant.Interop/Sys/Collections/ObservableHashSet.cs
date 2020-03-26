@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using PropertyChanged;
 
 namespace SuperMemoAssistant.Sys.Collections
 {
@@ -412,18 +413,22 @@ namespace SuperMemoAssistant.Sys.Collections
       protected virtual void OnPropertyChanging(PropertyChangingEventArgs e)
         => PropertyChanging?.Invoke(this, e);
 
+      [SuppressPropertyChangedWarnings]
       private void OnCountPropertyChanged() => OnPropertyChanged(ObservableHashSetSingletons.CountPropertyChanged);
 
       private void OnCountPropertyChanging() => OnPropertyChanging(ObservableHashSetSingletons.CountPropertyChanging);
 
+      [SuppressPropertyChangedWarnings]
       private void OnCollectionChanged(NotifyCollectionChangedAction action, object item)
         => OnCollectionChanged(new NotifyCollectionChangedEventArgs(action, item));
-
+      
+      [SuppressPropertyChangedWarnings]
       private void OnCollectionChanged(IList newItems, IList oldItems)
         => OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newItems, oldItems));
 
       /// <summary>Raises the <see cref="CollectionChanged" /> event.</summary>
       /// <param name="e"> Details of the change. </param>
+      [SuppressPropertyChangedWarnings]
       protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         => CollectionChanged?.Invoke(this, e);
       

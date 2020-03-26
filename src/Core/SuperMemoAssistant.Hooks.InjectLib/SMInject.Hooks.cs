@@ -53,6 +53,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     private void InstallHooks()
     {
       LocalHooks.AddRange(InstallIOHooks());
+      LocalHooks.AddRange(InstallWindowHooks());
 
       foreach (LocalHook lh in LocalHooks)
         lh.ThreadACL.SetExclusiveACL(new[] { 0 });

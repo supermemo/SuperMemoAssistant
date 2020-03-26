@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/04/26 01:55
+// Modified On:  2020/03/13 15:23
 // Modified By:  Alexis
 
 #endregion
@@ -33,6 +32,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using SuperMemoAssistant.Extensions;
@@ -41,15 +41,24 @@ using SuperMemoAssistant.Sys.ComponentModel;
 
 namespace SuperMemoAssistant.Services.UI.Configuration
 {
-  /// <summary>Interaction logic for ConfigurationWindow.xaml</summary>
+  /// <summary>Provides facilities to display a configuration UI</summary>
   public partial class ConfigurationWindow : Window, INotifyPropertyChanged
   {
+    #region Constants & Statics
+
+    /// <summary>
+    /// Ensures only one <see cref="ConfigurationWindow"/> is open at all time
+    /// </summary>
+    private static Semaphore SingletonSemaphore { get; } = new Semaphore(1, 1);
+
+    #endregion
+
+
+
+
     #region Constructors
 
-    public ConfigurationWindow(params INotifyPropertyChanged[] configModels)
-      : this(null, configModels) { }
-
-    public ConfigurationWindow(HotKeyManager hotKeyManager, params INotifyPropertyChanged[] configModels)
+    protected ConfigurationWindow(HotKeyManager hotKeyManager, params INotifyPropertyChanged[] configModels)
     {
       InitializeComponent();
 
@@ -69,42 +78,17 @@ namespace SuperMemoAssistant.Services.UI.Configuration
 
     #region Properties & Fields - Public
 
-    public ObservableCollection<object>   Models        { get; } = new ObservableCollection<object>();
-    public HotKeyManager                  HotKeyManager { get; }
-    public Action<INotifyPropertyChanged> SaveMethod    { get; set; }
+    /// <summary>The configuration instances to display and edit</summary>
+    public ObservableCollection<object> Models { get; } = new ObservableCollection<object>();
 
-    #endregion
+    /// <summary>
+    ///   The optional <see cref="HotKeyManager" />. Hotkey rebinding options will be offered
+    ///   to the user if it is set to a valid intance.
+    /// </summary>
+    public HotKeyManager HotKeyManager { get; }
 
-
-
-
-    #region Methods Impl
-
-    protected override void OnClosed(EventArgs e)
-    {
-      base.OnClosed(e);
-
-      foreach (var m in Models)
-        switch (m)
-        {
-          case INotifyPropertyChanged config when SaveMethod != null:
-            SaveMethod(config);
-            break;
-
-          case INotifyPropertyChangedEx config:
-            if (config.IsChanged)
-            {
-              config.IsChanged = false;
-              Svc.Configuration.Save(m, m.GetType()).RunAsync();
-            }
-
-            break;
-
-          case INotifyPropertyChanged _:
-            Svc.Configuration.Save(m, m.GetType()).RunAsync();
-            break;
-        }
-    }
+    /// <summary>Optional callback to override the default saving mechanism</summary>
+    public Action<INotifyPropertyChanged> SaveMethod { get; set; }
 
     #endregion
 
@@ -112,6 +96,35 @@ namespace SuperMemoAssistant.Services.UI.Configuration
 
 
     #region Methods
+
+    /// <summary>Instantiates a new <see cref="ConfigurationWindow" /> if none other exist</summary>
+    /// <param name="configModels">The configuration class instances that should be displayed</param>
+    /// <returns>New instance or <see langword="null" /></returns>
+    public static ConfigurationWindow ShowAndActivate(params INotifyPropertyChanged[] configModels)
+    {
+      return ShowAndActivate(null, configModels);
+    }
+
+    /// <summary>Instantiates a new <see cref="ConfigurationWindow" /> if none other exist</summary>
+    /// <param name="hotKeyManager">
+    ///   An optional instance of a <see cref="HotKeyManager" /> that will
+    ///   be used to provide hotkey rebinding options to the user
+    /// </param>
+    /// <param name="configModels">The configuration class instances that should be displayed</param>
+    /// <returns>New instance or <see langword="null" /></returns>
+    public static ConfigurationWindow ShowAndActivate(HotKeyManager hotKeyManager, params INotifyPropertyChanged[] configModels)
+    {
+      return Application.Current.Dispatcher.Invoke(() =>
+      {
+        if (SingletonSemaphore.WaitOne(0) == false)
+          return null;
+
+        var cfgWdw = new ConfigurationWindow(hotKeyManager, configModels);
+        cfgWdw.ShowAndActivate();
+
+        return cfgWdw;
+      });
+    }
 
     private void BtnOk_Click(object          sender,
                              RoutedEventArgs e)
@@ -132,6 +145,32 @@ namespace SuperMemoAssistant.Services.UI.Configuration
       }
     }
 
+    private void Window_Closed(object sender, EventArgs e)
+    {
+      foreach (var m in Models)
+        switch (m)
+        {
+          case INotifyPropertyChanged config when SaveMethod != null:
+            SaveMethod(config);
+            break;
+
+          case INotifyPropertyChangedEx config:
+            if (config.IsChanged)
+            {
+              config.IsChanged = false;
+              Svc.Configuration.Save(m, m.GetType()).RunAsync();
+            }
+
+            break;
+
+          case INotifyPropertyChanged _:
+            Svc.Configuration.Save(m, m.GetType()).RunAsync();
+            break;
+        }
+
+      Dispatcher.Invoke(() => SingletonSemaphore.Release());
+    }
+
     #endregion
 
 
@@ -139,6 +178,7 @@ namespace SuperMemoAssistant.Services.UI.Configuration
 
     #region Events
 
+    /// <inheritdoc/>
     public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion

@@ -54,6 +54,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
     <LangVersion>latest</LangVersion>
+    <NoWarn>CS0067</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>C:\Users\Lila\AppData\Local\SuperMemoAssistant\app-dev\</OutputPath>
@@ -65,6 +66,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
     <LangVersion>latest</LangVersion>
+    <NoWarn>CS0067</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\robot-24.ico</ApplicationIcon>
@@ -88,6 +90,7 @@
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime" />
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
@@ -110,6 +113,7 @@
     </ApplicationDefinition>
     <Compile Include="App.Configs.cs" />
     <Compile Include="Installer\SMAInstaller.cs" />
+    <Compile Include="Models\AppPayload.cs" />
     <Compile Include="Models\SMAExitCodes.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Setup\Models\SMImportCollection.cs" />
@@ -129,11 +133,18 @@
     </Compile>
     <Compile Include="Models\SMAParameters.cs" />
     <Compile Include="Setup\SMASetupScreenBase.cs" />
+    <Compile Include="UI\ChangeLogWindow.xaml.cs">
+      <DependentUpon>ChangeLogWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\SMATaskbarIcon.cs" />
     <Compile Include="Setup\Models\SuperMemoFilePath.cs" />
     <Compile Include="Setup\Screens\SuperMemoFinder.xaml.cs">
       <DependentUpon>SuperMemoFinder.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\SplashScreenWindow.xaml.cs">
+      <DependentUpon>SplashScreenWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\ApplicationSingleton.cs" />
     <Page Include="Setup\Screens\ImportCollections.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -147,6 +158,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Setup\Screens\PluginSetup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ChangeLogWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -167,6 +182,10 @@
       <DependentUpon>SMATaskbarIcon.cs</DependentUpon>
     </Page>
     <Page Include="Setup\Screens\SuperMemoFinder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SplashScreenWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -194,8 +213,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Installer\SuperMemoAssistant.Release.nuspec" />
-    <None Include="Installer\SuperMemoAssistant.Debug.nuspec" />
+    <None Include="Installer\SuperMemoAssistant.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -244,6 +262,7 @@
     <Content Include="msvcr110.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\robot-flashing.gif" />
     <Content Include="vcruntime140.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -279,13 +298,15 @@
       <Version>6.0.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.SDK.Contracts">
-      <Version>10.0.18362.2002-preview</Version>
+      <Version>10.0.18362.2005</Version>
     </PackageReference>
     <PackageReference Include="ModuleInit.Fody">
       <Version>2.1.0</Version>
     </PackageReference>
     <PackageReference Include="MSBuild.Tools">
-      <Version>0.1.6</Version>
+      <Version>0.2.41</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="NuGet.CommandLine">
       <Version>5.4.0</Version>
@@ -293,7 +314,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="PluginManager.Core">
-      <Version>0.2.1.104</Version>
+      <Version>0.2.1.110</Version>
     </PackageReference>
     <PackageReference Include="PropertyChanged.Fody">
       <Version>3.2.6</Version>
@@ -302,55 +323,70 @@
       <Version>1.0.0</Version>
     </PackageReference>
     <PackageReference Include="Sentry.Serilog">
-      <Version>2.1.0</Version>
+      <Version>2.1.1</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Installer">
-      <Version>1.9.2.10</Version>
+      <Version>1.9.4.63</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Interop">
-      <Version>2.0.3.26</Version>
+      <Version>2.0.4.7</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.Sentry">
       <Version>1.0.1.14</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.UI">
-      <Version>2.0.3.18</Version>
+      <Version>2.0.4.2</Version>
+    </PackageReference>
+    <PackageReference Include="WpfAnimatedGif">
+      <Version>1.4.18</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="PackageDebug" AfterTargets="Build" Condition=" '$(Configuration)' == 'Debug-InProd' ">
+  <PropertyGroup>
+    <NuSpecFileName>SuperMemoAssistant.nuspec</NuSpecFileName>
+    <SMAExeName>SuperMemoAssistant.exe</SMAExeName>
+    <NuSpecFile>$(ProjectDir)Installer\$(NuSpecFileName)</NuSpecFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Git>git</Git>
+    <Squirrel>$(SquirrelToolsPath)\Update.exe</Squirrel>
+    <NuGet>$(SolutionDir)tools\nuget.exe</NuGet>
+  </PropertyGroup>
+  <Target Name="WriteChangeLogs" BeforeTargets="Build" Condition=" $(SolutionConfiguration.StartsWith('Squirrel')) ">
     <PropertyGroup>
-      <Squirrel>$(SquirrelToolsPath)\Squirrel.exe</Squirrel>
-      <NuGet>$(SolutionDir)tools\nuget.exe</NuGet>
-      <ReleaseDir>$(SolutionDir)releases</ReleaseDir>
-      <NupkgDir>$(SolutionDir)releases\nupkg\</NupkgDir>
-      <SMADir>$(LocalAppData)\SuperMemoAssistant\app-dev</SMADir>
-      <SMAExe>$(SMADir)\SuperMemoAssistant.exe</SMAExe>
-      <SMAResources>$(ProjectDir)Resources\</SMAResources>
+      <ChangeLogFile>$(SolutionDir)ChangeLogs</ChangeLogFile>
     </PropertyGroup>
-    <MakeDir Directories="$(NupkgDir)" Condition="!Exists('$(NupkgDir)')" />
-    <GetAssemblyIdentity AssemblyFiles="$(SMAExe)">
-      <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
-    </GetAssemblyIdentity>
-    <Exec Command="$(NuGet) pack Installer\SuperMemoAssistant.Debug.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Debug-InProd -OutputDirectory $(NupkgDir) -BasePath $(SMADir)" />
-    <Exec Command="$(Squirrel) --releasify=$(NupkgDir)SuperMemoAssistant.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(4)).nupkg --releaseDir=$(ReleaseDir) --baseUrl=https://releases.supermemo.wiki/sma/core --no-msi --framework-version=net472 --setupIcon=$(SMAResources)robot-24.ico --loadingGif=$(SMAResources)robot-flip.gif" />
+    <GitCreateChangeLog GitExecutable="$(Git)" PreserveChanges="False" RefSpec="HEAD" Categories="Added;Updated;Fixed;Misc" Debug="False" GitDebug="False" ChangeLogFilePath="$(ChangeLogFile)" NuSpecFilePath="$(NuSpecFile)">
+      <Output TaskParameter="CurrentVersionHasReleaseNotes" PropertyName="CurrentVersionHasReleaseNotes" />
+    </GitCreateChangeLog>
+    <Error Condition=" '$(CurrentVersionHasReleaseNotes)' == 'False' " Text="No release logs detected for current version. Commit your work to git before building your NuGet package." />
   </Target>
-  <Target Name="PackageRelease" AfterTargets="Build" Condition=" '$(Configuration)' == 'Release' ">
+  <Target Name="Package" AfterTargets="Build" Condition=" $(SolutionConfiguration.StartsWith('Squirrel')) ">
     <PropertyGroup>
-      <Squirrel>$(SquirrelToolsPath)\Squirrel.exe</Squirrel>
-      <NuGet>$(SolutionDir)tools\nuget.exe</NuGet>
-      <ReleaseDir>$(SolutionDir)releases</ReleaseDir>
-      <NupkgDir>$(SolutionDir)releases\nupkg\</NupkgDir>
-      <SMADir>$(LocalAppData)\SuperMemoAssistant\app-dev</SMADir>
-      <SMAExe>$(SMADir)\SuperMemoAssistant.exe</SMAExe>
+      <ReleaseDir>$(SolutionDir)releases\</ReleaseDir>
+      <CacheDir>$(ReleaseDir)cache\</CacheDir>
+      <NuPkgDir>$(ReleaseDir)nupkg\</NuPkgDir>
       <SMAResources>$(ProjectDir)Resources\</SMAResources>
+      <OutputPath Condition=" '$(OutputPath)' == '' ">C:\Users\Lila\AppData\Local\SuperMemoAssistant\app-dev\</OutputPath>
+      <SMAExe>$(OutputPath)$(SMAExeName)</SMAExe>
+      <NuSpecFile>$(ProjectDir)Installer\$(NuSpecFileName)</NuSpecFile>
+      <ChangeLogFile>$(SolutionDir)ChangeLogs</ChangeLogFile>
     </PropertyGroup>
-    <MakeDir Directories="$(NupkgDir)" Condition="!Exists('$(NupkgDir)')" />
     <GetAssemblyIdentity AssemblyFiles="$(SMAExe)">
-      <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
+      <Output TaskParameter="Assemblies" ItemName="smaAssembly" />
     </GetAssemblyIdentity>
-    <Exec Command="$(NuGet) pack Installer\SuperMemoAssistant.Debug.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(NupkgDir) -BasePath $(SMADir)" />
-    <Exec Command="$(Squirrel) --releasify=$(NupkgDir)SuperMemoAssistant.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(4)).nupkg --releaseDir=$(ReleaseDir) --baseUrl=https://releases.supermemo.wiki/sma/core --no-msi --framework-version=net472 --setupIcon=$(SMAResources)robot-24.ico --loadingGif=$(SMAResources)robot-flip.gif" />
+    <PropertyGroup>
+      <Version>%(smaAssembly.Version)</Version>
+      <VersionSuffix>-Suffix nightly</VersionSuffix>
+      <NuPkgFile>$(NuPkgDir)SuperMemoAssistant.$(Version).nupkg</NuPkgFile>
+      <SetupIcon>$(SMAResources)robot-24.ico</SetupIcon>
+      <SetupLoadingGif>$(SMAResources)robot-flashing.gif"</SetupLoadingGif>
+      <UpdateUrl>https://releases.supermemo.wiki/sma/core/beta</UpdateUrl>
+      <NetVersion>net472</NetVersion>
+    </PropertyGroup>
+    <Exec Command="$(NuGet) pack $(NuSpecFile) -Version $(Version) -OutputDirectory $(NuPkgDir) -BasePath $(OutputPath)" />
+    <Exec Command="$(Squirrel) --releasify=$(NuPkgFile) --releaseDir=$(ReleaseDir) --updateUrl=$(UpdateUrl) --no-msi --framework-version=$(NetVersion) --exeStubRegexPattern=$(SMAExeName) --setupIcon=$(SetupIcon) --loadingGif=$(SetupLoadingGif)" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>

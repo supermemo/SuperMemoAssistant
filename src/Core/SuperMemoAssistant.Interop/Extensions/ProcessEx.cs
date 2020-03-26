@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/03 00:00
-// Modified On:  2018/06/06 02:06
+// Modified On:  2020/03/14 16:02
 // Modified By:  Alexis
 
 #endregion
@@ -35,15 +34,21 @@ using System.Text;
 
 namespace SuperMemoAssistant.Extensions
 {
+  /// <summary>Extension methods for <see cref="Process" /></summary>
   public static class ProcessEx
   {
     #region Methods
 
-    public static System.Diagnostics.Process CreateBackgroundProcess(string binName,
-                                                                     string args,
-                                                                     string workingDirectory = null)
+    /// <summary>Create a process and runs it in the background (no window, no shell execute)</summary>
+    /// <param name="binName">The executable name</param>
+    /// <param name="args">Optional parameters</param>
+    /// <param name="workingDirectory">Optional working directory</param>
+    /// <returns>The created process</returns>
+    public static Process CreateBackgroundProcess(string binName,
+                                                  string args,
+                                                  string workingDirectory = null)
     {
-      System.Diagnostics.Process p = new System.Diagnostics.Process
+      Process p = new Process
       {
         StartInfo =
         {
@@ -60,9 +65,14 @@ namespace SuperMemoAssistant.Extensions
       return p;
     }
 
-    public static (int exitCode, string output, bool timedOut) ExecuteBlockingWithOutputs(this System.Diagnostics.Process p,
-                                                                                          int timeout = int.MaxValue,
-                                                                                          bool kill = true)
+    /// <summary>Executes the process and waits until it returns. Reads standard and error output.</summary>
+    /// <param name="p">The process to execute</param>
+    /// <param name="timeout">Optional execution timeout</param>
+    /// <param name="kill">Whether to make sure the process is killed</param>
+    /// <returns>Process' exit code, standard + error output, and whether the process timed out.</returns>
+    public static (int exitCode, string output, bool timedOut) ExecuteBlockingWithOutputs(this Process p,
+                                                                                          int          timeout = int.MaxValue,
+                                                                                          bool         kill    = true)
     {
       StringBuilder outputBuilder = new StringBuilder();
 
@@ -70,7 +80,7 @@ namespace SuperMemoAssistant.Extensions
                               DataReceivedEventArgs e)
       {
         lock (outputBuilder)
-          outputBuilder.Append(e.Data + "\n");
+          outputBuilder.AppendLine(e.Data);
       }
 
       p.EnableRaisingEvents              =  true;

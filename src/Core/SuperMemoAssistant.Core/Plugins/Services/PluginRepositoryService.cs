@@ -50,6 +50,7 @@ using SuperMemoAssistant.SMA;
 
 namespace SuperMemoAssistant.Plugins.Services
 {
+  /// <inheritdoc />
   public class PluginRepositoryService : DefaultPluginRepositoryService<PluginMetadata>
   {
     #region Constants & Statics

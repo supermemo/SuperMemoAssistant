@@ -12,6 +12,7 @@
         mc:Ignorable="d"
         Title="ConfigurationWindow" Height="550" Width="800"
         KeyDown="Window_KeyDown"
+        Closed="Window_Closed"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         d:DataContext="{d:DesignInstance configuration:ConfigurationWindow}">
   <Window.Resources>

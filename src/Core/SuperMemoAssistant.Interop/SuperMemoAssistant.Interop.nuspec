@@ -27,7 +27,7 @@
         <dependency id="Newtonsoft.Json" version="12.0.3" />
         <dependency id="Nito.AsyncEx" version="5.0.0" />
         <dependency id="Nito.Disposables" version="2.0.1" />
-        <dependency id="PluginManager.Interop" version="0.2.1.35" />
+        <dependency id="PluginManager.Interop" version="0.2.1.36" />
         <dependency id="Serilog" version="2.9.0" />
         <dependency id="Serilog.Exceptions" version="5.4.0" />
         <dependency id="Serilog.Sinks.Async" version="1.4.0" />

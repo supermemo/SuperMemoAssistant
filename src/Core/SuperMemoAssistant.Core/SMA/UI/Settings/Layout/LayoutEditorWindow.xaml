@@ -10,7 +10,7 @@
                  xmlns:layout1="clr-namespace:SuperMemoAssistant.SMA.UI.Settings.Layout"
                  mc:Ignorable="d"
                  KeyDown="Window_KeyDown"
-                 Height="768" Width="1024"
+                 Height="600" Width="800"
                  DataContext="{Binding RelativeSource={RelativeSource Self}}"
                  Title="Layout Editor"
                  TitleAlignment="Left"

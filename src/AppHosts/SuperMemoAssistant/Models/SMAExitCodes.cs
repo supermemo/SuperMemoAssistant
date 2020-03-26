@@ -35,11 +35,12 @@ namespace SuperMemoAssistant.Models
   {
     #region Constants & Statics
 
-    public const int ExitCodeParametersError = 1;
-    public const int ExitCodeDependencyError = 2;
-    public const int ExitCodeConfigError     = 3;
-    public const int ExitCodeSMASetupError   = 4;
-    public const int ExitCodeSMAStartupError = 5;
+    public const int ExitCodeParametersError   = 1;
+    public const int ExitCodeDependencyError   = 2;
+    public const int ExitCodeConfigError       = 3;
+    public const int ExitCodeSMASetupError     = 4;
+    public const int ExitCodeSMAStartupError   = 5;
+    public const int ExitCodeSMAAlreadyRunning = 6;
 
     #endregion
   }

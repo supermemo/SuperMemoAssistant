@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2020/01/23 08:17
-// Modified On:  2020/02/13 11:05
+// Modified On:  2020/03/22 16:11
 // Modified By:  Alexis
 
 #endregion
@@ -36,24 +35,38 @@ namespace SuperMemoAssistant.Interop
   {
     #region Constants & Statics
 
+    /// <summary>The app name</summary>
     public const string Name = "SuperMemoAssistant";
+
+    /// <summary>Name SMA plugins assemblies' names should always be prefixed with</summary>
+    public const string SuperMemoPluginPackagePrefix = "SuperMemoAssistant.Plugins.";
+
+    /// <summary>The change log file name</summary>
+    public const string ChangeLogFileName = "ChangeLog";
 
     #endregion
 
 
 
 
+    /// <summary>Assemblies data</summary>
     public static class Assembly
     {
       #region Constants & Statics
 
+      /// <summary>SMA executable file name</summary>
       public const string SuperMemoAssistantExe = "SuperMemoAssistant.exe";
-      public const string PluginHostExe         = "PluginHost.exe";
-      public const string SMInjectionLib        = "SuperMemoAssistant.Hooks.InjectLib.dll";
+
+      /// <summary>SMA plugin host executable file name</summary>
+      public const string PluginHostExe = "PluginHost.exe";
+
+      /// <summary>SuperMemo injection library</summary>
+      public const string SMInjectionLib = "SuperMemoAssistant.Hooks.InjectLib.dll";
+
+      /// <summary>The updater executable file name</summary>
+      public const string Updater = "Update.exe";
 
       #endregion
     }
-
-    public const string SuperMemoPluginPackagePrefix = "SuperMemoAssistant.Plugins.";
   }
 }

@@ -195,7 +195,8 @@ namespace SuperMemoAssistant.Setup.Screens
     {
       var versions = _nativeDataCfg.Values
                                    .Select(nd => nd.SMVersion)
-                                   .OrderBy(v => v);
+                                   .OrderBy(v => v)
+                                   .Select(v => $"{v.Major:D2}.{v.Minor:D2}");
       var versionStr = string.Join("*, *", versions);
 
       return @$"Select your **SuperMemo executable** (.exe). You can:

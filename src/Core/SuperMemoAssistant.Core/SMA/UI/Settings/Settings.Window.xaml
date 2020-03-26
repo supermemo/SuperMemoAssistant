@@ -5,10 +5,11 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:settings="clr-namespace:SuperMemoAssistant.SMA.UI.Settings"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-                 xmlns:controls="clr-namespace:Forge.Forms.Controls;assembly=Forge.Forms"
+                 xmlns:forgeControls="clr-namespace:Forge.Forms.Controls;assembly=Forge.Forms"
+                 xmlns:smaControls="clr-namespace:SuperMemoAssistant.SMA.UI.Controls"
                  mc:Ignorable="d"
                  KeyDown="Window_KeyDown"
-                 Height="768" Width="1024"
+                 Width="800" Height="600"
                  DataContext="{Binding RelativeSource={RelativeSource Self}}"
                  Title="SMA Settings"
                  TitleAlignment="Left"
@@ -74,17 +75,21 @@
       </TabItem>
 
       <TabItem Header="General" Padding="4, 4" mah:ControlsHelper.HeaderFontSize="18" HorizontalContentAlignment="Left">
-        <controls:DynamicForm Model="{Binding Path=DataContext.CollectionConfig, ElementName=tcSettings}"
+        <forgeControls:DynamicForm Model="{Binding Path=DataContext.CollectionConfig, ElementName=tcSettings}"
                               MaxWidth="350" />
       </TabItem>
 
       <TabItem Header="Logging" Padding="4, 4" mah:ControlsHelper.HeaderFontSize="18" HorizontalContentAlignment="Left">
-        <controls:DynamicForm Model="{Binding Path=DataContext.LoggerConfig, ElementName=tcSettings}"
+        <forgeControls:DynamicForm Model="{Binding Path=DataContext.LoggerConfig, ElementName=tcSettings}"
                               MaxWidth="350" />
       </TabItem>
 
       <TabItem Header="Layouts" Padding="4, 4" mah:ControlsHelper.HeaderFontSize="18">
         <settings:LayoutSettings />
+      </TabItem>
+
+      <TabItem Header="About" Padding="4, 4" mah:ControlsHelper.HeaderFontSize="18">
+        <smaControls:ChangeLogControl />
       </TabItem>
     </TabControl>
   </Grid>

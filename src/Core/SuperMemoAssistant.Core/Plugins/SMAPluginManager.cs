@@ -62,6 +62,7 @@ namespace SuperMemoAssistant.Plugins
     PluginManagerBase<SMAPluginManager, PluginInstance, PluginMetadata, IPluginManager<ISuperMemoAssistant>, ISuperMemoAssistant, ISMAPlugin
     >;
 
+  /// <inheritdoc cref="TPluginManager"/>
   public partial class SMAPluginManager : TPluginManager, IPluginLocations
   {
     #region Constants & Statics

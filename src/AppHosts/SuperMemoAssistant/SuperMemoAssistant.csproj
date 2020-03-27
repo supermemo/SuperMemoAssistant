@@ -229,6 +229,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="quotes.tsv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\robot-flip.gif" />
   </ItemGroup>
   <ItemGroup>
@@ -299,16 +302,16 @@
       <Version>2.1.1</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Installer">
-      <Version>1.9.4.63</Version>
+      <Version>1.9.4.64</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Interop">
-      <Version>2.0.4.7</Version>
+      <Version>2.0.4.10</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.Sentry">
       <Version>1.0.1.14</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.UI">
-      <Version>2.0.4.2</Version>
+      <Version>2.0.4.6</Version>
     </PackageReference>
     <PackageReference Include="WpfAnimatedGif">
       <Version>1.4.18</Version>
@@ -356,10 +359,11 @@
       <SetupIcon>$(SMAResources)robot-24.ico</SetupIcon>
       <SetupLoadingGif>$(SMAResources)robot-flashing.gif"</SetupLoadingGif>
       <UpdateUrl>https://releases.supermemo.wiki/sma/core/beta</UpdateUrl>
+      <BaseUrl>https://releases.supermemo.wiki/sma/core/packages</BaseUrl>
       <NetVersion>net472</NetVersion>
     </PropertyGroup>
     <Exec Command="$(NuGet) pack $(NuSpecFile) -Version $(Version) -OutputDirectory $(NuPkgDir) -BasePath $(OutputPath)" />
-    <Exec Command="$(Squirrel) --releasify=$(NuPkgFile) --releaseDir=$(ReleaseDir) --updateUrl=$(UpdateUrl) --no-msi --framework-version=$(NetVersion) --exeStubRegexPattern=$(SMAExeName) --setupIcon=$(SetupIcon) --loadingGif=$(SetupLoadingGif)" />
+    <Exec Command="$(Squirrel) --releasify=$(NuPkgFile) --releaseDir=$(ReleaseDir) --baseUrl=$(BaseUrl) --updateUrl=$(UpdateUrl) --no-msi --framework-version=$(NetVersion) --exeStubRegexPattern=$(SMAExeName) --setupIcon=$(SetupIcon) --loadingGif=$(SetupLoadingGif)" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>

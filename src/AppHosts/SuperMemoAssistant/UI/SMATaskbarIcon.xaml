@@ -4,7 +4,7 @@
                     x:Class="SuperMemoAssistant.UI.SMATaskbarIcon">
   <tb:TaskbarIcon x:Key="TbIcon"
                   Visibility="Hidden"
-                  IconSource="../Resources/robot-24.ico"
+                  IconSource="pack://application:,,,/Resources/robot.ico"
                   MenuActivation="RightClick"
                   Initialized="Initialized"
                   TrayMouseDoubleClick="Settings"

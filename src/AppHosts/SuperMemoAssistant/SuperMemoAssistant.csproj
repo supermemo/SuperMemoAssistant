@@ -2,56 +2,21 @@
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net472</TargetFramework>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <AssemblyVersion>0.1.591</AssemblyVersion>
-    <TargetFrameworkProfile />
-    <AdvancedSettingsExpanded>False</AdvancedSettingsExpanded>
-    <UpdateAssemblyVersion>True</UpdateAssemblyVersion>
-    <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
-    <UpdateAssemblyInfoVersion>True</UpdateAssemblyInfoVersion>
-    <UpdatePackageVersion>False</UpdatePackageVersion>
-    <AssemblyInfoVersionType>SettingsVersion</AssemblyInfoVersionType>
-    <InheritWinAppVersionFrom>None</InheritWinAppVersionFrom>
-    <AssemblyVersionSettings>IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease</AssemblyVersionSettings>
-    <AssemblyFileVersionSettings>IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease</AssemblyFileVersionSettings>
-    <AssemblyInfoVersionSettings>IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.None</AssemblyInfoVersionSettings>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>C:\Users\Lila\AppData\Local\SuperMemoAssistant\app-dev\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Platforms>x86</Platforms>
     <Prefer32Bit>true</Prefer32Bit>
-    <LangVersion>latest</LangVersion>
-    <NoWarn>CS0067</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>C:\Users\Lila\AppData\Local\SuperMemoAssistant\app-dev\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-    <LangVersion>latest</LangVersion>
-    <NoWarn>CS0067</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>Resources\robot-24.ico</ApplicationIcon>
+    <OutputPath>$(LocalAppData)\SuperMemoAssistant\app-dev\</OutputPath>
+    <ApplicationIcon>$(SolutionDir)assets\images\icons\robot.ico</ApplicationIcon>
+    <UseWPF>true</UseWPF>
+    <AssemblyVersion>2.0.4.100</AssemblyVersion>
+    <FileVersion>2.0.4.100</FileVersion>
+    <Version>2.0.4</Version>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Build" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IdentityModel" />
     <Reference Include="System.IO.Compression" />
@@ -80,141 +45,28 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="App.Configs.cs" />
-    <Compile Include="Installer\SMAInstaller.cs" />
-    <Compile Include="Models\AppPayload.cs" />
-    <Compile Include="Models\SMAExitCodes.cs" />
-    <Compile Include="ModuleInitializer.cs" />
-    <Compile Include="Setup\Models\SMImportCollection.cs" />
-    <Compile Include="Setup\Screens\ImportCollections.xaml.cs">
-      <DependentUpon>ImportCollections.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="SMANotificationActivator.cs" />
-    <Compile Include="Setup\ISMASetupScreen.cs" />
-    <Compile Include="Setup\Screens\TermsOfLicense.xaml.cs">
-      <DependentUpon>TermsOfLicense.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Setup\SMASetup.xaml.cs">
-      <DependentUpon>SMASetup.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Setup\Screens\PluginSetup.xaml.cs">
-      <DependentUpon>PluginSetup.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SMAParameters.cs" />
-    <Compile Include="Setup\SMASetupScreenBase.cs" />
-    <Compile Include="UI\ChangeLogWindow.xaml.cs">
-      <DependentUpon>ChangeLogWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SMATaskbarIcon.cs" />
-    <Compile Include="Setup\Models\SuperMemoFilePath.cs" />
-    <Compile Include="Setup\Screens\SuperMemoFinder.xaml.cs">
-      <DependentUpon>SuperMemoFinder.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SplashScreenWindow.xaml.cs">
-      <DependentUpon>SplashScreenWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Utils\ApplicationSingleton.cs" />
-    <Page Include="Setup\Screens\ImportCollections.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Setup\Screens\TermsOfLicense.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Setup\SMASetup.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Setup\Screens\PluginSetup.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\ChangeLogWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\CollectionSelectionWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="UI\CollectionSelectionWindow.xaml.cs">
-      <DependentUpon>CollectionSelectionWindow.xaml</DependentUpon>
-    </Compile>
-    <Page Include="UI\SMATaskbarIcon.xaml">
-      <SubType>Designer</SubType>
-      <Generator>XamlIntelliSenseFileGenerator</Generator>
-      <DependentUpon>SMATaskbarIcon.cs</DependentUpon>
-    </Page>
-    <Page Include="Setup\Screens\SuperMemoFinder.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\SplashScreenWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <ProjectReference Include="..\..\Core\SuperMemoAssistant.Core\SuperMemoAssistant.Core.csproj" />
+    <ProjectReference Include="..\..\Core\SuperMemoAssistant.Hooks.Common\SuperMemoAssistant.Hooks.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <None Include="Installer\SuperMemoAssistant.nuspec" />
+    <Resource Include="$(SolutionDir)assets\images\icons\robot.ico" Link="Resources\robot.ico" />
+    <Resource Include="$(SolutionDir)assets\images\animations\robot-flashing.gif" Link="Resources\robot-flashing.gif" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <ContentWithTargetPath Include="$(SolutionDir)assets\data\quotes.tsv">
+      <TargetPath>quotes.tsv</TargetPath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </ContentWithTargetPath>
   </ItemGroup>
   <ItemGroup>
-    <None Include="FodyWeavers.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Core\SuperMemoAssistant.Core\SuperMemoAssistant.Core.csproj">
-      <Project>{7550628d-0630-4a42-b0b7-55d26f981365}</Project>
-      <Name>SuperMemoAssistant.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\SuperMemoAssistant.Hooks.Common\SuperMemoAssistant.Hooks.Common.csproj">
-      <Project>{CC5B9485-9EF1-4133-9242-719D263700AE}</Project>
-      <Name>SuperMemoAssistant.Hooks.Common</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\robot-24.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\robot-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\robot-24.ico" />
+    <ContentWithTargetPath Include="Redistributables\msvcr110.dll">
+      <TargetPath>msvcr110.dll</TargetPath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="Redistributables\vcruntime140.dll">
+      <TargetPath>vcruntime140.dll</TargetPath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </ContentWithTargetPath>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
@@ -227,21 +79,6 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="quotes.tsv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Include="Resources\robot-flip.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="msvcr110.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Resource Include="Resources\robot-flashing.gif" />
-    <Content Include="vcruntime140.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Anotar.Serilog.Fody">
@@ -293,7 +130,7 @@
       <Version>0.2.1.110</Version>
     </PackageReference>
     <PackageReference Include="PropertyChanged.Fody">
-      <Version>3.2.6</Version>
+      <Version>3.2.7</Version>
     </PackageReference>
     <PackageReference Include="QueryString.NET">
       <Version>1.0.0</Version>
@@ -317,56 +154,6 @@
       <Version>1.4.18</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <NuSpecFileName>SuperMemoAssistant.nuspec</NuSpecFileName>
-    <SMAExeName>SuperMemoAssistant.exe</SMAExeName>
-    <NuSpecFile>$(ProjectDir)Installer\$(NuSpecFileName)</NuSpecFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <Git>git</Git>
-    <Squirrel>$(SquirrelToolsPath)\Update.exe</Squirrel>
-    <NuGet>$(SolutionDir)tools\nuget.exe</NuGet>
-  </PropertyGroup>
-  <Target Name="WriteChangeLogs" BeforeTargets="Build" Condition=" $(SolutionConfiguration.StartsWith('Squirrel')) ">
-    <PropertyGroup>
-      <ChangeLogFile>$(SolutionDir)ChangeLogs</ChangeLogFile>
-    </PropertyGroup>
-    <GitCreateChangeLog GitExecutable="$(Git)" PreserveChanges="False" RefSpec="HEAD" Categories="Added;Updated;Fixed;Misc" Debug="False" GitDebug="False" ChangeLogFilePath="$(ChangeLogFile)" NuSpecFilePath="$(NuSpecFile)">
-      <Output TaskParameter="CurrentVersionHasReleaseNotes" PropertyName="CurrentVersionHasReleaseNotes" />
-    </GitCreateChangeLog>
-    <Error Condition=" '$(CurrentVersionHasReleaseNotes)' == 'False' " Text="No release logs detected for current version. Commit your work to git before building your NuGet package." />
-  </Target>
-  <Target Name="Package" AfterTargets="Build" Condition=" $(SolutionConfiguration.StartsWith('Squirrel')) ">
-    <PropertyGroup>
-      <ReleaseDir>$(SolutionDir)releases\</ReleaseDir>
-      <CacheDir>$(ReleaseDir)cache\</CacheDir>
-      <NuPkgDir>$(ReleaseDir)nupkg\</NuPkgDir>
-      <SMAResources>$(ProjectDir)Resources\</SMAResources>
-      <OutputPath Condition=" '$(OutputPath)' == '' ">C:\Users\Lila\AppData\Local\SuperMemoAssistant\app-dev\</OutputPath>
-      <SMAExe>$(OutputPath)$(SMAExeName)</SMAExe>
-      <NuSpecFile>$(ProjectDir)Installer\$(NuSpecFileName)</NuSpecFile>
-      <ChangeLogFile>$(SolutionDir)ChangeLogs</ChangeLogFile>
-    </PropertyGroup>
-    <GetAssemblyIdentity AssemblyFiles="$(SMAExe)">
-      <Output TaskParameter="Assemblies" ItemName="smaAssembly" />
-    </GetAssemblyIdentity>
-    <PropertyGroup>
-      <Version>%(smaAssembly.Version)</Version>
-      <VersionSuffix>-Suffix nightly</VersionSuffix>
-      <NuPkgFile>$(NuPkgDir)SuperMemoAssistant.$(Version).nupkg</NuPkgFile>
-      <SetupIcon>$(SMAResources)robot-24.ico</SetupIcon>
-      <SetupLoadingGif>$(SMAResources)robot-flashing.gif"</SetupLoadingGif>
-      <UpdateUrl>https://releases.supermemo.wiki/sma/core/beta</UpdateUrl>
-      <BaseUrl>https://releases.supermemo.wiki/sma/core/packages</BaseUrl>
-      <NetVersion>net472</NetVersion>
-    </PropertyGroup>
-    <Exec Command="$(NuGet) pack $(NuSpecFile) -Version $(Version) -OutputDirectory $(NuPkgDir) -BasePath $(OutputPath)" />
-    <Exec Command="$(Squirrel) --releasify=$(NuPkgFile) --releaseDir=$(ReleaseDir) --baseUrl=$(BaseUrl) --updateUrl=$(UpdateUrl) --no-msi --framework-version=$(NetVersion) --exeStubRegexPattern=$(SMAExeName) --setupIcon=$(SetupIcon) --loadingGif=$(SetupLoadingGif)" />
-  </Target>
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
+  <Import Project="Build\*.props" />
+  <Import Project="Build\*.targets" />
 </Project>

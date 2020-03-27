@@ -10,7 +10,7 @@
                  mc:Ignorable="d"
                  DataContext="{Binding RelativeSource={RelativeSource Self}}"
                  Height="450" Width="700"
-                 Icon="../Resources/robot-24.ico"
+                 Icon="pack://application:,,,/Resources/robot.ico"
                  IconScalingMode="NoScaleSmallerFrame"
                  Title="Collection Selection"
                  TitleAlignment="Left"

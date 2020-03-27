@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/11/17 01:26
-// Modified On:  2018/11/19 16:16
+// Modified On:  2020/03/27 21:53
 // Modified By:  Alexis
 
 #endregion
@@ -31,6 +30,7 @@
 
 
 using System;
+using SuperMemoAssistant.Interop.SuperMemo.Elements.Builders;
 using SuperMemoAssistant.Services;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Elements
@@ -97,7 +97,7 @@ End Element #1";
     public static string FromElementBuilder(ElementBuilder elemBuilder)
     {
       DateTime now            = DateTime.Now;
-      string   collectionPath = Svc.SMA.Collection.Path;
+      string   collectionPath = Svc.SMA.SM.Collection.Path;
       int      parentId       = elemBuilder.Parent?.Id ?? 1;
       string title = elemBuilder.Title ?? string.Empty; /*elemBuilder.Content.Substring(0,
                                                                         10);*/

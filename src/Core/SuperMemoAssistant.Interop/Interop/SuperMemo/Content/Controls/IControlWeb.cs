@@ -26,6 +26,7 @@
 #endregion
 
 using mshtml;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
 
 namespace SuperMemoAssistant.Interop.SuperMemo.Components.Controls
 {

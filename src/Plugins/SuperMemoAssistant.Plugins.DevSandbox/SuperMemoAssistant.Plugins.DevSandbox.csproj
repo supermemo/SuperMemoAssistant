@@ -93,7 +93,7 @@
       <Version>0.2.1.37</Version>
     </PackageReference>
     <PackageReference Include="PropertyChanged.Fody">
-      <Version>3.2.6</Version>
+      <Version>3.2.7</Version>
     </PackageReference>
     <PackageReference Include="Sentry.Serilog">
       <Version>2.1.1</Version>

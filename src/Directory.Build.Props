@@ -1,5 +1,60 @@
 <Project>
-  <PropertyGroup>
+  <PropertyGroup Label="Package">
+    <Authors>SuperMemo.wiki;Alexis Inco</Authors>
+    <Copyright>Copyright (C) SuperMemo.wiki</Copyright>
+    <Company>SuperMemo.wiki</Company>
+  </PropertyGroup>
+  
+  <PropertyGroup Label="Build (Global)">
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <NoWarn>CS0067;NU1605;$(NoWarn)</NoWarn>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RootNamespace>SuperMemoAssistant</RootNamespace>
+  </PropertyGroup>
+  
+  <PropertyGroup Label="Build (Paths)">
+    <ProjectName Condition=" '$(ProjectName)' == '' ">$(MSBuildProjectName)</ProjectName>
+    <BaseOutputPath>$(SolutionDir)build\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(BaseOutputPath)obj\$(ProjectName)\</BaseIntermediateOutputPath>
+    <OutputPath>$(BaseOutputPath)$(ProjectName)\$(Configuration)\$(Platform)\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Build (C++ Paths)" Condition=" '$(MSBuildProjectExtension)'=='.vcxproj' ">
+    <Platform Condition=" '$(Platform)' == '' OR '$(Platform)' == 'AnyCPU' ">Win32</Platform>
+    <IntDir>$(BaseIntermediateOutputPath)$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(OutputPath)$(ProjectName)\$(Platform)\</OutDir>
+  </PropertyGroup>
+  
+  <PropertyGroup Label="Build (Debug*)" Condition=" $(Configuration.StartsWith('Debug')) ">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  
+  <PropertyGroup Label="Build (Debug-InProd)" Condition=" '$(Configuration.ToLower())' == 'debug-inprod' ">
+    <DefineConstants>DEBUG_IN_PROD;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Label="Build (Release)" Condition=" '$(Configuration)' == 'Release' ">
+    <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+  </PropertyGroup>
+  
+  <PropertyGroup Label="Build (x86)" Condition=" '$(Platform)' == 'x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup Label="NuGet (Git Link)" Condition=" '$(MSBuildProjectExtension)'=='.csproj' ">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.1.71" PrivateAssets="All" />
+  </ItemGroup>
+  
+  <PropertyGroup Label="Automatic Version 2">
     <UpdateAssemblyVersion>True</UpdateAssemblyVersion>
     <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
     <UpdateAssemblyInfoVersion>True</UpdateAssemblyInfoVersion>
@@ -10,4 +65,4 @@
     <AssemblyFileVersionSettings>IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease</AssemblyFileVersionSettings>
     <AssemblyInfoVersionSettings>IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.None</AssemblyInfoVersionSettings>
   </PropertyGroup>
-</Project
+</Project>

@@ -205,7 +205,7 @@ namespace SuperMemoAssistant.Utils
     {
       using (var hash = SHA256.Create())
       {
-        var processPath = Process.GetCurrentProcess().MainModule.FileName;
+        var processPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
         var bytes       = hash.ComputeHash(Encoding.UTF8.GetBytes(processPath));
         return Convert.ToBase64String(bytes);
       }

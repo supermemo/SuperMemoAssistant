@@ -1,0 +1,30 @@
+<Project>
+  <Target Name="Package" AfterTargets="Build" Condition=" $(SolutionConfiguration.StartsWith('Squirrel')) ">
+    <PropertyGroup>
+      <ReleaseDir>$(SolutionDir)releases\</ReleaseDir>
+      <ImagesDir>$(SolutionDir)assets\images\</ImagesDir>
+      <CacheDir>$(ReleaseDir)cache\</CacheDir>
+      <NuPkgDir>$(ReleaseDir)nupkg\</NuPkgDir>
+      <SMAResources>$(ProjectDir)Resources\</SMAResources>
+      <OutputPath Condition=" '$(OutputPath)' == '' ">C:\Users\Lila\AppData\Local\SuperMemoAssistant\app-dev\</OutputPath>
+      <SMAExe>$(OutputPath)$(SMAExeName)</SMAExe>
+      <NuSpecFile>$(ProjectDir)Installer\$(NuSpecFileName)</NuSpecFile>
+      <ChangeLogFile>$(SolutionDir)ChangeLogs</ChangeLogFile>
+    </PropertyGroup>
+    <GetAssemblyIdentity AssemblyFiles="$(SMAExe)">
+      <Output TaskParameter="Assemblies" ItemName="smaAssembly" />
+    </GetAssemblyIdentity>
+    <PropertyGroup>
+      <Version>%(smaAssembly.Version)</Version>
+      <VersionSuffix>-Suffix nightly</VersionSuffix>
+      <NuPkgFile>$(NuPkgDir)SuperMemoAssistant.$(Version).nupkg</NuPkgFile>
+      <SetupIcon>$(ImagesDir)icons\robot.ico</SetupIcon>
+      <SetupLoadingGif>$(ImagesDir)animations\robot-flashing.gif</SetupLoadingGif>
+      <UpdateUrl>https://releases.supermemo.wiki/sma/core/beta</UpdateUrl>
+      <BaseUrl>https://releases.supermemo.wiki/sma/core/packages</BaseUrl>
+      <NetVersion>net472</NetVersion>
+    </PropertyGroup>
+    <Exec Command="$(NuGet) pack $(NuSpecFile) -Version $(Version) -OutputDirectory $(NuPkgDir) -BasePath $(OutputPath)" />
+    <Exec Command="$(Squirrel) --releasify=$(NuPkgFile) --releaseDir=$(ReleaseDir) --baseUrl=$(BaseUrl) --updateUrl=$(UpdateUrl) --no-msi --framework-version=$(NetVersion) --exeStubRegexPattern=$(SMAExeName) --setupIcon=$(SetupIcon) --loadingGif=$(SetupLoadingGif)" />
+  </Target>
+</Project>

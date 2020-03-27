@@ -302,7 +302,7 @@ namespace SuperMemoAssistant.UI
 
     private void TitleLink_RequestNavigate(object sender, RequestNavigateEventArgs e)
     {
-      Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+      System.Diagnostics.Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
       e.Handled = true;
     }
 

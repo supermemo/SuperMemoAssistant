@@ -13,13 +13,9 @@
     <copyright></copyright>
     <dependencies />
     <!-- releaseNotes will be replaced by MSBuild.Tools (see SuperMemoAssistant.csproj and https://github.com/alexis-/MSBuild.Tools) -->
-    <releaseNotes>- Added: Quote file
-- Added: Random quotes to the collection selection window from a tsv file.
-- Updated: Packages
-- Fixed: Update channel selection
-- Removed: Console logging
-- Remove console logging
-- Add random quotes to the collection selection window from a tsv file.
+    <releaseNotes>- Added: Solution-wide Directory.Build.Props
+- Updated: SMA SDK csproj transition WIP
+- Fixed: Issue where updater wouldn't recognize identical target and local versions
 </releaseNotes>
   </metadata>
   <files>

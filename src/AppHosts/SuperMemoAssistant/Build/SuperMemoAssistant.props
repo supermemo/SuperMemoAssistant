@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <NuSpecFileName>SuperMemoAssistant.nuspec</NuSpecFileName>
+    <SMAExeName>SuperMemoAssistant.exe</SMAExeName>
+    <NuSpecFile>$(ProjectDir)Installer\$(NuSpecFileName)</NuSpecFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Git>git</Git>
+    <Squirrel>$(SquirrelToolsPath)\Update.exe</Squirrel>
+    <NuGet>$(SolutionDir)tools\nuget.exe</NuGet>
+  </PropertyGroup>
+</Project>

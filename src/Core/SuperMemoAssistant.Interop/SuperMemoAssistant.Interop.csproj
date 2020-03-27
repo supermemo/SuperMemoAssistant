@@ -2,7 +2,8 @@
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <DocumentationFile>bin\$(Configuration)\SuperMemoAssistant.Interop.xml</DocumentationFile>
+    <DocumentationFile>$(OutputPath)SuperMemoAssistant.Interop.xml</DocumentationFile>
+    <Deterministic>true</Deterministic>
     <UseWPF>true</UseWPF>
     <AssemblyVersion>2.0.4.10</AssemblyVersion>
     <FileVersion>2.0.4.10</FileVersion>

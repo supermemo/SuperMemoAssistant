@@ -4,6 +4,7 @@
     <OutputType>Library</OutputType>
     <Platforms>x86</Platforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Deterministic>true</Deterministic>
     <UseWPF>true</UseWPF>
     <AssemblyVersion>2.0.4.77</AssemblyVersion>
     <FileVersion>2.0.4.77</FileVersion>

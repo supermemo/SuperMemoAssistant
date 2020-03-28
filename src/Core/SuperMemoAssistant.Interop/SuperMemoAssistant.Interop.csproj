@@ -1,13 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
-  <PropertyGroup>
+  <PropertyGroup Label="Build">
     <OutputType>Library</OutputType>
-    <DocumentationFile>$(OutputPath)SuperMemoAssistant.Interop.xml</DocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Deterministic>true</Deterministic>
     <UseWPF>true</UseWPF>
     <AssemblyVersion>2.0.4.10</AssemblyVersion>
     <FileVersion>2.0.4.10</FileVersion>
     <Version>2.0.4</Version>
+  </PropertyGroup>
+  <PropertyGroup Label="Package">
+    <Title>SuperMemo Assistant Interop</Title>
+    <Description>Enables interactions between SuperMemo Assistant and Plugins.</Description>
+    <PackageProjectUrl>https://github.com/supermemo/SuperMemoAssistant</PackageProjectUrl>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageTags>SuperMemo SuperMemoAssistant Plugin Plugins</PackageTags>
+    <PackageVersion>$(AssemblyVersion)</PackageVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />

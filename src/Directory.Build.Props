@@ -1,8 +1,12 @@
 <Project>
   <PropertyGroup Label="Package">
-    <Authors>SuperMemo.wiki;Alexis Inco</Authors>
+    <Authors>Alexis;SuperMemo.wiki</Authors>
     <Copyright>Copyright (C) SuperMemo.wiki</Copyright>
     <Company>SuperMemo.wiki</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageIconUrl>https://github.com/supermemo/Documentation/raw/master/docs/sma/content/images/icons/robot.ico</PackageIconUrl>
   </PropertyGroup>
   
   <PropertyGroup Label="Build (Global)">
@@ -13,6 +17,7 @@
     <NoWarn>CS0067;NU1605;$(NoWarn)</NoWarn>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <RootNamespace>SuperMemoAssistant</RootNamespace>
+    <BuildExtraFolder>$(SolutionDir)src\Build\</BuildExtraFolder>
   </PropertyGroup>
   
   <PropertyGroup Label="Build (Paths)">
@@ -54,6 +59,14 @@
     <PackageReference Include="Nerdbank.GitVersioning" Version="3.1.71" PrivateAssets="All" />
   </ItemGroup>
   
+  <PropertyGroup Label="Git (Global)">
+    <Git>git</Git>
+  </PropertyGroup>
+  
+  <ItemGroup Label="Package content (Default)">
+    <None Include="$(SolutionDir)assets\images\icons\robot-128.png" Pack="true" PackagePath="\icon.png" />
+  </ItemGroup>
+  
   <PropertyGroup Label="Automatic Version 2">
     <UpdateAssemblyVersion>True</UpdateAssemblyVersion>
     <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
@@ -63,6 +76,6 @@
     <InheritWinAppVersionFrom>None</InheritWinAppVersionFrom>
     <AssemblyVersionSettings>IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease</AssemblyVersionSettings>
     <AssemblyFileVersionSettings>IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease</AssemblyFileVersionSettings>
-    <AssemblyInfoVersionSettings>IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.None</AssemblyInfoVersionSettings>
+    <AssemblyInfoVersionSettings>IncrementOnDemand.IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease</AssemblyInfoVersionSettings>
   </PropertyGroup>
 </Project>

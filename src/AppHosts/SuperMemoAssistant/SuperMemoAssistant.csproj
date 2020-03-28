@@ -154,6 +154,7 @@
       <Version>1.4.18</Version>
     </PackageReference>
   </ItemGroup>
+  <Import Project="$(BuildExtraFolder)ChangeLog.targets" />
   <Import Project="Build\*.props" />
   <Import Project="Build\*.targets" />
 </Project>

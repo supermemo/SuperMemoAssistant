@@ -1,5 +1,5 @@
 <Project>
-  <Target Name="Package" AfterTargets="Build" Condition=" $(SolutionConfiguration.StartsWith('Squirrel')) ">
+  <Target Name="Package" AfterTargets="Build" DependsOnTargets="WriteChangeLogs" Condition=" $(SolutionConfiguration.StartsWith('Squirrel')) ">
     <PropertyGroup>
       <ReleaseDir>$(SolutionDir)releases\</ReleaseDir>
       <ImagesDir>$(SolutionDir)assets\images\</ImagesDir>

@@ -1,7 +1,7 @@
 <Project>
-  <Target Name="WriteChangeLogs" BeforeTargets="Build" Condition=" $(SolutionConfiguration.StartsWith('Squirrel')) ">
+  <Target Name="WriteChangeLogs">
     <PropertyGroup>
-      <ChangeLogFile>$(SolutionDir)ChangeLogs</ChangeLogFile>
+      <ChangeLogFile Condition=" '$(ChangeLogFile)' == '' ">$(SolutionDir)ChangeLogs</ChangeLogFile>
     </PropertyGroup>
     <GitCreateChangeLog GitExecutable="$(Git)" PreserveChanges="False" RefSpec="HEAD" Categories="Added;Updated;Fixed;Misc" Debug="False" GitDebug="False" ChangeLogFilePath="$(ChangeLogFile)" NuSpecFilePath="$(NuSpecFile)">
       <Output TaskParameter="CurrentVersionHasReleaseNotes" PropertyName="CurrentVersionHasReleaseNotes" />

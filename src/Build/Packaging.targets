@@ -1,0 +1,13 @@
+<Project>
+  <Import Project="ChangeLog.targets" />
+  
+  <Target Name="LoadPackageReleaseNotes">
+    <ReadFile FilePath="$(ChangeLogFile)" Default="">
+      <Output TaskParameter="Content" PropertyName="PackageReleaseNotes" />
+    </ReadFile>
+  </Target>
+  
+  <Target Name="PreparePackage" BeforeTargets="GenerateNuspec" DependsOnTargets="WriteChangeLogs ; LoadPackageReleaseNotes">
+    
+  </Target>
+</Project>

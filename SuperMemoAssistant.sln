@@ -23,15 +23,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperMemoAssistant.Core", "
 		{D5086D5E-84A6-4C0D-B6F2-D1B82C5FB487} = {D5086D5E-84A6-4C0D-B6F2-D1B82C5FB487}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperMemoAssistant.Interop", "src\Core\SuperMemoAssistant.Interop\SuperMemoAssistant.Interop.csproj", "{FD0E1BE8-BED3-4AB0-A9C8-022A2DBC8450}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperMemoAssistant.Hooks.InjectLib", "src\Core\SuperMemoAssistant.Hooks.InjectLib\SuperMemoAssistant.Hooks.InjectLib.csproj", "{D5086D5E-84A6-4C0D-B6F2-D1B82C5FB487}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SuperMemoAssistant.Hooks.NativeLib", "src\Core\SuperMemoAssistant.Hooks.NativeLib\SuperMemoAssistant.Hooks.NativeLib.vcxproj", "{FFFE85EF-4719-4F7F-AB5F-A63D2E184BD2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperMemoAssistant.Hooks.Common", "src\Core\SuperMemoAssistant.Hooks.Common\SuperMemoAssistant.Hooks.Common.csproj", "{CC5B9485-9EF1-4133-9242-719D263700AE}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SuperMemoAssistant.Interop.Shared", "src\Core\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.shproj", "{D4EFF016-9A16-4560-8E1D-2A33D0DE399F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperMemoAssistant.Interop", "src\Core\SuperMemoAssistant.Interop\src\SuperMemoAssistant.Interop\SuperMemoAssistant.Interop.csproj", "{FD0E1BE8-BED3-4AB0-A9C8-022A2DBC8450}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SuperMemoAssistant.Interop.Shared", "src\Core\SuperMemoAssistant.Interop\src\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.shproj", "{D4EFF016-9A16-4560-8E1D-2A33D0DE399F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{943958D2-1308-4317-940F-60CAD3C74AC3}"
 EndProject

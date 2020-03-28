@@ -40,3 +40,18 @@
 [submodule "libs/Extensions.System.IO"]
 	path = libs/Extensions.System.IO
 	url = https://github.com/alexis-/Extensions.System.IO.git
+[submodule "src/Services/SuperMemoAssistant.Services.Sentry"]
+	path = src/Services/SuperMemoAssistant.Services.Sentry
+	url = https://github.com/supermemo/SuperMemoAssistant.Services.Sentry.git
+[submodule "src/Services/SuperMemoAssistant.Services.Medias.Images"]
+	path = src/Services/SuperMemoAssistant.Services.Medias.Images
+	url = https://github.com/supermemo/SuperMemoAssistant.Services.Medias.Images.git
+[submodule "src/Services/SuperMemoAssistant.Services.UI"]
+	path = src/Services/SuperMemoAssistant.Services.UI
+	url = https://github.com/supermemo/SuperMemoAssistant.Services.UI.git
+[submodule "src/Services/SuperMemoAssistant.Services.HTML"]
+	path = src/Services/SuperMemoAssistant.Services.HTML
+	url = https://github.com/supermemo/SuperMemoAssistant.Services.HTML.git
+[submodule "src/Core/SuperMemoAssistant.Interop"]
+	path = src/Core/SuperMemoAssistant.Interop
+	url = https://github.com/supermemo/SuperMemoAssistant.Interop.git

@@ -10,7 +10,7 @@
                  mc:Ignorable="d"
                  DataContext="{Binding RelativeSource={RelativeSource Self}}"
                  Height="450" Width="700"
-                 Icon="pack://application:,,,/Resources/robot.ico"
+                 Icon="pack://application:,,,/SuperMemoAssistant;component/Resources/robot.ico"
                  IconScalingMode="NoScaleSmallerFrame"
                  Title="Collection Selection"
                  TitleAlignment="Left"

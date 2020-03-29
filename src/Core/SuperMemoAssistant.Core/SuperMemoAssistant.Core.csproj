@@ -49,16 +49,13 @@
     <ProjectReference Include="..\SuperMemoAssistant.Hooks.Common\SuperMemoAssistant.Hooks.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="$(SolutionDir)assets\images\icons\robot-64.png" Link="Resources\robot-64.png" />
-    <Resource Include="$(SolutionDir)assets\images\icons\plugin-default.png" Link="Resources\plugin-default.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="..\..\..\ChangeLogs">
-      <Link>Resources\ChangeLogs</Link>
-    </EmbeddedResource>
     <Content Include="NativeDataCfg.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Remove="SuperMemo\Common\Content\Layout\XamlLayouts\GenericLayout.xaml" />
+    <EmbeddedResource Include="SuperMemo\Common\Content\Layout\XamlLayouts\GenericLayout.xaml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Anotar.Serilog.Fody">

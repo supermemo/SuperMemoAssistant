@@ -204,8 +204,8 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout
 
     private string LoadXamlFromResource(string xamlFileName)
     {
-      var assembly   = Assembly.GetExecutingAssembly();
       var @namespace = typeof(XamlLayout).Namespace;
+      var assembly = typeof(XamlLayout).Assembly;
 
       using (var stream = assembly.GetManifestResourceStream($"{@namespace}.{xamlFileName}"))
       using (var streamReader = new StreamReader(stream ?? throw new ArgumentException(nameof(xamlFileName))))

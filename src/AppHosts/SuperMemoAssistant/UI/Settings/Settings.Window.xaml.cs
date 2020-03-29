@@ -36,9 +36,10 @@ using MahApps.Metro.Controls;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Plugins;
 using SuperMemoAssistant.Services.IO.Logger;
+using SuperMemoAssistant.SMA;
 using SuperMemoAssistant.SMA.Configs;
 
-namespace SuperMemoAssistant.SMA.UI.Settings
+namespace SuperMemoAssistant.UI.Settings
 {
   /// <summary>Interaction logic for SettingsWindow.xaml</summary>
   public partial class SettingsWindow : MetroWindow
@@ -68,8 +69,8 @@ namespace SuperMemoAssistant.SMA.UI.Settings
 
     #region Properties & Fields - Public
 
-    public CollectionCfg CollectionConfig => Core.SMA.CollectionConfig;
-    public LoggerCfg     LoggerConfig     => Core.Logger.Config;
+    public CollectionCfg CollectionConfig => SuperMemoAssistant.SMA.Core.SMA.CollectionConfig;
+    public LoggerCfg     LoggerConfig     => SuperMemoAssistant.SMA.Core.Logger.Config;
 
     #endregion
 
@@ -83,12 +84,12 @@ namespace SuperMemoAssistant.SMA.UI.Settings
       _instance = null;
 
       if (CollectionConfig.IsChanged)
-        Core.SMA.SaveConfig(false);
+        SuperMemoAssistant.SMA.Core.SMA.SaveConfig(false);
 
       if (LoggerConfig.IsChanged)
       {
-        Core.Logger.ReloadConfig();
-        Core.SharedConfiguration.Save(LoggerConfig);
+        SuperMemoAssistant.SMA.Core.Logger.ReloadConfig();
+        SuperMemoAssistant.SMA.Core.SharedConfiguration.Save(LoggerConfig);
 
         SMAPluginManager.Instance.OnLoggerConfigUpdated().RunAsync(); // TODO: Display a notification when updating failed
       }

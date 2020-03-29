@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/03/06 16:37
+// Modified On:  2020/02/28 15:52
 // Modified By:  Alexis
 
 #endregion
@@ -29,45 +29,18 @@
 
 
 
-using System;
-using System.Globalization;
-using System.Windows.Data;
-using NuGet.Versioning;
+using System.Windows;
 
-namespace SuperMemoAssistant.SMA.UI.Converters
+namespace SuperMemoAssistant.UI.DataTemplates
 {
-  public class NuGetVersionConverter : IValueConverter
+  /// <summary>Interaction logic for UserControl1.xaml</summary>
+  public partial class OnlinePluginPackageDataTemplate : FrameworkElement
   {
-    #region Methods Impl
+    #region Constructors
 
-    /// <inheritdoc />
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public OnlinePluginPackageDataTemplate()
     {
-      if (parameter is "True")
-        return ConvertBack(value, targetType, null, culture);
-
-      if (value == null)
-        return null;
-
-      if (!(value is NuGetVersion nuGetVer))
-        throw new ArgumentException($"{nameof(value)} must be of type {nameof(NuGetVersion)}");
-
-      return nuGetVer.ToNormalizedString();
-    }
-
-    /// <inheritdoc />
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-      if (parameter is "True")
-        return Convert(value, targetType, null, culture);
-
-      if (value == null)
-        return null;
-
-      if (!(value is string versionStr))
-        throw new ArgumentException($"{nameof(value)} must be of type {nameof(String)}");
-
-      return NuGetVersion.Parse(versionStr);
+      InitializeComponent();
     }
 
     #endregion

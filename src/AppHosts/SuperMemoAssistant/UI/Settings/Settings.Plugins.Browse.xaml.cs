@@ -32,9 +32,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.SMA.UI.ViewModels;
+using SuperMemoAssistant.UI.ViewModels;
 
-namespace SuperMemoAssistant.SMA.UI.Settings
+namespace SuperMemoAssistant.UI.Settings
 {
   /// <summary>
   ///   List available plugins from the online Plugin repository. User can choose to install,

@@ -35,12 +35,12 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using PropertyChanged;
-using SuperMemoAssistant.SMA.UI.Settings.Layout;
 using SuperMemoAssistant.SuperMemo.Common.Content.Layout;
 using SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts;
 using SuperMemoAssistant.Sys.Windows.Input;
+using SuperMemoAssistant.UI.Settings.Layout;
 
-namespace SuperMemoAssistant.SMA.UI.Settings
+namespace SuperMemoAssistant.UI.Settings
 {
   /// <summary>Interaction logic for LayoutSettings.xaml</summary>
   public partial class LayoutSettings : UserControl, INotifyPropertyChanged

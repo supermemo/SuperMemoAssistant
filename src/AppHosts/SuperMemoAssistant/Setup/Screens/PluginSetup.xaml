@@ -4,12 +4,12 @@
                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                           xmlns:local="clr-namespace:SuperMemoAssistant.Setup"
-                          xmlns:viewModels="clr-namespace:SuperMemoAssistant.SMA.UI.ViewModels;assembly=SuperMemoAssistant.Core"
                           xmlns:data="clr-namespace:SuperMemoAssistant.Sys.Windows.Data;assembly=SuperMemoAssistant.Interop"
-                          xmlns:models="clr-namespace:SuperMemoAssistant.SMA.UI.Settings.Models;assembly=SuperMemoAssistant.Core"
                           xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                           xmlns:behaviors="clr-namespace:SuperMemoAssistant.Sys.Windows.Behaviors;assembly=SuperMemoAssistant.Interop"
                           xmlns:fa5="http://schemas.fontawesome.com/icons/"
+                          xmlns:viewModels="clr-namespace:SuperMemoAssistant.UI.ViewModels"
+                          xmlns:models="clr-namespace:SuperMemoAssistant.UI.Settings.Models"
                           mc:Ignorable="d"
                           d:DataContext="{d:DesignInstance viewModels:PluginManagerViewModel}">
   <UserControl.Resources>

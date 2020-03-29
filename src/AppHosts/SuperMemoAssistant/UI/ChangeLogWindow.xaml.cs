@@ -36,7 +36,7 @@ using Anotar.Serilog;
 using MahApps.Metro.Controls;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.SMA.Configs;
-using SuperMemoAssistant.SMA.UI.Controls;
+using SuperMemoAssistant.UI.Controls;
 
 namespace SuperMemoAssistant.UI
 {

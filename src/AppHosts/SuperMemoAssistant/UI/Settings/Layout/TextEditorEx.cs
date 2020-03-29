@@ -35,7 +35,7 @@ using System.ComponentModel;
 using System.Windows;
 using PropertyChanged;
 
-namespace SuperMemoAssistant.SMA.UI.Settings.Layout
+namespace SuperMemoAssistant.UI.Settings.Layout
 {
   internal class TextEditorEx : ICSharpCode.AvalonEdit.TextEditor, INotifyPropertyChanged
   {

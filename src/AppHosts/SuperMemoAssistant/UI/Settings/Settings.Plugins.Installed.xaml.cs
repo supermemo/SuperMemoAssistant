@@ -31,9 +31,9 @@
 
 using System.Windows;
 using System.Windows.Controls;
-using SuperMemoAssistant.SMA.UI.ViewModels;
+using SuperMemoAssistant.UI.ViewModels;
 
-namespace SuperMemoAssistant.SMA.UI.Settings
+namespace SuperMemoAssistant.UI.Settings
 {
   /// <summary>
   ///   Show all plugins installed for the current user. User can choose to start, stop,

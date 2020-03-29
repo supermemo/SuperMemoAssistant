@@ -45,7 +45,7 @@
            HorizontalAlignment="Center"
            VerticalAlignment="Center"
            gif:ImageBehavior.AutoStart="True"
-           gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/robot-flashing.gif" />
+           gif:ImageBehavior.AnimatedSource="pack://application:,,,/SuperMemoAssistant;component/Resources/robot-flashing.gif" />
 
   </Grid>
 </mah:MetroWindow>

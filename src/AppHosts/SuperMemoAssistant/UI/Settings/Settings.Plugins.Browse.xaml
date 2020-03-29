@@ -1,37 +1,32 @@
-﻿<!-- ReSharper disable InconsistentNaming -->
-<UserControl x:Class="SuperMemoAssistant.SMA.UI.Settings.InstalledPluginSettings"
+﻿<UserControl x:Class="SuperMemoAssistant.UI.Settings.BrowsePluginSettings"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:viewModels="clr-namespace:SuperMemoAssistant.SMA.UI.ViewModels"
-             xmlns:models="clr-namespace:SuperMemoAssistant.SMA.UI.Settings.Models"
              xmlns:data="clr-namespace:SuperMemoAssistant.Sys.Windows.Data;assembly=SuperMemoAssistant.Interop"
-             xmlns:behaviors="clr-namespace:SuperMemoAssistant.Sys.Windows.Behaviors;assembly=SuperMemoAssistant.Interop"
-             xmlns:fa5="http://schemas.fontawesome.com/icons/"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:fa5="http://schemas.fontawesome.com/icons/"
+             xmlns:viewModels="clr-namespace:SuperMemoAssistant.UI.ViewModels"
+             xmlns:models="clr-namespace:SuperMemoAssistant.UI.Settings.Models"
+             xmlns:behaviors="clr-namespace:SuperMemoAssistant.Sys.Windows.Behaviors;assembly=SuperMemoAssistant.Interop"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance viewModels:PluginManagerViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/SuperMemoAssistant.Core;component/SMA/UI/DataTemplates/PluginInstanceDataTemplate.xaml" />
-      </ResourceDictionary.MergedDictionaries>
-
-      <data:NegateBooleanConverter x:Key="NegateBoolean" />
       <data:IsNullConverter x:Key="IsNull" />
       <data:BooleanToVisibilityConverterEx x:Key="BoolToVis" />
     </ResourceDictionary>
   </UserControl.Resources>
 
   <Grid>
+    <!--The listbox which displays available plugins-->
     <ListBox x:Name="lbPlugins"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
              HorizontalContentAlignment="Stretch"
              ItemContainerStyle="{DynamicResource UnfocusableListBoxItem}"
-             ItemsSource="{Binding PluginInstances}">
+             ItemsSource="{Binding Plugins}">
       <ListBox.Style>
         <Style TargetType="{x:Type ListBox}">
           <Setter Property="Visibility" Value="Collapsed" />
@@ -39,11 +34,8 @@
           <Style.Triggers>
             <!-- ReSharper disable Xaml.BindingWithContextNotResolved -->
 
-            <!--Loaded plugin list is visible when Status is Display or Refresh (the latter only concerns Settings.Plugins.Browse -->
+            <!--Visibility depends on the Status property-->
             <DataTrigger Binding="{Binding Status}" Value="{x:Static models:PluginManagerStatus.Display}">
-              <Setter Property="Visibility" Value="Visible" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding Status}" Value="{x:Static models:PluginManagerStatus.Refresh}">
               <Setter Property="Visibility" Value="Visible" />
             </DataTrigger>
 
@@ -61,7 +53,7 @@
                   <ControlTemplate>
                     <TextBlock HorizontalAlignment="Center"
                                VerticalAlignment="Center">
-                      No plugins installed yet :-( Browse online plugins and pick a few ones to get started.
+                      No plugins available yet :-( This might be a bug, request assistance to our friendly community.
                     </TextBlock>
                   </ControlTemplate>
                 </Setter.Value>
@@ -100,6 +92,28 @@
         </Style>
       </TextBlock.Style>
     </TextBlock>
+
+    <!--A loading animation, without text/logs-->
+    <mah:ProgressRing Width="70" Height="70"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      IsActive="{Binding RefreshCommand.IsExecuting}">
+      <mah:ProgressRing.Style>
+        <Style TargetType="{x:Type mah:ProgressRing}">
+
+          <!--Default visibility-->
+          <Setter Property="Visibility" Value="Collapsed" />
+
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding Status}" Value="{x:Static models:PluginManagerStatus.Refresh}">
+
+              <!--Visible when status is Refresh-->
+              <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </mah:ProgressRing.Style>
+    </mah:ProgressRing>
 
     <!--A loading animation, with accompanying logs-->
     <Grid HorizontalAlignment="Stretch"
@@ -177,7 +191,7 @@
                AcceptsReturn="True"
                IsReadOnlyCaretVisible="True"
                TextChanged="tbOperationLogs_TextChanged"
-               Text="{Binding OperationLogs, Mode=OneWay}"/>
+               Text="{Binding OperationLogs, Mode=OneWay}" />
 
       <!--The grid is visible only during install and uninstall-->
       <Grid.Style>

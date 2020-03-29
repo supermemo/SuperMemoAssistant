@@ -37,8 +37,8 @@ using Anotar.Serilog;
 using Hardcodet.Wpf.TaskbarNotification;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
 using SuperMemoAssistant.Plugins;
-using SuperMemoAssistant.SMA.UI.Settings;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types;
+using SuperMemoAssistant.UI.Settings;
 using Task = System.Threading.Tasks.Task;
 
 // ReSharper disable UnusedParameter.Local

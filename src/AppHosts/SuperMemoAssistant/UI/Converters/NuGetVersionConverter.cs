@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/25 23:44
-// Modified On:  2019/02/25 23:44
+// Modified On:  2020/03/06 16:37
 // Modified By:  Alexis
 
 #endregion
@@ -32,35 +31,43 @@
 
 using System;
 using System.Globalization;
-using FontAwesome5;
-using PluginManager.Models;
-using SuperMemoAssistant.Sys.Windows.Data;
+using System.Windows.Data;
+using NuGet.Versioning;
 
-namespace SuperMemoAssistant.SMA.UI.Converters
+namespace SuperMemoAssistant.UI.Converters
 {
-  public class StartPauseIconPluginStatusConverter : OneWayValueConverter
+  public class NuGetVersionConverter : IValueConverter
   {
     #region Methods Impl
 
     /// <inheritdoc />
-    public override object Convert(object      value,
-                                   Type        targetType,
-                                   object      parameter,
-                                   CultureInfo culture)
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-      if (!(value is PluginStatus pluginStatus))
-        throw new ArgumentException($"{nameof(value)} must be of type {nameof(PluginStatus)}");
+      if (parameter is "True")
+        return ConvertBack(value, targetType, null, culture);
 
-      switch (pluginStatus)
-      {
-        case PluginStatus.Starting:
-        case PluginStatus.Connected:
-        case PluginStatus.Stopping:
-          return EFontAwesomeIcon.Solid_Pause;
+      if (value == null)
+        return null;
 
-        default:
-          return EFontAwesomeIcon.Solid_Play;
-      }
+      if (!(value is NuGetVersion nuGetVer))
+        throw new ArgumentException($"{nameof(value)} must be of type {nameof(NuGetVersion)}");
+
+      return nuGetVer.ToNormalizedString();
+    }
+
+    /// <inheritdoc />
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+      if (parameter is "True")
+        return Convert(value, targetType, null, culture);
+
+      if (value == null)
+        return null;
+
+      if (!(value is string versionStr))
+        throw new ArgumentException($"{nameof(value)} must be of type {nameof(String)}");
+
+      return NuGetVersion.Parse(versionStr);
     }
 
     #endregion

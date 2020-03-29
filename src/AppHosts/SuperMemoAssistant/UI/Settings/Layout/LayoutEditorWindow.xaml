@@ -1,13 +1,12 @@
-﻿<mah:MetroWindow x:Class="SuperMemoAssistant.SMA.UI.Settings.Layout.LayoutEditorWindow"
+﻿<mah:MetroWindow x:Class="SuperMemoAssistant.UI.Settings.Layout.LayoutEditorWindow"
                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                 xmlns:layout="clr-namespace:SuperMemoAssistant.SMA.UI.Settings.Layout"
+                 xmlns:layout="clr-namespace:SuperMemoAssistant.UI.Settings.Layout"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:data="clr-namespace:SuperMemoAssistant.Sys.Windows.Data;assembly=SuperMemoAssistant.Interop"
-                 xmlns:xamlControls="clr-namespace:SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls"
-                 xmlns:layout1="clr-namespace:SuperMemoAssistant.SMA.UI.Settings.Layout"
+                 xmlns:xamlControls="clr-namespace:SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls;assembly=SuperMemoAssistant.Core"
                  mc:Ignorable="d"
                  KeyDown="Window_KeyDown"
                  Height="600" Width="800"
@@ -68,7 +67,7 @@
                 mah:TabControlHelper.Underlined="TabPanel"
                 SelectionChanged="OnTabSelectionChanged">
       <TabItem Header="Editor" mah:ControlsHelper.HeaderFontSize="18">
-        <layout1:TextEditorEx SyntaxHighlighting="XML"
+        <layout:TextEditorEx SyntaxHighlighting="XML"
                              ShowLineNumbers="True"
                              Text="{Binding NewLayout.Xaml}" />
       </TabItem>

@@ -1,27 +1,30 @@
-﻿<FrameworkElement x:Class="SuperMemoAssistant.SMA.UI.DataTemplates.LocalPluginPackageDataTemplate"
+﻿<FrameworkElement x:Class="SuperMemoAssistant.UI.DataTemplates.OnlinePluginPackageDataTemplate"
                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                  xmlns:markup="clr-namespace:SuperMemoAssistant.Sys.Windows.Markup;assembly=SuperMemoAssistant.Interop"
-                  xmlns:pmModels="clr-namespace:PluginManager.PackageManager.Models;assembly=PluginManager.Core"
-                  xmlns:models="clr-namespace:SuperMemoAssistant.Plugins.Models"
                   xmlns:fa5="http://schemas.fontawesome.com/icons/"
-                  xmlns:data="clr-namespace:SuperMemoAssistant.Sys.Windows.Data;assembly=SuperMemoAssistant.Interop"
+                  xmlns:pmModels="clr-namespace:PluginManager.PackageManager.Models;assembly=PluginManager.Core"
+                  xmlns:markup="clr-namespace:SuperMemoAssistant.Sys.Windows.Markup;assembly=SuperMemoAssistant.Interop"
                   xmlns:behaviors="clr-namespace:SuperMemoAssistant.Sys.Windows.Behaviors;assembly=SuperMemoAssistant.Interop"
+                  xmlns:data="clr-namespace:SuperMemoAssistant.Sys.Windows.Data;assembly=SuperMemoAssistant.Interop"
+                  xmlns:models="clr-namespace:SuperMemoAssistant.Plugins.Models;assembly=SuperMemoAssistant.Core"
+                  xmlns:converters="clr-namespace:SuperMemoAssistant.UI.Converters"
                   mc:Ignorable="d"
                   d:DesignHeight="450" d:DesignWidth="800">
+
   <FrameworkElement.Resources>
-    <markup:XamlGenericType BaseType="{x:Type TypeName=pmModels:LocalPluginPackage`1}"
+    <markup:XamlGenericType BaseType="{x:Type TypeName=pmModels:OnlinePluginPackage`1}"
                             InnerType="{x:Type models:PluginMetadata}"
-                            x:Key="LocalPluginPackage" />
+                            x:Key="OnlinePluginPackage" />
 
-    <data:BooleanToVisibilityConverterEx x:Key="BoolToVis" />
     <data:ImageSourceBase64Converter x:Key="ImageSourceBase64Converter" />
+    <data:BooleanToVisibilityConverterEx x:Key="BoolToVis" />
+    <converters:NuGetVersionConverter x:Key="NuGetVersionConverter" />
 
-    <DataTemplate DataType="{StaticResource LocalPluginPackage}">
+    <DataTemplate DataType="{StaticResource OnlinePluginPackage}">
 
-      <Grid Height="76" Margin="6">
+      <Grid Height="76" HorizontalAlignment="Stretch" Margin="6">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="auto" />
           <ColumnDefinition Width="*" />
@@ -41,7 +44,7 @@
           <Image.Source>
             <Binding Path="Metadata.IconBase64" Converter="{StaticResource ImageSourceBase64Converter}">
               <Binding.TargetNullValue>
-                <ImageSource>/SuperMemoAssistant.Core;component/Resources/plugin-default.png</ImageSource>
+                <ImageSource>/SuperMemoAssistant;component/Resources/plugin-default.png</ImageSource>
               </Binding.TargetNullValue>
             </Binding>
           </Image.Source>
@@ -72,7 +75,7 @@
             <!--Version-->
             <TextBlock VerticalAlignment="Bottom"
                        Margin="8 0 0 2"
-                       Text="{Binding Version}"
+                       Text="{Binding LatestOnlineVersion, Converter={StaticResource NuGetVersionConverter}}"
                        FontSize="12" />
 
             <!--Separator-->
@@ -121,50 +124,28 @@
           <StackPanel Grid.Column="2"
                       Orientation="Horizontal">
 
-            <!--Update-->
+            <!--Install-->
             <ComboBox Margin="8 0 8 0"
                       ItemsSource="{Binding OnlineVersions}"
-                      SelectedItem="{Binding SelectedVersion}"
-                      Visibility="{Binding HasPendingUpdates, Converter={StaticResource BoolToVis}}"
-                      ToolTip="Select the version tp which the plugin will be updated"
+                      SelectedValue="{Binding SelectedVersion}"
+                      ToolTip="Select the version which will be installed"
                       FontSize="12" />
 
-            <Button Name="BtnPluginUpdate"
+            <Button Name="BtnPluginInstall"
                     Width="26"
                     Height="26"
                     Margin="8 0 0 0"
                     VerticalAlignment="Center"
-                    ToolTip="Update"
-                    Visibility="{Binding HasPendingUpdates, Converter={StaticResource BoolToVis}}"
+                    ToolTip="Install"
                     Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
                     Foreground="DarkSlateBlue"
                     BorderBrush="DarkSlateBlue"
                     CommandParameter="{Binding}"
-                    Command="{Binding DataContext.UpdateCommand, ElementName=lbPlugins}">
+                    Command="{Binding DataContext.InstallCommand, ElementName=lbPlugins}">
               <fa5:SvgAwesome Width="14"
                               Height="14"
                               VerticalAlignment="Center"
-                              Icon="Solid_ArrowUp"
-                              Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button }}}" />
-            </Button>
-
-            <!--Uninstall-->
-            <Button Name="BtnPluginUninstall"
-                    Width="26"
-                    Height="26"
-                    Margin="8 0 0 0"
-                    VerticalAlignment="Center"
-                    ToolTip="Delete"
-                    Visibility="{Binding Metadata.IsDevelopment, Converter={StaticResource BoolToVis}, ConverterParameter=True}"
-                    Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
-                    Foreground="Red"
-                    BorderBrush="Red"
-                    CommandParameter="{Binding}"
-                    Command="{Binding DataContext.UninstallCommand, ElementName=lbPlugins}">
-              <fa5:SvgAwesome Width="14"
-                              Height="14"
-                              VerticalAlignment="Center"
-                              Icon="Solid_TrashAlt"
+                              Icon="Solid_Download"
                               Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button }}}" />
             </Button>
           </StackPanel>
@@ -180,5 +161,6 @@
                    Text="{Binding Metadata.Description}" />
       </Grid>
     </DataTemplate>
+
   </FrameworkElement.Resources>
 </FrameworkElement>

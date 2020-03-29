@@ -1,7 +1,6 @@
 #pragma managed
 using namespace System;
 
-
 namespace SuperMemoAssistantHooksNativeLib {
 	void __stdcall wndProcNativeWrapper(void);
 

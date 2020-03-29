@@ -60,7 +60,7 @@
       <Version>4.7.1</Version>
     </PackageReference>
   </ItemGroup>
-  <Import Project="..\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.projitems" Label="Shared" />
+  <Import Project="..\SuperMemoAssistant.Interop\src\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.projitems" Label="Shared" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /h /i /d /c /k /r /y $(TargetPath) %25LocalAppData%25\SuperMemoAssistant\app-dev\
 xcopy /h /i /d /c /k /r /y $(TargetDir)EasyHook32.dll %25LocalAppData%25\SuperMemoAssistant\app-dev\

@@ -31,7 +31,7 @@
 
 using System.Windows;
 
-namespace SuperMemoAssistant.SMA.UI.DataTemplates
+namespace SuperMemoAssistant.UI.DataTemplates
 {
   /// <summary>Interaction logic for UserControl1.xaml</summary>
   public partial class LocalPluginPackageDataTemplate : FrameworkElement

@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
+// and/or sell copies of the Software, and to permit persons to whom the 
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,7 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/28 15:52
+// Created On:   2019/02/25 23:44
+// Modified On:  2019/02/25 23:44
 // Modified By:  Alexis
 
 #endregion
@@ -29,18 +30,37 @@
 
 
 
-using System.Windows;
+using System;
+using System.Globalization;
+using FontAwesome5;
+using PluginManager.Models;
+using SuperMemoAssistant.Sys.Windows.Data;
 
-namespace SuperMemoAssistant.SMA.UI.DataTemplates
+namespace SuperMemoAssistant.UI.Converters
 {
-  /// <summary>Interaction logic for UserControl1.xaml</summary>
-  public partial class OnlinePluginPackageDataTemplate : FrameworkElement
+  public class StartPauseIconPluginStatusConverter : OneWayValueConverter
   {
-    #region Constructors
+    #region Methods Impl
 
-    public OnlinePluginPackageDataTemplate()
+    /// <inheritdoc />
+    public override object Convert(object      value,
+                                   Type        targetType,
+                                   object      parameter,
+                                   CultureInfo culture)
     {
-      InitializeComponent();
+      if (!(value is PluginStatus pluginStatus))
+        throw new ArgumentException($"{nameof(value)} must be of type {nameof(PluginStatus)}");
+
+      switch (pluginStatus)
+      {
+        case PluginStatus.Starting:
+        case PluginStatus.Connected:
+        case PluginStatus.Stopping:
+          return EFontAwesomeIcon.Solid_Pause;
+
+        default:
+          return EFontAwesomeIcon.Solid_Play;
+      }
     }
 
     #endregion

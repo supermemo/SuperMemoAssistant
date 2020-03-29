@@ -32,8 +32,8 @@
 using System.Collections.Specialized;
 using System.Windows.Controls;
 using SuperMemoAssistant.Plugins;
-using SuperMemoAssistant.SMA.UI.DataTemplates;
-using SuperMemoAssistant.SMA.UI.ViewModels;
+using SuperMemoAssistant.UI.DataTemplates;
+using SuperMemoAssistant.UI.ViewModels;
 
 namespace SuperMemoAssistant.Setup.Screens
 {

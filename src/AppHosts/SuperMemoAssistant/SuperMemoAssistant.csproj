@@ -44,20 +44,32 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
   </ItemGroup>
+  <!--Referenced local projects-->
   <ItemGroup>
     <ProjectReference Include="..\..\Core\SuperMemoAssistant.Core\SuperMemoAssistant.Core.csproj" />
     <ProjectReference Include="..\..\Core\SuperMemoAssistant.Hooks.Common\SuperMemoAssistant.Hooks.Common.csproj" />
   </ItemGroup>
+  <!--Resources-->
   <ItemGroup>
     <Resource Include="$(SolutionDir)assets\images\icons\robot.ico" Link="Resources\robot.ico" />
+    <Resource Include="$(SolutionDir)assets\images\icons\robot-64.png" Link="Resources\robot-64.png" />
+    <Resource Include="$(SolutionDir)assets\images\icons\plugin-default.png" Link="Resources\plugin-default.png" />
     <Resource Include="$(SolutionDir)assets\images\animations\robot-flashing.gif" Link="Resources\robot-flashing.gif" />
   </ItemGroup>
+  <!--Embedded resources-->
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\..\ChangeLogs">
+      <Link>Resources\ChangeLogs</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <!--Data-->
   <ItemGroup>
     <ContentWithTargetPath Include="$(SolutionDir)assets\data\quotes.tsv">
       <TargetPath>quotes.tsv</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </ContentWithTargetPath>
   </ItemGroup>
+  <!--Redistribuables (C++/CLI for Fasm.NET and SuperMemoAssistant.NativeLib)-->
   <ItemGroup>
     <ContentWithTargetPath Include="Redistributables\msvcr110.dll">
       <TargetPath>msvcr110.dll</TargetPath>

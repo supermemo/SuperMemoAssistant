@@ -50,10 +50,10 @@ using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Plugins;
 using SuperMemoAssistant.Plugins.Models;
 using SuperMemoAssistant.Services.UI.Extensions;
-using SuperMemoAssistant.SMA.UI.Settings.Models;
 using SuperMemoAssistant.Sys.Windows.Input;
+using SuperMemoAssistant.UI.Settings.Models;
 
-namespace SuperMemoAssistant.SMA.UI.ViewModels
+namespace SuperMemoAssistant.UI.ViewModels
 {
   public class PluginManagerViewModel : INotifyPropertyChanged
   {

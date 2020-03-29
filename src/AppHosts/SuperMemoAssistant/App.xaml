@@ -18,7 +18,7 @@
 
         <ResourceDictionary Source="UI/SMATaskbarIcon.xaml" />
 
-        <ResourceDictionary Source="pack://application:,,,/SuperMemoAssistant.Core;component/SMA/UI/DataTemplates/PluginInstanceDataTemplate.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/UI/DataTemplates/PluginInstanceDataTemplate.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
       <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource MetroListBoxItem}">

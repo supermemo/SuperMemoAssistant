@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2020/01/11 19:03
-// Modified On:  2020/01/11 19:03
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/03/29 06:51
 // Modified By:  Alexis
 
 #endregion
@@ -35,7 +35,6 @@ using System.Threading.Tasks;
 using Anotar.Serilog;
 using AsyncEvent;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.SMA.UI;
 
 namespace SuperMemoAssistant.SMA
 {
@@ -63,17 +62,14 @@ namespace SuperMemoAssistant.SMA
       {
         await SaveConfig(false).ConfigureAwait(false);
 
-        SMAUI.Initialize();
-
         if (OnSMStartedEvent != null)
           await OnSMStartedEvent.InvokeAsync(
             this,
-            new SMProcessArgs(_sm, SMProcess.Native)).ConfigureAwait(true);
+            new SMProcessArgs(_sm, SMProcess.Native)).ConfigureAwait(false);
       }
       catch (Exception ex)
       {
         LogTo.Error(ex, "Exception while notifying subscribers of OnSMStarted");
-
         throw;
       }
     }
@@ -107,7 +103,7 @@ namespace SuperMemoAssistant.SMA
 
     public event AsyncEventHandler<SMProcessArgs> OnSMStartedEvent;
     public event AsyncEventHandler<SMEventArgs>   OnSMStartingEvent;
-    public event EventHandler<SMProcessArgs> OnSMStoppedEvent;
+    public event EventHandler<SMProcessArgs>      OnSMStoppedEvent;
 
     #endregion
   }

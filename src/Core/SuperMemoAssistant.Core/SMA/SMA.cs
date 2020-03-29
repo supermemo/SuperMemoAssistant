@@ -21,7 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/25 15:33
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/03/29 06:50
 // Modified By:  Alexis
 
 #endregion
@@ -34,7 +35,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting;
 using System.Threading.Tasks;
-using System.Windows;
 using Anotar.Serilog;
 using Extensions.System.IO;
 using PluginManager.Interop.Sys;
@@ -42,7 +42,6 @@ using Process.NET;
 using SuperMemoAssistant.Exceptions;
 using SuperMemoAssistant.Interop.SuperMemo;
 using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Services.UI.Extensions;
 using SuperMemoAssistant.SMA.Configs;
 using SuperMemoAssistant.SMA.Utils;
 using SuperMemoAssistant.SuperMemo;
@@ -133,7 +132,7 @@ namespace SuperMemoAssistant.SMA
         if (_sm != null)
           throw new InvalidOperationException("_sm is already instantiated");
 
-        await LoadConfig(collection);
+        await LoadConfig(collection).ConfigureAwait(false);
 
         var nativeData = CheckSuperMemoExecutable(nativeDataCfg);
 
@@ -142,7 +141,7 @@ namespace SuperMemoAssistant.SMA
         // TODO: Move somewhere else
         _sm.UI.ElementWdw.OnAvailable += OnSuperMemoWindowsAvailable;
 
-        await _sm.Start(nativeData);
+        await _sm.Start(nativeData).ConfigureAwait(false);
         // TODO: Ensure opened collection (windows title) matches parameter
       }
       catch (Exception ex)

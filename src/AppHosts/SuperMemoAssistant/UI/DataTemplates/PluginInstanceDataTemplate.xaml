@@ -1,12 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:models="clr-namespace:SuperMemoAssistant.Plugins.Models"
                     xmlns:fa5="http://schemas.fontawesome.com/icons/"
                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-                    xmlns:converters="clr-namespace:SuperMemoAssistant.SMA.UI.Converters"
+                    xmlns:converters="clr-namespace:SuperMemoAssistant.UI.Converters"
                     xmlns:data="clr-namespace:SuperMemoAssistant.Sys.Windows.Data;assembly=SuperMemoAssistant.Interop"
                     xmlns:pluginModels="clr-namespace:PluginManager.Models;assembly=PluginManager.Core"
-                    xmlns:behaviors="clr-namespace:SuperMemoAssistant.Sys.Windows.Behaviors;assembly=SuperMemoAssistant.Interop">
+                    xmlns:behaviors="clr-namespace:SuperMemoAssistant.Sys.Windows.Behaviors;assembly=SuperMemoAssistant.Interop"
+                    xmlns:models="clr-namespace:SuperMemoAssistant.Plugins.Models;assembly=SuperMemoAssistant.Core">
 
   <!-- ReSharper disable InconsistentNaming -->
   <data:BooleanToVisibilityConverterEx x:Key="BoolToVis" />
@@ -39,7 +39,7 @@
         <Image.Source>
           <Binding Path="Metadata.IconBase64" Converter="{StaticResource ImageSourceBase64Converter}">
             <Binding.TargetNullValue>
-              <ImageSource>/SuperMemoAssistant.Core;component/Resources/plugin-default.png</ImageSource>
+              <ImageSource>/SuperMemoAssistant;component/Resources/plugin-default.png</ImageSource>
             </Binding.TargetNullValue>
           </Binding>
         </Image.Source>

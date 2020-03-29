@@ -21,7 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/22 16:41
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/03/29 06:51
 // Modified By:  Alexis
 
 #endregion
@@ -80,13 +81,13 @@ namespace SuperMemoAssistant.SuperMemo.Common
   {
     #region Properties & Fields - Non-Public
 
-    private readonly string _binPath;
+    private readonly string       _binPath;
+    protected        SMHookEngine _hook;
+
+    private IPointer _ignoreUserConfirmationPtr;
 
     protected SuperMemoRegistryCore _registry;
     protected SuperMemoUICore       _ui;
-    protected SMHookEngine          _hook;
-
-    private IPointer _ignoreUserConfirmationPtr;
 
     #endregion
 
@@ -175,35 +176,35 @@ namespace SuperMemoAssistant.SuperMemo.Common
     {
       AppVersion = nativeData.SMVersion;
 
-      await OnPreInit();
+      await OnPreInit().ConfigureAwait(false);
 
       var smProcess = await _hook.CreateAndHook(
         Collection,
         _binPath,
         GetIOCallbacks(),
         nativeData
-      );
+      ).ConfigureAwait(false);
 
       SMProcess               =  smProcess ?? throw new InvalidOperationException("Failed to start SuperMemo process");
       SMProcess.Native.Exited += OnSMExited;
 
       Core.Natives = smProcess.Procedures;
 
-      await OnPostInit();
+      await OnPostInit().ConfigureAwait(false);
 
       _hook.SignalWakeUp();
     }
 
     protected virtual async Task OnPreInit()
     {
-      await Core.SMA.OnSMStarting();
+      await Core.SMA.OnSMStarting().ConfigureAwait(false);
     }
 
     protected virtual async Task OnPostInit()
     {
       _ignoreUserConfirmationPtr = SMProcess[Core.Natives.Globals.IgnoreUserConfirmationPtr];
 
-      await Core.SMA.OnSMStarted();
+      await Core.SMA.OnSMStarted().ConfigureAwait(false);
     }
 
     protected virtual void OnSMExited(object    called,

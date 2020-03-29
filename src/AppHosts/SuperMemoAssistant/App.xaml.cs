@@ -208,7 +208,7 @@ namespace SuperMemoAssistant
 
         Exception ex;
 
-        if (true && (ex = await SMA.Core.SMA.Start(nativeDataCfg, smCollection).ConfigureAwait(true)) != null)
+        if ((ex = await SMA.Core.SMA.Start(nativeDataCfg, smCollection).ConfigureAwait(true)) != null)
         {
           
           _splashScreen?.Close();
@@ -245,6 +245,8 @@ namespace SuperMemoAssistant
     private Task OnSMStartedEvent(object sender, SMProcessArgs eventArgs)
     {
       SMA.Core.SM.UI.ElementWdw.OnAvailable += ElementWdw_OnAvailable;
+      
+      SMAUI.Initialize();
 
       return Task.CompletedTask;
     }

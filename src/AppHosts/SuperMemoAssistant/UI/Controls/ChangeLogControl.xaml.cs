@@ -35,8 +35,9 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using SuperMemoAssistant.SMA;
 
-namespace SuperMemoAssistant.SMA.UI.Controls
+namespace SuperMemoAssistant.UI.Controls
 {
   /// <summary>Displays the change log and some additional info, pretty self-explanatory</summary>
   public partial class ChangeLogControl : UserControl, INotifyPropertyChanged
@@ -56,7 +57,7 @@ namespace SuperMemoAssistant.SMA.UI.Controls
 
     public ChangeLogControl()
     {
-      ReleaseName = "SMA " + Core.SMAVersion;
+      ReleaseName = "SMA " + SuperMemoAssistant.SMA.Core.SMAVersion;
       ChangeLog   = LoadChangeLogs() ?? "No change logs available at the moment.";
 
       InitializeComponent();

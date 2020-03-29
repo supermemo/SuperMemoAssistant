@@ -64,7 +64,7 @@
   </PropertyGroup>
   
   <ItemGroup Label="Package content (Default)">
-    <None Include="$(SolutionDir)assets\images\icons\robot-128.png" Pack="true" PackagePath="\icon.png" />
+    <None Include="$(SolutionDir)assets\images\icons\robot-128.png" Visible="False" Pack="true" PackagePath="\icon.png" />
   </ItemGroup>
   
   <PropertyGroup Label="Automatic Version 2">

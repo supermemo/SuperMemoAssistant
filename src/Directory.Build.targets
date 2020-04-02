@@ -1,0 +1,9 @@
+<Project>
+
+  <ItemGroup Label="NuGet (Git Link)"
+             Condition=" '$(MSBuildProjectExtension)'=='.csproj' ">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.1.74" PrivateAssets="All" />
+  </ItemGroup>
+
+</Project>

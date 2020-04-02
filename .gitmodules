@@ -55,3 +55,9 @@
 [submodule "src/Core/SuperMemoAssistant.Interop"]
 	path = src/Core/SuperMemoAssistant.Interop
 	url = https://github.com/supermemo/SuperMemoAssistant.Interop.git
+[submodule "src/Build/MSBuild"]
+	path = src/Build/MSBuild
+	url = https://github.com/supermemo/SuperMemoAssistant.Sdk.git
+[submodule "src/Build/VS"]
+	path = src/Build/VS
+	url = https://github.com/supermemo/SuperMemoAssistant.Sdk.VisualStudio.git

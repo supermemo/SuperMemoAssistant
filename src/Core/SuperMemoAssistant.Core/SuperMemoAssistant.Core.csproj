@@ -60,6 +60,7 @@
   <ItemGroup>
     <PackageReference Include="Anotar.Serilog.Fody">
       <Version>5.1.0</Version>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="AsyncEvent">
       <Version>0.2.0</Version>
@@ -100,6 +101,10 @@
     <PackageReference Include="morelinq">
       <Version>3.3.2</Version>
     </PackageReference>
+    <PackageReference Include="MSBuild.Tools" Version="0.2.58">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="PluginManager.Core">
       <Version>0.2.1.110</Version>
       <ExcludeAssets>contentfiles; buildtransitive</ExcludeAssets>
@@ -107,6 +112,7 @@
     </PackageReference>
     <PackageReference Include="PropertyChanged.Fody">
       <Version>3.2.7</Version>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="QueryString.NET">
       <Version>1.0.0</Version>

@@ -61,3 +61,6 @@
 [submodule "src/Build/VS"]
 	path = src/Build/VS
 	url = https://github.com/supermemo/SuperMemoAssistant.Sdk.VisualStudio.git
+[submodule "libs/VisualStudio.GitHooks"]
+	path = libs/VisualStudio.GitHooks
+	url = https://github.com/alexis-/VisualStudio.GitHooks.git

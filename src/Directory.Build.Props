@@ -24,7 +24,7 @@
 
   <PropertyGroup Label="GitVersioning">
     <!--GitVersioning cannot find the git root and throws an error-->
-    <GitRepoRoot>$(SolutionDir)</GitRepoRoot>
+    <!--<GitRepoRoot>$(SolutionDir)</GitRepoRoot>-->
   </PropertyGroup>
 
 </Project>

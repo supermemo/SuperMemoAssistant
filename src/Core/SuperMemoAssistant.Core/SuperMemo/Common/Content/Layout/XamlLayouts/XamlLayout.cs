@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -19,29 +19,24 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/03/03 15:38
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Markup;
-using Newtonsoft.Json;
-using SuperMemoAssistant.Interop.SuperMemo.Content.Contents;
-using SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls;
-using SuperMemoAssistant.Sys.ComponentModel;
-
 namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts
 {
+  using System;
+  using System.Collections.Generic;
+  using System.ComponentModel;
+  using System.Windows;
+  using System.Windows.Markup;
+  using Interop.SuperMemo.Content.Contents;
+  using Newtonsoft.Json;
+  using Sys.ComponentModel;
+  using XamlControls;
+
   [Serializable]
   public class XamlLayout : INotifyPropertyChanged
   {
@@ -85,7 +80,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts
     public bool IsDefault { get; set; }
 
     [JsonIgnore]
-    public ContentTypeFlag AcceptedContent { get; private set; }
+    public ContentTypeFlags AcceptedContent { get; private set; }
 
     [JsonIgnore]
     public bool IsValid { get; private set; }
@@ -126,7 +121,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts
 
       try
       {
-        var context = new ParserContext { XamlTypeMapper = new XamlTypeMapper(new string[] { }) };
+        var context = new ParserContext { XamlTypeMapper = new XamlTypeMapper(Array.Empty<string>()) };
 
         var @namespace   = typeof(XamlControlBase).Namespace;
         var assemblyName = typeof(XamlControlBase).Assembly.GetName().Name;
@@ -199,7 +194,6 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts
     #region Events
 
     public event PropertyChangedDelegate<XamlLayout, string> NameChanged;
-
     public event PropertyChangedEventHandler                 PropertyChanged;
     public event PropertyChangedDelegate<XamlLayout, string> XamlChanged;
 

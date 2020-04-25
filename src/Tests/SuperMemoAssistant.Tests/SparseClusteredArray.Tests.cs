@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/04/24 02:31
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/04/06 01:40
 // Modified By:  Alexis
 
 #endregion
@@ -30,12 +30,12 @@
 
 
 
-using System;
-using SuperMemoAssistant.Sys.SparseClusteredArray;
-using Xunit;
-
 namespace SuperMemoAssistant.Tests
 {
+  using System;
+  using SuperMemoAssistant.Sys.SparseClusteredArray;
+  using Xunit;
+
   public class SparseClusteredArrayTests
   {
     private readonly Random _random = new Random();
@@ -82,6 +82,12 @@ namespace SuperMemoAssistant.Tests
     }
 
     [Fact]
+    public void FailingTest()
+    {
+      Assert.True(false);
+    }
+
+    [Fact]
     public void OverlappingTest()
     {
       int   length          = 100;
@@ -119,7 +125,6 @@ namespace SuperMemoAssistant.Tests
         Validate(sca, validationArray, -1);
       }*/
 
-
       for (int i = 0; i < 500000; i++)
       {
         if (i % 10 == 0)
@@ -129,10 +134,10 @@ namespace SuperMemoAssistant.Tests
           validationArray = GenerateValidationArray(length, -1);
         }
 
-        int                           lower  = _random.Next(98);
-        int                           upper  = lower + _random.Next(99 - lower) + 1;
-        SparseClusteredArray<int>.Bounds bounds = new SparseClusteredArray<int>.Bounds(lower, upper);
-        var                           arr    = GenerateBytes(bounds, validationArray);
+        int lower  = _random.Next(98);
+        int upper  = lower + _random.Next(99 - lower) + 1;
+        var bounds = new SparseClusteredArray<int>.Bounds(lower, upper);
+        var arr    = GenerateBytes(bounds, validationArray);
 
         sca.Write(arr, bounds.Lower);
         Validate(sca, validationArray, -1);

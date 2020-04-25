@@ -36,11 +36,11 @@ using System.Collections.Generic;
 
 namespace SuperMemoAssistant.Sys.SparseClusteredArray
 {
-  public class SparseClusteredArrayEnumerable<TEnum> : IEnumerable<TEnum>
+  public class SparseClusteredArrayCollection<TEnum> : IEnumerable<TEnum>
   {
     #region Constructors
 
-    internal SparseClusteredArrayEnumerable(Func<IEnumerator<TEnum>> enumFunc)
+    internal SparseClusteredArrayCollection(Func<IEnumerator<TEnum>> enumFunc)
     {
       EnumFunc = enumFunc;
     }
@@ -149,7 +149,7 @@ namespace SuperMemoAssistant.Sys.SparseClusteredArray
     public IEnumerable<(T[] _arr, int _fromIdx, int _toIdx, int _itIdx, int _absIdx)>
       Subset(IBounds bounds)
     {
-      return new SparseClusteredArrayEnumerable<(T[] _arr, int _fromIdx, int _toIdx, int _itIdx, int _absIdx)>(() =>
+      return new SparseClusteredArrayCollection<(T[] _arr, int _fromIdx, int _toIdx, int _itIdx, int _absIdx)>(() =>
         {
           (int idx, List<Segment> localSegs) = AcquireReadLock((allSegs) =>
             {

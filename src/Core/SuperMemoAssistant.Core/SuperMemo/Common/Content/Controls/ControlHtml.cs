@@ -64,7 +64,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
     private IHTMLDocument2 _document;
 
     private int NativeControlAddr =>
-      _group._smProcess.Memory.Read<int>(Core.Natives.ElWind.ObjectsPtr, 4 * Id);
+      Group._smProcess.Memory.Read<int>(Core.Natives.ElWind.ObjectsPtr, 4 * Id);
 
     #endregion
 
@@ -144,7 +144,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
       while (ieSrvFrame == null && (DateTime.Now - start).TotalMilliseconds <= 1000)
         try
         {
-          IntPtr shellEmbedHwnd = _group._smProcess.Memory.Read<IntPtr>(
+          IntPtr shellEmbedHwnd = Group._smProcess.Memory.Read<IntPtr>(
             new IntPtr(NativeControlAddr + Core.Natives.Control.HandleOffset)
           );
 

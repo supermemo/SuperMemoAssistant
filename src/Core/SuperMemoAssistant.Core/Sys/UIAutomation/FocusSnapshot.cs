@@ -37,7 +37,7 @@ using Process.NET.Utilities;
 
 namespace SuperMemoAssistant.Sys.UIAutomation
 {
-  public class FocusSnapshot : IDisposable
+  public sealed class FocusSnapshot : IDisposable
   {
     private readonly bool _useDispatcher;
 
@@ -46,7 +46,8 @@ namespace SuperMemoAssistant.Sys.UIAutomation
 
     #region Constructors
 
-    /// <param name="useDispatcher"></param>
+    /// <summary>New Instance</summary>
+    /// <param name="useDispatcher">Whether to restore on the UI thread</param>
     public FocusSnapshot(bool useDispatcher = false)
     {
       _useDispatcher = useDispatcher;
@@ -68,7 +69,7 @@ namespace SuperMemoAssistant.Sys.UIAutomation
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex, $"Failed to restore window {WindowHandle}");
+        LogTo.Error(ex, "Failed to restore window {WindowHandle}", WindowHandle);
       }
     }
 

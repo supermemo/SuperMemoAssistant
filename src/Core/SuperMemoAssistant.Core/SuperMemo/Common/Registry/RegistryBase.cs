@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/08/07 15:20
-// Modified On:  2020/01/12 10:26
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/04/10 14:19
 // Modified By:  Alexis
 
 #endregion
@@ -30,29 +30,33 @@
 
 
 
-using System;
-using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
-using Anotar.Serilog;
-using Process.NET.Assembly;
-using Process.NET.Types;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SuperMemo.Common.Extensions;
-using SuperMemoAssistant.SuperMemo.Common.Registry.Files;
-using SuperMemoAssistant.SuperMemo.Hooks;
-using SuperMemoAssistant.Sys.SparseClusteredArray;
+
 
 // ReSharper disable VirtualMemberCallInConstructor
 
 namespace SuperMemoAssistant.SuperMemo.Common.Registry
 {
+  using System;
+  using System.Collections;
+  using System.Collections.Concurrent;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Text.RegularExpressions;
+  using System.Threading;
+  using Anotar.Serilog;
+  using Extensions;
+  using Files;
+  using Hooks;
+  using Interop.SuperMemo.Registry.Members;
+  using Interop.SuperMemo.Registry.Types;
+  using Process.NET.Assembly;
+  using Process.NET.Types;
+  using SMA;
+  using SuperMemoAssistant.Extensions;
+  using Sys.SparseClusteredArray;
+
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1715:Identifiers should have correct prefix", Justification = "<Pending>")]
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1710:Identifiers should have correct suffix", Justification = "<Pending>")]
   public abstract class RegistryBase<TMember, IMember>
     : SMHookIOBase,
       IRegistry<IMember>

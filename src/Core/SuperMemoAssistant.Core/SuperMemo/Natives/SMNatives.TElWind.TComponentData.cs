@@ -52,11 +52,11 @@ namespace SuperMemoAssistant.SuperMemo.Natives
 
         public TComponentData(ObjPtr componentsDataPtr, NativeData nativeData)
         {
-          ComponentDataArrOffset     = nativeData.Pointers[NativePointers.ElWdw_ComponentData_ComponentDataArrOffset];
-          ComponentDataArrItemLength = nativeData.Pointers[NativePointers.ElWdw_ComponentData_ComponentDataArrItemLength];
+          ComponentDataArrOffset     = nativeData.Pointers[NativePointer.ElWdw_ComponentData_ComponentDataArrOffset];
+          ComponentDataArrItemLength = nativeData.Pointers[NativePointer.ElWdw_ComponentData_ComponentDataArrItemLength];
 
-          ComponentCountPtr = new ObjPtr(componentsDataPtr, nativeData.Pointers[NativePointers.ElWdw_ComponentData_ComponentCountPtr]);
-          IsModifiedPtr     = new ObjPtr(componentsDataPtr, nativeData.Pointers[NativePointers.ElWdw_ComponentData_IsModifiedPtr]);
+          ComponentCountPtr = new ObjPtr(componentsDataPtr, nativeData.Pointers[NativePointer.ElWdw_ComponentData_ComponentCountPtr]);
+          IsModifiedPtr     = new ObjPtr(componentsDataPtr, nativeData.Pointers[NativePointer.ElWdw_ComponentData_IsModifiedPtr]);
         }
 
         #endregion

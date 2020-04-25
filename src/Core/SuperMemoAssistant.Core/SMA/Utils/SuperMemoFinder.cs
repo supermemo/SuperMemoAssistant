@@ -21,7 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/03 00:24
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/04/09 15:08
 // Modified By:  Alexis
 
 #endregion
@@ -29,24 +30,24 @@
 
 
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Management;
-using System.Security.Permissions;
-using System.Threading.Tasks;
-using Anotar.Serilog;
-using SuperMemoAssistant.Exceptions;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.SMA.Configs;
-using SuperMemoAssistant.SuperMemo;
-using Extensions.System.IO;
-using SuperMemoAssistant.Sys.Windows.Search;
-
 namespace SuperMemoAssistant.SMA.Utils
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Globalization;
+  using System.IO;
+  using System.Linq;
+  using System.Management;
+  using System.Security.Permissions;
+  using System.Threading.Tasks;
+  using Anotar.Serilog;
+  using Configs;
+  using Exceptions;
+  using Extensions;
+  using global::Extensions.System.IO;
+  using SuperMemo;
+  using Sys.Windows.Search;
+
   public static class SuperMemoFinder
   {
     #region Constants & Statics
@@ -92,7 +93,7 @@ namespace SuperMemoAssistant.SMA.Utils
       }
     }
 
-    public static async Task<List<FilePath>> SearchSuperMemoInWindowsIndex()
+    public static async Task<List<FilePath>> SearchSuperMemoInWindowsIndexAsync()
     {
       if (WindowsSearch.Instance.IsAvailable == false)
       {
@@ -100,7 +101,8 @@ namespace SuperMemoAssistant.SMA.Utils
         return new List<FilePath>();
       }
 
-      var wsRes = await WindowsSearch.Instance.Search("sm1%.exe", WindowsSearchKind.Program);
+      var wsRes = await WindowsSearch.Instance.SearchAsync("sm1%.exe", WindowsSearchKinds.Program)
+                                     .ConfigureAwait(false);
 
       return wsRes.Select(wsr => new FilePath(wsr.FilePath))
                   .ToList();

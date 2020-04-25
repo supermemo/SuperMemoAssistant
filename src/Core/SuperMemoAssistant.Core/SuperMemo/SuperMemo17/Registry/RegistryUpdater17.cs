@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -19,43 +19,39 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2019/05/08 19:57
-// Modified On:  2019/08/09 11:12
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Anotar.Serilog;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
-using SuperMemoAssistant.SuperMemo.Common.Extensions;
-using SuperMemoAssistant.SuperMemo.Common.Registry;
-using SuperMemoAssistant.SuperMemo.Common.Registry.Files;
-using SuperMemoAssistant.SuperMemo.Common.Registry.Models;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
-using SuperMemoAssistant.Sys.SparseClusteredArray;
-
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry
 {
-  public class RegistryUpdater17<TMember, IMember>
+  using System;
+  using System.Collections.Generic;
+  using System.IO;
+  using System.Linq;
+  using System.Text;
+  using Anotar.Serilog;
+  using Common.Extensions;
+  using Common.Registry;
+  using Common.Registry.Files;
+  using Common.Registry.Models;
+  using Extensions;
+  using Files;
+  using Interop.SuperMemo.Core;
+  using Interop.SuperMemo.Registry.Members;
+  using Sys.SparseClusteredArray;
+
+  internal class RegistryUpdater17<TMember, IMember>
     : IRegistryUpdater
     where TMember : RegistryMemberBase, IRegistryMember, IMember
   {
     #region Properties & Fields - Non-Public
 
+    private readonly Action<TMember> _onMemberCreatedOrUpdated;
+
     private readonly RegistryBase<TMember, IMember> _registry;
-    private readonly Action<TMember>                _onMemberCreatedOrUpdated;
 
     #endregion
 
@@ -141,12 +137,15 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry
             var id      = memElemKeyValue.Key;
             var memElem = memElemKeyValue.Value;
 
-            var lower = memElem.rtxOffset - 1;
+            var lower = memElem.rtxOffset                     - 1;
             var upper = memElem.rtxOffset + memElem.rtxLength - 2;
 
             if (upper < lower || upper < 0)
             {
-              LogTo.Warning($"({registryFileDesc.RegistryName}) Invalid rtx offsets, upper: {upper}, lower: {lower}");
+              LogTo.Warning(
+                "({RegistryName}) Invalid rtx offsets, upper: {Upper}, lower: {Lower}",
+                registryFileDesc.RegistryName,
+                upper, lower);
               continue;
             }
 
@@ -206,8 +205,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry
 
     public virtual void UpdateMember(RegistryMemberBase member, RegMemElem17 mem, RegRtElem17 rt)
     {
-#if DEBUG && !DEBUG_IN_PROD
-      LogTo.Debug("[{0} {1}] Updating \"{member.Name}\"",
+#if DEBUG_REGISTRIES
+      LogTo.Debug(@"[{0} {1}] Updating ""{{member.Name}}""",
                   member.GetType().Name,
                   member.Id);
 #endif

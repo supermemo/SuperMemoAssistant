@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/15 23:24
-// Modified On:  2018/12/13 12:53
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/04/09 13:26
 // Modified By:  Alexis
 
 #endregion
@@ -30,20 +30,20 @@
 
 
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
-
 namespace SuperMemoAssistant.Sys.SparseClusteredArray
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Diagnostics.CodeAnalysis;
+  using System.Threading;
+
   partial class SparseClusteredArray<T>
   {
     public class SubSegment : IBounds
     {
       #region Constructors
 
-      public SubSegment(T[] array,
-                        int position)
+      public SubSegment(T[] array, int position)
       {
         Array    = array;
         Position = position;
@@ -56,9 +56,10 @@ namespace SuperMemoAssistant.Sys.SparseClusteredArray
 
       #region Properties & Fields - Public
 
-      public T[] Array { get; private set; }
+      [SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "<Pending>")]
+      public T[] Array { get; }
 
-      public int Position { get; private set; }
+      public int Position { get; }
       public int Length   => Array.Length;
 
       #endregion
@@ -74,11 +75,9 @@ namespace SuperMemoAssistant.Sys.SparseClusteredArray
       #endregion
     }
 
-    public class Segment
-      : IBounds
+    public class Segment : IBounds
     {
-      internal Segment(T[] array,
-                       int position)
+      internal Segment(T[] array, int position)
       {
         Segments = new List<SubSegment>(new[]
         {
@@ -99,8 +98,7 @@ namespace SuperMemoAssistant.Sys.SparseClusteredArray
       public int Lower    => Position;
       public int Upper    => Position + Length - 1;
 
-      public IEnumerator<T> Get1DEnumerator(int fromIdx,
-                                            int toIdx)
+      public IEnumerator<T> Get1DEnumerator(int fromIdx, int toIdx)
       {
         var arrEnum = Get2DEnumerator(fromIdx,
                                       toIdx);
@@ -208,10 +206,9 @@ namespace SuperMemoAssistant.Sys.SparseClusteredArray
 #endif
 
       /// <summary>
-      ///   Coalesce both segments. If there is an overlap, the content of the current one will
-      ///   be preserved. Always operate on a new segment so it can mark the overlapping ones as
-      ///   inconsistent. This is required to avoid a rare thread sync issue where a read-access method
-      ///   is pre-empted in-between obtaining a consistent segment and read-locking it.
+      ///   Coalesce both segments. If there is an overlap, the content of the current one will be preserved. Always operate on a
+      ///   new segment so it can mark the overlapping ones as inconsistent. This is required to avoid a rare thread sync issue
+      ///   where a read-access method is pre-empted in-between obtaining a consistent segment and read-locking it.
       /// </summary>
       /// <param name="segment"></param>
       internal void Coalesce(Segment segment)
@@ -310,7 +307,7 @@ namespace SuperMemoAssistant.Sys.SparseClusteredArray
         // TODO: Check which array is costlier to alter
         if (sSeg.Upper != Upper)
         {
-          int newLength = sSeg.Upper - Upper;
+          int newLength = sSeg.Upper         - Upper;
           int offset    = Upper - sSeg.Lower + 1;
 
           T[] newArr = new T[newLength];
@@ -332,17 +329,12 @@ namespace SuperMemoAssistant.Sys.SparseClusteredArray
 
       private void CoalesceSuper(Segment segment)
       {
-        var thisEnum = Get1DEnumerator(Lower,
-                                       Upper);
-        var arrEnum = segment.Get2DEnumerator(Lower,
-                                              Upper);
-        T[] arr;
-        int fromIdx;
-        int toIdx;
+        var thisEnum = Get1DEnumerator(Lower, Upper);
+        var arrEnum = segment.Get2DEnumerator(Lower, Upper);
 
         while (arrEnum.MoveNext())
         {
-          (arr, fromIdx, toIdx, _, _) = arrEnum.Current;
+          var (arr, fromIdx, toIdx, _, _) = arrEnum.Current;
 
           for (; fromIdx <= toIdx; fromIdx++)
           {

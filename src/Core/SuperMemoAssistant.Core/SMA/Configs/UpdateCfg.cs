@@ -19,27 +19,25 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Modified On:  2020/03/22 17:49
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System.ComponentModel;
-using AutoMapper;
-using Forge.Forms.Annotations;
-using Newtonsoft.Json;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Services.UI.Configuration;
-using SuperMemoAssistant.Sys.Collections;
-using AutoMapperIgnore = AutoMapper.Configuration.Annotations.IgnoreAttribute;
-
 namespace SuperMemoAssistant.SMA.Configs
 {
+  using System.Collections.Generic;
+  using System.ComponentModel;
+  using System.Diagnostics.CodeAnalysis;
+  using AutoMapper;
+  using Forge.Forms.Annotations;
+  using Newtonsoft.Json;
+  using PropertyChanged;
+  using Services.UI.Configuration;
+  using SuperMemoAssistant.Extensions;
+  using Sys.Collections;
+
   /// <summary>Core configuration for SMA and Plugins updates</summary>
   [Form(Mode = DefaultFields.None)]
   [Title("Update Settings",
@@ -52,6 +50,8 @@ namespace SuperMemoAssistant.SMA.Configs
                 IsDefault = true,
                 Validates = true)]
   [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+  [SuppressMessage("Design", "CA1056:Uri properties should not be strings")]
+  [SuppressMessage("Usage", "CA2227:Collection properties should be read only")]
   public class UpdateCfg : CfgBase<UpdateCfg>, INotifyPropertyChanged
   {
     #region Constants & Statics
@@ -65,6 +65,10 @@ namespace SuperMemoAssistant.SMA.Configs
     public const string CoreBetaChannel    = "Beta";
     public const string CoreNightlyChannel = "Nightly";
     public const string CoreDefaultChannel = CoreBetaChannel;
+
+    public const string PluginsDefaultRepositoryUrl = "https://api.nuget.org/v3/index.json";
+    public const string PluginsAlphaRepositoryUrl =
+      "https://pkgs.dev.azure.com/accounts0054/SuperMemoAssistant/_packaging/SuperMemoAssistant-Alpha/nuget/v3/index.json";
 
     #endregion
 
@@ -100,8 +104,8 @@ namespace SuperMemoAssistant.SMA.Configs
     [SelectFrom("{Binding CoreUpdateChannels.Keys}", SelectionType = SelectionType.ComboBoxEditable)]
     public string CoreUpdateChannelField
     {
-      get => CoreUpdateChannels.Reverse.SafeGet(CoreUpdateUrl) ?? CoreDefaultChannel;
-      set => CoreUpdateUrl = CoreUpdateChannels.SafeGet(value) ?? GetDefaultCoreUpdateUrl();
+      get => CoreUpdateChannel;
+      set => CoreUpdateUrl = CoreUpdateChannels.SafeRead(value) ?? GetDefaultCoreUpdateUrl();
     }
 
     //
@@ -125,10 +129,30 @@ namespace SuperMemoAssistant.SMA.Configs
     [JsonProperty]
     public string PluginsUpdateUrl { get; set; } = "https://releases.supermemo.wiki/sma/plugins/";
 
+    /// <summary>The custom URLs to use for the plugin nuget repositories</summary>
+    [JsonProperty]
+    public HashSet<string> PluginsUpdateNuGetUrls { get; set; } = new HashSet<string>
+    {
+      PluginsDefaultRepositoryUrl,
+      PluginsAlphaRepositoryUrl
+    };
+
     /// <summary>The CRC32 of the ChangeLog last displayed</summary>
     [IgnoreMap]
     [JsonProperty]
     public string ChangeLogLastCrc32 { get; set; }
+
+    //
+    // Helpers
+
+    [IgnoreMap]
+    [JsonIgnore]
+    [DependsOn(nameof(CoreUpdateUrl))]
+    public string CoreUpdateChannel => CoreUpdateChannels.Reverse.SafeGet(CoreUpdateUrl) ?? CoreDefaultChannel;
+
+    [IgnoreMap]
+    [JsonIgnore]
+    public bool CoreUpdateChannelIsPrerelease => CoreUpdateChannel != CoreStableChannel;
 
     #endregion
 

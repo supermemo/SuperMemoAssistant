@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>SuperMemoAssistant</id>
+    <!-- version will be replaced by MSBuild (see SuperMemoAssistant.csproj) -->
+    <version>$version$</version>
+    <title>SuperMemo Assistant</title>
+    <authors>SuperMemo.wiki</authors>
+    <description>SuperMemo Assistant supercharges your SuperMemo with powerful features like Incremental PDF, import from Chrome and Firefox, and more.</description>
+    <license type="expression">MIT</license>
+    <iconUrl>https://github.com/supermemo/Documentation/raw/master/docs/sma/content/images/icons/robot.ico</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <copyright></copyright>
+    <repository type="$repositoryType$" url="$repositoryUrl$" branch="develop" commit="$commitId$" />
+    <dependencies />
+    <!-- releaseNotes will be replaced by MSBuild.Tools (see SuperMemoAssistant.csproj and https://github.com/alexis-/MSBuild.Tools) -->
+    <releaseNotes>- Added: VS GitHooks submodule
+- Added: Directory.Build.targets (moved Microsoft.SourceLink.GitHub and Nerdbank.GitVersioning PackageReferences)
+- Added: SuperMemoAssistant MSBuild SDKs under src/Build/MSBuild
+- Added: Visual Studio SMA extension and plugin C# templates under src/Build/VS
+- Added: Global package settings in Directory.Build.Props
+- Added: SMA SDK references in global.json
+- Added: SuperMemoAssistant.Interop submodule
+- Added: SuperMemoAssistant.Services.HTML submodule
+- Added: SuperMemoAssistant.Services.Medias.Images submodule
+- Added: SuperMemoAssistant.Services.Sentry submodule
+- Added: SuperMemoAssistant.Services.UI submodule
+- Added: Build targets for packaging &amp; change log (WIP)
+- Added: Package information to SuperMemoAssistant.Interop
+- Added: Default NuSpec package information
+- Added: Default NuSpec &lt;icon&gt;
+- Added: robot icon for NuSpec &lt;icon&gt; node
+- Added a Directory.Build.Props in src/ which defines the global project values
+- Added: Quote file
+- Added: Random quotes to the collection selection window from a tsv file.
+- Added: Solution-wide Directory.Build.Props
+- Added: Only one instance of SMA can be run #156
+- Added: Rescue tool ("SMA Updater") which can install or update to any SMA version #152
+- Added: Installer ability to rollback to a previous version #151
+- Added: Distribution channels for SMA updates (stable, beta, nightly) #86
+- Added: Update settings accessible from Collection Window
+- Added: Shortcut for "SMA Updater" on install
+- Added: Debug symbols (pdb) to Services nuspec
+- Updated: Cleaned template plugin's csproj for integration in the VS extension's C# templates
+- Updated: Fixed several issue with Directory.Build.Props
+- Updated: Added default settings in version.json
+- Updated: Moved UI from Core to AppHost
+- Updated: Cleaned NativeLib
+- Updated: Packages default icon is now hidden in the solution explorer
+- Updated: AsyncErrorHandler now uses conditional debug
+- Updated: Submodules' Project (csproj) to the new SDK format
+- Updated: Generate documentation to default
+- Updated: Plugins' project (csproj) to the new SDK format
+- Updated: Packages
+- Updated: Project (csproj) format to the new SDK format
+- Updated: Moved all resources to the assets folder
+- Updated: Refactored projects to make their organization more clean and consistent
+- Updated: SMA SDK csproj transition WIP
+- Updated: Change log
+- Updated: Stub executable now selects the version based on the local RELEASES file first #161 #151
+- Updated: Improved Installer ability to optimize the download size by choosing delta updates
+- Updated: All windows' default size are less or equal to 800x600 #160
+- Updated: Tool tips (wip) #166
+- Updated: All projects to PackageReference
+- Updated: Change log is now generated before build to include the include the latest commit messages in the package
+- Fixed: Async/Await would sometime freeze in case of issue during initialization
+- Fixed: Solution didn't point to SuperMemoAssistant.Interop
+- Fixed: Issue where updater wouldn't recognize identical target and local versions
+- Fixed: Update channel selection
+- Fixed: SMA interrupts update mid-way when exiting #88 #161 #151
+- Removed: SuperMemoAssistant.Interop (replacing with submodule)
+- Removed: SuperMemoAssistant.Services.HTML (replacing with submodule)
+- Removed: SuperMemoAssistant.Services.Medias.Images (replacing with submodule)
+- Removed: SuperMemoAssistant.Services.Sentry (replacing with submodule)
+- Removed: SuperMemoAssistant.Services.UI (replacing with submodule)
+- Removed: SuperMemoAssistant.Interop.Shared project (transferring to submodule)
+- Removed: Console logging
+- Removed: nuget.config
+- Remove console logging
+- Add random quotes to the collection selection window from a tsv file.
+</releaseNotes>
+  </metadata>
+  <files>
+    <file src="$outputPath$*.*" target="lib\net45\" exclude="*.pdb;*.nupkg;*.vshost.*" />
+    <file src="$outputPath$SuperMemoAssistant*.pdb" target="lib\net45\" />
+    <file src="$outputPath$PluginManager*.pdb" target="lib\net45\" />
+    <file src="$outputPath$Process.NET*.pdb" target="lib\net45\" />
+    <file src="$outputPath$Squirrel*.pdb" target="lib\net45\" />
+  </files>
+</package>

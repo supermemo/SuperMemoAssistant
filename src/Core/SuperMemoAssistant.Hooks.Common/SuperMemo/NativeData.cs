@@ -38,7 +38,10 @@ using SuperMemoAssistant.Sys;
 
 namespace SuperMemoAssistant.SuperMemo
 {
+  using System.Diagnostics.CodeAnalysis;
+
   [Serializable]
+  [SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "<Pending>")]
   public class NativeData
   {
     #region Constructors
@@ -47,7 +50,7 @@ namespace SuperMemoAssistant.SuperMemo
     {
       SMVersion = new Version("0.0");
 
-      Pointers               = new Dictionary<NativePointers, int>();
+      Pointers               = new Dictionary<NativePointer, int>();
       NativeCallPatterns     = new Dictionary<NativeMethod, MemoryPatternWithOffset>();
       NativeDataPatterns     = new Dictionary<NativeMethod, MemoryPatternWithOffset>();
       NativeFunctionPatterns = new Dictionary<NativeMethod, string>();
@@ -64,12 +67,14 @@ namespace SuperMemoAssistant.SuperMemo
     public Version SMVersion { get; set; }
 
     [JsonConverter(typeof(DictionaryWithEnumKeyAndHexStringValueJsonConverter))]
-    public Dictionary<NativePointers, int> Pointers { get; set; }
+    public Dictionary<NativePointer, int> Pointers { get; set; }
 
     [JsonConverter(typeof(DictionaryWithEnumKeyJsonConverter))]
     public Dictionary<NativeMethod, MemoryPatternWithOffset> NativeCallPatterns { get; set; }
+
     [JsonConverter(typeof(DictionaryWithEnumKeyJsonConverter))]
     public Dictionary<NativeMethod, MemoryPatternWithOffset> NativeDataPatterns { get; set; }
+
     [JsonConverter(typeof(DictionaryWithEnumKeyJsonConverter))]
     public Dictionary<NativeMethod, string> NativeFunctionPatterns { get; set; }
 

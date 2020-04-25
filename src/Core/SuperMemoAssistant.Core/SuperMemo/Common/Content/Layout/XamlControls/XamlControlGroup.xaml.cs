@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/26 23:18
-// Modified On:  2019/03/01 21:47
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/04/10 14:19
 // Modified By:  Alexis
 
 #endregion
@@ -30,17 +30,19 @@
 
 
 
-using System;
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
-using PropertyChanged;
-using SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts;
+
 
 // ReSharper disable InconsistentNaming
 
 namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 {
+  using System;
+  using System.ComponentModel;
+  using System.Windows;
+  using System.Windows.Controls;
+  using PropertyChanged;
+  using XamlLayouts;
+
   /// <summary>Interaction logic for XamlControlGroup.xaml</summary>
   public partial class XamlControlGroup : UserControl, INotifyPropertyChanged
   {
@@ -48,7 +50,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 
     // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty TextContentCountProperty =
-      DependencyProperty.Register("TextContentCount", typeof(double), typeof(XamlControlGroup), new PropertyMetadata
+      DependencyProperty.Register(nameof(TextContentCount), typeof(double), typeof(XamlControlGroup), new PropertyMetadata
       {
         DefaultValue            = 1.0,
         PropertyChangedCallback = OnContentCountChanged
@@ -56,7 +58,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 
     // Using a DependencyProperty as the backing store for ImageContentCount.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty ImageContentCountProperty =
-      DependencyProperty.Register("ImageContentCount", typeof(double), typeof(XamlControlGroup), new PropertyMetadata
+      DependencyProperty.Register(nameof(ImageContentCount), typeof(double), typeof(XamlControlGroup), new PropertyMetadata
       {
         DefaultValue            = 1.0,
         PropertyChangedCallback = OnContentCountChanged
@@ -64,7 +66,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 
     // Using a DependencyProperty as the backing store for SoundContentCount.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty SoundContentCountProperty =
-      DependencyProperty.Register("SoundContentCount", typeof(double), typeof(XamlControlGroup), new PropertyMetadata
+      DependencyProperty.Register(nameof(SoundContentCount), typeof(double), typeof(XamlControlGroup), new PropertyMetadata
       {
         DefaultValue            = 1.0,
         PropertyChangedCallback = OnContentCountChanged
@@ -113,7 +115,11 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 
     #region Properties & Fields - Public
 
-    public double TextContentCount { get => (double)GetValue(TextContentCountProperty); set => SetValue(TextContentCountProperty, value); }
+    public double TextContentCount
+    {
+      get => (double)GetValue(TextContentCountProperty);
+      set => SetValue(TextContentCountProperty, value);
+    }
 
 
     public double ImageContentCount
@@ -139,7 +145,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 
 
     #region Methods
-    
+
     [SuppressPropertyChangedWarnings]
     private static void OnContentCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -147,13 +153,13 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 
       xcg.GenerateDemoContent();
     }
-    
+
     [SuppressPropertyChangedWarnings]
     private void OnSizeChanged(object sender, SizeChangedEventArgs e)
     {
       if (_displayMode)
       {
-        ScaleX = Math.Max(e.NewSize.Width * ScaleX / SuperMemoFrameSize.Width, 0.00001);
+        ScaleX = Math.Max(e.NewSize.Width  * ScaleX / SuperMemoFrameSize.Width, 0.00001);
         ScaleY = Math.Max(e.NewSize.Height * ScaleY / SuperMemoFrameSize.Height, 0.00001);
       }
     }

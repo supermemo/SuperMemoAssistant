@@ -35,7 +35,7 @@ using System.Collections.Generic;
 using SuperMemoAssistant.Extensions;
 using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
 
-#if DEBUG && !DEBUG_IN_PROD
+#if DEBUG_REGISTRIES
 using Anotar.Serilog;
 #endif
 
@@ -82,7 +82,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Components
                             short   height,
                             AtFlags displayAt)
     {
-#if DEBUG && !DEBUG_IN_PROD
+#if DEBUG_REGISTRIES
       LogTo.Debug("[{0}] Creating component",
                   GetType().Name);
 #endif
@@ -126,7 +126,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Components
                           AtFlags             displayAt,
                           ComponentFieldFlags flags)
     {
-#if DEBUG && !DEBUG_IN_PROD
+#if DEBUG_REGISTRIES
       LogTo.Debug("[{0}] Updating component",
                   GetType().Name);
 #endif
@@ -171,7 +171,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Components
         onChangedAction?.Invoke(oldValue,
                                 value);
 
-#if DEBUG && !DEBUG_IN_PROD
+#if DEBUG_REGISTRIES
         LogTo.Debug("[{0}] {1}: {2}",
                     GetType().Name,
                     name,
@@ -185,7 +185,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Components
     protected T SetValue<T>(T      value,
                             string name)
     {
-#if DEBUG && !DEBUG_IN_PROD
+#if DEBUG_REGISTRIES
       LogTo.Debug("[{0}] {1}: {2}",
                   GetType().Name,
                   name,

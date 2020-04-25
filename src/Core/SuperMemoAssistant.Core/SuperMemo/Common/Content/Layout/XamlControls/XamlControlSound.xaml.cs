@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/02/26 23:18
-// Modified On:  2019/03/01 20:58
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/04/09 15:38
 // Modified By:  Alexis
 
 #endregion
@@ -30,15 +30,15 @@
 
 
 
-using System.ComponentModel;
-using System.Drawing;
-using SuperMemoAssistant.Interop.SuperMemo.Content.Components;
-using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
-using Size = System.Windows.Size;
-
 namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 {
+  using System.ComponentModel;
+  using System.Drawing;
+  using Interop.SuperMemo.Content.Components;
+  using Interop.SuperMemo.Content.Models;
+  using Interop.SuperMemo.Registry.Members;
+  using Size = System.Windows.Size;
+
   /// <summary>Interaction logic for XamlControlSound.xaml</summary>
   public partial class XamlControlSound : XamlControlBase, IComponentSound, INotifyPropertyChanged
   {

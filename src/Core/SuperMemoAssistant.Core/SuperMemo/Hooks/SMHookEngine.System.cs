@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/08/09 11:38
-// Modified On:  2020/01/12 14:59
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/04/09 15:11
 // Modified By:  Alexis
 
 #endregion
@@ -30,19 +30,20 @@
 
 
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Windows;
-using Anotar.Serilog;
-using Process.NET.Assembly;
-using Process.NET.Utilities;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SMA.Hooks;
-
 namespace SuperMemoAssistant.SuperMemo.Hooks
 {
+  using System;
+  using System.Collections.Generic;
+  using System.IO;
+  using System.Threading;
+  using System.Windows;
+  using Anotar.Serilog;
+  using Extensions;
+  using Process.NET.Assembly;
+  using Process.NET.Utilities;
+  using SMA;
+  using SMA.Hooks;
+
   public partial class SMHookEngine
   {
     #region Properties & Fields - Non-Public
@@ -59,6 +60,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     #region Methods Impl
 
+    /// <inheritdoc />
     public override void OnException(Exception ex)
     {
       switch (ex)
@@ -72,7 +74,7 @@ But most likely, NativeLib exists and failed to load other assemblies or librari
           break;
 
         default:
-          LogTo.Warning(ex, $"Exception caught in InjectLib.\r\n {ex}");
+          LogTo.Warning(ex, "Exception caught in InjectLib.\r\n {Ex}", ex);
           break;
       }
 
@@ -80,28 +82,31 @@ But most likely, NativeLib exists and failed to load other assemblies or librari
       Application.Current.Shutdown(1);
     }
 
+    /// <inheritdoc />
     public override Dictionary<string, int> GetPatternsHintAddresses()
     {
-      return Core.SMA.CoreConfig.SuperMemo.PatternsHintAddresses;
+      return Core.CoreConfig.SuperMemo.PatternsHintAddresses;
     }
 
+    /// <inheritdoc />
     public override void SetPatternsHintAddresses(Dictionary<string, int> hintAddrs)
     {
-      Core.SMA.CoreConfig.SuperMemo.PatternsHintAddresses = hintAddrs;
-      Core.SMA.SaveConfig(false);
+      Core.CoreConfig.SuperMemo.PatternsHintAddresses = hintAddrs;
+      Core.SMA.SaveConfigAsync().RunAsync();
     }
 
+    /// <inheritdoc />
     public override void SetWndProcHookAddr(int addr)
     {
       _wndProcHookAddr = addr;
     }
 
-    /// <param name="wParam"></param>
+    /// <inheritdoc />
     public override bool OnUserMessage(int wParam)
     {
-      switch ((InjectLibMessageParams)wParam)
+      switch ((InjectLibMessageParam)wParam)
       {
-        case InjectLibMessageParams.ExecuteOnMainThread:
+        case InjectLibMessageParam.ExecuteOnMainThread:
           //_mainThreadReadyEvent.Set();
 
           return true;
@@ -110,13 +115,15 @@ But most likely, NativeLib exists and failed to load other assemblies or librari
       return false;
     }
 
+    /// <inheritdoc />
     public override void GetExecutionParameters(out int       method,
                                                 out dynamic[] parameters)
     {
       method     = (int)_execCtxt.ExecutionMethod;
-      parameters = _execCtxt.ExecutionParameters;
+      parameters = (dynamic[])_execCtxt.ExecutionParameters;
     }
 
+    /// <inheritdoc />
     public override void SetExecutionResult(int result)
     {
       _execCtxt.ExecutionResult = result;
@@ -149,8 +156,8 @@ But most likely, NativeLib exists and failed to load other assemblies or librari
       Core.Natives.Application.TApplicationOnMessagePtr.Write<int>(smMem, _wndProcHookAddr);
 
       WindowHelper.PostMessage(handle,
-                               (int)InjectLibMessageIds.SMA,
-                               new IntPtr((int)InjectLibMessageParams.ExecuteOnMainThread),
+                               (int)InjectLibMessageId.SMA,
+                               new IntPtr((int)InjectLibMessageParam.ExecuteOnMainThread),
                                new IntPtr(0));
 
       _mainThreadReadyEvent.WaitOne(AssemblyFactory.ExecutionTimeout);
@@ -169,13 +176,13 @@ But most likely, NativeLib exists and failed to load other assemblies or librari
 
 
 
-    protected class ExecutionContext
+    private class ExecutionContext
     {
       #region Properties & Fields - Public
 
-      public NativeMethod ExecutionMethod     { get; set; }
-      public dynamic[]    ExecutionParameters { get; set; }
-      public int          ExecutionResult     { get; set; }
+      public NativeMethod         ExecutionMethod     { get; set; }
+      public IEnumerable<dynamic> ExecutionParameters { get; set; }
+      public int                  ExecutionResult     { get; set; }
 
       #endregion
     }

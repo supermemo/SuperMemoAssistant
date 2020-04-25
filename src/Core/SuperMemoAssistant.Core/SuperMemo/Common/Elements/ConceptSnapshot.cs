@@ -35,7 +35,7 @@ using SuperMemoAssistant.SMA;
 
 namespace SuperMemoAssistant.SuperMemo.Common.Elements
 {
-  public class ConceptSnapshot : IDisposable
+  public sealed class ConceptSnapshot : IDisposable
   {
     #region Properties & Fields - Non-Public
 

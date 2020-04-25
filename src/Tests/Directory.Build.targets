@@ -1,0 +1,10 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
+  
+  <ItemGroup Label="Packages (Global)"
+             Condition=" '$(MSBuildProjectExtension)'=='.csproj' ">
+    <PackageReference Include="xunit.analyzers" Version="0.10.0" PrivateAssets="All" />
+  </ItemGroup>
+  
+</Project>

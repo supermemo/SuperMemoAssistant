@@ -73,14 +73,14 @@ namespace SuperMemoAssistant.Plugins.DevSandbox
          .RegisterGlobal(
            "TestSomething",
            "TestSomething",
-           HotKeyScope.SM,
+           HotKeyScopes.SM,
            new HotKey(Key.D1, KeyModifiers.CtrlAlt),
            TestSomething
          )
          .RegisterGlobal(
            "TestAnotherThing",
            "TestAnotherThing",
-           HotKeyScope.SM,
+           HotKeyScopes.SM,
            new HotKey(Key.D1, KeyModifiers.CtrlAltShift),
            TestAnotherThing
          );
@@ -96,18 +96,18 @@ namespace SuperMemoAssistant.Plugins.DevSandbox
 
     #region Methods
 
-    public void TestSomething()
+    public static void TestSomething()
     {
       var elId = Svc.SM.UI.ElementWdw.GenerateCloze();
-      
-      LogTo.Debug($"GenerateCloze: {elId}");
+
+      LogTo.Debug("GenerateCloze: {ElId}", elId);
     }
 
-    public void TestAnotherThing()
+    public static void TestAnotherThing()
     {
       var elId = Svc.SM.UI.ElementWdw.GenerateExtract(ElementType.Topic);
 
-      LogTo.Debug($"GenerateExtract: {elId}");
+      LogTo.Debug("GenerateExtract: {ElId}", elId);
     }
 
     #endregion

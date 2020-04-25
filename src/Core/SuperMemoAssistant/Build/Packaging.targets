@@ -1,0 +1,32 @@
+<Project>
+  <Target Name="UpdateNuSpec" BeforeTargets="GenerateNuspec" DependsOnTargets="PreparePackage">
+    <PropertyGroup>
+      <NuspecProperties>version=$(PackageVersion);repositoryType=$(RepositoryType);repositoryUrl=$(RepositoryUrl);commitId=$(GitCommitId);outputPath=$(OutputPath)</NuspecProperties>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="Releasify" AfterTargets="Pack">
+    <PropertyGroup>
+      <Squirrel>$(SquirrelToolsPath)\Update.exe</Squirrel>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <ReleaseDir>$(SolutionDir)releases\</ReleaseDir>
+      <ImagesDir>$(SolutionDir)assets\images\</ImagesDir>
+      <NuPkgDir>$(SolutionDir)releases\installer\</NuPkgDir>
+      <OutputPath Condition=" '$(OutputPath)' == '' ">C:\Users\Lila\AppData\Local\SuperMemoAssistant\app-dev\</OutputPath>
+      <SMAExe>$(OutputPath)$(SMAExeName)</SMAExe>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <NuPkgFile>$(NuPkgDir)SuperMemoAssistant.$(PackageVersion).nupkg</NuPkgFile>
+      <SetupIcon>$(ImagesDir)icons\robot.ico</SetupIcon>
+      <SetupLoadingGif>$(ImagesDir)animations\robot-flashing.gif</SetupLoadingGif>
+      <UpdateUrl>https://releases.supermemo.wiki/sma/core/beta</UpdateUrl>
+      <BaseUrl>https://releases.supermemo.wiki/sma/core/packages</BaseUrl>
+      <NetVersion>net472</NetVersion>
+    </PropertyGroup>
+
+    <Exec Command="$(Squirrel) --releasify=$(NuPkgFile) --releaseDir=$(ReleaseDir) --baseUrl=$(BaseUrl) --updateUrl=$(UpdateUrl) --no-msi --framework-version=$(NetVersion) --exeStubRegexPattern=$(SMAExeName) --setupIcon=$(SetupIcon) --loadingGif=$(SetupLoadingGif)" />
+  </Target>
+</Project>

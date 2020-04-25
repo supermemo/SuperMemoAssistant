@@ -44,7 +44,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
   {
     #region Properties & Fields - Public
 
-    public HashSet<string> TargetFilePaths { get; set; } = new HashSet<string>();
+    public HashSet<string> TargetFilePaths { get; } = new HashSet<string>();
     public HashSet<IntPtr> TargetHandles   { get; }      = new HashSet<IntPtr>();
 
     #endregion
@@ -59,7 +59,8 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
     private IEnumerable<LocalHook> InstallIOHooks()
     {
-      TargetFilePaths = new HashSet<string>(SMA.GetTargetFilePaths().Select(s => s.ToLowerInvariant()));
+      foreach (var targetFilePath in SMA.GetTargetFilePaths().Select(s => s.ToLowerInvariant()))
+        TargetFilePaths.Add(targetFilePath);
 
       return new[]
       {

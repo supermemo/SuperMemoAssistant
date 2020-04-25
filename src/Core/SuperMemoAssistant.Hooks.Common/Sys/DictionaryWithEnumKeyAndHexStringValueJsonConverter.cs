@@ -85,7 +85,7 @@ namespace SuperMemoAssistant.Sys
         var key = ToEnum(keyType, keyStr);
 
         // Convert value from hex to int
-        if (string.IsNullOrWhiteSpace(valueStr) || !valueStr.StartsWith("0x"))
+        if (string.IsNullOrWhiteSpace(valueStr) || !valueStr.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
           throw new JsonSerializationException($"Expected hexadecimal string, got {valueStr}");
 
         var value = Convert.ToInt32(valueStr.Substring(2), 16);

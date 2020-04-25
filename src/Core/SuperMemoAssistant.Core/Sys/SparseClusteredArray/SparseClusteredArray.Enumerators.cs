@@ -39,7 +39,7 @@ namespace SuperMemoAssistant.Sys.SparseClusteredArray
 {
   partial class SparseClusteredArray<T>
   {
-    public class Iterator1D : IEnumerator<T>
+    public sealed class Iterator1D : IEnumerator<T>
     {
       #region Properties & Fields - Non-Public
 
@@ -94,7 +94,7 @@ namespace SuperMemoAssistant.Sys.SparseClusteredArray
       #endregion
     }
 
-    public class Iterator2D : IEnumerator<(T[] _arr, int _fromIdx, int _toIdx, int _itIdx, int _absIdx)>
+    public sealed class Iterator2D : IEnumerator<(T[] _arr, int _fromIdx, int _toIdx, int _itIdx, int _absIdx)>
     {
       #region Properties & Fields - Non-Public
 

@@ -5,9 +5,7 @@
     <RootNamespace>SuperMemoAssistant.Hooks.InjectLib</RootNamespace>
     <Platforms>x86</Platforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyVersion>2.0.4.12</AssemblyVersion>
-    <FileVersion>2.0.4.12</FileVersion>
-    <Version>2.0.4</Version>
+    <NBGV_WriteProjectVersion>false</NBGV_WriteProjectVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -60,10 +58,13 @@
       <Version>4.7.1</Version>
     </PackageReference>
   </ItemGroup>
-  <Import Project="..\SuperMemoAssistant.Interop\src\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.projitems" Label="Shared" />
-  <PropertyGroup>
-    <PostBuildEvent>xcopy /h /i /d /c /k /r /y $(TargetPath) %25LocalAppData%25\SuperMemoAssistant\app-dev\
-xcopy /h /i /d /c /k /r /y $(TargetDir)EasyHook32.dll %25LocalAppData%25\SuperMemoAssistant\app-dev\
-xcopy /h /i /d /c /k /r /y $(TargetDir)EasyLoad32.dll %25LocalAppData%25\SuperMemoAssistant\app-dev\</PostBuildEvent>
-  </PropertyGroup>
+  <Import Project="..\..\Interop\src\SuperMemoAssistant.Interop.Shared\SuperMemoAssistant.Interop.Shared.projitems" Label="Shared" />
+  <Target Name="CopyFiles" AfterTargets="Build">
+    <ItemGroup Label="Source files to copy">
+      <SrcFiles Include="$(OutputPath)$(AssemblyName).*" />
+      <SrcFiles Include="$(OutputPath)EasyHook32.dll" />
+      <SrcFiles Include="$(OutputPath)EasyLoad32.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(SrcFiles)" DestinationFolder="$(LocalAppData)\SuperMemoAssistant\app-dev\" SkipUnchangedFiles="true" />
+  </Target>
 </Project>

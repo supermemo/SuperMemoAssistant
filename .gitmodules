@@ -53,7 +53,7 @@
 	path = src/Services/SuperMemoAssistant.Services.HTML
 	url = https://github.com/supermemo/SuperMemoAssistant.Services.HTML.git
 [submodule "src/Core/SuperMemoAssistant.Interop"]
-	path = src/Core/SuperMemoAssistant.Interop
+	path = src/Interop
 	url = https://github.com/supermemo/SuperMemoAssistant.Interop.git
 [submodule "src/Build/MSBuild"]
 	path = src/Build/MSBuild

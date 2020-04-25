@@ -19,26 +19,22 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Modified On:  2020/01/28 22:12
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SuperMemo.Common.Registry;
-
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 {
+  using System;
+  using System.Collections.Generic;
+  using Common.Registry;
+  using Interop.SuperMemo.Elements.Types;
+  using Interop.SuperMemo.Registry.Members;
+  using SMA;
+
+  /// <inheritdoc cref="IConcept" />
   public class Concept : RegistryMemberBase, IConcept
   {
     #region Constructors
@@ -63,28 +59,33 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 
 
     #region Methods Impl
-
+    
+    /// <inheritdoc cref="IRegistryMember" />
     public override string GetFilePath()
     {
       return null;
     }
 
-    public Task<bool> DeleteAsync()
+    /// <inheritdoc />
+    public bool Delete()
     {
       throw new NotImplementedException();
     }
-
+    
+    /// <inheritdoc />
     public IEnumerable<IElement> GetLinkedElements()
     {
       throw new NotImplementedException();
     }
 
-    public Task<bool> NeuralAsync()
+    /// <inheritdoc />
+    public bool Neural()
     {
       throw new NotImplementedException();
     }
 
-    public Task<bool> RenameAsync(string newName)
+    /// <inheritdoc />
+    public bool Rename(string newName)
     {
       throw new NotImplementedException();
     }

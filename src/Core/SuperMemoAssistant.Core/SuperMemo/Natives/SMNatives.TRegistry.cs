@@ -51,13 +51,13 @@ namespace SuperMemoAssistant.SuperMemo.Natives
 
       public TRegistry(TDatabase db, NativeData nativeData)
       {
-        TextRegistryInstance     = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointers.Registry_TextRegistryInstance]);
-        ImageRegistryInstance    = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointers.Registry_ImageRegistryInstance]);
-        SoundRegistryInstance    = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointers.Registry_SoundRegistryInstance]);
-        VideoRegistryInstance    = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointers.Registry_VideoRegistryInstance]);
-        BinaryRegistryInstance   = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointers.Registry_BinaryRegistryInstance]);
-        TemplateRegistryInstance = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointers.Registry_TemplateRegistryInstance]);
-        ConceptRegistryInstance  = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointers.Registry_ConceptRegistryInstance]);
+        TextRegistryInstance     = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointer.Registry_TextRegistryInstance]);
+        ImageRegistryInstance    = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointer.Registry_ImageRegistryInstance]);
+        SoundRegistryInstance    = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointer.Registry_SoundRegistryInstance]);
+        VideoRegistryInstance    = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointer.Registry_VideoRegistryInstance]);
+        BinaryRegistryInstance   = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointer.Registry_BinaryRegistryInstance]);
+        TemplateRegistryInstance = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointer.Registry_TemplateRegistryInstance]);
+        ConceptRegistryInstance  = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointer.Registry_ConceptRegistryInstance]);
 
         AddMemberCallSig = nativeData.GetMemoryPattern(NativeMethod.TRegistry_AddMember);
         ImportFileCallSig = nativeData.GetMemoryPattern(NativeMethod.TRegistry_ImportFile);

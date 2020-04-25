@@ -136,7 +136,8 @@ namespace SuperMemoAssistant.Plugins.Models
       if (ReferenceEquals(this, other))
         return true;
 
-      return string.Equals(PackageName, other.PackageName) && IsDevelopment == other.IsDevelopment;
+      return string.Equals(PackageName, other.PackageName, StringComparison.InvariantCultureIgnoreCase)
+        && IsDevelopment == other.IsDevelopment;
     }
 
     #endregion

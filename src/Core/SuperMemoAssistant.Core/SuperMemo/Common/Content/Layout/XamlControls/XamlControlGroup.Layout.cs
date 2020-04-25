@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -19,30 +19,25 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2019/02/27 02:33
-// Modified On:  2019/03/01 23:50
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using Anotar.Serilog;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop.SuperMemo.Content.Contents;
-using SuperMemoAssistant.SuperMemo.Common.Content.Content;
-using SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts;
-
 namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 {
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Windows;
+  using System.Windows.Controls;
+  using System.Windows.Media;
+  using Anotar.Serilog;
+  using Content;
+  using Interop.SuperMemo.Content.Contents;
+  using SuperMemoAssistant.Extensions;
+  using XamlLayouts;
+
   public partial class XamlControlGroup
   {
     #region Constants & Statics
@@ -66,8 +61,8 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 
     #region Properties & Fields - Public
 
-    public bool            IsValid         { get; private set; } = true;
-    public ContentTypeFlag AcceptedContent { get; private set; }
+    public bool             IsValid         { get; private set; } = true;
+    public ContentTypeFlags AcceptedContent { get; private set; }
 
     #endregion
 
@@ -84,12 +79,12 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 
       if (ex != null || !(rootObject is UIElement rootUIElement))
       {
-        LogTo.Warning(ex, $"Xaml layout {xamlLayout.Name} is invalid");
+        LogTo.Warning(ex, "Xaml layout {Name} is invalid", xamlLayout.Name);
 
         return IsValid = false;
       }
 
-      Content = rootUIElement;
+      SetCurrentValue(ContentProperty, rootUIElement);
 
       CalculateLayout();
 
@@ -113,12 +108,12 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
       _panelAcceptedContents.Clear();
       _contentPanelMap.Clear();
 
-      AcceptedContent = ContentTypeFlag.None;
+      AcceptedContent = ContentTypeFlags.None;
       IsValid         = true;
 
       _collapsableGrids.Clear();
 
-      Content = null;
+      SetCurrentValue(ContentProperty, null);
     }
 
     private void CalculateLayout()
@@ -160,7 +155,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
         if (acceptedContent == DependencyProperty.UnsetValue || acceptedContent.GetType() != Panels.AcceptedContentProperty.PropertyType)
           continue;
 
-        _panelAcceptedContents.Add((panel, (ContentTypeFlag)acceptedContent));
+        _panelAcceptedContents.Add((panel, (ContentTypeFlags)acceptedContent));
       }
 
       if (_panelAcceptedContents.Count == 0)
@@ -177,7 +172,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
           var c = cf & 0x0001;
 
           if (c > 0)
-            _contentPanelMap[(ContentTypeFlag)(c << shift)] = pc.panel;
+            _contentPanelMap[(ContentTypeFlags)(c << shift)] = pc.panel;
         }
     }
 
@@ -193,10 +188,10 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
         var (p1, ac1) = _panelAcceptedContents[i];
         var (p2, ac2) = _panelAcceptedContents[j];
 
-        if (ac1 == ContentTypeFlag.None || ac2 == ContentTypeFlag.None)
+        if (ac1 == ContentTypeFlags.None || ac2 == ContentTypeFlags.None)
           continue;
 
-        if ((ac1 & ac2) == ContentTypeFlag.None)
+        if ((ac1 & ac2) == ContentTypeFlags.None)
           continue;
 
         p1.Background = p2.Background = Brushes.Red;
@@ -211,7 +206,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
         if (pc.panel.Background is SolidColorBrush)
           continue;
 
-        pc.Item1.Background = pc.content.GetColorBrush();
+        pc.Item1.SetCurrentValue(Panel.BackgroundProperty, pc.content.GetColorBrush());
       }
     }
 

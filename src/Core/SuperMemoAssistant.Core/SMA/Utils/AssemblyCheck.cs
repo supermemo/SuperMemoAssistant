@@ -19,30 +19,26 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2020/01/14 02:07
-// Modified On:  2020/01/14 02:09
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.IO;
-using System.Windows.Forms;
-using Anotar.Serilog;
-using mshtml;
-using Process.NET.Assembly.Assemblers;
-
 namespace SuperMemoAssistant.SMA.Utils
 {
+  using System;
+  using System.Diagnostics.CodeAnalysis;
+  using System.IO;
+  using System.Windows.Forms;
+  using Anotar.Serilog;
+  using mshtml;
+  using Process.NET.Assembly.Assemblers;
+
   public static class AssemblyCheck
   {
     #region Methods
-    
+
     public static bool CheckRequired(out string error)
     {
       if (CheckFasm32(out error) == false || CheckMshtml(out error) == false)
@@ -51,6 +47,8 @@ namespace SuperMemoAssistant.SMA.Utils
       return true;
     }
 
+    [SuppressMessage("CodeQuality", "Serilog004:Constant MessageTemplate verifier",
+                     Justification = "<Pending>")]
     public static bool CheckFasm32(out string error)
     {
       error = null;
@@ -75,6 +73,7 @@ namespace SuperMemoAssistant.SMA.Utils
       }
     }
 
+    [SuppressMessage("CodeQuality", "Serilog004:Constant MessageTemplate verifier", Justification = "<Pending>")]
     public static bool CheckMshtml(out string error)
     {
       error = null;

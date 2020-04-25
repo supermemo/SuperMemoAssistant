@@ -19,34 +19,38 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Modified On:  2020/02/22 17:55
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using Anotar.Serilog;
-using Process.NET.Windows;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Services.Configuration;
-using SuperMemoAssistant.SMA.Configs;
-
 namespace SuperMemoAssistant.SMA
 {
+  using System;
+  using System.IO;
+  using System.Threading.Tasks;
+  using Anotar.Serilog;
+  using Configs;
+  using Extensions;
+  using Interop.SuperMemo.Core;
+  using Process.NET.Windows;
+  using Services.Configuration;
+
   public partial class SMA
   {
+    #region Constants & Statics
+
+    private static CoreCfg CoreConfig => Core.CoreConfig;
+
+    #endregion
+
+
+
+
     #region Properties & Fields - Public
 
     public CollectionCfg CollectionConfig { get; set; }
-    public CoreCfg       CoreConfig       => Core.CoreConfig;
 
     #endregion
 
@@ -65,30 +69,25 @@ namespace SuperMemoAssistant.SMA
         }).RunAsync();
     }
 
-    private async Task LoadConfig(SMCollection collection)
+    private async Task LoadConfigAsync(SMCollection collection)
     {
       Core.CollectionConfiguration = new CollectionConfigurationService(collection, "Core");
 
       // CollectionsCfg
-      CollectionConfig = await Core.CollectionConfiguration.Load<CollectionCfg>() ?? new CollectionCfg();
+      CollectionConfig = await Core.CollectionConfiguration.LoadAsync<CollectionCfg>().ConfigureAwait(false) ?? new CollectionCfg();
     }
 
-    public Task SaveConfig(bool sync)
+    public async Task SaveConfigAsync()
     {
       try
       {
         var tasks = new[]
         {
-          Core.Configuration.Save<CoreCfg>(CoreConfig),
-          Core.CollectionConfiguration.Save<CollectionCfg>(CollectionConfig),
+          Core.Configuration.SaveAsync<CoreCfg>(CoreConfig),
+          Core.CollectionConfiguration.SaveAsync<CollectionCfg>(CollectionConfig),
         };
 
-        var task = Task.WhenAll(tasks);
-
-        if (sync)
-          task.Wait();
-
-        return task;
+        await Task.WhenAll(tasks).ConfigureAwait(false);
       }
       catch (IOException ex)
       {
@@ -97,8 +96,6 @@ namespace SuperMemoAssistant.SMA
 
         else
           LogTo.Error(ex, "Failed to save config files in SMA.SaveConfig");
-
-        return Task.CompletedTask;
       }
     }
 

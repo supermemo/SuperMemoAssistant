@@ -42,7 +42,7 @@ namespace SuperMemoAssistant.SMA
   {
     #region Methods
 
-    public async Task OnSMStarting()
+    public async Task OnSMStartingAsync()
     {
       try
       {
@@ -56,16 +56,16 @@ namespace SuperMemoAssistant.SMA
       }
     }
 
-    public async Task OnSMStarted()
+    public async Task OnSMStartedAsync()
     {
       try
       {
-        await SaveConfig(false).ConfigureAwait(false);
+        await SaveConfigAsync().ConfigureAwait(false);
 
         if (OnSMStartedEvent != null)
           await OnSMStartedEvent.InvokeAsync(
             this,
-            new SMProcessArgs(_sm, SMProcess.Native)).ConfigureAwait(false);
+            new SMProcessEventArgs(_sm, SMProcess.Native)).ConfigureAwait(false);
       }
       catch (Exception ex)
       {
@@ -101,9 +101,9 @@ namespace SuperMemoAssistant.SMA
 
     #region Events
 
-    public event AsyncEventHandler<SMProcessArgs> OnSMStartedEvent;
+    public event AsyncEventHandler<SMProcessEventArgs> OnSMStartedEvent;
     public event AsyncEventHandler<SMEventArgs>   OnSMStartingEvent;
-    public event EventHandler<SMProcessArgs>      OnSMStoppedEvent;
+    public event EventHandler<SMProcessEventArgs>      OnSMStoppedEvent;
 
     #endregion
   }

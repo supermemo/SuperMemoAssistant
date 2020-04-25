@@ -45,13 +45,13 @@ namespace SuperMemoAssistant.SuperMemo.Natives
 
       public TGlobals(NativeData nativeData)
       {
-        LimitChildrenCountPtr    = new IntPtr(nativeData.Pointers[NativePointers.Globals_LimitChildrenCountPtr]);
-        CurrentConceptGroupIdPtr = new IntPtr(nativeData.Pointers[NativePointers.Globals_CurrentConceptGroupIdPtr]);
-        CurrentRootIdPtr         = new IntPtr(nativeData.Pointers[NativePointers.Globals_CurrentRootIdPtr]);
-        CurrentHookIdPtr         = new IntPtr(nativeData.Pointers[NativePointers.Globals_CurrentHookIdPtr]);
-        CurrentConceptIdPtr      = new IntPtr(nativeData.Pointers[NativePointers.Globals_CurrentConceptIdPtr]);
+        LimitChildrenCountPtr    = new IntPtr(nativeData.Pointers[NativePointer.Globals_LimitChildrenCountPtr]);
+        CurrentConceptGroupIdPtr = new IntPtr(nativeData.Pointers[NativePointer.Globals_CurrentConceptGroupIdPtr]);
+        CurrentRootIdPtr         = new IntPtr(nativeData.Pointers[NativePointer.Globals_CurrentRootIdPtr]);
+        CurrentHookIdPtr         = new IntPtr(nativeData.Pointers[NativePointer.Globals_CurrentHookIdPtr]);
+        CurrentConceptIdPtr      = new IntPtr(nativeData.Pointers[NativePointer.Globals_CurrentConceptIdPtr]);
 
-        IgnoreUserConfirmationPtr = new IntPtr(nativeData.Pointers[NativePointers.Globals_IgnoreUserConfirmationPtr]);
+        IgnoreUserConfirmationPtr = new IntPtr(nativeData.Pointers[NativePointer.Globals_IgnoreUserConfirmationPtr]);
       }
 
       #endregion

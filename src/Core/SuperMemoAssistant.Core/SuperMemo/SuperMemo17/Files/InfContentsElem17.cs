@@ -34,10 +34,13 @@ using System.Runtime.InteropServices;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
 {
+  using System.Diagnostics.CodeAnalysis;
+
   [StructLayout(LayoutKind.Explicit,
-    Pack = 1,
-    Size = 37)]
-  public class InfContentsElem17
+                Pack = 1,
+                Size = 37)]
+  [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
+  internal class InfContentsElem17
   {
     [FieldOffset(0)]
     /* 0x00 */ public byte deleted;

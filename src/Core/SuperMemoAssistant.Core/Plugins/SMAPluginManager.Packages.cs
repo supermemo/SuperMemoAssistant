@@ -19,35 +19,31 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Modified On:  2020/03/02 11:10
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using PluginManager.PackageManager.Models;
-using SuperMemoAssistant.Interop;
-using SuperMemoAssistant.Plugins.Models;
-using SuperMemoAssistant.Plugins.Services;
-
 namespace SuperMemoAssistant.Plugins
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Threading;
+  using System.Threading.Tasks;
+  using Interop;
+  using Models;
+  using PluginManager.PackageManager.Models;
+  using Services;
+
   public partial class SMAPluginManager
   {
     #region Methods
 
     /// <summary>
-    ///   Search available NuGet repositories for all packages matching
-    ///   <paramref name="searchTerm" /> and <paramref name="enablePrerelease" />. Only NuGet packages
-    ///   that are also listed on the <see cref="PluginRepositoryService" /> will be included.
+    ///   Search available NuGet repositories for all packages matching <paramref name="searchTerm" /> and
+    ///   <paramref name="enablePrerelease" />. Only NuGet packages that are also listed on the
+    ///   <see cref="PluginRepositoryService" /> will be included.
     /// </summary>
     /// <param name="searchTerm">Part or totality of the package name to look for</param>
     /// <param name="enablePrerelease">Whether to include packages that are marked as pre-release</param>
@@ -56,18 +52,17 @@ namespace SuperMemoAssistant.Plugins
     /// <param name="cancellationToken"></param>
     /// <returns>All available packages or <see langword="null" /></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public async Task<IEnumerable<PluginPackage<PluginMetadata>>> SearchPlugins(
+    public Task<IEnumerable<PluginPackage<PluginMetadata>>> SearchPluginsAsync(
       string            searchTerm        = SMAConst.SuperMemoPluginPackagePrefix,
       bool              enablePrerelease  = false,
       bool              forceRefresh      = false,
       int               expireAfterSec    = 1800,
       CancellationToken cancellationToken = default)
     {
-      return await PluginRepositoryService
-                   .Instance.SearchPlugins(searchTerm, enablePrerelease, PackageManager, forceRefresh, expireAfterSec, cancellationToken)
-                   .ConfigureAwait(false);
+      return PluginRepositoryService
+             .Instance.SearchPluginsAsync(searchTerm, enablePrerelease, PackageManager, forceRefresh, expireAfterSec, cancellationToken);
     }
-    
+
     /// <summary>Saves the local plugin repository state to file</summary>
     /// <returns>Success of operation</returns>
     public Task<bool> SaveConfigAsync()

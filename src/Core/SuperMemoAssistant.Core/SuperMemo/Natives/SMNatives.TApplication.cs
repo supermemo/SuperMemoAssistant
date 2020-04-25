@@ -47,9 +47,9 @@ namespace SuperMemoAssistant.SuperMemo.Natives
 
       public TApplication(NativeData nativeData)
       {
-        OnMessageOffset = nativeData.Pointers[NativePointers.Application_OnMessageOffset];
+        OnMessageOffset = nativeData.Pointers[NativePointer.Application_OnMessageOffset];
 
-        TApplicationInstanceAddr = new IntPtr(nativeData.Pointers[NativePointers.Application_InstancePtr]);
+        TApplicationInstanceAddr = new IntPtr(nativeData.Pointers[NativePointer.Application_InstancePtr]);
         TApplicationOnMessagePtr = new ObjPtr(TApplicationInstanceAddr, OnMessageOffset);
       }
 

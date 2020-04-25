@@ -45,14 +45,14 @@ using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 using SuperMemoAssistant.Sys.SparseClusteredArray;
 
-#if DEBUG && !DEBUG_IN_PROD
+#if DEBUG_REGISTRIES
 using Anotar.Serilog;
 #endif
 
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 {
-  public class ElementRegistryUpdater17 : IElementRegistryUpdater
+  internal class ElementRegistryUpdater17 : IElementRegistryUpdater
   {
     #region Properties & Fields - Non-Public
 
@@ -181,7 +181,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
       InfContentsElem17          cttElem,
       InfElementsElemContainer17 elElem)
     {
-#if DEBUG && !DEBUG_IN_PROD
+#if DEBUG_REGISTRIES
       LogTo.Debug("[{0} {1}] Updating",
                   elem.GetType().Name,
                   elem.Id);

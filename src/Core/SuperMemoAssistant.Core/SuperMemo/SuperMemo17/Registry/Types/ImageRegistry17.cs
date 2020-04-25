@@ -19,30 +19,26 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2019/08/07 14:44
-// Modified On:  2020/01/12 10:30
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SuperMemo.Common.Registry;
-using SuperMemoAssistant.SuperMemo.Common.Registry.Files;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members;
-using SuperMemoAssistant.Sys.Drawing;
-
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 {
+  using System;
+  using System.IO;
+  using Anotar.Serilog;
+  using Common.Registry;
+  using Common.Registry.Files;
+  using Interop.SuperMemo.Registry.Members;
+  using Interop.SuperMemo.Registry.Types;
+  using Members;
+  using SMA;
+  using Sys.Drawing;
+
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1710:Identifiers should have correct suffix", Justification = "<Pending>")]
   public class ImageRegistry17 : RegistryBase<Image, IImage>, IImageRegistry
   {
     #region Properties & Fields - Non-Public
@@ -80,29 +76,41 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
       return Members[id] = new Image(id);
     }
 
-    public Task<IImage> AddAsync(string imageName,
-                                 string imagePath)
+    /// <inheritdoc />
+    public int Add(string path,
+                   string registryName)
     {
-      throw new NotImplementedException();
+      try
+      {
+        var ret = ImportFile(path, registryName);
+
+        return ret;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "Failed to add image to registry");
+        return -1;
+      }
     }
 
-    public int AddMember(ImageWrapper imageWrapper,
-                         string       registryName)
+    /// <inheritdoc />
+    public int Add(ImageWrapper imageWrapper,
+                   string       registryName)
     {
       try
       {
         var      filePath = Path.GetTempFileName() + ".png";
         FileInfo fi       = imageWrapper.ToFile(filePath);
 
-        var ret = ImportFile(filePath,
-                             registryName);
+        var ret = Add(filePath, registryName);
 
         fi.Delete();
 
         return ret;
       }
-      catch
+      catch (Exception ex)
       {
+        LogTo.Error(ex, "Failed to add image to registry");
         return -1;
       }
     }

@@ -19,31 +19,30 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Modified On:  2020/03/02 13:00
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Anotar.Serilog;
-using PluginManager.Logger;
-using Serilog;
-
 namespace SuperMemoAssistant.Plugins
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Diagnostics.CodeAnalysis;
+  using System.Globalization;
+  using System.Linq;
+  using System.Text.RegularExpressions;
+  using Anotar.Serilog;
+  using PluginManager.Logger;
+  using Serilog;
+
+  [SuppressMessage("CodeQuality", "Serilog004:Constant MessageTemplate verifier", Justification = "<Pending>")]
   public class PluginManagerLogAdapter : ILogAdapter
   {
     #region Constants & Statics
 
-    public static Regex RE_Anotar = new Regex("^[^\\~]+~[\\d]+\\. (.*)$", RegexOptions.Compiled);
+    public static readonly Regex RE_Anotar = new Regex("^[^\\~]+~[\\d]+\\. (.*)$", RegexOptions.Compiled);
 
     #endregion
 
@@ -211,6 +210,7 @@ namespace SuperMemoAssistant.Plugins
       NotifyLoggers(message);
     }
 
+
     /// <inheritdoc />
     public void Error(Exception exception, string format, params object[] args)
     {
@@ -279,15 +279,15 @@ namespace SuperMemoAssistant.Plugins
     /// <param name="msg"></param>
     /// <param name="args"></param>
     /// <returns></returns>
-    private string Format(string msg, params object[] args)
+    private static string Format(string msg, params object[] args)
     {
       if (args?.Any() ?? false)
-        msg = string.Format(msg, args);
+        msg = string.Format(CultureInfo.InvariantCulture, msg, args);
 
       return msg;
     }
 
-    private string Format(Exception ex, string msg, params object[] args)
+    private static string Format(Exception ex, string msg, params object[] args)
     {
       return Format($"{msg}:\n{ex}", args);
     }

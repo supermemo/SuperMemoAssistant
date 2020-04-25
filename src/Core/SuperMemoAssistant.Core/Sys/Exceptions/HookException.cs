@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 
 namespace SuperMemoAssistant.Sys.Exceptions
 {
+  [Serializable]
   public class HookException : Exception
   {
     public HookException()

@@ -19,40 +19,36 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2019/05/08 19:50
-// Modified On:  2020/01/12 10:14
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Anotar.Serilog;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop.SuperMemo.Content;
-using SuperMemoAssistant.Interop.SuperMemo.Content.Components;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SuperMemo.Common.Content.Components;
-using SuperMemoAssistant.SuperMemo.Common.Extensions;
-using SuperMemoAssistant.SuperMemo.Hooks;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
-using SuperMemoAssistant.Sys.SparseClusteredArray;
-
 //using SuperMemoAssistant.SuperMemo.SuperMemo17.Content.Components;
 //using SuperMemoAssistant.SuperMemo.SuperMemo17.Files;
 
 namespace SuperMemoAssistant.SuperMemo.Common.Content
 {
+  using System;
+  using System.Collections.Concurrent;
+  using System.Collections.Generic;
+  using System.Diagnostics.Contracts;
+  using System.IO;
+  using System.Linq;
+  using System.Text;
+  using Anotar.Serilog;
+  using Components;
+  using Extensions;
+  using Hooks;
+  using Interop.SuperMemo.Content;
+  using Interop.SuperMemo.Content.Components;
+  using Interop.SuperMemo.Core;
+  using SMA;
+  using SuperMemo17.Files;
+  using SuperMemoAssistant.Extensions;
+  using Sys.SparseClusteredArray;
+
   public class ComponentRegistry : SMHookIOBase, IComponentRegistry
   {
     #region Constants & Statics
@@ -82,7 +78,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content
 
     #region Properties & Fields - Non-Public
 
-    protected ConcurrentDictionary<int, ComponentGroup> ComponentGroups { get; set; } =
+    protected ConcurrentDictionary<int, ComponentGroup> ComponentGroups { get; } =
       new ConcurrentDictionary<int, ComponentGroup>();
 
     protected SparseClusteredArray<byte> CompSCA { get; } = new SparseClusteredArray<byte>();
@@ -172,7 +168,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content
     //
     // Native file parsing
 
-    protected ComponentBase ParseCompStream(BinaryReader binStream)
+    protected static ComponentBase ParseCompStream(BinaryReader binStream)
     {
       ushort typeHeader = binStream.ReadUInt16();
 
@@ -222,7 +218,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content
       return null;
     }
 
-    protected List<ComponentGroup> ParseCompGroupStream(Stream cStream)
+    protected static List<ComponentGroup> ParseCompGroupStream(Stream cStream)
     {
       List<ComponentGroup> ret = new List<ComponentGroup>();
 
@@ -257,6 +253,8 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content
 
     protected virtual void Commit(ComponentGroup cGroup)
     {
+      Contract.Assert(cGroup != null);
+
       var oldCGroup = ComponentGroups.SafeGet(cGroup.Offset);
 
       if (oldCGroup != null)
@@ -264,28 +262,25 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content
         oldCGroup.Update(cGroup);
         try
         {
-          OnComponentGroupModified?.Invoke(new SMComponentGroupArgs(Core.SM,
-                                                                    cGroup));
+          OnComponentGroupModified?.Invoke(new SMComponentGroupEventArgs(Core.SM, cGroup));
         }
         catch (Exception ex)
         {
-          LogTo.Error(ex,
-                      "Error while signaling ComponentGroup Update");
+          LogTo.Error(ex, "Error while signaling ComponentGroup Update");
         }
       }
 
       else
       {
         ComponentGroups[cGroup.Offset] = cGroup;
+
         try
         {
-          OnComponentGroupCreated?.Invoke(new SMComponentGroupArgs(Core.SM,
-                                                                   cGroup));
+          OnComponentGroupCreated?.Invoke(new SMComponentGroupEventArgs(Core.SM, cGroup));
         }
         catch (Exception ex)
         {
-          LogTo.Error(ex,
-                      "Error while signaling ComponentGroup Update");
+          LogTo.Error(ex, "Error while signaling ComponentGroup Update");
         }
       }
     }
@@ -297,9 +292,9 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content
 
     #region Events
 
-    public event Action<SMComponentGroupArgs> OnComponentGroupCreated;
-    public event Action<SMComponentGroupArgs> OnComponentGroupDeleted;
-    public event Action<SMComponentGroupArgs> OnComponentGroupModified;
+    public event Action<SMComponentGroupEventArgs> OnComponentGroupCreated;
+    public event Action<SMComponentGroupEventArgs> OnComponentGroupDeleted;
+    public event Action<SMComponentGroupEventArgs> OnComponentGroupModified;
 
     #endregion
   }

@@ -45,14 +45,14 @@ namespace SuperMemoAssistant.SuperMemo.Natives
 
       public TControl(NativeData nativeData)
       {
-        ParentOffset     = nativeData.Pointers[NativePointers.Control_ParentOffset];
-        WindowProcOffset = nativeData.Pointers[NativePointers.Control_WindowProcOffset];
-        HandleOffset     = nativeData.Pointers[NativePointers.Control_HandleOffset];
+        ParentOffset     = nativeData.Pointers[NativePointer.Control_ParentOffset];
+        WindowProcOffset = nativeData.Pointers[NativePointer.Control_WindowProcOffset];
+        HandleOffset     = nativeData.Pointers[NativePointer.Control_HandleOffset];
 
-        LeftOffset   = nativeData.Pointers[NativePointers.Control_LeftOffset];
-        TopOffset    = nativeData.Pointers[NativePointers.Control_TopOffset];
-        WidthOffset  = nativeData.Pointers[NativePointers.Control_WidthOffset];
-        HeightOffset = nativeData.Pointers[NativePointers.Control_HeightOffset];
+        LeftOffset   = nativeData.Pointers[NativePointer.Control_LeftOffset];
+        TopOffset    = nativeData.Pointers[NativePointer.Control_TopOffset];
+        WidthOffset  = nativeData.Pointers[NativePointer.Control_WidthOffset];
+        HeightOffset = nativeData.Pointers[NativePointer.Control_HeightOffset];
       }
 
       #endregion

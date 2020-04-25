@@ -49,7 +49,7 @@ namespace SuperMemoAssistant.Plugins.Models
 
     #region Properties & Fields - Public
 
-    public bool HasSettings => Status == PluginStatus.Connected && Plugin != null && Plugin.HasSettings;
+    public bool HasSettings => Status == PluginStatus.Connected && Plugin?.HasSettings == true;
 
     #endregion
 

@@ -35,6 +35,7 @@ using SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts;
 
 namespace SuperMemoAssistant.SMA.Configs
 {
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "This class is a container")]
   public class LayoutsCfg
   {
     #region Properties & Fields - Public

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/08/07 14:44
-// Modified On:  2020/01/12 10:30
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/04/09 14:56
 // Modified By:  Alexis
 
 #endregion
@@ -30,17 +30,17 @@
 
 
 
-using System;
-using System.Threading.Tasks;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SuperMemo.Common.Registry;
-using SuperMemoAssistant.SuperMemo.Common.Registry.Files;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members;
-
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 {
+  using System;
+  using Common.Registry;
+  using Common.Registry.Files;
+  using Interop.SuperMemo.Registry.Members;
+  using Interop.SuperMemo.Registry.Types;
+  using Members;
+  using SMA;
+
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1710:Identifiers should have correct suffix", Justification = "<Pending>")]
   public class TextRegistry17 : RegistryBase<Text, IText>, ITextRegistry
   {
     #region Properties & Fields - Non-Public
@@ -80,7 +80,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     }
 
     /// <inheritdoc />
-    public Task<IText> AddAsync(string text)
+    public int Add(string text)
     {
       throw new NotImplementedException();
     }

@@ -44,7 +44,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 
     // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty CollapsableProperty =
-      DependencyProperty.RegisterAttached("Collapsable", typeof(CollapsableGridAttachedProperty), typeof(Grid),
+      DependencyProperty.RegisterAttached("Collapsable", typeof(CollapsableGridAttachedProperty), typeof(Grids),
                                           new PropertyMetadata(null, OnCollapsableChanged));
 
     #endregion
@@ -55,15 +55,15 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
     #region Methods
 
     [TypeConverter(typeof(CollapsableConverter))]
-    public static CollapsableGridAttachedProperty GetCollapsable(DependencyObject obj)
+    public static CollapsableGridAttachedProperty GetCollapsable(DependencyObject d)
     {
-      return (CollapsableGridAttachedProperty)obj.GetValue(CollapsableProperty);
+      return (CollapsableGridAttachedProperty)d.GetValue(CollapsableProperty);
     }
 
     [TypeConverter(typeof(CollapsableConverter))]
-    public static void SetCollapsable(DependencyObject obj, CollapsableGridAttachedProperty value)
+    public static void SetCollapsable(DependencyObject d, CollapsableGridAttachedProperty value)
     {
-      obj.SetValue(CollapsableProperty, value);
+      d.SetValue(CollapsableProperty, value);
     }
 
     private static void OnCollapsableChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

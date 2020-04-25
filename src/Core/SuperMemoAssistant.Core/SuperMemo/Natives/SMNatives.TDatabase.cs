@@ -45,7 +45,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
 
       public TDatabase(NativeData nativeData)
       {
-        InstancePtr = new IntPtr(nativeData.Pointers[NativePointers.Database_InstancePtr]);
+        InstancePtr = new IntPtr(nativeData.Pointers[NativePointer.Database_InstancePtr]);
       }
 
       #endregion

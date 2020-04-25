@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2020/03/29 00:20
-// Modified On:  2020/03/29 06:51
+// Modified On:  2020/04/09 15:48
 // Modified By:  Alexis
 
 #endregion
@@ -30,21 +30,22 @@
 
 
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Anotar.Serilog;
-using PluginManager.Interop.Sys;
-using Process.NET;
-using Process.NET.Memory;
-using SuperMemoAssistant.Interop.SuperMemo;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SMA.Hooks;
-using SuperMemoAssistant.SuperMemo.Hooks;
-
 namespace SuperMemoAssistant.SuperMemo.Common
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Diagnostics.CodeAnalysis;
+  using System.Threading.Tasks;
+  using Anotar.Serilog;
+  using Hooks;
+  using Interop.SuperMemo;
+  using Interop.SuperMemo.Core;
+  using PluginManager.Interop.Sys;
+  using Process.NET;
+  using Process.NET.Memory;
+  using SMA;
+  using SMA.Hooks;
+
   public abstract class SuperMemoCore : SuperMemoBase
   {
     #region Constructors
@@ -57,7 +58,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
       _registry = new SuperMemoRegistryCore();
       _ui       = new SuperMemoUICore();
-      _hook     = new SMHookEngine();
+      Hook      = new SMHookEngine();
     }
 
     #endregion
@@ -74,6 +75,9 @@ namespace SuperMemoAssistant.SuperMemo.Common
   }
 
   /// <summary>Convenience class that implements shared code</summary>
+  [SuppressMessage("Design", "CA1051:Do not declare visible instance fields",
+                   Justification = "_registry and _ui need to be protected instance fields for SuperMemoCore to compile")]
+  [SuppressMessage("Design", "CA1063:Implement IDisposable Correctly", Justification = "<Pending>")]
   public abstract class SuperMemoBase
     : PerpetualMarshalByRefObject,
       IDisposable,
@@ -81,13 +85,13 @@ namespace SuperMemoAssistant.SuperMemo.Common
   {
     #region Properties & Fields - Non-Public
 
-    private readonly string       _binPath;
-    protected        SMHookEngine _hook;
+    private readonly string _binPath;
 
     private IPointer _ignoreUserConfirmationPtr;
 
     protected SuperMemoRegistryCore _registry;
     protected SuperMemoUICore       _ui;
+    protected SMHookEngine          Hook { get; set; }
 
     #endregion
 
@@ -103,6 +107,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
       _binPath   = binPath;
     }
 
+    [SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "<Pending>")]
     public virtual void Dispose()
     {
       _ignoreUserConfirmationPtr = null;
@@ -112,7 +117,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
       try
       {
-        _hook.CleanupHooks();
+        Hook.CleanupHooks();
       }
       catch (Exception ex)
       {
@@ -172,13 +177,13 @@ namespace SuperMemoAssistant.SuperMemo.Common
     //
     // SM-App Lifecycle
 
-    public async Task Start(NativeData nativeData)
+    public async Task StartAsync(NativeData nativeData)
     {
       AppVersion = nativeData.SMVersion;
 
-      await OnPreInit().ConfigureAwait(false);
+      await OnPreInitAsync().ConfigureAwait(false);
 
-      var smProcess = await _hook.CreateAndHook(
+      var smProcess = await Hook.CreateAndHookAsync(
         Collection,
         _binPath,
         GetIOCallbacks(),
@@ -190,21 +195,21 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
       Core.Natives = smProcess.Procedures;
 
-      await OnPostInit().ConfigureAwait(false);
+      await OnPostInitAsync().ConfigureAwait(false);
 
-      _hook.SignalWakeUp();
+      Hook.SignalWakeUp();
     }
 
-    protected virtual async Task OnPreInit()
+    protected virtual Task OnPreInitAsync()
     {
-      await Core.SMA.OnSMStarting().ConfigureAwait(false);
+      return Core.SMA.OnSMStartingAsync();
     }
 
-    protected virtual async Task OnPostInit()
+    protected virtual Task OnPostInitAsync()
     {
       _ignoreUserConfirmationPtr = SMProcess[Core.Natives.Globals.IgnoreUserConfirmationPtr];
 
-      await Core.SMA.OnSMStarted().ConfigureAwait(false);
+      return Core.SMA.OnSMStartedAsync();
     }
 
     protected virtual void OnSMExited(object    called,

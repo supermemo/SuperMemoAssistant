@@ -34,7 +34,7 @@ using System.Runtime.InteropServices;
 
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
 {
-  public class InfElementsElemContainer17
+  internal class InfElementsElemContainer17
   {
     #region Constructors
 
@@ -58,7 +58,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
   [StructLayout(LayoutKind.Explicit,
     Pack = 1,
     Size = 118)]
-  public unsafe struct InfElementsElem17
+  internal unsafe struct InfElementsElem17
   {
     [FieldOffset(0)]
     /* 0x00 */ public byte elementType; // (00: Topic/Deleted, 01: Item, 02: ?, 03: ?, 04: Concept)

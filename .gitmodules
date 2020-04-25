@@ -53,5 +53,14 @@
 	path = src/Services/SuperMemoAssistant.Services.HTML
 	url = https://github.com/supermemo/SuperMemoAssistant.Services.HTML.git
 [submodule "src/Core/SuperMemoAssistant.Interop"]
-	path = src/Core/SuperMemoAssistant.Interop
+	path = src/Interop
 	url = https://github.com/supermemo/SuperMemoAssistant.Interop.git
+[submodule "src/Build/MSBuild"]
+	path = src/Build/MSBuild
+	url = https://github.com/supermemo/SuperMemoAssistant.Sdk.git
+[submodule "src/Build/VS"]
+	path = src/Build/VS
+	url = https://github.com/supermemo/SuperMemoAssistant.Sdk.VisualStudio.git
+[submodule "libs/VisualStudio.GitHooks"]
+	path = libs/VisualStudio.GitHooks
+	url = https://github.com/alexis-/VisualStudio.GitHooks.git

@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/20 08:05
-// Modified On:  2019/01/20 08:17
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/04/09 12:59
 // Modified By:  Alexis
 
 #endregion
@@ -30,13 +30,14 @@
 
 
 
-using System;
-using System.Collections.Generic;
-using System.IO;
 using Segment = SuperMemoAssistant.Sys.SparseClusteredArray.SparseClusteredArray<byte>.Segment;
 
 namespace SuperMemoAssistant.Sys.SparseClusteredArray
 {
+  using System;
+  using System.Collections.Generic;
+  using System.IO;
+
   public static class SparseClusteredArray
   {
     #region Methods
@@ -80,8 +81,8 @@ namespace SuperMemoAssistant.Sys.SparseClusteredArray
   {
     #region Properties & Fields - Non-Public
 
-    protected int     _position;
-    protected Segment Segment { get; set; }
+    private int     _position;
+    private Segment Segment { get; }
 
     #endregion
 

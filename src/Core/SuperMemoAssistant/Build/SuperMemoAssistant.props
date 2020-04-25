@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <NuSpecFileName>SuperMemoAssistant.nuspec</NuSpecFileName>
+    <SMAExeName>SuperMemoAssistant.exe</SMAExeName>
+    <NuspecFile>$(ProjectDir)Installer\$(NuSpecFileName)</NuspecFile>
+    <PackageOutputPath>$(SolutionDir)releases\installer</PackageOutputPath>
+  </PropertyGroup>
+</Project>

@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/05/08 19:51
-// Modified On:  2019/08/08 11:16
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/04/09 14:47
 // Modified By:  Alexis
 
 #endregion
@@ -30,20 +30,20 @@
 
 
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Media;
-using Anotar.Serilog;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop.SuperMemo.Content.Contents;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls;
-
 namespace SuperMemoAssistant.SuperMemo.Common.Content.Content
 {
+  using System;
+  using System.Collections.Generic;
+  using System.IO;
+  using System.Linq;
+  using System.Windows;
+  using System.Windows.Media;
+  using Anotar.Serilog;
+  using Interop.SuperMemo.Content.Contents;
+  using Layout.XamlControls;
+  using SMA;
+  using SuperMemoAssistant.Extensions;
+
   public static class ContentEx
   {
     #region Methods
@@ -53,12 +53,12 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Content
     {
       switch (content.ContentType)
       {
-        case ContentTypeFlag.Html:
-        case ContentTypeFlag.RawText:
+        case ContentTypeFlags.Html:
+        case ContentTypeFlags.RawText:
           var textContent = (TextContent)content;
           return new XamlControlHtml(id, textContent.Text, content.DisplayAt);
 
-        case ContentTypeFlag.Image:
+        case ContentTypeFlags.Image:
           var imgContent = (ImageContent)content;
           var img        = Core.SM.Registry.Image[imgContent.RegistryId];
 
@@ -67,7 +67,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Content
           {
             if (img == null) // || imgMember.Empty) // TODO: Why is Empty always true ?
             {
-              LogTo.Error($"Error while building XamlControlImage: IImage {imgContent.RegistryId} is null. Skipping");
+              LogTo.Error("Error while building XamlControlImage: IImage {RegistryId} is null. Skipping", imgContent.RegistryId);
               return null;
             }
 
@@ -84,7 +84,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Content
 
           return new XamlControlImage(id, img, content.DisplayAt);
 
-        case ContentTypeFlag.Sound:
+        case ContentTypeFlags.Sound:
           var soundContent = (SoundContent)content;
           var sound        = Core.SM.Registry.Sound[soundContent.RegistryId];
 
@@ -93,7 +93,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Content
           {
             if (sound == null) // || imgMember.Empty) // TODO: Why is Empty always true ?
             {
-              LogTo.Error($"Error while building XamlControlSound: ISound {soundContent.RegistryId} is null. Skipping");
+              LogTo.Error("Error while building XamlControlSound: ISound {RegistryId} is null. Skipping", soundContent.RegistryId);
               return null;
             }
 
@@ -119,20 +119,20 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Content
       }
     }
 
-    public static Brush GetColorBrush(this ContentTypeFlag contentFlag)
+    public static Brush GetColorBrush(this ContentTypeFlags contentFlags)
     {
       List<Color> colors = new List<Color>();
 
       // Text
-      if ((contentFlag & ContentTypeFlag.Text) != ContentTypeFlag.None)
+      if ((contentFlags & ContentTypeFlags.Text) != ContentTypeFlags.None)
         colors.Add(Colors.Gray.With(c => c.A = 100));
 
       // Image
-      if ((contentFlag & ContentTypeFlag.Image) != ContentTypeFlag.None)
+      if ((contentFlags & ContentTypeFlags.Image) != ContentTypeFlags.None)
         colors.Add(Colors.LightGreen.With(c => c.A = 100));
 
       // Sound
-      if ((contentFlag & ContentTypeFlag.Sound) != ContentTypeFlag.None)
+      if ((contentFlags & ContentTypeFlags.Sound) != ContentTypeFlags.None)
         colors.Add(Colors.LightBlue.With(c => c.A = 100));
 
       return new SolidColorBrush(colors.Aggregate(Color.Add));

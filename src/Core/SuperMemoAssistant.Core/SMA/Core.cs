@@ -29,11 +29,9 @@
 
 
 
-using System;
 using SuperMemoAssistant.Services.Configuration;
 using SuperMemoAssistant.Services.IO.HotKeys;
 using SuperMemoAssistant.Services.IO.Keyboard;
-using SuperMemoAssistant.Services.IO.Logger;
 using SuperMemoAssistant.SMA.Configs;
 using SuperMemoAssistant.SuperMemo.Common;
 using SuperMemoAssistant.SuperMemo.Hooks;
@@ -41,6 +39,8 @@ using SuperMemoAssistant.SuperMemo.Natives;
 
 namespace SuperMemoAssistant.SMA
 {
+  using Services.IO.Diagnostics;
+
   public static class Core
   {
     #region Constants & Statics

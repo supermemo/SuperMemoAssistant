@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -19,31 +19,28 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2019/02/26 23:18
-// Modified On:  2019/03/01 21:21
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.IO;
-using System.Text;
-using HtmlAgilityPack;
-using SuperMemoAssistant.Interop.SuperMemo.Content.Components;
-using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
+
 
 // ReSharper disable LocalizableElement
 
 namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 {
+  using System;
+  using System.ComponentModel;
+  using System.Drawing;
+  using System.IO;
+  using System.Text;
+  using HtmlAgilityPack;
+  using Interop.SuperMemo.Content.Components;
+  using Interop.SuperMemo.Content.Models;
+  using Interop.SuperMemo.Registry.Members;
+
   /// <summary>Interaction logic for XamlControlHtml.xaml</summary>
   public partial class XamlControlHtml : XamlControlBase, IComponentHtml, INotifyPropertyChanged
   {
@@ -93,7 +90,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 
     public override AtFlags DisplayAt { get; }
 
-    public IText Text       => throw new NotImplementedException();
+    public IText Text       => throw new InvalidOperationException("Xaml control do not have a registry members");
     public bool  IsFullHtml { get; set; } = true;
 
     #endregion

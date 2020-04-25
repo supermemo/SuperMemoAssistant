@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/19 14:15
-// Modified On:  2019/01/24 14:07
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/04/09 15:39
 // Modified By:  Alexis
 
 #endregion
@@ -30,12 +30,12 @@
 
 
 
-using System.Runtime.InteropServices;
-
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
 {
+  using System.Runtime.InteropServices;
+
   [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 29)]
-  public unsafe struct InfComponentsHtml17
+  internal unsafe struct InfComponentsHtml17
   {
     public       byte  unknown1;
     public       short left;
@@ -51,7 +51,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
   }
 
   [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 35)]
-  public unsafe struct InfComponentsText17
+  internal unsafe struct InfComponentsText17
   {
     public       byte  unknown1;
     public       short left;
@@ -69,7 +69,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
   }
 
   [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 30)]
-  public unsafe struct InfComponentsRtf17
+  internal unsafe struct InfComponentsRtf17
   {
     public       byte  unknown1;
     public       short left;
@@ -87,7 +87,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
   }
 
   [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 35)]
-  public unsafe struct InfComponentsSpelling17
+  internal unsafe struct InfComponentsSpelling17
   {
     public       byte  unknown1;
     public       short left;
@@ -105,7 +105,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
   }
 
   [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 26)]
-  public unsafe struct InfComponentsImage17
+  internal unsafe struct InfComponentsImage17
   {
     public       byte  unknown1;
     public       short left;
@@ -120,7 +120,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
   }
 
   [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 49)]
-  public unsafe struct InfComponentsSound17
+  internal unsafe struct InfComponentsSound17
   {
     public       byte  unknown1;
     public       short left;
@@ -146,7 +146,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
   }
 
   [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 32)]
-  public unsafe struct InfComponentsVideo17
+  internal unsafe struct InfComponentsVideo17
   {
     public       byte  unknown1;
     public       short left;
@@ -166,7 +166,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
   }
 
   [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 28)]
-  public unsafe struct InfComponentsShape17
+  internal unsafe struct InfComponentsShape17
   {
     public       byte  unknown1;
     public       short left;

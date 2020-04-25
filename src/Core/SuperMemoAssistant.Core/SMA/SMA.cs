@@ -19,42 +19,39 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2020/03/29 00:20
-// Modified On:  2020/03/29 06:50
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting;
-using System.Threading.Tasks;
-using Anotar.Serilog;
-using Extensions.System.IO;
-using PluginManager.Interop.Sys;
-using Process.NET;
-using SuperMemoAssistant.Exceptions;
-using SuperMemoAssistant.Interop.SuperMemo;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.SMA.Configs;
-using SuperMemoAssistant.SMA.Utils;
-using SuperMemoAssistant.SuperMemo;
-using SuperMemoAssistant.SuperMemo.Common;
-using SuperMemoAssistant.SuperMemo.Common.Content.Layout;
-using SuperMemoAssistant.SuperMemo.SuperMemo17;
-
 namespace SuperMemoAssistant.SMA
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Diagnostics.CodeAnalysis;
+  using System.Linq;
+  using System.Runtime.Remoting;
+  using System.Threading.Tasks;
+  using Anotar.Serilog;
+  using Configs;
+  using Exceptions;
+  using global::Extensions.System.IO;
+  using Interop.SuperMemo;
+  using Interop.SuperMemo.Core;
+  using PluginManager.Interop.Sys;
+  using Process.NET;
+  using SuperMemo;
+  using SuperMemo.Common;
+  using SuperMemo.Common.Content.Layout;
+  using SuperMemo.SuperMemo17;
+  using Utils;
+
   /// <summary>
-  ///   Wrapper around a SM management instance that handles SuperMemo App lifecycle events
-  ///   (start, exit, ...) and provides a safe interface to interact with SuperMemo
+  ///   Wrapper around a SM management instance that handles SuperMemo App lifecycle events (start, exit, ...) and provides a
+  ///   safe interface to interact with SuperMemo
   /// </summary>
+  [SuppressMessage("Microsoft.Naming", "CA1724:TypeNamesShouldNotMatchNamespaces")]
   public sealed partial class SMA
     : PerpetualMarshalByRefObject,
       ISuperMemoAssistant,
@@ -76,10 +73,7 @@ namespace SuperMemoAssistant.SMA
       RemotingConfiguration.CustomErrorsMode = CustomErrorsModes.Off;
     }
 
-    /// <summary>
-    ///   Create an instance of the wrapper that will start a SM instance and attach the
-    ///   management engine.
-    /// </summary>
+    /// <summary>Create an instance of the wrapper that will start a SM instance and attach the management engine.</summary>
     public SMA() { }
 
 
@@ -123,7 +117,7 @@ namespace SuperMemoAssistant.SMA
     //
     // Collection loading management
 
-    public async Task<Exception> Start(
+    public async Task<Exception> StartAsync(
       NativeDataCfg nativeDataCfg,
       SMCollection  collection)
     {
@@ -132,7 +126,7 @@ namespace SuperMemoAssistant.SMA
         if (_sm != null)
           throw new InvalidOperationException("_sm is already instantiated");
 
-        await LoadConfig(collection).ConfigureAwait(false);
+        await LoadConfigAsync(collection).ConfigureAwait(false);
 
         var nativeData = CheckSuperMemoExecutable(nativeDataCfg);
 
@@ -141,7 +135,7 @@ namespace SuperMemoAssistant.SMA
         // TODO: Move somewhere else
         _sm.UI.ElementWdw.OnAvailable += OnSuperMemoWindowsAvailable;
 
-        await _sm.Start(nativeData).ConfigureAwait(false);
+        await _sm.StartAsync(nativeData).ConfigureAwait(false);
         // TODO: Ensure opened collection (windows title) matches parameter
       }
       catch (Exception ex)
@@ -163,8 +157,8 @@ namespace SuperMemoAssistant.SMA
       return null;
     }
 
-    private SuperMemoCore InstantiateSuperMemo(SMCollection collection,
-                                               Version      smVersion)
+    private static SuperMemoCore InstantiateSuperMemo(SMCollection collection,
+                                                      Version      smVersion)
     {
       if (SM17.Versions.Contains(smVersion))
         return new SM17(collection, CoreConfig.SuperMemo.SMBinPath);
@@ -172,14 +166,14 @@ namespace SuperMemoAssistant.SMA
       throw new SMAException($"Unsupported SM version {smVersion}");
     }
 
-    private NativeData CheckSuperMemoExecutable(NativeDataCfg nativeDataCfg)
+    private static NativeData CheckSuperMemoExecutable(NativeDataCfg nativeDataCfg)
     {
       var smFile = new FilePath(CoreConfig.SuperMemo.SMBinPath);
 
       if (SuperMemoFinder.CheckSuperMemoExecutable(nativeDataCfg, smFile, out var nativeData, out var ex) == false)
         throw ex;
 
-      LogTo.Information($"SuperMemo version {nativeData.SMVersion} detected");
+      LogTo.Information("SuperMemo version {SMVersion} detected", nativeData.SMVersion);
 
       return nativeData;
     }

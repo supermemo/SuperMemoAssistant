@@ -19,44 +19,43 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Modified On:  2020/02/22 16:33
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using Anotar.Serilog;
-using MoreLinq;
-using Nito.AsyncEx;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Interop.SuperMemo.Elements;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Builders;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SuperMemo.Common.Elements.Builders;
-using SuperMemoAssistant.SuperMemo.Common.Extensions;
-using SuperMemoAssistant.SuperMemo.Hooks;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types;
-using SuperMemoAssistant.Sys.SparseClusteredArray;
-
 namespace SuperMemoAssistant.SuperMemo.Common.Elements
 {
+  using System;
+  using System.Collections;
+  using System.Collections.Concurrent;
+  using System.Collections.Generic;
+  using System.Diagnostics.CodeAnalysis;
+  using System.Globalization;
+  using System.Linq;
+  using System.Text.RegularExpressions;
+  using System.Threading;
+  using System.Threading.Tasks;
+  using System.Windows;
+  using Anotar.Serilog;
+  using Builders;
+  using Extensions;
+  using Hooks;
+  using Interop;
+  using Interop.SuperMemo.Core;
+  using Interop.SuperMemo.Elements;
+  using Interop.SuperMemo.Elements.Builders;
+  using Interop.SuperMemo.Elements.Models;
+  using Interop.SuperMemo.Elements.Types;
+  using MoreLinq;
+  using Nito.AsyncEx;
+  using SMA;
+  using SuperMemo17.Elements.Types;
+  using SuperMemoAssistant.Extensions;
+  using Sys.SparseClusteredArray;
+
+  [SuppressMessage("Naming", "CA1710:Identifiers should have correct suffix", Justification = "<Pending>")]
   public abstract class ElementRegistryBase
     : SMHookIOBase,
       IElementRegistry
@@ -77,12 +76,12 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
     //
     // Sync
 
-    private readonly Mutex _addMutex = new Mutex();
+    private readonly Mutex                 _addMutex               = new Mutex();
+    private readonly AsyncManualResetEvent _waitForElementAnyEvent = new AsyncManualResetEvent();
 
     private readonly AsyncManualResetEvent _waitForElementCreatedEvent = new AsyncManualResetEvent();
-    private readonly AsyncManualResetEvent _waitForElementUpdatedEvent = new AsyncManualResetEvent();
-    private readonly AsyncManualResetEvent _waitForElementAnyEvent     = new AsyncManualResetEvent();
     private readonly ManualResetEventSlim  _waitForElementIdEvent      = new ManualResetEventSlim();
+    private readonly AsyncManualResetEvent _waitForElementUpdatedEvent = new AsyncManualResetEvent();
 
     private int _waitForElementId       = -1;
     private int _waitForElementResultId = -1;
@@ -227,7 +226,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
 
       results = new List<ElemCreationResult>(
         builders.Select(
-          b => new ElemCreationResult(ElemCreationResultCode.ErrorUnknown, b))
+          b => new ElemCreationResult(ElemCreationResultCodes.ErrorUnknown, b))
       );
 
       try
@@ -258,7 +257,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
         // toDispose.Add(new FocusSnapshot(true)); // TODO: Only if inserting 1 element
 
         //
-        // Freeze element window if we want to insert the element without displaying it immediatly
+        // Freeze element window if we want to insert the element without displaying it immediately
 
         if (singleMode == false || builders[0].ShouldDisplay == false)
           inSMUpdateLockMode = Core.SM.UI.ElementWdw.EnterSMUpdateLock(); // TODO: Pass in EnterUpdateLock
@@ -392,11 +391,8 @@ Exception: {ex}",
 
     #region Methods
 
-    //
-    // 
-
-    private bool CanAddElement(IElement          parent,
-                               ElemCreationFlags options)
+    private static bool CanAddElement(IElement          parent,
+                                      ElemCreationFlags options)
     {
       if (options.HasFlag(ElemCreationFlags.ForceCreate))
         return true;
@@ -445,7 +441,7 @@ Exception: {ex}",
       if (subFolders.Any() == false)
         return CreateAutoSubfolders(parent, 1);
 
-      var subFolder = subFolders.MaxBy(p => int.Parse(p.Item2.Groups[1].Value))
+      var subFolder = subFolders.MaxBy(p => int.Parse(p.Item2.Groups[1].Value, CultureInfo.InvariantCulture))
                                 .First();
 
       if (subFolder.child == null || CanAddElement(subFolder.child, ElemCreationFlags.None) == false)
@@ -453,7 +449,7 @@ Exception: {ex}",
           parent,
           subFolder.child == null
             ? 1
-            : int.Parse(subFolder.Item2.Groups[1].Value) + 1
+            : int.Parse(subFolder.Item2.Groups[1].Value, CultureInfo.InvariantCulture) + 1
         );
 
       return subFolder.child.Id;
@@ -478,7 +474,7 @@ Exception: {ex}",
       return needAdjust;
     }
 
-    private bool AddElement(ElementBuilder builder, out int elemId)
+    private static bool AddElement(ElementBuilder builder, out int elemId)
     {
       elemId = -1;
 
@@ -513,12 +509,12 @@ Exception: {ex}",
       }
     }
 
-    private ElemCreationResultCode AddElement(ElementBuilder    builder,
-                                              ElemCreationFlags options,
-                                              int               originalHookId,
-                                              out int           elemId)
+    private ElemCreationResultCodes AddElement(ElementBuilder    builder,
+                                               ElemCreationFlags options,
+                                               int               originalHookId,
+                                               out int           elemId)
     {
-      var successFlag = ElemCreationResultCode.Success;
+      var successFlag = ElemCreationResultCodes.Success;
       elemId = -1;
 
       try
@@ -534,20 +530,20 @@ Exception: {ex}",
         parentId = FindDestinationBranch(this[parentId], options);
 
         if (parentId <= 0 || this[parentId] == null)
-          return ElemCreationResultCode.ErrorTooManyChildren;
+          return ElemCreationResultCodes.ErrorTooManyChildren;
 
         //
         // Has a concept been specified for the new element ?
 
         if (builder.Concept != null)
           if (Core.SM.UI.ElementWdw.SetCurrentConcept(builder.Concept.Id) == false)
-            successFlag |= ElemCreationResultCode.WarningConceptNotSet;
+            successFlag |= ElemCreationResultCodes.WarningConceptNotSet;
 
         //
         // Make sure concept & root are valid
 
         if (AdjustRoot(parentId))
-          successFlag |= ElemCreationResultCode.WarningConceptNotSet;
+          successFlag |= ElemCreationResultCodes.WarningConceptNotSet;
 
         //
         // Set hook *after* adjusting concept
@@ -559,12 +555,12 @@ Exception: {ex}",
 
         return AddElement(builder, out elemId)
           ? successFlag
-          : ElemCreationResultCode.ErrorUnknown;
+          : ElemCreationResultCodes.ErrorUnknown;
       }
       catch (Exception ex)
       {
         LogTo.Error(ex, "Exception caught while adding new element");
-        return ElemCreationResultCode.ErrorUnknown;
+        return ElemCreationResultCodes.ErrorUnknown;
       }
     }
 
@@ -578,7 +574,7 @@ Exception: {ex}",
     {
       try
       {
-        OnElementCreated?.Invoke(new SMElementArgs(Core.SM, el));
+        OnElementCreated?.Invoke(new SMElementEventArgs(Core.SM, el));
       }
       catch (Exception ex)
       {
@@ -614,16 +610,16 @@ Exception: {ex}",
       try
       {
         if (deleted)
-          OnElementDeleted?.Invoke(new SMElementArgs(Core.SM, el));
+          OnElementDeleted?.Invoke(new SMElementEventArgs(Core.SM, el));
 
         else
-          OnElementModified?.Invoke(new SMElementChangedArgs(Core.SM, el, flags));
+          OnElementModified?.Invoke(new SMElementChangedEventArgs(Core.SM, el, flags));
       }
       catch (Exception ex)
       {
         var eventType = deleted ? "Deleted" : "Modified";
 
-        LogTo.Error(ex, $"Error while signaling Element {eventType} event");
+        LogTo.Error(ex, "Error while signaling Element {EventType} event", eventType);
       }
       finally
       {
@@ -658,20 +654,20 @@ Exception: {ex}",
       }
     }
 
-    public Task<int> WaitForNextElement(int timeOutMs = 3000)
+    public async Task<int> WaitForNextElementAsync(int timeOutMs = 3000)
     {
       using (var cts = new CancellationTokenSource(timeOutMs))
-        return WaitForNextElement(cts.Token);
+        return await WaitForNextElementAsync(cts.Token).ConfigureAwait(false);
     }
 
-    public async Task<int> WaitForNextElement(CancellationToken ct)
+    public async Task<int> WaitForNextElementAsync(CancellationToken ct)
     {
       try
       {
         _waitForElementId = int.MinValue;
         _waitForElementAnyEvent.Reset();
 
-        await _waitForElementAnyEvent.WaitAsync(ct);
+        await _waitForElementAnyEvent.WaitAsync(ct).ConfigureAwait(false);
 
         return ct.IsCancellationRequested ? -1 : _waitForElementResultId;
       }
@@ -681,20 +677,20 @@ Exception: {ex}",
       }
     }
 
-    public Task<int> WaitForNextCreatedElement(int timeOutMs = 3000)
+    public async Task<int> WaitForNextCreatedElementAsync(int timeOutMs = 3000)
     {
       using (var cts = new CancellationTokenSource(timeOutMs))
-        return WaitForNextCreatedElement(cts.Token);
+        return await WaitForNextCreatedElementAsync(cts.Token).ConfigureAwait(false);
     }
 
-    public async Task<int> WaitForNextCreatedElement(CancellationToken ct)
+    public async Task<int> WaitForNextCreatedElementAsync(CancellationToken ct)
     {
       try
       {
         _waitForElementId = int.MaxValue;
         _waitForElementCreatedEvent.Reset();
 
-        await _waitForElementCreatedEvent.WaitAsync(ct);
+        await _waitForElementCreatedEvent.WaitAsync(ct).ConfigureAwait(false);
 
         return ct.IsCancellationRequested ? -1 : _waitForElementResultId;
       }
@@ -704,20 +700,20 @@ Exception: {ex}",
       }
     }
 
-    public Task<int> WaitForNextUpdatedElement(int timeOutMs = 3000)
+    public async Task<int> WaitForNextUpdatedElementAsync(int timeOutMs = 3000)
     {
       using (var cts = new CancellationTokenSource(timeOutMs))
-        return WaitForNextUpdatedElement(cts.Token);
+        return await WaitForNextUpdatedElementAsync(cts.Token).ConfigureAwait(false);
     }
 
-    public async Task<int> WaitForNextUpdatedElement(CancellationToken ct)
+    public async Task<int> WaitForNextUpdatedElementAsync(CancellationToken ct)
     {
       try
       {
         _waitForElementId = int.MinValue;
         _waitForElementUpdatedEvent.Reset();
 
-        await _waitForElementUpdatedEvent.WaitAsync(ct);
+        await _waitForElementUpdatedEvent.WaitAsync(ct).ConfigureAwait(false);
 
         return ct.IsCancellationRequested ? -1 : _waitForElementResultId;
       }
@@ -767,9 +763,9 @@ Exception: {ex}",
 
     #region Events
 
-    public event Action<SMElementArgs>        OnElementCreated;
-    public event Action<SMElementArgs>        OnElementDeleted;
-    public event Action<SMElementChangedArgs> OnElementModified;
+    public event Action<SMElementEventArgs>        OnElementCreated;
+    public event Action<SMElementEventArgs>        OnElementDeleted;
+    public event Action<SMElementChangedEventArgs> OnElementModified;
 
     #endregion
 

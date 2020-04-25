@@ -46,7 +46,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content
   {
     #region Properties & Fields - Non-Public
 
-    protected List<ComponentBase> ComponentsInternal { get; set; } = new List<ComponentBase>();
+    protected List<ComponentBase> ComponentsInternal { get; } = new List<ComponentBase>();
 
     #endregion
 
@@ -101,16 +101,16 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content
 
     internal void Update(ComponentGroup cGroup)
     {
-      ComponentsInternal = cGroup.ComponentsInternal;
+      ComponentsInternal.Clear();
+      ComponentsInternal.AddRange(cGroup.ComponentsInternal);
 
       try
       {
-        OnChanged?.Invoke(new SMComponentGroupArgs(Core.SM, this));
+        OnChanged?.Invoke(new SMComponentGroupEventArgs(Core.SM, this));
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "Error while signaling ComponentGroup Update");
+        LogTo.Error(ex, "Error while signaling ComponentGroup Update");
       }
     }
 
@@ -123,7 +123,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content
 
     // Events
 
-    public override event Action<SMComponentGroupArgs> OnChanged;
+    public override event Action<SMComponentGroupEventArgs> OnChanged;
 
     #endregion
   }

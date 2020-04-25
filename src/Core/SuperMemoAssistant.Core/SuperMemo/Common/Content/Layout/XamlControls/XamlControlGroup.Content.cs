@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -19,27 +19,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2019/02/27 02:07
-// Modified On:  2019/02/27 02:42
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop.SuperMemo.Content.Contents;
-using SuperMemoAssistant.SuperMemo.Common.Content.Content;
-
 namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 {
+  using System.Collections.Generic;
+  using System.Globalization;
+  using System.Linq;
+  using System.Windows;
+  using System.Windows.Controls;
+  using Content;
+  using Interop.SuperMemo.Content.Contents;
+  using SuperMemoAssistant.Extensions;
+
   public partial class XamlControlGroup
   {
     #region Constants & Statics
@@ -54,11 +50,11 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 
     #region Properties & Fields - Non-Public
 
-    private readonly Dictionary<ContentTypeFlag, Panel> _contentPanelMap = new Dictionary<ContentTypeFlag, Panel>();
+    private readonly Dictionary<ContentTypeFlags, Panel> _contentPanelMap = new Dictionary<ContentTypeFlags, Panel>();
 
     private readonly List<UIElement> _contentUIElements = new List<UIElement>();
 
-    private readonly List<(Panel panel, ContentTypeFlag content)> _panelAcceptedContents = new List<(Panel, ContentTypeFlag)>();
+    private readonly List<(Panel panel, ContentTypeFlags content)> _panelAcceptedContents = new List<(Panel, ContentTypeFlags)>();
 
     #endregion
 
@@ -77,6 +73,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
       UpdateLayout();
 
       var ret = string.Format(
+        CultureInfo.InvariantCulture,
         ComponentsSkeleton,
         _contentUIElements.Count,
         string.Join("\n", _contentUIElements.Select(c => c.ToString())));
@@ -134,7 +131,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
               false,
               "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard ...")
           );
-        
+
         for (int i = 0; i < ImageContentCount; i++)
           demoContents.Add(new ImageContent(0));
 

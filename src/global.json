@@ -1,0 +1,6 @@
+{
+  "msbuild-sdks": {
+    "SuperMemoAssistant.Sdk": "0.1",
+    "SuperMemoAssistant.Sdk.WindowsDesktop": "0.1"
+  }
+}

@@ -19,38 +19,34 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2019/09/03 18:08
-// Modified On:  2020/01/11 18:56
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Channels.Ipc;
-using System.Threading;
-using System.Threading.Tasks;
-using Anotar.Serilog;
-using EasyHook;
-using Nito.AsyncEx;
-using Process.NET;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SMA.Hooks;
-using SuperMemoAssistant.SuperMemo.Natives;
-using SuperMemoAssistant.Sys.Exceptions;
-
 namespace SuperMemoAssistant.SuperMemo.Hooks
 {
-  public partial class SMHookEngine : SMAHookCallback
+  using System;
+  using System.Collections.Generic;
+  using System.Diagnostics.CodeAnalysis;
+  using System.Linq;
+  using System.Runtime.Remoting.Channels.Ipc;
+  using System.Threading;
+  using System.Threading.Tasks;
+  using Anotar.Serilog;
+  using EasyHook;
+  using Extensions;
+  using Interop;
+  using Interop.SuperMemo.Core;
+  using Natives;
+  using Nito.AsyncEx;
+  using Process.NET;
+  using SMA;
+  using SMA.Hooks;
+  using Sys.Exceptions;
+
+  public sealed partial class SMHookEngine : SMAHookCallback, IDisposable
   {
     #region Constants & Statics
 
@@ -67,15 +63,15 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     #region Properties & Fields - Non-Public
 
-    protected bool                  HookSuccess   { get; private set; }
-    protected Exception             HookException { get; private set; }
-    protected AsyncManualResetEvent HookInitEvent { get; } = new AsyncManualResetEvent(false);
-    protected AutoResetEvent        SMAInitEvent  { get; } = new AutoResetEvent(false);
+    private bool                  HookSuccess   { get; set; }
+    private Exception             HookException { get; set; }
+    private AsyncManualResetEvent HookInitEvent { get; } = new AsyncManualResetEvent(false);
+    private AutoResetEvent        SMAInitEvent  { get; } = new AutoResetEvent(false);
 
-    protected IpcServerChannel ServerChannel { get; set; }
+    private IpcServerChannel ServerChannel { get; set; }
 
-    protected List<string>     IOTargetFilePaths { get; } = new List<string>();
-    protected List<ISMAHookIO> IOCallbacks       { get; } = new List<ISMAHookIO>();
+    private List<string>     IOTargetFilePaths { get; } = new List<string>();
+    private List<ISMAHookIO> IOCallbacks       { get; } = new List<ISMAHookIO>();
 
     #endregion
 
@@ -110,7 +106,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
       try
       {
-        LogTo.Debug($"Injected lib signal, success: {success}");
+        LogTo.Debug("Injected lib signal, success: {Success}", success);
 
         HookSuccess   = success;
         HookException = hookEx;
@@ -129,6 +125,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     public override void KeepAlive() { }
 
+    [SuppressMessage("CodeQuality", "Serilog004:Constant MessageTemplate verifier", Justification = "<Pending>")]
     public override void Debug(string          msg,
                                params object[] args)
     {
@@ -191,7 +188,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     //
     // Core hook methods
 
-    public async Task<ProcessSharp<SMNatives>> CreateAndHook(
+    public async Task<ProcessSharp<SMNatives>> CreateAndHookAsync(
       SMCollection            collection,
       string                  binPath,
       IEnumerable<ISMAHookIO> ioCallbacks,
@@ -229,13 +226,13 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
       }
       catch (ArgumentException ex)
       {
-        LogTo.Warning(ex, $"Failed to start and inject SuperMemo. Command line: '{binPath} {collection.GetKnoFilePath().Quotify()}'");
+        LogTo.Warning(ex, "Failed to start and inject SuperMemo. Command line: '{BinPath} {V}'", binPath, collection.GetKnoFilePath().Quotify());
       }
 
       LogTo.Debug("Waiting for signal from Injected library");
 
       // Wait for Signal from OnHookInstalled with timeout
-      await HookInitEvent.WaitAsync(WaitTimeout);
+      await HookInitEvent.WaitAsync(WaitTimeout).ConfigureAwait(false);
 
       if (HookSuccess == false)
       {
@@ -250,13 +247,13 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
         throw ex;
       }
 
-      LogTo.Debug($"SuperMemo started and injected, pId: {pId}");
+      LogTo.Debug("SuperMemo started and injected, pId: {PId}", pId);
 
       return new ProcessSharp<SMNatives>(
         pId,
         Process.NET.Memory.MemoryType.Remote,
         true,
-        Core.SMA.CoreConfig.SuperMemo.PatternsHintAddresses,
+        Core.CoreConfig.SuperMemo.PatternsHintAddresses,
         nativeData);
     }
 
@@ -296,5 +293,15 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     }
 
     #endregion
+
+
+
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+      _mainThreadReadyEvent?.Dispose();
+      SMAInitEvent?.Dispose();
+    }
   }
 }

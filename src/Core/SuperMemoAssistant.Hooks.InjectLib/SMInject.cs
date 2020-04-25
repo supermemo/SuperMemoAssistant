@@ -21,7 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/25 15:34
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/04/07 10:39
 // Modified By:  Alexis
 
 #endregion
@@ -29,23 +30,25 @@
 
 
 
-using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Remoting;
-using System.Threading.Tasks;
-using EasyHook;
-using Sentry;
-using SuperMemoAssistant.SMA.Hooks;
-using SuperMemoAssistant.SuperMemo;
-
 // ReSharper disable UnusedParameter.Local
 // ReSharper disable ClassNeverInstantiated.Global
 
 namespace SuperMemoAssistant.Hooks.InjectLib
 {
-  public partial class SMInject : IEntryPoint
+  using System;
+  using System.Diagnostics.CodeAnalysis;
+  using System.IO;
+  using System.Linq;
+  using System.Reflection;
+  using System.Runtime.Remoting;
+  using System.Threading;
+  using System.Threading.Tasks;
+  using EasyHook;
+  using Sentry;
+  using SMA.Hooks;
+  using SuperMemo;
+
+  public sealed partial class SMInject : IEntryPoint, IDisposable
   {
     #region Properties & Fields - Non-Public
 
@@ -66,7 +69,9 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     {
       RemotingConfiguration.CustomErrorsMode = CustomErrorsModes.Off;
     }
-
+    
+    [SuppressMessage("Microsoft.Performance", "CA1801")]
+    [SuppressMessage("Redundancy", "RCS1163:Unused parameter.", Justification = "Prototype cannot be changed")]
     public SMInject(RemoteHooking.IContext context,
                     string                 channelName,
                     NativeData             nativeData)
@@ -77,7 +82,19 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       SentryInstance = SentrySdk.Init("https://a63c3dad9552434598dae869d2026696@sentry.io/1362046");
 
       SMA = (SMAHookCallback)RemoteHooking.IpcConnectClient<MarshalByRefObject>(channelName);
-      Task.Factory.StartNew(KeepAlive, TaskCreationOptions.LongRunning);
+      _   = Task.Factory.StartNew(KeepAlive, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+    }
+
+    public void Dispose()
+    {
+      HasExited = true;
+
+      CleanupHooks();
+
+      _dataAvailableEvent.Dispose();
+      _smProcess.Dispose();
+
+      SentryInstance.Dispose();
     }
 
     #endregion
@@ -87,6 +104,8 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
     #region Methods
 
+    [SuppressMessage("Microsoft.Performance", "CA1801")]
+    [SuppressMessage("Redundancy", "RCS1163:Unused parameter.", Justification = "Prototype cannot be changed")]
     public void Run(RemoteHooking.IContext inContext,
                     string                 channelName,
                     NativeData             nativeData)
@@ -124,11 +143,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       }
       finally
       {
-        HasExited = true;
-
-        CleanupHooks();
-
-        SentryInstance.Dispose();
+        Dispose();
       }
     }
 

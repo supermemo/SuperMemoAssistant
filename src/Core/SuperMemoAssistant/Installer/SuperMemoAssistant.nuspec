@@ -14,7 +14,19 @@
     <repository type="$repositoryType$" url="$repositoryUrl$" branch="develop" commit="$commitId$" />
     <dependencies />
     <!-- releaseNotes will be replaced by MSBuild.Tools (see SuperMemoAssistant.csproj and https://github.com/alexis-/MSBuild.Tools) -->
-    <releaseNotes>- Added: VS GitHooks submodule
+    <releaseNotes>- Added: Coding style (CodeStyle.ruleset)
+- Added: SMA now validates the Interop version of plugins and warn user if the plugin is incompatible
+- Added: Alpha (nightly) channel for plugins
+- Added: Core Configuration option to add new NuGet repositories for plugins
+- Added: Notification when a plugin failed to start with an informational reason description
+- Added: Helpers to create desktop notifications
+- Added: Nightly/Beta/Stable configurations
+- Added: SuperMemoAssistant.VersionBuilder project which determines the project's version
+- Added: Project build files (Directory.Build.*, *.targets)
+- Added: Git hooks for Commit Message and Pre Commit (wip)
+- Added: README files for the different parts of the project (empty - wip)
+- Added: Log file in Temp when an exception occurs in the ModuleInitializer
+- Added: VS GitHooks submodule
 - Added: Directory.Build.targets (moved Microsoft.SourceLink.GitHub and Nerdbank.GitVersioning PackageReferences)
 - Added: SuperMemoAssistant MSBuild SDKs under src/Build/MSBuild
 - Added: Visual Studio SMA extension and plugin C# templates under src/Build/VS
@@ -41,6 +53,15 @@
 - Added: Update settings accessible from Collection Window
 - Added: Shortcut for "SMA Updater" on install
 - Added: Debug symbols (pdb) to Services nuspec
+- Updated: Moved SuperMemoAssistant from AppHost to Core
+- Updated: Removed DEBUG_INPROD
+- Updated: Registry logging now uses the DEBUG_REGISTRIES define
+- Updated: Moved plugin initialization in App.xaml.cs after loading the Core config
+- Updated: Refactored project folder structure
+- Updated: Applied coding style to most of Core (except apphost)
+- Updated: Improved async code
+- Updated: DevSandboxPlugin and TemplatePlugin to the new SMA SDK
+- Updated: Packages
 - Updated: Cleaned template plugin's csproj for integration in the VS extension's C# templates
 - Updated: Fixed several issue with Directory.Build.Props
 - Updated: Added default settings in version.json
@@ -51,7 +72,6 @@
 - Updated: Submodules' Project (csproj) to the new SDK format
 - Updated: Generate documentation to default
 - Updated: Plugins' project (csproj) to the new SDK format
-- Updated: Packages
 - Updated: Project (csproj) format to the new SDK format
 - Updated: Moved all resources to the assets folder
 - Updated: Refactored projects to make their organization more clean and consistent
@@ -63,6 +83,7 @@
 - Updated: Tool tips (wip) #166
 - Updated: All projects to PackageReference
 - Updated: Change log is now generated before build to include the include the latest commit messages in the package
+- Fixed: Commit message hook
 - Fixed: Async/Await would sometime freeze in case of issue during initialization
 - Fixed: Solution didn't point to SuperMemoAssistant.Interop
 - Fixed: Issue where updater wouldn't recognize identical target and local versions

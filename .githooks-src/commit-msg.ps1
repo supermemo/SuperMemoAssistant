@@ -20,7 +20,7 @@
     foreach ($line in [string[]] (Get-Content $args[0])) {
         $line = $line.Trim();
 
-        if ($errors.Where({ $line.StartsWith($_) }, 'First').Count -eq 0) {
+        if ($prefixes.Where({ $line.StartsWith($_) }).Count -eq 0) {
             $errors.Add("[line $i] Missing prefix in '$line'")
         }
 

@@ -17,7 +17,6 @@
   </PropertyGroup>
   
   <PropertyGroup Label="Build">
-    <RootNamespace>SuperMemoAssistant</RootNamespace>
     <SdkCommonBuild>$(SolutionDir)src\Build\MSBuild\src\SuperMemoAssistant.Sdk.Common\Build\</SdkCommonBuild>
     <CodeAnalysisRuleSet>$(SolutionDir)src\CodeStyle.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>

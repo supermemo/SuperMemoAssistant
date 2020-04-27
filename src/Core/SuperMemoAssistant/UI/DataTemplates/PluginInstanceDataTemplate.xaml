@@ -164,6 +164,41 @@
                             Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button }}}" />
           </Button>
 
+          <!--Play/Pause (Debug)-->
+          <Button Name="BtnPluginPlayPauseDebug"
+                  Width="26"
+                  Height="26"
+                  Margin="8 0 0 0"
+                  VerticalAlignment="Center"
+                  ToolTip="Debug the plugin (attach debugger)"
+                  CommandParameter="{Binding}"
+                  Command="{Binding DataContext.PlayPauseDebugCommand, ElementName=lbPlugins}">
+            <Button.Style>
+              <Style TargetType="{x:Type Button}"
+                     BasedOn="{StaticResource MahApps.Metro.Styles.MetroCircleButtonStyle}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                
+                <Style.Triggers>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding IsDevelopment}" Value="True" />
+                      <Condition Binding="{Binding Status}" Value="{x:Static pluginModels:PluginStatus.Stopped}" />
+                    </MultiDataTrigger.Conditions>
+
+                    <MultiDataTrigger.Setters>
+                      <Setter Property="Visibility" Value="Visible" />
+                    </MultiDataTrigger.Setters>
+                  </MultiDataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Button.Style>
+            <fa5:SvgAwesome Width="14"
+                            Height="14"
+                            VerticalAlignment="Center"
+                            Icon="Solid_Bug"
+                            Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button }}}" />
+          </Button>
+
           <!--Settings-->
           <Button Name="BtnPluginSettings"
                   Width="26"

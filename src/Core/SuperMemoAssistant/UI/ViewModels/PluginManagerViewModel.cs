@@ -98,7 +98,8 @@ namespace SuperMemoAssistant.UI.ViewModels
       UpdateCommand =
         new AsyncRelayCommand<LocalPluginPackage<PluginMetadata>>(PluginUpdateAsync, CanPluginUpdate, HandleExceptionAsync);
       EnableDisableCommand = new AsyncRelayCommand<PluginInstance>(PluginEnableDisableAsync, null, HandleExceptionAsync);
-      PlayPauseCommand     = new AsyncRelayCommand<PluginInstance>(PluginPlayPauseAsync, CanPluginPlayPause, HandleExceptionAsync);
+      PlayPauseCommand     = new AsyncRelayCommand<PluginInstance>(pi => PluginPlayPauseAsync(pi, false), CanPluginPlayPause, HandleExceptionAsync);
+      PlayPauseDebugCommand     = new AsyncRelayCommand<PluginInstance>(pi => PluginPlayPauseAsync(pi, true), CanPluginPlayPause, HandleExceptionAsync);
       ShowSettingsCommand  = new AsyncRelayCommand<PluginInstance>(PluginShowSettingsAsync);
       CancelCommand        = new RelayCommand(CancelTasks);
       BackToTheListCommand = new RelayCommand(BackToTheList);
@@ -110,7 +111,8 @@ namespace SuperMemoAssistant.UI.ViewModels
         UninstallCommand,
         UpdateCommand,
         EnableDisableCommand,
-        PlayPauseCommand
+        PlayPauseCommand,
+        PlayPauseDebugCommand
       };
 
       PackageManagerCommands.ForEach(c => c.CanExecuteChanged += PackageManagerCommand_CanExecuteChanged);
@@ -155,6 +157,9 @@ namespace SuperMemoAssistant.UI.ViewModels
 
     /// <summary>Starts or pauses a loaded plugin</summary>
     public AsyncRelayCommand<PluginInstance> PlayPauseCommand { get; }
+
+    /// <summary>Starts or pauses a loaded plugin</summary>
+    public AsyncRelayCommand<PluginInstance> PlayPauseDebugCommand { get; }
 
     /// <summary>Sends a signal to a running plugin to show its settings dialog</summary>
     public AsyncRelayCommand<PluginInstance> ShowSettingsCommand { get; }
@@ -456,12 +461,12 @@ namespace SuperMemoAssistant.UI.ViewModels
     /// <summary>Starts or stops <paramref name="pluginInstance" /> depending on its current status</summary>
     /// <param name="pluginInstance"></param>
     /// <returns></returns>
-    private Task PluginPlayPauseAsync(PluginInstance pluginInstance)
+    private Task PluginPlayPauseAsync(PluginInstance pluginInstance, bool attachDebugger)
     {
       switch (pluginInstance.Status)
       {
         case PluginStatus.Stopped:
-          return PluginMgr.StartPlugin(pluginInstance);
+          return PluginMgr.StartPlugin(pluginInstance, attachDebugger);
 
         case PluginStatus.Connected:
           return PluginMgr.StopPlugin(pluginInstance);

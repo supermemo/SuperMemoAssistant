@@ -6,6 +6,10 @@
     <RepositoryUrl>https://github.com/supermemo/SuperMemoAssistant</RepositoryUrl>
   </PropertyGroup>
 
+  <PropertyGroup Label="Build">
+    <RootNamespace>SuperMemoAssistant</RootNamespace>
+  </PropertyGroup>
+
   <PropertyGroup>
     <NBGV_WriteProjectVersion Condition=" '$(NBGV_WriteProjectVersion)' == '' ">false</NBGV_WriteProjectVersion>
     <VersionJsonFilePath>$(SolutionDir)src\Core\version.json</VersionJsonFilePath>

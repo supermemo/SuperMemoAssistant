@@ -27,7 +27,7 @@
 
 namespace SuperMemoAssistant.Sys.Windows
 {
-  using System.Linq;
+  using System.Diagnostics.CodeAnalysis;
   using global::Windows.Data.Xml.Dom;
   using global::Windows.UI.Notifications;
   using Microsoft.Toolkit.Uwp.Notifications;
@@ -68,16 +68,29 @@ namespace SuperMemoAssistant.Sys.Windows
       toastContent.Show();
     }
 
+    [SuppressMessage("Design", "RCS1075:Avoid empty catch clause that catches System.Exception.",
+                     Justification =
+                       "ToastNotifier.Show() throws a generic exception when the notification API isn't available")]
     public static void Show(this ToastContent toastContent)
     {
-      var doc = new XmlDocument();
-      doc.LoadXml(toastContent.GetContent());
+      try
+      {
+        if (DesktopNotificationManager.IsApiAvailable() == false)
+          return;
 
-      // And create the toast notification
-      var toast = new ToastNotification(doc);
+        var doc = new XmlDocument();
+        doc.LoadXml(toastContent.GetContent());
 
-      // And then show it
-      DesktopNotificationManager.CreateToastNotifier().Show(toast);
+        // And create the toast notification
+        var toast = new ToastNotification(doc);
+
+        // And then show it
+        DesktopNotificationManager.CreateToastNotifier().Show(toast);
+      }
+      catch (System.Exception)
+      {
+        // ToastNotifier.Show() throws a generic exception when the notification API isn't available
+      }
     }
 
     #endregion

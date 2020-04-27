@@ -36,6 +36,7 @@ namespace SuperMemoAssistant.Sys.Windows
   using System.Linq;
   using System.Runtime.InteropServices;
   using System.Text;
+  using global::Windows.Foundation.Metadata;
   using global::Windows.UI.Notifications;
 
   // https://github.com/WindowsNotifications/desktop-toasts/
@@ -177,6 +178,11 @@ namespace SuperMemoAssistant.Sys.Windows
       if (!_registeredActivator)
         // Incorrect usage
         throw new Exception("You must call RegisterActivator first.");
+    }
+
+    public static bool IsApiAvailable()
+    {
+      return ApiInformation.IsTypePresent("Windows.ApplicationModel.Background.ToastNotificationActionTrigger");
     }
 
     #endregion
@@ -384,7 +390,7 @@ namespace SuperMemoAssistant.Sys.Windows
     }
 
     [ComImport]
-    [Guid("53E31837-6600-4A81-9395-75CFFE746F94")]
+    [System.Runtime.InteropServices.Guid("53E31837-6600-4A81-9395-75CFFE746F94")]
     [ComVisible(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface INotificationActivationCallback

@@ -48,6 +48,7 @@ namespace SuperMemoAssistant.Installer
   using Squirrel;
   using Sys.Windows;
   using Sys.Windows.Net;
+  using System.Globalization;
 
   /// <summary>
   ///   Handles the updating process for SMA, and events sent from the installer itself (e.g. OnInstalled, OnUpdated, etc.)
@@ -200,7 +201,7 @@ namespace SuperMemoAssistant.Installer
       catch (TaskCanceledException) { }
       catch (Exception ex) // TODO: Update Squirrel UpdateManager to send sub-classed Exceptions
       {
-        LogTo.Warning(ex, $"An exception was caught while {State.Name().ToLower()} update");
+        LogTo.Warning(ex, "An exception was caught while {V} update", State.Name().ToLower(CultureInfo.InvariantCulture));
         State = SMAUpdateState.Error;
       }
       finally
@@ -220,43 +221,12 @@ namespace SuperMemoAssistant.Installer
         ? $"SMA has been updated to version {updateVersion.Version}. Restart SMA to use the new version."
         : $"An error occured while updating SMA to version {updateVersion.Version}. Check the logs for more information.";
 
-      ToastContent toastContent = new ToastContent
-      {
-        Visual = new ToastVisual
+      msg.ShowDesktopNotification(
+        new ToastButton("Open the logs folder", SMAFileSystem.LogDir.FullPathWin)
         {
-          BindingGeneric = new ToastBindingGeneric
-          {
-            Children =
-            {
-              new AdaptiveText
-              {
-                Text = msg
-              }
-            }
-          }
+          ActivationType = ToastActivationType.Protocol
         }
-      };
-
-      if (State == SMAUpdateState.Error)
-        toastContent.Actions = new ToastActionsCustom
-        {
-          Buttons =
-          {
-            new ToastButton("Open the logs folder", SMAFileSystem.LogDir.FullPathWin)
-            {
-              ActivationType = ToastActivationType.Protocol
-            }
-          }
-        };
-
-      var doc = new XmlDocument();
-      doc.LoadXml(toastContent.GetContent());
-
-      // And create the toast notification
-      var toast = new ToastNotification(doc);
-
-      // And then show it
-      DesktopNotificationManager.CreateToastNotifier().Show(toast);
+      );
     }
 
     #endregion

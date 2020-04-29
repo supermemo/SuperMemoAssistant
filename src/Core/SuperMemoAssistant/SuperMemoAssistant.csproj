@@ -167,6 +167,4 @@
   </ItemGroup>
   <Import Project="Build\*.props" />
   <Import Project="Build\*.targets" />
-  <Target Name="WriteChangeLog" AfterTargets="Build" DependsOnTargets="CreateChangeLogs">
-  </Target>
 </Project>

@@ -1,4 +1,7 @@
 <Project>
+  <Target Name="WriteChangeLog" BeforeTargets="Build" DependsOnTargets="CreateChangeLogs">
+  </Target>
+  
   <Target Name="UpdateNuSpec" BeforeTargets="GenerateNuspec" DependsOnTargets="PreparePackage">
     <PropertyGroup>
       <NuspecProperties>version=$(PackageVersion);repositoryType=$(RepositoryType);repositoryUrl=$(RepositoryUrl);commitId=$(GitCommitId);outputPath=$(OutputPath)</NuspecProperties>

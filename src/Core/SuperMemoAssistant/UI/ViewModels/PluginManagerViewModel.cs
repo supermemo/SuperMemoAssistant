@@ -425,7 +425,7 @@ namespace SuperMemoAssistant.UI.ViewModels
     /// <returns></returns>
     private bool CanPluginUpdate(LocalPluginPackage<PluginMetadata> pluginPackage)
     {
-      return pluginPackage?.Metadata.IsDevelopment == false && pluginPackage.HasPendingUpdates;
+      return pluginPackage?.Metadata.IsDevelopment == false && pluginPackage.SelectedVersion != pluginPackage.Identity.Version;
     }
 
     /// <summary>Toggle the enabled status of plugin <paramref name="pluginInstance" /></summary>

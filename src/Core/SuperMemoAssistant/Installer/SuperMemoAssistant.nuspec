@@ -15,6 +15,7 @@
     <dependencies />
     <!-- releaseNotes will be replaced by MSBuild.Tools (see SuperMemoAssistant.csproj and https://github.com/alexis-/MSBuild.Tools) -->
     <releaseNotes>- Added: Button to attach the debugger when starting development plugins
+- Updated: ChangeLogs is now being built on successful build
 - Updated: Coding style
 - Updated: Submodule
 - Updated: Moved &lt;RootNamespace&gt;SuperMemoAssistant&lt;/RootNamespace&gt; to src/Core

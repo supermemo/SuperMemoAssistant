@@ -127,7 +127,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="MSBuild.Tools">
-      <Version>0.2.60</Version>
+      <Version>0.2.61</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -150,7 +150,7 @@
       <Version>2.1.1</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Installer">
-      <Version>1.9.4.64</Version>
+      <Version>1.9.4.65</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Interop">
       <Version>2.0.5-alpha-0</Version>

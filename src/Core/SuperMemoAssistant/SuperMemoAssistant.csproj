@@ -156,10 +156,10 @@
       <Version>2.0.5-alpha.6</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.Sentry">
-      <Version>2.0.5-alpha-0</Version>
+      <Version>2.0.5-alpha.2</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.UI">
-      <Version>2.0.5-alpha-0</Version>
+      <Version>2.0.5-alpha.2</Version>
     </PackageReference>
     <PackageReference Include="WpfAnimatedGif">
       <Version>1.4.18</Version>

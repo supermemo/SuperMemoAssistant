@@ -15,6 +15,7 @@
     <dependencies />
     <!-- releaseNotes will be replaced by MSBuild.Tools (see SuperMemoAssistant.csproj and https://github.com/alexis-/MSBuild.Tools) -->
     <releaseNotes>- Updated: Packages
+- Fixed: Installer's Stub executable didn't handle semver 2.0 correctyl
 - Fixed: Installer didn't recognize semantic version correctly
 - Fixed: Semantic version to strictly abide to the semver 2.0
 </releaseNotes>

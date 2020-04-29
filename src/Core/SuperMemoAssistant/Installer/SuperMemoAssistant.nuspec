@@ -14,14 +14,9 @@
     <repository type="$repositoryType$" url="$repositoryUrl$" branch="develop" commit="$commitId$" />
     <dependencies />
     <!-- releaseNotes will be replaced by MSBuild.Tools (see SuperMemoAssistant.csproj and https://github.com/alexis-/MSBuild.Tools) -->
-    <releaseNotes>- Added: Button to attach the debugger when starting development plugins
-- Updated: ChangeLogs is now being built on successful build
-- Updated: Coding style
-- Updated: Submodule
-- Updated: Moved &lt;RootNamespace&gt;SuperMemoAssistant&lt;/RootNamespace&gt; to src/Core
-- Fixed: Updated plugins didn't copy their content to the home folder
-- Fixed: Crash on platforms where notifications are unavailable
-- Fixed: Rewrote Interop history
+    <releaseNotes>- Updated: Packages
+- Fixed: Installer didn't recognize semantic version correctly
+- Fixed: Semantic version to strictly abide to the semver 2.0
 </releaseNotes>
   </metadata>
   <files>

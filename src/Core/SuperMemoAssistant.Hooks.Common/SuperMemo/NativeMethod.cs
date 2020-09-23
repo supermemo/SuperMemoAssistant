@@ -67,6 +67,10 @@ namespace SuperMemoAssistant.SuperMemo
     TSMMain_SelectDefaultConcept,
     TRegistry_AddMember,
     TRegistry_ImportFile,
+    FileSpace_GetTopSlot,
+    FileSpace_IsSlotOccupied,
+    Queue_Last,
+    Queue_GetItem,
 
     // Special handling
     AppendAndAddElementFromText,

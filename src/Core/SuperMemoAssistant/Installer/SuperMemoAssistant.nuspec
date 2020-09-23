@@ -14,7 +14,9 @@
     <repository type="$repositoryType$" url="$repositoryUrl$" branch="develop" commit="$commitId$" />
     <dependencies />
     <!-- releaseNotes will be replaced by MSBuild.Tools (see SuperMemoAssistant.csproj and https://github.com/alexis-/MSBuild.Tools) -->
-    <releaseNotes>- Fixed: Update button was disabled when NuGet determined the latest version was installed
+    <releaseNotes>- Added: nuget.config
+- Added: releases directory to the repo
+- Updated: Submodules
 </releaseNotes>
   </metadata>
   <files>

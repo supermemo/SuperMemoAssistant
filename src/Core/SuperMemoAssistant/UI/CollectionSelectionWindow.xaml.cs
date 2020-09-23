@@ -36,6 +36,7 @@ namespace SuperMemoAssistant.UI
   using System.Diagnostics;
   using System.IO;
   using System.Linq;
+  using System.Threading.Tasks;
   using System.Windows;
   using System.Windows.Input;
   using System.Windows.Navigation;
@@ -95,10 +96,10 @@ namespace SuperMemoAssistant.UI
 
     #region Properties & Fields - Public
 
-    public SMCollection                    Collection       { get; set; }
-    public ObservableHashSet<SMCollection> SavedCollections { get; }
+    public SMCollection                    Collection       { get; private set; }
+    public ObservableHashSet<SMCollection> SavedCollections { get; private set; }
 
-    public ICommand DeleteCommand => new RelayCommand<SMCollection>(DeleteCollection);
+    public IAsyncCommand<SMCollection> DeleteCommand => new AsyncRelayCommand<SMCollection>(DeleteCollectionAsync);
 
     #endregion
 
@@ -124,10 +125,7 @@ namespace SuperMemoAssistant.UI
 
     public bool ValidateCollection(SMCollection collection)
     {
-      var knoFilePath = new FilePath(collection.GetKnoFilePath());
-
-      if (knoFilePath.Exists()                           == false
-        || Directory.Exists(collection.GetRootDirPath()) == false)
+      if (collection.Exists() == false)
       {
         Forge.Forms.Show.Window().For(new Alert("Collection doesn't exist anymore.", "Error"));
 
@@ -135,7 +133,7 @@ namespace SuperMemoAssistant.UI
       }
 
       // Check whether collection is locked
-      if (knoFilePath.IsLocked())
+      if (collection.IsLocked())
       {
         Forge.Forms.Show.Window().For(new Alert("Collection is locked. Is SuperMemo already running ?", "Error"));
 
@@ -153,12 +151,20 @@ namespace SuperMemoAssistant.UI
       return new SMCollection(name, filePath, DateTime.Now);
     }
 
-    private void DeleteCollection(SMCollection collection)
+    private async Task DeleteCollectionAsync(SMCollection collection)
     {
-      if (Forge.Forms.Show.Window().For(new Confirmation("Are you sure ?")).Result.Model.Confirmed)
+      var res = await Forge.Forms.Show.Window().For(new Confirmation("Are you sure ?")).ConfigureAwait(true);
+
+      if (res.Model.Confirmed)
       {
-        SavedCollections.Remove(collection);
+        // ObservableHashSet does not have index, which results in an exception when notifying for removal
+        var tmpCollections = SavedCollections;
+        SavedCollections = null;
+
+        tmpCollections.Remove(collection);
         SaveConfig();
+
+        SavedCollections = tmpCollections;
       }
     }
 
@@ -194,7 +200,7 @@ namespace SuperMemoAssistant.UI
     private void btnBrowse_Click(object          sender,
                                  RoutedEventArgs e)
     {
-      OpenFileDialog dlg = new OpenFileDialog
+      var dlg = new OpenFileDialog
       {
         DefaultExt = ".kno",
         Filter     = "SM Collection (*.kno)|*.kno|All files (*.*)|*.*"

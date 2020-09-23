@@ -33,6 +33,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
   using System.Collections.Generic;
   using System.Diagnostics.CodeAnalysis;
   using System.Globalization;
+  using System.IO;
   using System.Linq;
   using System.Text.RegularExpressions;
   using System.Threading;
@@ -41,6 +42,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
   using Anotar.Serilog;
   using Builders;
   using Extensions;
+  using global::Extensions.System.IO;
   using Hooks;
   using Interop;
   using Interop.SuperMemo.Core;
@@ -50,6 +52,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
   using Interop.SuperMemo.Elements.Types;
   using MoreLinq;
   using Nito.AsyncEx;
+  using Registry;
   using SMA;
   using SuperMemo17.Elements.Types;
   using SuperMemoAssistant.Extensions;
@@ -222,6 +225,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
 
       var inSMUpdateLockMode  = false;
       var inSMAUpdateLockMode = false;
+      var nonEmptyFileSlotsMoved = false;
       var singleMode          = builders.Length == 1;
 
       results = new List<ElemCreationResult>(
@@ -271,9 +275,10 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
             toDispose.Add(new ConceptSnapshot());
             toDispose.Add(new HookSnapshot());
 
-            result.Result    = AddElement(result.Builder, options, restoreHookId, out int elemId);
+            result.Result    = AddElement(result.Builder, options, restoreHookId, out int elemId, out var tmpNonEmptyFileSlotsMoved);
             result.ElementId = elemId;
 
+            nonEmptyFileSlotsMoved = nonEmptyFileSlotsMoved || tmpNonEmptyFileSlotsMoved;
             success = success && result.Success;
           }
           finally
@@ -415,7 +420,8 @@ Exception: {ex}",
           .DoNotDisplay(),
         ElemCreationFlags.ForceCreate,
         parent.Id,
-        out int elemId
+        out int elemId,
+        out _
       );
 
       if (WaitForElement(elemId, title) == false)
@@ -474,6 +480,59 @@ Exception: {ex}",
       return needAdjust;
     }
 
+    private bool CheckAndMoveNonEmptyFileSlots()
+    {
+      var memory = Core.SM.SMProcess.Memory;
+      var fileSpaceInst = Core.Natives.FileSpace.InstancePtr.Read<IntPtr>(memory);
+      var emptySlots = Core.Natives.FileSpace.EmptySlotsPtr.Read<IntPtr>(memory);
+      var fileSlot = 0;
+
+      if (Core.Natives.Queue.GetSize(emptySlots, memory) > 0)
+        fileSlot = Core.Natives.Queue.Last.Invoke(emptySlots);
+
+      if (fileSlot <= 0)
+        fileSlot = Core.Natives.FileSpace.GetTopSlot.Invoke(fileSpaceInst, false);
+
+      if (fileSlot <= 0)
+        throw new InvalidOperationException("Requested a new FileSlot, but received slot 0");
+
+      if (Core.Natives.FileSpace.IsSlotOccupied.Invoke(fileSpaceInst, fileSlot))
+      {
+        var recoverDirPath = new DirectoryPath(Core.SM.Collection.CombinePath("recover"));
+        var wildCardPath = RegistryMemberBase.GetFilePathForSlotId(Core.SM.Collection, fileSlot, "*");
+        var fileNameWildCard = Path.GetFileName(wildCardPath);
+        var dirPath = Path.GetDirectoryName(wildCardPath);
+
+        fileNameWildCard.ThrowIfNullOrWhitespace("Invalid wildcard file name for fileslot");
+        dirPath.ThrowIfNullOrWhitespace("Invalid dir path for fileslot");
+
+        recoverDirPath.EnsureExists();
+
+        // ReSharper disable AssignNullToNotNullAttribute
+        foreach (var filePath in Directory.EnumerateFiles(dirPath, fileNameWildCard, SearchOption.TopDirectoryOnly))
+        {
+          try
+          {
+            var fileName = Path.GetFileName(filePath);
+
+            File.Move(filePath, recoverDirPath.CombineFile(fileName).FullPath);
+          }
+          catch (IOException ex)
+          {
+            LogTo.Warning(ex, "Failed to move non-empty fileslot file {FilePath}", filePath);
+
+            if (File.Exists(filePath))
+              throw new InvalidOperationException($"Failed to remove non-empty fileslot file {filePath}");
+          }
+        }
+        // ReSharper restore AssignNullToNotNullAttribute
+
+        return true;
+      }
+
+      return false;
+    }
+
     private static bool AddElement(ElementBuilder builder, out int elemId)
     {
       elemId = -1;
@@ -512,13 +571,19 @@ Exception: {ex}",
     private ElemCreationResultCodes AddElement(ElementBuilder    builder,
                                                ElemCreationFlags options,
                                                int               originalHookId,
-                                               out int           elemId)
+                                               out int           elemId,
+                                               out bool nonEmptyFileSlotsMoved)
     {
       var successFlag = ElemCreationResultCodes.Success;
+      nonEmptyFileSlotsMoved = false;
       elemId = -1;
 
       try
       {
+        //
+        // Check for non-empty file slots
+        nonEmptyFileSlotsMoved = CheckAndMoveNonEmptyFileSlots();
+
         //
         // Has a parent been specified for the new element ?
 

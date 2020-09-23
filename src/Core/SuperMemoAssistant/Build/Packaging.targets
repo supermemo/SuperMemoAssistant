@@ -14,10 +14,10 @@
     </PropertyGroup>
 
     <PropertyGroup>
-      <ReleaseDir>$(SolutionDir)releases\</ReleaseDir>
-      <ImagesDir>$(SolutionDir)assets\images\</ImagesDir>
-      <NuPkgDir>$(SolutionDir)releases\installer\</NuPkgDir>
+      <ReleaseDir>$(SolutionDir)releases\sma</ReleaseDir>
+      <NuPkgDir>$(ReleaseDir)_nupkg\</NuPkgDir>
       <OutputPath Condition=" '$(OutputPath)' == '' ">C:\Users\Lila\AppData\Local\SuperMemoAssistant\app-dev\</OutputPath>
+      <ImagesDir>$(SolutionDir)assets\images\</ImagesDir>
       <SMAExe>$(OutputPath)$(SMAExeName)</SMAExe>
     </PropertyGroup>
 

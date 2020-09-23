@@ -164,7 +164,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Registry
       }*/
     }
 
-    protected static string GetFilePathForSlotId(
+    public static string GetFilePathForSlotId(
       SMCollection collection,
       int          slotId,
       string       slotFileExt)

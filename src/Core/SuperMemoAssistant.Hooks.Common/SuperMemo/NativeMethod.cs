@@ -57,6 +57,7 @@ namespace SuperMemoAssistant.SuperMemo
     ElWdw_ExecuteUncommittedRepetition,
     ElWdw_ForceRepetitionExt,
     ElWdw_RestoreLearningMode,
+    TContents_MoveElementToConcept,
     TCompData_GetType,
     TCompData_GetText,
     TCompData_SetText,

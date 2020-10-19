@@ -35,13 +35,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
   using Common.Content.Controls;
   using Common.UI;
   using Extensions;
-  using Interop;
-  using Interop.SuperMemo.Content.Controls;
-  using Interop.SuperMemo.Core;
-  using Interop.SuperMemo.Elements.Models;
-  using Interop.SuperMemo.Elements.Types;
-  using Interop.SuperMemo.Learning;
-  using Interop.SuperMemo.UI.Element;
+  using SuperMemoAssistant.Interop;
+  using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
+  using SuperMemoAssistant.Interop.SuperMemo.Core;
+  using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
+  using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
+  using SuperMemoAssistant.Interop.SuperMemo.Learning;
+  using SuperMemoAssistant.Interop.SuperMemo.UI.Element;
   using Process.NET.Memory;
   using Process.NET.Types;
   using SMA;
@@ -413,7 +413,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
         return false;
       }
     }
-
     #endregion
 
 

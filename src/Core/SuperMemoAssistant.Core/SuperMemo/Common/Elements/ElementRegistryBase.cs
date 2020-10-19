@@ -601,7 +601,7 @@ Exception: {ex}",
         // Has a concept been specified for the new element ?
 
         if (builder.Concept != null)
-          if (Core.SM.UI.ElementWdw.SetCurrentConcept(builder.Concept.Id) == false)
+          if (Core.SM.UI.ContentWdw.MoveElementToConcept(this[elemId].Id,builder.Concept.Id) == false)
             successFlag |= ElemCreationResultCodes.WarningConceptNotSet;
 
         //

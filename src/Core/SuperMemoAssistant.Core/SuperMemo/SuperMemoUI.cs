@@ -32,6 +32,7 @@
 
 using PluginManager.Interop.Sys;
 using SuperMemoAssistant.Interop.SuperMemo;
+using SuperMemoAssistant.Interop.SuperMemo.UI.Content;
 using SuperMemoAssistant.Interop.SuperMemo.UI.Element;
 using SuperMemoAssistant.SuperMemo.SuperMemo17.UI;
 
@@ -44,6 +45,7 @@ namespace SuperMemoAssistant.SuperMemo
     public SuperMemoUICore()
     {
       base.ElementWdw = ElementWdw = new ElementWdw();
+      base.ContentWdw = ContentWdw = new ContentWdw();
     }
 
     #endregion
@@ -54,6 +56,7 @@ namespace SuperMemoAssistant.SuperMemo
     #region Properties & Fields - Public
 
     public new ElementWdw ElementWdw { get; }
+    public new ContentWdw ContentWdw { get; }
 
     #endregion
   }
@@ -72,6 +75,7 @@ namespace SuperMemoAssistant.SuperMemo
     #region Properties Impl - Public
 
     public IElementWdw ElementWdw { get; protected set; }
+    public IContentWdw ContentWdw { get; protected set; }
 
     #endregion
   }

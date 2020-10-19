@@ -64,7 +64,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         RecentGradePtr      = new ObjPtr(InstancePtr, nativeData.Pointers[NativePointer.ElWdw_RecentGradePtr]);
         FocusedComponentPtr = new ObjPtr(InstancePtr, nativeData.Pointers[NativePointer.ElWdw_FocusedComponentPtr]);
         LearningModePtr     = new ObjPtr(InstancePtr, nativeData.Pointers[NativePointer.ElWdw_LearningModePtr]);
-
+       
         // Memory patterns
         EnterUpdateLockCallSig = nativeData.GetMemoryPattern(NativeMethod.ElWdw_EnterUpdateLock);
         QuitUpdateLockCallSig  = nativeData.GetMemoryPattern(NativeMethod.ElWdw_QuitUpdateLock);

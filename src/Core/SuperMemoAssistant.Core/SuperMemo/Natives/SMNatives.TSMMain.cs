@@ -81,6 +81,24 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
+      // TODO:
+      // I copied these parameters from the IDR dissasembly of the TSMMain.MIFindElementsClick
+      // Not entirely sure what they mean
+      // param y I believe represents the search target (registry?)
+      public bool FindElements(char x, char y, char z)
+      {
+        try
+        {
+          NativeMethod.TSMMain_FindElements.ExecuteOnMainThread(x, y, z);
+          return true;
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, "Native method call threw an exception.");
+          return false;
+        }
+      }
+
       #endregion
     }
   }

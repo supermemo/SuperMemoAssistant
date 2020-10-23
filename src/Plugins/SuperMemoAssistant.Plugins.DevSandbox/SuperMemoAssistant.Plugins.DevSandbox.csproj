@@ -61,11 +61,12 @@
       <Version>2.1.1</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Interop">
-      <Version>2.0.5-alpha.7</Version>
+      <Version>2.0.5-alpha.9</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.Sentry">
       <Version>2.0.5-alpha.2</Version>
     </PackageReference>
+    <PackageReference Include="SuperMemoAssistant.Services.UI" Version="2.0.5-alpha.5" />
   </ItemGroup>
   <Target Name="CopyOutput" AfterTargets="Build">
     <Exec Command="xcopy /h /i /c /k /e /r /y &quot;$(TargetDir)*&quot; &quot;%25UserProfile%25\SuperMemoAssistant\Plugins\Development\$(ProjectName)&quot;" />

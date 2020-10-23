@@ -39,6 +39,10 @@ using SuperMemoAssistant.Sys.IO.Devices;
 
 namespace SuperMemoAssistant.Plugins.DevSandbox
 {
+  using System.Windows;
+  using Forge.Forms;
+  using SuperMemoAssistant.Extensions;
+
   // ReSharper disable once UnusedMember.Global
   // ReSharper disable once ClassNeverInstantiated.Global
   public class DevSandboxPlugin : SentrySMAPluginBase<DevSandboxPlugin>
@@ -98,9 +102,16 @@ namespace SuperMemoAssistant.Plugins.DevSandbox
 
     public static void TestSomething()
     {
-      var elId = Svc.SM.UI.ElementWdw.GenerateCloze();
 
-      LogTo.Debug("GenerateCloze: {ElId}", elId);
+      var inputDlgRes = Application.Current.Dispatcher.Invoke(() => Show.Window().For(new Prompt<string>()).Result);
+
+      if (inputDlgRes.Model != null && string.IsNullOrWhiteSpace(inputDlgRes.Model.Value))
+        return;
+
+      var searchQuery = inputDlgRes.Model.Value;
+      var searchRes = Svc.SM.Registry.Element.Search(searchQuery);
+
+      LogTo.Debug("Search: {SearchRes}", searchRes.Serialize(Newtonsoft.Json.Formatting.Indented));
     }
 
     public static void TestAnotherThing()

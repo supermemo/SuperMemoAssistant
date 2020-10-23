@@ -41,10 +41,13 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
   using System.Windows;
   using Anotar.Serilog;
   using Builders;
+  using Content.Components;
   using Extensions;
   using global::Extensions.System.IO;
   using Hooks;
   using Interop;
+  using Interop.Interop.SuperMemo.Elements.Models;
+  using Interop.SuperMemo.Content.Components;
   using Interop.SuperMemo.Core;
   using Interop.SuperMemo.Elements;
   using Interop.SuperMemo.Elements.Builders;
@@ -223,10 +226,10 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
         return false;
       }
 
-      var inSMUpdateLockMode  = false;
-      var inSMAUpdateLockMode = false;
+      var inSMUpdateLockMode     = false;
+      var inSMAUpdateLockMode    = false;
       var nonEmptyFileSlotsMoved = false;
-      var singleMode          = builders.Length == 1;
+      var singleMode             = builders.Length == 1;
 
       results = new List<ElemCreationResult>(
         builders.Select(
@@ -279,7 +282,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
             result.ElementId = elemId;
 
             nonEmptyFileSlotsMoved = nonEmptyFileSlotsMoved || tmpNonEmptyFileSlotsMoved;
-            success = success && result.Success;
+            success                = success && result.Success;
           }
           finally
           {
@@ -358,6 +361,56 @@ Exception: {ex}",
 
         _addMutex.ReleaseMutex();
       }
+    }
+
+    public List<ElementTextSearchMatch> Search(string query, IElement branch = null, bool includeBranchRoot = true)
+    {
+      var ret               = new List<ElementTextSearchMatch>();
+      var textSearchResults = Core.SM.Registry.Text.SearchIndex.Search(query);
+      var idTextMap         = textSearchResults.ToDictionary(k => k.Key);
+
+      var elements = (IEnumerable<ElementBase>)(branch == null
+        ? Elements.Values
+        : FlattenBranch((ElementBase)branch));
+
+      if (includeBranchRoot == false)
+        elements = elements.Skip(1);
+
+      (bool, (int, IComponentHtml)) ComponentContainsMatch(KeyValuePair<int, IComponent> kv)
+      {
+        return kv.Value is IComponentHtml htmlComp && idTextMap.ContainsKey(((ComponentHtml)htmlComp).TextId)
+          ? (true, (kv.Key, htmlComp))
+          : (false, default);
+      }
+
+      foreach (var itEl in elements)
+      {
+        if (itEl.ComponentGroup == null)
+          continue;
+
+        var compMatches = itEl.ComponentGroup
+                              .Components
+                              .Index()
+                              .Choose(ComponentContainsMatch);
+
+        foreach (var (componentNo, component) in compMatches)
+        {
+          var textSearchRes = idTextMap[component.Text.Id];
+          var textMember    = Core.SM.Registry.Text[textSearchRes.Key];
+
+          var elMatch = new ElementTextSearchMatch(
+            itEl,
+            componentNo,
+            component,
+            textMember,
+            textSearchRes.Score
+          );
+
+          ret.Add(elMatch);
+        }
+      }
+
+      return ret;
     }
 
 
@@ -482,10 +535,10 @@ Exception: {ex}",
 
     private bool CheckAndMoveNonEmptyFileSlots()
     {
-      var memory = Core.SM.SMProcess.Memory;
+      var memory        = Core.SM.SMProcess.Memory;
       var fileSpaceInst = Core.Natives.FileSpace.InstancePtr.Read<IntPtr>(memory);
-      var emptySlots = Core.Natives.FileSpace.EmptySlotsPtr.Read<IntPtr>(memory);
-      var fileSlot = 0;
+      var emptySlots    = Core.Natives.FileSpace.EmptySlotsPtr.Read<IntPtr>(memory);
+      var fileSlot      = 0;
 
       if (Core.Natives.Queue.GetSize(emptySlots, memory) > 0)
         fileSlot = Core.Natives.Queue.Last.Invoke(emptySlots);
@@ -498,10 +551,10 @@ Exception: {ex}",
 
       if (Core.Natives.FileSpace.IsSlotOccupied.Invoke(fileSpaceInst, fileSlot))
       {
-        var recoverDirPath = new DirectoryPath(Core.SM.Collection.CombinePath("recover"));
-        var wildCardPath = RegistryMemberBase.GetFilePathForSlotId(Core.SM.Collection, fileSlot, "*");
+        var recoverDirPath   = new DirectoryPath(Core.SM.Collection.CombinePath("recover"));
+        var wildCardPath     = RegistryMemberBase.GetFilePathForSlotId(Core.SM.Collection, fileSlot, "*");
         var fileNameWildCard = Path.GetFileName(wildCardPath);
-        var dirPath = Path.GetDirectoryName(wildCardPath);
+        var dirPath          = Path.GetDirectoryName(wildCardPath);
 
         fileNameWildCard.ThrowIfNullOrWhitespace("Invalid wildcard file name for fileslot");
         dirPath.ThrowIfNullOrWhitespace("Invalid dir path for fileslot");
@@ -510,7 +563,6 @@ Exception: {ex}",
 
         // ReSharper disable AssignNullToNotNullAttribute
         foreach (var filePath in Directory.EnumerateFiles(dirPath, fileNameWildCard, SearchOption.TopDirectoryOnly))
-        {
           try
           {
             var fileName = Path.GetFileName(filePath);
@@ -524,7 +576,6 @@ Exception: {ex}",
             if (File.Exists(filePath))
               throw new InvalidOperationException($"Failed to remove non-empty fileslot file {filePath}");
           }
-        }
         // ReSharper restore AssignNullToNotNullAttribute
 
         return true;
@@ -572,18 +623,14 @@ Exception: {ex}",
                                                ElemCreationFlags options,
                                                int               originalHookId,
                                                out int           elemId,
-                                               out bool nonEmptyFileSlotsMoved)
+                                               out bool          nonEmptyFileSlotsMoved)
     {
       var successFlag = ElemCreationResultCodes.Success;
       nonEmptyFileSlotsMoved = false;
-      elemId = -1;
+      elemId                 = -1;
 
       try
       {
-        //
-        // Check for non-empty file slots
-        nonEmptyFileSlotsMoved = CheckAndMoveNonEmptyFileSlots();
-
         //
         // Has a parent been specified for the new element ?
 
@@ -808,6 +855,33 @@ Exception: {ex}",
       {
         _waitForElementId = -1;
       }
+    }
+
+    private List<ElementBase> FlattenBranch(ElementBase branch)
+    {
+      void FlattenBranchRecurse(ElementBase it, List<ElementBase> list)
+      {
+        list.Add(it);
+
+        if (it.ChildrenCount <= 0)
+          return;
+
+        IElement itChildren = it.FirstChild;
+
+        do
+        {
+          FlattenBranchRecurse((ElementBase)itChildren, list);
+        } while (itChildren.NextSibling != null);
+      }
+
+      if (branch?.Deleted != false)
+        throw new ArgumentException("Invalid branch passed for Flattening");
+
+      var ret = new List<ElementBase>(branch.DescendantCount + 1);
+
+      FlattenBranchRecurse(branch, ret);
+
+      return ret;
     }
 
     #endregion

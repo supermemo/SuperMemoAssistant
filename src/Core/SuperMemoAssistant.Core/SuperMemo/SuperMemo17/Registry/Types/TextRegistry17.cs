@@ -37,6 +37,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
   using Common.Registry.Files;
   using Interop.SuperMemo.Registry.Members;
   using Interop.SuperMemo.Registry.Types;
+  using Lifti;
   using Members;
   using SMA;
 
@@ -53,6 +54,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     protected override IntPtr RegistryPtr =>
       new IntPtr(Core.Natives.Registry.TextRegistryInstance.Read<int>(Core.SMA.SMProcess.Memory));
 
+    public FullTextIndex<int> SearchIndex { get; }
+
     #endregion
 
 
@@ -64,6 +67,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     public TextRegistry17()
     {
       Updater = new RegistryUpdater17<Text, IText>(this, OnMemberAddedOrUpdated);
+      SearchIndex = new FullTextIndexBuilder<int>().Build();
     }
 
     #endregion
@@ -72,6 +76,42 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 
 
     #region Methods Impl
+    
+#pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
+    protected override void OnMemberAddedOrUpdated(Text member)
+    {
+      if (member.Empty)
+        SearchIndex.RemoveAsync(member.Id).Wait();
+
+      else
+      {
+        if (SearchIndex.Items.Contains(member.Id))
+          SearchIndex.RemoveAsync(member.Id).Wait();
+
+        SearchIndex.AddAsync(member.Id, member.Value).Wait();
+      }
+
+      base.OnMemberAddedOrUpdated(member);
+    }
+
+    protected override void CommitFromFiles()
+    {
+      SearchIndex.BeginBatchChange();
+
+      base.CommitFromFiles();
+
+      SearchIndex.CommitBatchChangeAsync().Wait();
+    }
+
+    protected override void CommitFromMemory()
+    {
+      SearchIndex.BeginBatchChange();
+
+      base.CommitFromMemory();
+
+      SearchIndex.CommitBatchChangeAsync().Wait();
+    }
+#pragma warning restore VSTHRD002 // Avoid problematic synchronous waits
 
     /// <inheritdoc />
     public override Text CreateInternal(int id)

@@ -76,7 +76,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
       // TQueue.Last
       public IMemoryPattern LastCallSig { get; }
       public IMemoryPattern GetItemCallSig { get; }
-      
+
       public Procedure<Func<IntPtr, int>> Last { get; }
       public Procedure<Func<IntPtr, int, int>> GetItem { get; }
 

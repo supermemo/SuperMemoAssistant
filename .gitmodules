@@ -64,3 +64,6 @@
 [submodule "libs/VisualStudio.GitHooks"]
 	path = libs/VisualStudio.GitHooks
 	url = https://github.com/alexis-/VisualStudio.GitHooks.git
+[submodule "src/Plugins/SuperMemoAssistant.Plugins.OmniMemo"]
+	path = src/Plugins/SuperMemoAssistant.Plugins.OmniMemo
+	url = https://github.com/supermemo/SuperMemoAssistant.Plugins.OmniMemo.git

@@ -207,8 +207,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "Error while signaling Element Changed event");
+        LogTo.Error(ex, "Error while signaling Element Changed event");
       }
     }
 
@@ -247,8 +246,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex,
-                    "Error while signaling Component Changed event");
+        LogTo.Error(ex, "Error while signaling Component Changed event");
       }
     }
 

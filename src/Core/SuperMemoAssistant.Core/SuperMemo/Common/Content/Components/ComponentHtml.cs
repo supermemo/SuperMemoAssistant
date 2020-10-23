@@ -42,10 +42,10 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Components
   {
     #region Properties & Fields - Non-Public
 
-    protected int TextId     { get; set; }
-    protected int ColorRed   { get; set; }
-    protected int ColorGreen { get; set; }
-    protected int ColorBlue  { get; set; }
+    public int TextId     { get; set; }
+    public int ColorRed   { get; set; }
+    public int ColorGreen { get; set; }
+    public int ColorBlue  { get; set; }
 
     #endregion
 

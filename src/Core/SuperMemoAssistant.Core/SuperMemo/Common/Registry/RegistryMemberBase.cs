@@ -125,8 +125,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Registry
         var dirPath  = Path.GetDirectoryName(filePath);
 
         // ReSharper disable once AssignNullToNotNullAttribute
-        var matchingFiles = Directory.GetFiles(dirPath,
-                                               fileName + "*");
+        var matchingFiles = Directory.GetFiles(dirPath, fileName + "*");
         return matchingFiles.FirstOrDefault();
       }
       catch (Exception ex)

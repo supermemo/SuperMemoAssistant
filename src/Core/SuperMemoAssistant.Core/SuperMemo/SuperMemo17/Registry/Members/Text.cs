@@ -51,6 +51,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 
     #region Properties Impl - Public
 
+#pragma warning disable CA1065 // Do not raise exceptions in unexpected locations
     /// <inheritdoc />
     public string Value
     {
@@ -68,7 +69,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
             return File.ReadAllText(GetFilePath());
 
           case RegistryLinkType.Rtf:
-            break;
+            throw new NotImplementedException("RTF text is not supported yet.");
         }
 
         LogTo.Error("Getting unknown LinkType {LinkType}", LinkType);
@@ -89,13 +90,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
             return;
 
           case RegistryLinkType.Rtf:
-            break;
+            throw new NotImplementedException("RTF text is not supported yet.");
         }
 
         LogTo.Error("Setting unknown LinkType {LinkType}", LinkType);
         throw new InvalidOperationException($"Setting unknown LinkType {LinkType}");
       }
     }
+#pragma warning restore CA1065 // Do not raise exceptions in unexpected locations
 
     #endregion
 

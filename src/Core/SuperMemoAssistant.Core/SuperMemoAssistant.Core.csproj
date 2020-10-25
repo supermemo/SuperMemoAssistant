@@ -101,7 +101,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="PluginManager.Core">
-      <Version>0.2.1.139</Version>
+      <Version>0.2.1.141</Version>
       <ExcludeAssets>contentfiles; buildtransitive</ExcludeAssets>
       <PrivateAssets>build; contentfiles; buildtransitive</PrivateAssets>
       <IncludeAssets>runtime; compile; native; analyzers</IncludeAssets>
@@ -120,10 +120,10 @@
       <Version>2.0.5-alpha.9</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.Sentry">
-      <Version>2.0.5-alpha.2</Version>
+      <Version>2.0.5-alpha.3</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.UI">
-      <Version>2.0.5-alpha.2</Version>
+      <Version>2.0.5-alpha.5</Version>
     </PackageReference>
     <PackageReference Include="System.Security.Cryptography.Pkcs">
       <Version>4.7.0</Version>

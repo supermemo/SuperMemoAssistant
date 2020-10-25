@@ -71,7 +71,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout
 
     public LayoutManager()
     {
-      Core.SMA.OnSMStartedEvent += OnSMStartedAsync;
+      Core.SMA.OnSMStartingInternalEvent += OnSMStartingAsync;
     }
 
     #endregion
@@ -175,7 +175,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout
       _layoutMap[after] = xamlLayout;
     }
 
-    private async Task OnSMStartedAsync(object sender, SMProcessEventArgs eventArgs)
+    private async Task OnSMStartingAsync(object sender, SMEventArgs eventArgs)
     {
       _config = await Core.Configuration.LoadAsync<LayoutsCfg>().ConfigureAwait(false) ?? new LayoutsCfg();
 

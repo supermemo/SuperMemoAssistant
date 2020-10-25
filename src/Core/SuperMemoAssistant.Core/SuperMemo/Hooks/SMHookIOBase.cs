@@ -67,8 +67,8 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     protected SMHookIOBase()
     {
-      Core.SMA.OnSMStartingEvent += OnSMStartingAsync;
-      Core.SMA.OnSMStoppedEvent  += OnSMStopped;
+      Core.SMA.OnCollectionSelectedInternalEvent += OnCollectionSelectedAsync;
+      Core.SMA.OnSMStoppedInternalEvent  += OnSMStopped;
     }
 
     public void Dispose()
@@ -151,7 +151,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
       CommitFromFiles();
     }
 
-    private async Task OnSMStartingAsync(object sender, SMEventArgs e)
+    private async Task OnCollectionSelectedAsync(object sender, SMEventArgs e)
     {
       LogTo.Debug("Initializing {Name}", GetType().Name);
 

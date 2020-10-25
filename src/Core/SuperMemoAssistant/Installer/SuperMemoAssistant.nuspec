@@ -14,14 +14,17 @@
     <repository type="$repositoryType$" url="$repositoryUrl$" branch="develop" commit="$commitId$" />
     <dependencies />
     <!-- releaseNotes will be replaced by MSBuild.Tools (see SuperMemoAssistant.csproj and https://github.com/alexis-/MSBuild.Tools) -->
-    <releaseNotes>- Added: Compatibility with SM 18.041hp
+    <releaseNotes>- Added: OmniMemo Plugin submodule
+- Added: Compatibility with SM 18.041hp
 - Added: Native access to TQueue and TFileSpace
 - Added: WIP fix for collection corruption bug when a collection has non-empty file slots
 - Added: nuget.config
 - Added: releases directory to the repo
+- Updated: SM Interop Package version
 - Updated: Interop version
 - Updated: Submodules
 - Fixed: Crash when removing a collection in the collection selection window
+- Misc: Minor improvements
 </releaseNotes>
   </metadata>
   <files>

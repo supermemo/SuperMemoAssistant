@@ -72,7 +72,7 @@ namespace SuperMemoAssistant.UI
     {
       InitializeComponent();
 
-      SMA.Core.SMA.OnSMStartedEvent += OnSMStartedAsync;
+      SMA.Core.SMA.OnSMStartedInternalEvent += OnSMStartedAsync;
     }
 
     #endregion

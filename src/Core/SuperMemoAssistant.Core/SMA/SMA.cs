@@ -126,14 +126,16 @@ namespace SuperMemoAssistant.SMA
         if (_sm != null)
           throw new InvalidOperationException("_sm is already instantiated");
 
+        // Load collection config
         await LoadConfigAsync(collection).ConfigureAwait(false);
 
+        // Make sure the SuperMemo version is compatible and instantiate it
         var nativeData = CheckSuperMemoExecutable(nativeDataCfg);
 
-        _sm = InstantiateSuperMemo(collection, nativeData.SMVersion);
+        _sm = GetSuperMemoFactory(collection, nativeData.SMVersion);
 
-        // TODO: Move somewhere else
-        _sm.UI.ElementWdw.OnAvailable += OnSuperMemoWindowsAvailable;
+        // Notify Plugins of selected collection
+        await OnCollectionSelectedAsync(collection).ConfigureAwait(false);
 
         await _sm.StartAsync(nativeData).ConfigureAwait(false);
         // TODO: Ensure opened collection (windows title) matches parameter
@@ -157,8 +159,7 @@ namespace SuperMemoAssistant.SMA
       return null;
     }
 
-    private static SuperMemoCore InstantiateSuperMemo(SMCollection collection,
-                                                      Version      smVersion)
+    private static SuperMemoCore GetSuperMemoFactory(SMCollection collection, Version smVersion)
     {
       if (SM17.Versions.Contains(smVersion))
         return new SM17(collection, CoreConfig.SuperMemo.SMBinPath);

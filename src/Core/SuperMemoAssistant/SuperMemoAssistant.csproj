@@ -137,7 +137,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="PluginManager.Core">
-      <Version>0.2.1.139</Version>
+      <Version>0.2.1.141</Version>
     </PackageReference>
     <PackageReference Include="PropertyChanged.Fody">
       <Version>3.2.8</Version>
@@ -156,10 +156,10 @@
       <Version>2.0.5-alpha.9</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.Sentry">
-      <Version>2.0.5-alpha.2</Version>
+      <Version>2.0.5-alpha.3</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.UI">
-      <Version>2.0.5-alpha.2</Version>
+      <Version>2.0.5-alpha.5</Version>
     </PackageReference>
     <PackageReference Include="WpfAnimatedGif">
       <Version>1.4.18</Version>

@@ -19,11 +19,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2020/03/29 00:20
-// Modified On:  2020/04/09 15:48
-// Modified By:  Alexis
 
 #endregion
 
@@ -45,6 +40,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
   using Process.NET.Memory;
   using SMA;
   using SMA.Hooks;
+  using SuperMemoAssistant.Extensions;
 
   public abstract class SuperMemoCore : SuperMemoBase
   {
@@ -181,8 +177,6 @@ namespace SuperMemoAssistant.SuperMemo.Common
     {
       AppVersion = nativeData.SMVersion;
 
-      await OnPreInitAsync().ConfigureAwait(false);
-
       var smProcess = await Hook.CreateAndHookAsync(
         Collection,
         _binPath,
@@ -193,23 +187,21 @@ namespace SuperMemoAssistant.SuperMemo.Common
       SMProcess               =  smProcess ?? throw new InvalidOperationException("Failed to start SuperMemo process");
       SMProcess.Native.Exited += OnSMExited;
 
+      // TODO: Base OnSMStarted event on a more reliable cue ?
+      Core.SM.UI.ElementWdw.OnAvailableInternal += ElementWdw_OnAvailable;
+
       Core.Natives = smProcess.Procedures;
 
-      await OnPostInitAsync().ConfigureAwait(false);
+      _ignoreUserConfirmationPtr = SMProcess[Core.Natives.Globals.IgnoreUserConfirmationPtr];
+
+      await Core.SMA.OnSMStartingAsync().ConfigureAwait(false);
 
       Hook.SignalWakeUp();
     }
 
-    protected virtual Task OnPreInitAsync()
+    private void ElementWdw_OnAvailable()
     {
-      return Core.SMA.OnSMStartingAsync();
-    }
-
-    protected virtual Task OnPostInitAsync()
-    {
-      _ignoreUserConfirmationPtr = SMProcess[Core.Natives.Globals.IgnoreUserConfirmationPtr];
-
-      return Core.SMA.OnSMStartedAsync();
+      Core.SMA.OnSMStartedAsync().RunAsync();
     }
 
     protected virtual void OnSMExited(object    called,

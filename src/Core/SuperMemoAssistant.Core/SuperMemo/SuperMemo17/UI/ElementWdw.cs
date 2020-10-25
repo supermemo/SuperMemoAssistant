@@ -76,8 +76,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       IsAvailable = false;
 
-      Core.SMA.OnSMStartedEvent += OnSMStartedEventAsync;
-      Core.SMA.OnSMStoppedEvent += OnSMStoppedEvent;
+      Core.SMA.OnSMStartingInternalEvent += OnSMStartingAsync;
+      Core.SMA.OnSMStoppedInternalEvent += OnSMStoppedEvent;
     }
 
     /// <inheritdoc />
@@ -541,11 +541,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       return ElementIdPtr.RestartTimer(updateValue);
     }
 
-    private async Task OnSMStartedEventAsync(object             sender,
-                                             SMProcessEventArgs e)
+    private async Task OnSMStartingAsync(object      sender,
+                                         SMEventArgs e)
     {
       LogTo.Debug("Initializing {Name}", GetType().Name);
 
+      // TODO: Why ?
       await Task.Run(() =>
       {
         SMMainWdwPtr  = SMProcess[Core.Natives.SMMain.InstancePtr];
@@ -584,7 +585,12 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
       IsAvailable = true;
 
-      OnAvailable?.Invoke();
+      OnAvailableInternal?.Invoke();
+
+      OnAvailable?.InvokeRemote(
+        nameof(OnAvailable),
+        h => OnAvailable -= h
+      );
 
       return true;
     }
@@ -655,6 +661,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     #region Events
 
     public override event Action OnAvailable;
+    public event          Action OnAvailableInternal;
 
     #endregion
 

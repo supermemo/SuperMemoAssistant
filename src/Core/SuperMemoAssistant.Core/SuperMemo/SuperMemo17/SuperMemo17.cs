@@ -62,8 +62,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
     /// <param name="binPath">SuperMemo bin path</param>
     public SM17(SMCollection collection,
                 string       binPath)
-      : base(collection,
-             binPath) { }
+      : base(collection, binPath) { }
 
     #endregion
   }

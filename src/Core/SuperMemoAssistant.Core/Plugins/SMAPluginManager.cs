@@ -91,8 +91,7 @@ namespace SuperMemoAssistant.Plugins
 
     private SMAPluginManager()
     {
-      Core.SMA.OnSMStartedEvent += OnSMStartedAsync;
-      Core.SMA.OnSMStoppedEvent += OnSMStopped;
+      Core.SMA.OnSMStoppedInternalEvent += OnSMStopped;
     }
 
     #endregion
@@ -102,16 +101,13 @@ namespace SuperMemoAssistant.Plugins
 
     #region Methods
 
-    public async Task InitializeAsync()
+    public async Task InitializeAndStartAsync()
     {
       await base.Initialize(false).ConfigureAwait(false);
 
       Core.CoreConfig.Updates.PropertyChanged += OnUpdatesConfigChanged;
       OnUpdatesConfigChanged(null, new PropertyChangedEventArgs(nameof(UpdateCfg.CoreUpdateChannel)));
-    }
 
-    private async Task OnSMStartedAsync(object sender, SMProcessEventArgs e)
-    {
       // ReSharper disable once AssignNullToNotNullAttribute
       _uiSynchronizationContext = new DispatcherSynchronizationContext(Application.Current.Dispatcher);
 

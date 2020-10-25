@@ -46,7 +46,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="PluginManager.Interop">
-      <Version>0.2.1.46</Version>
+      <Version>0.2.1.51</Version>
     </PackageReference>
     <PackageReference Include="PropertyChanged.Fody">
       <Version>3.2.8</Version>
@@ -59,7 +59,7 @@
       <Version>2.0.5-alpha.9</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.Sentry">
-      <Version>2.0.5-alpha.2</Version>
+      <Version>2.0.5-alpha.3</Version>
     </PackageReference>
   </ItemGroup>
   <Target Name="CopyOutput" AfterTargets="Build">

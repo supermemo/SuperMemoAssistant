@@ -166,7 +166,7 @@ namespace SuperMemoAssistant
 
       //
       // Initialize the plugin manager
-      await SMAPluginManager.Instance.InitializeAsync().ConfigureAwait(true);
+      await SMAPluginManager.Instance.InitializeAndStartAsync().ConfigureAwait(true);
 
       //
       // Check if SMA is setup, and run the setup wizard if it isn't
@@ -216,8 +216,8 @@ namespace SuperMemoAssistant
         _splashScreen = new SplashScreenWindow();
         _splashScreen.Show();
 
-        SMA.Core.SMA.OnSMStartedEvent += OnSMStartedEventAsync;
-        SMA.Core.SMA.OnSMStoppedEvent += OnSMStoppedEvent;
+        SMA.Core.SMA.OnSMStartingInternalEvent += OnSMStartingEventAsync;
+        SMA.Core.SMA.OnSMStoppedInternalEvent += OnSMStoppedEvent;
 
         Exception ex;
 
@@ -254,9 +254,9 @@ namespace SuperMemoAssistant
       SMA.Core.SM.UI.ElementWdw.OnAvailable -= ElementWdw_OnAvailable;
     }
 
-    private Task OnSMStartedEventAsync(object sender, SMProcessEventArgs eventArgs)
+    private Task OnSMStartingEventAsync(object sender, SMEventArgs eventArgs)
     {
-      SMA.Core.SM.UI.ElementWdw.OnAvailable += ElementWdw_OnAvailable;
+      SMA.Core.SM.UI.ElementWdw.OnAvailableInternal += ElementWdw_OnAvailable;
 
       SMAUI.Initialize();
 

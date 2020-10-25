@@ -67,7 +67,7 @@ namespace SuperMemoAssistant.Plugins.DevSandbox
     #region Methods Impl
 
     /// <inheritdoc />
-    protected override void PluginInit()
+    protected override void OnSMStarted()
     {
       Svc.HotKeyManager
          .RegisterGlobal(
@@ -84,6 +84,8 @@ namespace SuperMemoAssistant.Plugins.DevSandbox
            new HotKey(Key.D1, KeyModifiers.CtrlAltShift),
            TestAnotherThing
          );
+      
+      base.OnSMStarted();
     }
 
     /// <inheritdoc />

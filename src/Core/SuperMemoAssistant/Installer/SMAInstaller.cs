@@ -58,9 +58,9 @@ namespace SuperMemoAssistant.Installer
     public static string UpdateUrl     => SMA.Core.CoreConfig?.Updates.CoreUpdateUrl;
     public static string UpdateChannel => SMA.Core.CoreConfig?.Updates.CoreUpdateChannel;
     public static string UpdateMinPrerelease =>
-      string.Equals(UpdateCfg.CoreStableChannel, UpdateChannel, StringComparison.OrdinalIgnoreCase)
-        ? string.Empty   // Stable
-        : UpdateChannel; // Beta/Alpha
+      (SMA.Core.CoreConfig?.Updates.CoreUpdateChannelIsPrerelease ?? true)
+        ? UpdateChannel // Beta/Alpha
+        : string.Empty; // Stable
 
     #endregion
 

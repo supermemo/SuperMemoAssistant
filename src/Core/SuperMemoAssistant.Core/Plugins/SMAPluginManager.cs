@@ -101,7 +101,7 @@ namespace SuperMemoAssistant.Plugins
 
     #region Methods
 
-    public async Task InitializeAndStartAsync()
+    public async Task InitializeAsync()
     {
       await base.Initialize(false).ConfigureAwait(false);
 
@@ -110,8 +110,6 @@ namespace SuperMemoAssistant.Plugins
 
       // ReSharper disable once AssignNullToNotNullAttribute
       _uiSynchronizationContext = new DispatcherSynchronizationContext(Application.Current.Dispatcher);
-
-      await StartPlugins().ConfigureAwait(false);
     }
 
     private void OnSMStopped(object sender, SMProcessEventArgs e)

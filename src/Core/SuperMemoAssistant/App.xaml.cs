@@ -166,7 +166,7 @@ namespace SuperMemoAssistant
 
       //
       // Initialize the plugin manager
-      await SMAPluginManager.Instance.InitializeAndStartAsync().ConfigureAwait(true);
+      await SMAPluginManager.Instance.InitializeAsync().ConfigureAwait(true);
 
       //
       // Check if SMA is setup, and run the setup wizard if it isn't
@@ -177,6 +177,10 @@ namespace SuperMemoAssistant
         Shutdown(SMAExitCodes.ExitCodeSMASetupError);
         return;
       }
+
+      //
+      // Start plugins
+      await SMAPluginManager.Instance.StartPlugins().ConfigureAwait(true);
 
       //
       // (Optional) Start the debug Key logger (logs key strokes with modifiers, e.g. ctrl, alt, ..)

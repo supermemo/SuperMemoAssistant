@@ -76,7 +76,7 @@ namespace SuperMemoAssistant.SMA.Configs
 
     public UpdateCfg()
     {
-      CoreUpdateUrl = GetDefaultCoreUpdateUrl();
+      CoreUpdateChannel = CoreDefaultChannel;
     }
 
     #endregion
@@ -102,7 +102,7 @@ namespace SuperMemoAssistant.SMA.Configs
     public string CoreUpdateChannelField
     {
       get => CoreUpdateChannel;
-      set => CoreUpdateUrl = CoreUpdateChannels.SafeRead(value) ?? GetDefaultCoreUpdateUrl();
+      set => CoreUpdateChannel = value;
     }
 
     //
@@ -111,16 +111,19 @@ namespace SuperMemoAssistant.SMA.Configs
     /// <summary>All Core update channels</summary>
     [IgnoreMap]
     [JsonProperty]
-    public BiDictionary<string, string> CoreUpdateChannels { get; set; } = new BiDictionary<string, string>
+    public Dictionary<string, string> CoreUpdateChannels { get; set; } = new Dictionary<string, string>
     {
       { CoreStableChannel, CoreDefaultUpdateUrl },
       { CoreBetaChannel, CoreDefaultUpdateUrl },
       { CoreNightlyChannel, CoreDefaultUpdateUrl },
     };
 
+    [JsonProperty]
+    public string CoreUpdateChannel { get; set; }
+
     /// <summary>The current URL to use for core updates</summary>
     [JsonProperty]
-    public string CoreUpdateUrl { get; set; }
+    public string CoreUpdateUrl => CoreUpdateChannels.SafeGet(CoreUpdateChannel) ?? CoreDefaultUpdateUrl;
 
     /// <summary>The current URL to use for the plugin repository</summary>
     [JsonProperty]
@@ -144,24 +147,7 @@ namespace SuperMemoAssistant.SMA.Configs
 
     [IgnoreMap]
     [JsonIgnore]
-    [DependsOn(nameof(CoreUpdateUrl))]
-    public string CoreUpdateChannel => CoreUpdateChannels.Reverse.SafeGet(CoreUpdateUrl) ?? CoreDefaultChannel;
-
-    [IgnoreMap]
-    [JsonIgnore]
     public bool CoreUpdateChannelIsPrerelease => CoreUpdateChannel != CoreStableChannel;
-
-    #endregion
-
-
-
-
-    #region Methods
-
-    private string GetDefaultCoreUpdateUrl()
-    {
-      return CoreUpdateChannels.SafeGet(CoreDefaultChannel) ?? CoreDefaultUpdateUrl;
-    }
 
     #endregion
 

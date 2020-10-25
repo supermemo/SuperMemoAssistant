@@ -172,6 +172,7 @@ namespace SuperMemoAssistant.Installer
             true,
             false,
             progress => ProgressPct = progress,
+            UpdaterIntention.Update,
             UpdateMinPrerelease);
 
           if (updateInfo?.ReleasesToApply == null)

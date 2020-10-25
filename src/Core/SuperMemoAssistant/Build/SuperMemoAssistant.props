@@ -3,6 +3,8 @@
     <NuSpecFileName>SuperMemoAssistant.nuspec</NuSpecFileName>
     <SMAExeName>SuperMemoAssistant.exe</SMAExeName>
     <NuspecFile>$(ProjectDir)Installer\$(NuSpecFileName)</NuspecFile>
-    <PackageOutputPath>$(SolutionDir)releases\installer</PackageOutputPath>
+    <ReleaseDir>$(SolutionDir)releases\sma</ReleaseDir>
+    <NuPkgDir>$(ReleaseDir)\nupkg\</NuPkgDir>
+    <PackageOutputPath>$(NuPkgDir)</PackageOutputPath>
   </PropertyGroup>
 </Project>

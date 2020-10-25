@@ -117,13 +117,13 @@
       <Version>2.1.1</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Interop">
-      <Version>2.0.5-alpha.9</Version>
+      <Version>2.0.5.10</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.Sentry">
-      <Version>2.0.5-alpha.3</Version>
+      <Version>2.0.5.6</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.UI">
-      <Version>2.0.5-alpha.5</Version>
+      <Version>2.0.5.8</Version>
     </PackageReference>
     <PackageReference Include="System.Security.Cryptography.Pkcs">
       <Version>4.7.0</Version>

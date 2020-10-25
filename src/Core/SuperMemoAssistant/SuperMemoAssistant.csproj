@@ -150,7 +150,7 @@
       <Version>2.1.1</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Installer">
-      <Version>1.9.4.65</Version>
+      <Version>1.9.5</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Interop">
       <Version>2.0.5.10</Version>

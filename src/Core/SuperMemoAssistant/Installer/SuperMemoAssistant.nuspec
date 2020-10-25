@@ -21,10 +21,12 @@
 - Added: WIP fix for collection corruption bug when a collection has non-empty file slots
 - Added: nuget.config
 - Added: releases directory to the repo
+- Updated: Packages
 - Updated: Bumped version to 2.0.5
 - Updated: SM Interop Package version
 - Updated: Interop version
 - Updated: Submodules
+- Fixed: SMA Packaging
 - Fixed: Crash when removing a collection in the collection selection window
 - Misc: Minor improvements
 </releaseNotes>

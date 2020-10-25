@@ -56,10 +56,7 @@ namespace SuperMemoAssistant.SMA.Configs
   {
     #region Constants & Statics
 
-    public const string CoreStableUpdateUrl  = "https://releases.supermemo.wiki/sma/core/stable";
-    public const string CoreBetaUpdateUrl    = "https://releases.supermemo.wiki/sma/core/beta";
-    public const string CoreNightlyUpdateUrl = "https://releases.supermemo.wiki/sma/core/nightly";
-    public const string CoreDefaultUpdateUrl = CoreBetaUpdateUrl;
+    public const string CoreDefaultUpdateUrl = "https://releases.supermemo.wiki/sma/core/";
 
     public const string CoreStableChannel  = "Stable";
     public const string CoreBetaChannel    = "Beta";
@@ -116,9 +113,9 @@ namespace SuperMemoAssistant.SMA.Configs
     [JsonProperty]
     public BiDictionary<string, string> CoreUpdateChannels { get; set; } = new BiDictionary<string, string>
     {
-      { CoreStableChannel, CoreStableUpdateUrl },
-      { CoreBetaChannel, CoreBetaUpdateUrl },
-      { CoreNightlyChannel, CoreNightlyUpdateUrl },
+      { CoreStableChannel, CoreDefaultUpdateUrl },
+      { CoreBetaChannel, CoreDefaultUpdateUrl },
+      { CoreNightlyChannel, CoreDefaultUpdateUrl },
     };
 
     /// <summary>The current URL to use for core updates</summary>

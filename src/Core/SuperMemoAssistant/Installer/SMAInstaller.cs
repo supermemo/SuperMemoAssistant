@@ -19,11 +19,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2020/03/29 00:20
-// Modified On:  2020/04/10 14:13
-// Modified By:  Alexis
 
 #endregion
 
@@ -33,10 +28,9 @@
 namespace SuperMemoAssistant.Installer
 {
   using System;
+  using System.Globalization;
   using System.Threading;
   using System.Threading.Tasks;
-  using Windows.Data.Xml.Dom;
-  using Windows.UI.Notifications;
   using Anotar.Serilog;
   using Extensions;
   using Interop;
@@ -45,10 +39,10 @@ namespace SuperMemoAssistant.Installer
   using Nito.AsyncEx;
   using Serilog;
   using Services.IO.Diagnostics;
+  using SMA.Configs;
   using Squirrel;
   using Sys.Windows;
   using Sys.Windows.Net;
-  using System.Globalization;
 
   /// <summary>
   ///   Handles the updating process for SMA, and events sent from the installer itself (e.g. OnInstalled, OnUpdated, etc.)
@@ -62,6 +56,11 @@ namespace SuperMemoAssistant.Installer
 
     public static bool   UpdateEnabled => SMA.Core.CoreConfig.Updates.EnableCoreUpdates;
     public static string UpdateUrl     => SMA.Core.CoreConfig?.Updates.CoreUpdateUrl;
+    public static string UpdateChannel => SMA.Core.CoreConfig?.Updates.CoreUpdateChannel;
+    public static string UpdateMinPrerelease =>
+      string.Equals(UpdateCfg.CoreStableChannel, UpdateChannel, StringComparison.OrdinalIgnoreCase)
+        ? string.Empty   // Stable
+        : UpdateChannel; // Beta/Alpha
 
     #endregion
 
@@ -104,7 +103,8 @@ namespace SuperMemoAssistant.Installer
       if (parameters.SquirrelInstalled != null)
         using (var mgr = CreateUpdateMgr())
         {
-          Logger.Information($"SuperMemo Assistant version {parameters.SquirrelInstalled} installed. Creating shortcuts.");
+          Logger.Information("SuperMemo Assistant version {SquirrelInstalled} installed. Creating shortcuts.",
+                             parameters.SquirrelInstalled);
 
           mgr.CreateShortcutForThisExe();
 
@@ -119,7 +119,8 @@ namespace SuperMemoAssistant.Installer
       if (parameters.SquirrelUninstalled != null)
         using (var mgr = CreateUpdateMgr())
         {
-          Logger.Information($"SuperMemo Assistant version {parameters.SquirrelUninstalled} uninstalled. Removing shortcuts.");
+          Logger.Information("SuperMemo Assistant version {SquirrelUninstalled} uninstalled. Removing shortcuts.",
+                             parameters.SquirrelUninstalled);
 
           mgr.RemoveShortcutForThisExe();
 
@@ -132,7 +133,7 @@ namespace SuperMemoAssistant.Installer
 
       if (parameters.SquirrelUpdated != null) // TODO: Remove previous versions
       {
-        Logger.Information($"SuperMemo Assistant has been updated to version {parameters.SquirrelUpdated}.");
+        Logger.Information("SuperMemo Assistant has been updated to version {SquirrelUpdated}.", parameters.SquirrelUpdated);
         return true;
       }
 
@@ -167,7 +168,11 @@ namespace SuperMemoAssistant.Installer
         {
           State = SMAUpdateState.Fetching;
 
-          var updateInfo = await updateMgr.CheckForUpdate(true, false, progress => ProgressPct = progress);
+          var updateInfo = await updateMgr.CheckForUpdate(
+            true,
+            false,
+            progress => ProgressPct = progress,
+            UpdateMinPrerelease);
 
           if (updateInfo?.ReleasesToApply == null)
           {

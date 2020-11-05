@@ -202,6 +202,8 @@ namespace SuperMemoAssistant.SuperMemo.Common
     private void ElementWdw_OnAvailable()
     {
       Core.SMA.OnSMStartedAsync().RunAsync();
+
+      Core.SM.UI.ElementWdw.OnAvailableInternal -= ElementWdw_OnAvailable;
     }
 
     protected virtual void OnSMExited(object    called,

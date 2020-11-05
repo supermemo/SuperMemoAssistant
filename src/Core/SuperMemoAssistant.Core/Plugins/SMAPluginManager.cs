@@ -197,7 +197,7 @@ namespace SuperMemoAssistant.Plugins
     /// <inheritdoc />
     public override NuGetVersion GetPluginHostTypeAssemblyMinimumVersion(PluginInstance pluginInstance)
     {
-      return NuGetVersion.Parse(typeof(SMAConst).GetAssemblyVersion());
+      return NuGetVersion.Parse("2.0.5.13"); // NuGetVersion.Parse(typeof(SMAConst).GetAssemblyVersion());
     }
 
     /// <inheritdoc />

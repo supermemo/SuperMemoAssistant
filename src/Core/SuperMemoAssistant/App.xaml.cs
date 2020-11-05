@@ -180,10 +180,10 @@ namespace SuperMemoAssistant
 
       //
       // Start plugins
-      await SMAPluginManager.Instance.StartPlugins().ConfigureAwait(true);
+      var pluginStartTask = SMAPluginManager.Instance.StartPlugins().ConfigureAwait(true);
 
       //
-      // (Optional) Start the debug Key logger (logs key strokes with modifiers, e.g. ctrl, alt, ..)
+      // (Optional) Start the debugging tool Key logger (logs key strokes with modifiers, e.g. ctrl, alt, ..)
       if (args.KeyLogger)
         SMA.Core.KeyboardHotKey.MainCallback = hk => LogTo.Debug("Key pressed: {Hk}", hk);
 
@@ -222,6 +222,9 @@ namespace SuperMemoAssistant
 
         SMA.Core.SMA.OnSMStartingInternalEvent += OnSMStartingEventAsync;
         SMA.Core.SMA.OnSMStoppedInternalEvent += OnSMStoppedEvent;
+
+        // Wait for plugins to start
+        await pluginStartTask;
 
         Exception ex;
 

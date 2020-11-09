@@ -76,5 +76,6 @@ namespace SuperMemoAssistant.SuperMemo
     AppendAndAddElementFromText,
     PostponeRepetition,
     ForceRepetitionAndResume,
+    TContents_MoveElementToConcept,
   }
 }

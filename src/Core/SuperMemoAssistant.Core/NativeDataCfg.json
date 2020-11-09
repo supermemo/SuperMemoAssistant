@@ -368,7 +368,8 @@
       "Control_HeightOffset": "0x005C", // TControl::FHeight:Integer
       "Queue_SizeOffset": "0x05", // TQueue::Size:Integer
       "Application_InstancePtr": "0x00BB11E8", // Application:TApplication
-      "Application_OnMessageOffset": "0x120" // TApplication::FOnMessage:TMessageEvent
+      "Application_OnMessageOffset": "0x120", // TApplication::FOnMessage:TMessageEvent
+      "TContents_InstancePtr": "0x00CA3804" // gvar_00CA3804:TContents
     },
     "NativeCallPatterns": {
       "ElWdw_GoToElement": { // TElWind::NewElement
@@ -417,6 +418,10 @@
       },
       "ElWdw_ScheduleInInterval": { // TElWind::ScheduleInInterval
         "Pattern": "E8 ? ? ? ? 80 BD ? ? ? ? ? 75 45 8D 45 8E",
+        "Offset": 1
+      },
+      "TContents_MoveElementToConcept": {
+        "Pattern": "E8 ? ? ? ? A1 ? ? ? ? 8B 00 3B 45 EC",
         "Offset": 1
       },
       "ElWdw_ExecuteUncommittedRepetition": { // TElWind::ExecuteUncommittedRepetition

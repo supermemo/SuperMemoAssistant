@@ -45,6 +45,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
       Registry    = new TRegistry(Database, nativeData);
       FileSpace   = new TFileSpace(Database, nativeData);
       Queue       = new TQueue(nativeData);
+      Contents    = new TContents(nativeData);
     }
 
     #endregion
@@ -63,6 +64,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
     public TRegistry    Registry    { get; }
     public TFileSpace   FileSpace   { get; }
     public TQueue       Queue       { get; }
+    public TContents    Contents    { get; }
 
     #endregion
   }

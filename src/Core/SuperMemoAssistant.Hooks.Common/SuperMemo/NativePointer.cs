@@ -78,5 +78,6 @@ namespace SuperMemoAssistant.SuperMemo
     Queue_SizeOffset,
     Application_InstancePtr,
     Application_OnMessageOffset,
+    TContents_InstancePtr,
   }
 }

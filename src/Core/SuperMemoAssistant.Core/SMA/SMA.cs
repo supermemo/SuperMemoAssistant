@@ -37,6 +37,8 @@ namespace SuperMemoAssistant.SMA
   using Configs;
   using Exceptions;
   using global::Extensions.System.IO;
+  using Interop.SMA;
+  using Interop.SMA.Notifications;
   using Interop.SuperMemo;
   using Interop.SuperMemo.Core;
   using PluginManager.Interop.Sys;
@@ -104,10 +106,15 @@ namespace SuperMemoAssistant.SMA
                                                        .Select(l => l.Name)
                                                        .OrderBy(n => n)
                                                        .ToList();
+    /// <inheritdoc />
+    public INotificationManager NotificationMgr => Core.NotificationMgr;
 
+    /// <inheritdoc />
     public ISuperMemo SM => _sm;
 
     #endregion
+
+
 
 
 

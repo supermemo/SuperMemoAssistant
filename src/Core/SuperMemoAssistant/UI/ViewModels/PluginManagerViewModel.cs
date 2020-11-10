@@ -101,7 +101,7 @@ namespace SuperMemoAssistant.UI.ViewModels
       PlayPauseCommand     = new AsyncRelayCommand<PluginInstance>(pi => PluginPlayPauseAsync(pi, false), CanPluginPlayPause, HandleExceptionAsync);
       PlayPauseDebugCommand     = new AsyncRelayCommand<PluginInstance>(pi => PluginPlayPauseAsync(pi, true), CanPluginPlayPause, HandleExceptionAsync);
       ShowSettingsCommand  = new AsyncRelayCommand<PluginInstance>(PluginShowSettingsAsync);
-      CancelCommand        = new RelayCommand(CancelTasks);
+      CancelCommand        = new AsyncRelayCommand(CancelTasks);
       BackToTheListCommand = new RelayCommand(BackToTheList);
 
       PackageManagerCommands = new List<ICommandEx>
@@ -165,7 +165,7 @@ namespace SuperMemoAssistant.UI.ViewModels
     public AsyncRelayCommand<PluginInstance> ShowSettingsCommand { get; }
 
     /// <summary>Cancels the current operation</summary>
-    public RelayCommand CancelCommand { get; }
+    public AsyncRelayCommand CancelCommand { get; }
 
     /// <summary>
     ///   Hides the operation progress display and displays the plugin list. This option is available after a fail Install or
@@ -460,6 +460,7 @@ namespace SuperMemoAssistant.UI.ViewModels
 
     /// <summary>Starts or stops <paramref name="pluginInstance" /> depending on its current status</summary>
     /// <param name="pluginInstance"></param>
+    /// <param name="attachDebugger"></param>
     /// <returns></returns>
     private Task PluginPlayPauseAsync(PluginInstance pluginInstance, bool attachDebugger)
     {
@@ -507,12 +508,14 @@ namespace SuperMemoAssistant.UI.ViewModels
     }
 
     /// <summary>Cancel running tasks using <see cref="CancellationTokenSource" /></summary>
-    public void CancelTasks()
+    public async Task CancelTasks()
     {
+      await PromptUserConfirmationAsync("Are you sure you want to cancel current operation ?").ConfigureAwait(false);
+
       switch (Status)
       {
         case PluginManagerStatus.Install:
-          Dispatcher.InvokeAsync(() => OperationLogs.AppendLine("\nCancelling..."));
+          await Dispatcher.InvokeAsync(() => OperationLogs.AppendLine("\nCancelling..."));
           break;
       }
 

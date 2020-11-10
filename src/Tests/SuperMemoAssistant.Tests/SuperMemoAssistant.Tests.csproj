@@ -8,11 +8,32 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
     <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Core\SuperMemoAssistant.Core\SuperMemoAssistant.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="AsyncFixer" Version="1.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.7.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="16.8.55" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Roslynator.Analyzers" Version="3.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="WpfAnalyzers" Version="3.3.0" />
   </ItemGroup>
 </Project>

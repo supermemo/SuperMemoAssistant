@@ -166,10 +166,10 @@ namespace SuperMemoAssistant.SuperMemo.Common.Registry
 
     protected override SparseClusteredArray<byte> GetSCAForFileName(string fileName)
     {
-      if (FileDesc.MemFileName.Equals(fileName, StringComparison.CurrentCultureIgnoreCase))
+      if (FileDesc.MemFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
         return MemSCA;
 
-      if (FileDesc.RtxFileName.Equals(fileName, StringComparison.CurrentCultureIgnoreCase))
+      if (FileDesc.RtxFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
         return RtxSCA;
 
       return null;

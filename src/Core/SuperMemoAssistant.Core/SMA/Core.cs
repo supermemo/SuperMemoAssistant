@@ -19,27 +19,22 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Modified On:  2020/02/22 17:55
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using SuperMemoAssistant.Services.Configuration;
-using SuperMemoAssistant.Services.IO.HotKeys;
-using SuperMemoAssistant.Services.IO.Keyboard;
-using SuperMemoAssistant.SMA.Configs;
-using SuperMemoAssistant.SuperMemo.Common;
-using SuperMemoAssistant.SuperMemo.Hooks;
-using SuperMemoAssistant.SuperMemo.Natives;
-
 namespace SuperMemoAssistant.SMA
 {
+  using Configs;
+  using Services.Configuration;
   using Services.IO.Diagnostics;
+  using Services.IO.HotKeys;
+  using Services.IO.Keyboard;
+  using SuperMemo.Common;
+  using SuperMemo.Hooks;
+  using SuperMemo.Natives;
 
   public static class Core
   {
@@ -58,6 +53,8 @@ namespace SuperMemoAssistant.SMA
 
     public static IKeyboardHookService KeyboardHotKey { get; set; }
     public static HotKeyManager        HotKeyManager  { get; set; }
+
+    public static NotificationManager NotificationMgr { get; set; }
 
     public static ConfigurationServiceBase Configuration           { get; set; }
     public static ConfigurationServiceBase CollectionConfiguration { get; set; }

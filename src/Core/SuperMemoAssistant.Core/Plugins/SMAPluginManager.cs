@@ -41,7 +41,7 @@ namespace SuperMemoAssistant.Plugins
   using Extensions;
   using global::Extensions.System.IO;
   using Interop;
-  using Interop.SuperMemo;
+  using Interop.SMA;
   using Interop.SuperMemo.Core;
   using Microsoft.QueryStringDotNET;
   using Microsoft.Toolkit.Uwp.Notifications;
@@ -58,7 +58,7 @@ namespace SuperMemoAssistant.Plugins
   using Sys.Windows;
   using TPluginManager =
     PluginManager.PluginManagerBase<SMAPluginManager, Models.PluginInstance, Models.PluginMetadata,
-      PluginManager.Interop.Contracts.IPluginManager<Interop.SuperMemo.ISuperMemoAssistant>, Interop.SuperMemo.ISuperMemoAssistant,
+      PluginManager.Interop.Contracts.IPluginManager<Interop.SMA.ISuperMemoAssistant>, Interop.SMA.ISuperMemoAssistant,
       Interop.Plugins.ISMAPlugin
     >;
 
@@ -71,6 +71,8 @@ namespace SuperMemoAssistant.Plugins
 
     public const string ToastActionRestartAfterCrash = "PluginRestartAfterCrash";
     public const string ToastActionParameterPluginId = "PluginId";
+
+    private const string MinInteropVersion = "2.1.0-beta-6";
 
     #endregion
 
@@ -93,6 +95,15 @@ namespace SuperMemoAssistant.Plugins
     {
       Core.SMA.OnSMStoppedInternalEvent += OnSMStopped;
     }
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public PluginInstance this[Guid sessionGuid] => RunningPluginMap.SafeGet(sessionGuid);
 
     #endregion
 
@@ -131,7 +142,7 @@ namespace SuperMemoAssistant.Plugins
       }
 
       alphaRepo.IsEnabled = Core.CoreConfig.Updates.CoreUpdateChannel == UpdateCfg.CoreNightlyChannel
-        || Core.CoreConfig.Updates.CoreUpdateChannel.Equals("Test", StringComparison.InvariantCultureIgnoreCase);
+        || Core.CoreConfig.Updates.CoreUpdateChannel.Equals("Test", StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>Adds an additional handler for <see cref="SMAPluginManager" /> log output</summary>
@@ -197,7 +208,7 @@ namespace SuperMemoAssistant.Plugins
     /// <inheritdoc />
     public override NuGetVersion GetPluginHostTypeAssemblyMinimumVersion(PluginInstance pluginInstance)
     {
-      return NuGetVersion.Parse("2.0.5.13"); // NuGetVersion.Parse(typeof(SMAConst).GetAssemblyVersion());
+      return NuGetVersion.Parse(MinInteropVersion); // NuGetVersion.Parse(typeof(SMAConst).GetAssemblyVersion());
     }
 
     /// <inheritdoc />

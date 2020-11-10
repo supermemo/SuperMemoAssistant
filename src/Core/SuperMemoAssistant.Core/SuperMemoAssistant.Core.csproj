@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\libs\Process.NET\src\Process.NET\Process.NET.csproj" />
+    <ProjectReference Include="..\..\Interop\src\SuperMemoAssistant.Interop\SuperMemoAssistant.Interop.csproj" />
     <ProjectReference Include="..\SuperMemoAssistant.Hooks.Common\SuperMemoAssistant.Hooks.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -54,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Anotar.Serilog.Fody">
-      <Version>5.1.0</Version>
+      <Version>5.1.3</Version>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="AsyncEvent">
@@ -77,21 +78,21 @@
       <Version>2.0.0-rc1</Version>
     </PackageReference>
     <PackageReference Include="Fody">
-      <Version>6.1.1</Version>
+      <Version>6.3.0</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="FontAwesome5">
-      <Version>2.0.5</Version>
+      <Version>2.0.8</Version>
     </PackageReference>
     <PackageReference Include="HtmlAgilityPack">
-      <Version>1.11.23</Version>
+      <Version>1.11.26</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
-      <Version>6.0.0</Version>
+      <Version>6.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.SDK.Contracts">
-      <Version>10.0.18362.2005</Version>
+      <Version>10.0.19041.1</Version>
     </PackageReference>
     <PackageReference Include="morelinq">
       <Version>3.3.2</Version>
@@ -107,26 +108,44 @@
       <IncludeAssets>runtime; compile; native; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="PropertyChanged.Fody">
-      <Version>3.2.8</Version>
+      <Version>3.3.0</Version>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="QueryString.NET">
       <Version>1.0.0</Version>
     </PackageReference>
     <PackageReference Include="Sentry.Serilog">
-      <Version>2.1.1</Version>
+      <Version>2.1.6</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Interop">
-      <Version>2.0.5.13</Version>
+      <Version>2.1.0-beta.7</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.Sentry">
-      <Version>2.0.5.6</Version>
+      <Version>2.1.0-beta.2</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.UI">
-      <Version>2.0.5.8</Version>
+      <Version>2.1.0-beta.8</Version>
     </PackageReference>
     <PackageReference Include="System.Security.Cryptography.Pkcs">
       <Version>4.7.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="AsyncFixer" Version="1.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.7.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="16.8.55" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Roslynator.Analyzers" Version="3.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="WpfAnalyzers" Version="3.3.0" />
   </ItemGroup>
 </Project>

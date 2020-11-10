@@ -29,15 +29,14 @@
 namespace SuperMemoAssistant.Sys.Windows
 {
   using System;
-  using System.Collections;
   using System.Collections.Generic;
   using System.Diagnostics.CodeAnalysis;
   using System.Globalization;
-  using System.Linq;
   using System.Runtime.InteropServices;
   using System.Text;
   using global::Windows.Foundation.Metadata;
   using global::Windows.UI.Notifications;
+  using Interop.SMA.Notifications;
 
   // https://github.com/WindowsNotifications/desktop-toasts/
   public static class DesktopNotificationManager
@@ -401,83 +400,6 @@ namespace SuperMemoAssistant.Sys.Windows
         [In][MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)]
         NotificationUserInputData[] data,
         [In][MarshalAs(UnmanagedType.U4)] uint dataCount);
-    }
-
-    #endregion
-  }
-
-
-  /// <summary>
-  ///   Text and selection values that the user entered on your notification. The Key is the ID of the input, and the Value
-  ///   is what the user entered.
-  /// </summary>
-  [SuppressMessage("Naming", "CA1710:Identifiers should have correct suffix", Justification = "<Pending>")]
-  public class NotificationUserInput : IReadOnlyDictionary<string, string>
-  {
-    #region Properties & Fields - Non-Public
-
-    private readonly NotificationActivator.NotificationUserInputData[] _data;
-
-    #endregion
-
-
-
-
-    #region Constructors
-
-    internal NotificationUserInput(NotificationActivator.NotificationUserInputData[] data)
-    {
-      _data = data;
-    }
-
-    #endregion
-
-
-
-
-    #region Properties Impl - Public
-
-    public int Count => _data.Length;
-
-    public string this[string key] => _data.First(i => i.Key == key).Value;
-
-    public IEnumerable<string> Keys => _data.Select(i => i.Key);
-
-    public IEnumerable<string> Values => _data.Select(i => i.Value);
-
-    #endregion
-
-
-
-
-    #region Methods Impl
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      return GetEnumerator();
-    }
-
-    public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
-    {
-      return _data.Select(i => new KeyValuePair<string, string>(i.Key, i.Value)).GetEnumerator();
-    }
-
-    public bool ContainsKey(string key)
-    {
-      return _data.Any(i => i.Key == key);
-    }
-
-    public bool TryGetValue(string key, out string value)
-    {
-      foreach (var item in _data)
-        if (item.Key == key)
-        {
-          value = item.Value;
-          return true;
-        }
-
-      value = null;
-      return false;
     }
 
     #endregion

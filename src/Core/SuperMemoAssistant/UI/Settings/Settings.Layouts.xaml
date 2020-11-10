@@ -118,7 +118,7 @@
                       Height="26"
                       Margin="8 0 0 0"
                       VerticalAlignment="Center"
-                      ToolTip="Make a copy of this layout"
+                      ToolTip="Edit this layout"
                       Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
                       CommandParameter="{Binding}"
                       Command="{Binding DataContext.EditCommand, ElementName=lbLayouts}">

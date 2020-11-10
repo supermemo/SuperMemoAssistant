@@ -33,6 +33,7 @@ namespace SuperMemoAssistant.SMA.Configs
   using AutoMapper;
   using Forge.Forms.Annotations;
   using Newtonsoft.Json;
+  using Plugins;
   using PropertyChanged;
   using Services.UI.Configuration;
   using SuperMemoAssistant.Extensions;
@@ -64,6 +65,10 @@ namespace SuperMemoAssistant.SMA.Configs
     public const string CoreDefaultChannel = CoreBetaChannel;
 
     public const string PluginsDefaultRepositoryUrl = "https://api.nuget.org/v3/index.json";
+
+    /// <summary>
+    /// Used in <see cref="SMAPluginManager.OnUpdatesConfigChanged"/>
+    /// </summary>
     public const string PluginsAlphaRepositoryUrl =
       "https://pkgs.dev.azure.com/accounts0054/SuperMemoAssistant/_packaging/SuperMemoAssistant-Alpha/nuget/v3/index.json";
 

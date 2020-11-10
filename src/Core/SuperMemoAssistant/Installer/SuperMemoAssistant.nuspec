@@ -14,8 +14,10 @@
     <repository type="$repositoryType$" url="$repositoryUrl$" branch="develop" commit="$commitId$" />
     <dependencies />
     <!-- releaseNotes will be replaced by MSBuild.Tools (see SuperMemoAssistant.csproj and https://github.com/alexis-/MSBuild.Tools) -->
-    <releaseNotes>- Added: New update channel system
-- Updated: Minor fix
+    <releaseNotes>- Added: Hardcoded interop minimum version
+- Added: Plugins initialization is executed in background and awaited only after collection is selected
+- Added: "Stable (Debug)" and "NuPack Debug" solution configurations
+- Updated: Packages
 </releaseNotes>
   </metadata>
   <files>

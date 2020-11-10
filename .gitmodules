@@ -67,3 +67,9 @@
 [submodule "src/Plugins/SuperMemoAssistant.Plugins.OmniMemo"]
 	path = src/Plugins/SuperMemoAssistant.Plugins.OmniMemo
 	url = https://github.com/supermemo/SuperMemoAssistant.Plugins.OmniMemo.git
+[submodule "src/Plugins/SuperMemoAssistant.Plugins.Email"]
+	path = src/Plugins/SuperMemoAssistant.Plugins.Email
+	url = https://github.com/supermemo/SuperMemoAssistant.Plugins.Email.git
+[submodule "src/Services/SuperMemoAssistant.Services.ToastNotifications"]
+	path = src/Services/SuperMemoAssistant.Services.ToastNotifications
+	url = https://github.com/supermemo/SuperMemoAssistant.Services.ToastNotifications.git

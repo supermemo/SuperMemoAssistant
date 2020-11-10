@@ -58,7 +58,7 @@
 
       <CheckBox Grid.Column="2"
                 FontSize="16"
-                Content="Is default"
+                Content="Make default"
                 IsChecked="{Binding IsDefault}" />
     </Grid>
 

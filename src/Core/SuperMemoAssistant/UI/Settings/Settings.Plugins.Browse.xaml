@@ -154,7 +154,7 @@
                    Visibility="{Binding IsTaskRunning, Converter={StaticResource BoolToVis}}" />
 
         <Button Grid.Row="1" Grid.Column="1"
-                Content="Cancel install"
+                Content="Cancel operation"
                 Command="{Binding CancelCommand}"
                 Visibility="{Binding IsTaskRunning, Converter={StaticResource BoolToVis}}" />
 

@@ -50,6 +50,7 @@ namespace SuperMemoAssistant
   using Services.IO.HotKeys;
   using Services.IO.Keyboard;
   using Services.Sentry;
+  using SMA;
   using SuperMemo.Common.Content.Layout;
 
   public static class ModuleInitializer
@@ -82,14 +83,15 @@ namespace SuperMemoAssistant
         var appType = typeof(SuperMemoAssistant.App);
         SMA.Core.SMAVersion = appType.GetAssemblyVersion();
 
-        var releaseName = $"SuperMemoAssistant@{SMA.Core.SMAVersion}";
+        LogTo.Information("SuperMemo Assistant version {SMAVersion} starting.", SMA.Core.SMAVersion);
 
-        SentryInstance = SentryEx.Initialize("https://a63c3dad9552434598dae869d2026696@sentry.io/1362046", releaseName);
+        SentryInstance = SentryEx.Initialize("https://d798f114635d4d858e7c71fd5f7f6d70@o218793.ingest.sentry.io/5506799", SMA.Core.SMAVersion);
 
-        SMA.Core.Configuration  = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
-        SMA.Core.KeyboardHotKey = KeyboardHookService.Instance;
-        SMA.Core.HotKeyManager  = HotKeyManager.Instance.Initialize(SMA.Core.Configuration, SMA.Core.KeyboardHotKey);
-        SMA.Core.SMA            = new SMA.SMA();
+        SMA.Core.Configuration   = new ConfigurationService(SMAFileSystem.ConfigDir.Combine("Core"));
+        SMA.Core.KeyboardHotKey  = KeyboardHookService.Instance;
+        SMA.Core.HotKeyManager   = HotKeyManager.Instance.Initialize(SMA.Core.Configuration, SMA.Core.KeyboardHotKey);
+        SMA.Core.NotificationMgr = NotificationManager.Instance;
+        SMA.Core.SMA             = new SMA.SMA();
 
         object tmp;
         tmp = LayoutManager.Instance;

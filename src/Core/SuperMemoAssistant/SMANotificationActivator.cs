@@ -19,26 +19,26 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Modified On:  2020/03/13 01:48
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System.Runtime.InteropServices;
-using System.Windows;
-using Anotar.Serilog;
-using Microsoft.QueryStringDotNET;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Plugins;
-using SuperMemoAssistant.Sys.Windows;
-
 namespace SuperMemoAssistant
 {
+  using System;
+  using System.Linq;
+  using System.Runtime.InteropServices;
+  using System.Windows;
+  using Anotar.Serilog;
+  using Interop.SMA.Notifications;
+  using Microsoft.QueryStringDotNET;
+  using Plugins;
+  using SMA;
+  using Squirrel.Extensions;
+  using Sys.Windows;
+
   /// <summary>Handles user actions from Windows Toast Desktop notifications</summary>
   [ClassInterface(ClassInterfaceType.None)]
   [ComSourceInterfaces(typeof(INotificationActivationCallback))]
@@ -65,13 +65,49 @@ namespace SuperMemoAssistant
         if (arguments.Length == 0)
           return;
 
-        QueryString args = QueryString.Parse(arguments);
+        var args = QueryString.Parse(arguments);
+
+        if (args.Contains(NotificationManager.PluginSessionGuidArgName))
+        {
+          var pluginSessionGuidStr = args[NotificationManager.PluginSessionGuidArgName];
+
+          if (Guid.TryParse(pluginSessionGuidStr, out var pluginSessionGuid) == false)
+          {
+            LogTo.Error("A notification was activated for an invalid GUID.\r\nGUID: {Guid}\r\nArgs: {Args}", pluginSessionGuidStr, args);
+            return;
+          }
+
+          var plugin = SMAPluginManager.Instance[pluginSessionGuid];
+
+          if (plugin == null)
+          {
+            LogTo.Debug("A notification was activated for an expired plugin.\r\n{Args}", args);
+            return;
+          }
+
+          LogTo.Debug("Plugin Toast activated.\r\nArgs: {Args}", args);
+
+          var argDict       = args.ToDictionary(k => k.Name, v => v.Value);
+          var userInputDict = userInput.ToDictionary(k => k.Key, v => v.Value);
+
+          var activationData = new ToastActivationData(
+            plugin.Package.Id,
+            plugin.Package.Version,
+            argDict,
+            userInputDict);
+
+          SMA.Core.NotificationMgr.RaiseToastActivated(activationData);
+
+          return;
+        }
 
         if (args.Contains("action") == false)
         {
-          LogTo.Warning($"Received a Toast activation without an action argument: '{arguments}'");
+          LogTo.Warning("Received a Toast activation without an action argument: '{Args}'", args);
           return;
         }
+
+        LogTo.Debug("SMA Toast activated.\r\nArgs: {Args}", args);
 
         switch (args["action"])
         {
@@ -79,7 +115,8 @@ namespace SuperMemoAssistant
           case SMAPluginManager.ToastActionRestartAfterCrash:
             if (args.Contains(SMAPluginManager.ToastActionParameterPluginId) == false)
             {
-              LogTo.Error($"Received a ToastActionRestartAfterCrash toast activation without a plugin id parameter: '{arguments}'");
+              LogTo.Error("Received a ToastActionRestartAfterCrash toast activation without a plugin id parameter: '{Arguments}'",
+                          arguments);
               return;
             }
 
@@ -88,7 +125,7 @@ namespace SuperMemoAssistant
             break;
 
           default:
-            LogTo.Warning($"Unknown notification action {args["action"]}: '{arguments}'");
+            LogTo.Warning("Unknown notification action {V}: '{Arguments}'", args["action"], arguments);
             break;
         }
       });

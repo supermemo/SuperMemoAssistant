@@ -114,6 +114,10 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
       }
       set
       {
+        // Prevents crashing
+        if (string.IsNullOrEmpty(value))
+          value = " ";
+
         Document.body.innerHTML = value;
         Core.SM.UI.ElementWdw.SetText(this, value);
       }

@@ -77,7 +77,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       IsAvailable = false;
 
       Core.SMA.OnSMStartingInternalEvent += OnSMStartingAsync;
-      Core.SMA.OnSMStoppedInternalEvent += OnSMStoppedEvent;
+      Core.SMA.OnSMStoppedInternalEvent  += OnSMStoppedEvent;
     }
 
     /// <inheritdoc />

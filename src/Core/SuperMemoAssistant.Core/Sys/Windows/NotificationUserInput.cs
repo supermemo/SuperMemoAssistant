@@ -53,7 +53,7 @@ namespace SuperMemoAssistant.Sys.Windows {
 
     internal NotificationUserInput(NotificationActivator.NotificationUserInputData[] data)
     {
-      _data = data;
+      _data = data ?? Array.Empty<NotificationActivator.NotificationUserInputData>();
     }
 
     #endregion

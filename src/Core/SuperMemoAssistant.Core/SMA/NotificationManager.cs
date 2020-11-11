@@ -35,10 +35,12 @@ namespace SuperMemoAssistant.SMA
   using Extensions;
   using Interop.SMA.Notifications;
   using Microsoft.QueryStringDotNET;
+  using Microsoft.Toolkit.Uwp.Notifications;
+  using PluginManager.Interop.Sys;
   using Plugins;
   using Sys.Windows;
 
-  public class NotificationManager : INotificationManager
+  public class NotificationManager : PerpetualMarshalByRefObject, INotificationManager
   {
     #region Constants & Statics
 
@@ -92,11 +94,7 @@ namespace SuperMemoAssistant.SMA
         var doc = new XmlDocument();
         doc.LoadXml(toastXml);
 
-        doc.SelectNodes($"//{ToastNodeName}")
-           .ForEach(n => AddPluginSessionGuidArgument(n, pluginSessionGuid));
-
-        doc.SelectNodes($"//{ActionNodeName}")
-           .ForEach(n => AddPluginSessionGuidArgument(n, pluginSessionGuid));
+        AddPluginSessionGuidArgument(doc, pluginSessionGuid);
 
         // And create the toast notification
         var toast = new ToastNotification(doc);
@@ -131,12 +129,35 @@ namespace SuperMemoAssistant.SMA
       );
     }
 
+    private static void AddPluginSessionGuidArgument(XmlDocument doc, Guid pluginSessionGuid)
+    {
+      var xmlNodes = doc.SelectNodes($"//{ToastNodeName}");
+
+      for (int i = xmlNodes.Count - 1; i >= 0; i--)
+        AddPluginSessionGuidArgument(xmlNodes[i], pluginSessionGuid);
+
+      xmlNodes = doc.SelectNodes($"//{ActionNodeName}");
+
+      for (int i = xmlNodes.Count - 1; i >= 0; i--)
+        AddPluginSessionGuidArgument(xmlNodes[i], pluginSessionGuid);
+    }
+
     private static void AddPluginSessionGuidArgument(IXmlNode node, Guid pluginSessionGuid)
     {
       try
       {
-        var attrNode = FindOrAddAttribute(node);
-        var args     = QueryString.Parse(attrNode.NodeValue as string);
+        var activationType = FindAttribute(node, "activationType")?.Value;
+
+        if (activationType  != ToastActivationType.Background.ToString()
+          && activationType != ToastActivationType.Foreground.ToString())
+          return;
+
+        var attrNode = FindAttribute(node);
+
+        if (attrNode == null)
+          return;
+
+        var args = QueryString.Parse(attrNode.Value);
 
         args.Set(PluginSessionGuidArgName, pluginSessionGuid.ToString());
 
@@ -148,33 +169,33 @@ namespace SuperMemoAssistant.SMA
       }
     }
 
-    private static XmlAttribute FindOrAddAttribute(IXmlNode node)
+    private static XmlAttribute FindAttribute(IXmlNode node)
     {
       switch (node.LocalName)
       {
         case ToastNodeName:
-          return FindOrAddAttribute(node, ToastLaunchAttrName);
+          return FindAttribute(node, ToastLaunchAttrName);
 
         case ActionNodeName:
-          return FindOrAddAttribute(node, ActionArgumentsAttrName);
+          return FindAttribute(node, ActionArgumentsAttrName);
 
         default:
-          throw new InvalidOperationException("FindOrAddAttribute called on invalid node type {node.LocalName}");
+          throw new InvalidOperationException("FindAttribute called on invalid node type {node.LocalName}");
       }
     }
 
-    private static XmlAttribute FindOrAddAttribute(IXmlNode node, string attrName)
+    private static XmlAttribute FindAttribute(IXmlNode node, string attrName)
     {
       var doc      = node.OwnerDocument;
       var attrNode = (XmlAttribute)node.Attributes.GetNamedItem(attrName);
 
-      if (attrNode == null)
+      /*if (attrNode == null)
       {
         attrNode = doc.CreateAttribute(attrName)
                       .With(a => a.Value = string.Empty);
 
         node.Attributes.SetNamedItem(attrNode);
-      }
+      }*/
 
       return attrNode;
     }

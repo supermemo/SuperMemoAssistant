@@ -242,14 +242,14 @@ namespace SuperMemoAssistant.UI
     private void BtnOptions_Click(object          sender,
                                   RoutedEventArgs e)
     {
-      _startupCfg.SuperMemo.ShowWindow().Wait();
+      _startupCfg.SuperMemo.ShowWindowAsync().Wait();
 
       SaveConfig();
     }
 
     private void BtnUpdates_Click(object sender, RoutedEventArgs e)
     {
-      _startupCfg.Updates.ShowWindow().Wait();
+      _startupCfg.Updates.ShowWindowAsync().Wait();
 
       SaveConfig();
     }

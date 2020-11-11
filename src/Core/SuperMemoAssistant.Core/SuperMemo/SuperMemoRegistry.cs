@@ -75,6 +75,7 @@ namespace SuperMemoAssistant.SuperMemo
     public new TemplateRegistry17  Template  { get; }
     public new SoundRegistry17     Sound     { get; }
     public new VideoRegistry17     Video     { get; }
+    public EmptySlotsRegistry EmptySlots { get; } = new EmptySlotsRegistry();
 
     #endregion
   }

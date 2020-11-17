@@ -147,6 +147,24 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       return success && CurrentConceptId == conceptId;
     }
 
+    public bool OpenFindElementsDialog()
+    {
+      try
+      {
+        return Core.Natives.SMMain.FindElements((char)3, (char)1, (char)0);
+      }
+      catch (Win32Exception ex)
+      {
+        LogTo.Warning(ex, "Failed to read SMMainWdwPtr");
+        return false;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
     public bool GoToElement(int elementId)
     {
       try

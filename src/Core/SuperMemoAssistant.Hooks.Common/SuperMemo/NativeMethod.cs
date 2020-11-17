@@ -64,6 +64,7 @@ namespace SuperMemoAssistant.SuperMemo
     TCompData_SetTextRegMember,
     TCompData_GetImageRegMember,
     TCompData_SetImageRegMember,
+    TSMMain_FindElements,
     TSMMain_SelectDefaultConcept,
     TRegistry_AddMember,
     TRegistry_ImportFile,

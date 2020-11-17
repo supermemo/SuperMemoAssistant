@@ -150,6 +150,10 @@
       "Queue_GetItem": { // TQueue::GetItem
         "Pattern": "E8 ? ? ? ? 89 45 AB",
         "Offset": 1
+      },
+      "TSMMain_FindElements": {
+        "Pattern": "E8 ? ? ? ? EB 11 8A 4D FA",
+        "Offset":  1
       }
     },
     "NativeDataPatterns": {},
@@ -314,6 +318,10 @@
       "Queue_GetItem": { // TQueue::GetItem
         "Pattern": "E8 ? ? ? ? 89 45 AB",
         "Offset": 1
+      },
+      "TSMMain_FindElements": {
+        "Pattern": "E8 ? ? ? ? EB 11 8A 4D FA",
+        "Offset":  1
       }
     },
     "NativeDataPatterns": {},
@@ -478,6 +486,10 @@
       "Queue_GetItem": { // TQueue::GetItem
         "Pattern": "E8 ? ? ? ? 89 45 AB",
         "Offset": 1
+      },
+      "TSMMain_FindElements": {
+        "Pattern": "E8 ? ? ? ? EB 11 8A 4D FA",
+        "Offset":  1
       }
     },
     "NativeDataPatterns": {},
@@ -647,7 +659,11 @@
       },
       "Queue_GetItem": { // TQueue::GetItem
         "Pattern": "E8 ? ? ? ? 89 45 AB",
-        "Offset": 1 
+        "Offset": 1
+      },
+      "TSMMain_FindElements": {
+        "Pattern": "E8 ? ? ? ? EB 11 8A 4D FA",
+        "Offset":  1
       }
     },
     "NativeDataPatterns": {},

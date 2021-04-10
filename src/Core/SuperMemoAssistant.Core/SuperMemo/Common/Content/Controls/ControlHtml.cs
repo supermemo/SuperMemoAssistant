@@ -87,7 +87,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
 
     #region Properties & Fields - Public
 
-    public IHTMLDocument2 Document => _document ?? (_document = GetDocument());
+    public IHTMLDocument2 Document => _document ??= GetDocument();
 
     #endregion
 
@@ -97,7 +97,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
     #region Properties Impl - Public
 
     /// <inheritdoc />
-    public IntPtr? DocumentHwnd => _documentHwnd ?? (_documentHwnd = GetDocumentHwnd());
+    public IntPtr? DocumentHwnd => _documentHwnd ??= GetDocumentHwnd();
 
     public override string Text
     {
@@ -119,7 +119,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
           value = " ";
 
         Document.body.innerHTML = value;
-        Core.SM.UI.ElementWdw.SetText(this, value);
+        base.Text = value;
       }
     }
 

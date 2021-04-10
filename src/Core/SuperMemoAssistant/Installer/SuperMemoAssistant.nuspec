@@ -22,10 +22,12 @@
 - Added: Hardcoded interop minimum version
 - Added: Plugins initialization is executed in background and awaited only after collection is selected
 - Added: "Stable (Debug)" and "NuPack Debug" solution configurations
+- Added empty slots registry to check for files occupying empty file slots
 - Updated: Each project now has its own Sentry key for bug reporting
 - Updated: Version to 2.1.0
 - Updated: Min Interop Version to 2.1.0-beta-6
 - Updated: Packages
+- Fixed: Notification service
 - Fixed: Several UI tooltips
 - Fixed: Working for a crashing when setting a HTML Control text to an empty string
 </releaseNotes>

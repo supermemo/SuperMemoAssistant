@@ -40,6 +40,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
   using Process.NET.Memory;
   using SMA;
   using SMA.Hooks;
+  using SMA.Hooks.Services;
   using SuperMemoAssistant.Extensions;
 
   public abstract class SuperMemoCore : SuperMemoBase

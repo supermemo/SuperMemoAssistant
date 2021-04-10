@@ -447,12 +447,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        //SetTextMethod(ElementWdwPtr.Read<IntPtr>(),
-        //              control.Id + 1,
-        //              new DelphiUString(text));
-
-        //return true;
-
         return Core.Natives.ElWind.SetText(ElementWdwPtr.Read<IntPtr>(),
                                            control,
                                            text);

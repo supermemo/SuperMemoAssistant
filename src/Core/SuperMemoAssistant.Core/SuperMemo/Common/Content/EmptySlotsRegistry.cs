@@ -1,124 +1,87 @@
-﻿using Anotar.Serilog;
-using Extensions.System.IO;
-using Microsoft.Toolkit.Uwp.Notifications;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SuperMemo.Common.Extensions;
-using SuperMemoAssistant.SuperMemo.Common.Registry;
-using SuperMemoAssistant.SuperMemo.Hooks;
-using SuperMemoAssistant.Sys.SparseClusteredArray;
-using SuperMemoAssistant.Sys.Windows;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿#region License & Metadata
+
+// The MIT License (MIT)
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+#endregion
+
+
+
 
 namespace SuperMemoAssistant.SuperMemo.Common.Content
 {
+  using System;
+  using System.Collections.Generic;
+  using System.IO;
+  using System.Linq;
+  using Anotar.Serilog;
+  using Extensions;
+  using global::Extensions.System.IO;
+  using Hooks;
+  using Interop;
+  using Microsoft.Toolkit.Uwp.Notifications;
+  using Registry;
+  using SMA;
+  using SuperMemoAssistant.Extensions;
+  using SuperMemoAssistant.Interop.SuperMemo.Core;
+  using Sys.SparseClusteredArray;
+  using Sys.Windows;
+
   public class EmptySlotsRegistry : SMHookIOBase
   {
+    #region Constants & Statics
 
-    // TODO: Should these be placed in SMConst?
-    private const string EmptySlotsFile = "emptyslots.dat";
-    private readonly string RecoveryFolder = Path.Combine(Core.SM.Collection.Path, "recover");
-
-    protected static readonly IEnumerable<string> TargetFiles = new string[]
+    private static readonly IEnumerable<string> TargetFiles = new[]
     {
-      EmptySlotsFile
+      SMConst.Files.EmptySlotsFile
     };
 
-    protected SparseClusteredArray<byte> EmptySlotsSCA { get; } = new SparseClusteredArray<byte>();
+    #endregion
+
+
+
+
+    #region Properties & Fields - Non-Public
+
+    private static string RecoveryFolder => Collection.CombinePath(SMConst.Paths.RecoverFolder);
+
+    private static string EmptySlotsFilePath => Collection.GetInfoFilePath(SMConst.Files.EmptySlotsFile);
+
+    private SparseClusteredArray<byte> EmptySlotsSCA { get; } = new SparseClusteredArray<byte>();
+
+    #endregion
+
+
+
+
+    #region Methods Impl
 
     protected override void Cleanup()
     {
       EmptySlotsSCA.Clear();
     }
 
-    private void ParseAndCheck(Stream stream)
-    {
-      using (BinaryReader binaryReader = new BinaryReader(stream))
-      {
-
-        // TODO: Only seems to read one fileslot
-
-        int moved = 0;
-        while (binaryReader.PeekChar() != -1)
-        {
-          var slotId = binaryReader.ReadInt32();
-          if (CheckAndMoveNonEmptyFileSlots(slotId))
-            moved++;
-        }
-
-        if (moved > 0)
-          SendFileMovedNotification(moved);
-      }
-    }
-
-    private void SendFileMovedNotification(int number)
-    {
-      string message = $"{number} files were found occupying an empty file slot. " +
-                        "They were moved to the recovery folder.";
-
-      message.ShowDesktopNotification(
-        new ToastButton("Open the recovery folder.", RecoveryFolder)
-        {
-          ActivationType = ToastActivationType.Protocol
-        }
-      );
-
-    }
-
     protected override void CommitFromFiles()
     {
-      using (Stream stream = File.OpenRead(Collection.GetInfoFilePath(EmptySlotsFile)))
+      using (Stream stream = File.OpenRead(EmptySlotsFilePath))
         ParseAndCheck(stream);
-    }
-
-    private bool CheckAndMoveNonEmptyFileSlots(int slotId)
-    {
-
-      //var memory = Core.SM.SMProcess.Memory; // NRE here
-      //var fileSpaceInst = Core.Natives.FileSpace.InstancePtr.Read<IntPtr>(memory);
-      //var emptySlots = Core.Natives.FileSpace.EmptySlotsPtr.Read<IntPtr>(memory);
-      //if (Core.Natives.FileSpace.IsSlotOccupied.Invoke(fileSpaceInst, slotId))
-      //{
-
-      var recoverDirPath = new DirectoryPath(RecoveryFolder);
-      var wildCardPath = RegistryMemberBase.GetFilePathForSlotId(Core.SM.Collection, slotId, "*");
-      var fileNameWildCard = Path.GetFileName(wildCardPath);
-      var dirPath = Path.GetDirectoryName(wildCardPath);
-
-      fileNameWildCard.ThrowIfNullOrWhitespace("fileNameWildCard was null or whitespace");
-      dirPath.ThrowIfNullOrWhitespace("dirPath was null or whitespace");
-
-      recoverDirPath.EnsureExists();
-
-      bool moved = false;
-
-      // TODO: Does there need to be a loop - only looking for one file?
-      foreach (var filePath in Directory.EnumerateFiles(dirPath, fileNameWildCard, SearchOption.TopDirectoryOnly))
-      {
-        try
-        {
-
-          // TODO: What if there is already a file in recover dir with the same name
-
-          var date = DateTime.Today;
-          var fileName = $"{date.Day}-{date.Month}-{date.Year}_{Path.GetFileName(filePath)}";
-          File.Move(filePath, recoverDirPath.CombineFile(fileName).FullPath);
-          moved = true;
-
-        }
-        catch (IOException ex)
-        {
-          LogTo.Warning(ex, "Failed to move non-empty fileslot file {FilePath}", filePath);
-
-          if (File.Exists(filePath))
-            throw new InvalidOperationException($"Failed to remove non-empty fileslot file {filePath}");
-        }
-      }
-
-      return moved;
     }
 
     protected override void CommitFromMemory()
@@ -131,7 +94,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content
     {
       switch (fileName)
       {
-        case EmptySlotsFile:
+        case SMConst.Files.EmptySlotsFile:
           return EmptySlotsSCA;
 
         default:
@@ -143,5 +106,82 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content
     {
       return TargetFiles.Select(f => Collection.GetInfoFilePath(f));
     }
+
+    #endregion
+
+
+
+
+    #region Methods
+
+    private static void ParseAndCheck(Stream stream)
+    {
+      var recoverDirPath = new DirectoryPath(RecoveryFolder);
+
+      recoverDirPath.EnsureExists();
+
+      int r, moved = 0;
+      var buffer = new byte[4096];
+
+      while ((r = stream.Read(buffer, 0, buffer.Length)) > 0)
+        for (r--; r >= 0; r--)
+        {
+          var slotId = Convert.ToInt32(buffer[r]);
+
+          if (CheckAndMoveNonEmptyFileSlots(slotId, recoverDirPath))
+            moved++;
+        }
+
+      if (moved > 0)
+        SendFileMovedNotification(moved);
+    }
+
+    private static bool CheckAndMoveNonEmptyFileSlots(int slotId, DirectoryPath recoverDirPath)
+    {
+      var wildCardPath     = RegistryMemberBase.GetFilePathForSlotId(Core.SM.Collection, slotId, "*");
+      var fileNameWildCard = Path.GetFileName(wildCardPath);
+      var dirPath          = Path.GetDirectoryName(wildCardPath);
+
+      fileNameWildCard.ThrowIfNullOrWhitespace("fileNameWildCard was null or whitespace");
+      dirPath.ThrowIfNullOrWhitespace("dirPath was null or whitespace");
+
+      recoverDirPath.EnsureExists();
+
+      bool moved = false;
+
+      // TODO: Does there need to be a loop - only looking for one file?
+      foreach (var filePath in Directory.EnumerateFiles(dirPath, fileNameWildCard, SearchOption.TopDirectoryOnly))
+        try
+        {
+          // TODO: What if there is already a file in recover dir with the same name
+
+          var date     = DateTime.Today;
+          var fileName = $"{date.Day}-{date.Month}-{date.Year}_{Path.GetFileName(filePath)}";
+          File.Move(filePath, recoverDirPath.CombineFile(fileName).FullPath);
+          moved = true;
+        }
+        catch (IOException ex)
+        {
+          LogTo.Warning(ex, "Failed to move non-empty fileslot file {FilePath}", filePath);
+
+          if (File.Exists(filePath))
+            throw new InvalidOperationException($"Failed to remove non-empty fileslot file {filePath}");
+        }
+
+      return moved;
+    }
+
+    private static void SendFileMovedNotification(int number)
+    {
+      $"{number} files were found occupying an empty file slot. They were moved to the recovery folder."
+        .ShowDesktopNotification(
+          new ToastButton("Open the recovery folder.", RecoveryFolder)
+          {
+            ActivationType = ToastActivationType.Protocol
+          }
+        );
+    }
+
+    #endregion
   }
 }

@@ -125,7 +125,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
       #region Methods
 
       // TElWind.NewElement
-      public bool GoToElement(IntPtr elementWdwPtr, int elementId)
+      public async Task<bool> GoToElementAsync(IntPtr elementWdwPtr, int elementId)
       {
         try
         {
@@ -140,7 +140,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
-      public bool PasteElement(IntPtr elementWdwPtr)
+      public async Task<bool> PasteElementAsync(IntPtr elementWdwPtr)
       {
         try
         {
@@ -154,7 +154,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
-      public int AppendElement(IntPtr elementWdwPtr, ElementType elementType)
+      public async Task<int> AppendElementAsync(IntPtr elementWdwPtr, ElementType elementType)
       {
         try
         {
@@ -177,7 +177,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
       [SuppressMessage("Usage", "VSTHRD104:Offer async methods", Justification = "<Pending>")]
       [SuppressMessage("AsyncUsage", "AsyncFixer04:A disposable object used in a fire & forget async call",
                        Justification = "<Pending>")]
-      public int GenerateExtract(IntPtr      elementWdwPtr,
+      public async Task<int> GenerateExtractAsync(IntPtr      elementWdwPtr,
                                  ElementType elementType,
                                  bool        memorize                  = true,
                                  bool        askUserToScheduleInterval = false)
@@ -217,7 +217,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
       [SuppressMessage("Usage", "VSTHRD104:Offer async methods", Justification = "<Pending>")]
       [SuppressMessage("AsyncUsage", "AsyncFixer04:A disposable object used in a fire & forget async call",
                        Justification = "<Pending>")]
-      public int GenerateCloze(IntPtr elementWdwPtr, bool memorize = true, bool askUserToScheduleInterval = false)
+      public async Task<int> GenerateClozeAsync(IntPtr elementWdwPtr, bool memorize = true, bool askUserToScheduleInterval = false)
       {
         using (var cts = new CancellationTokenSource(5000))
           try
@@ -246,7 +246,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
           }
       }
 
-      public bool SetElementFromDescription(IntPtr elementWdwPtr, string elementDesc)
+      public async Task<bool> SetElementFromDescriptionAsync(IntPtr elementWdwPtr, string elementDesc)
       {
         try
         {
@@ -261,7 +261,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
-      public bool DeleteCurrentElement(IntPtr elementWdwPtr)
+      public async Task<bool> DeleteCurrentElementAsync(IntPtr elementWdwPtr)
       {
         try
         {
@@ -275,29 +275,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
-      [SuppressMessage("Microsoft.Performance", "CA1801")]
-      public string GetText(IntPtr elementWdwPtr, IControl control)
-      {
-        return null;
-
-        // TODO: Add out parameters to Process.NET
-        //try
-        //{
-        //  var ret = new DelphiUString(8000);
-
-        //  GetTextMethod(ElementWdwPtr.Read<IntPtr>(),
-        //                control.Id + 1,
-        //                ret);
-
-        //  return ret.Text;
-        //}
-        //catch (Exception ex)
-        //{
-        //  return null;
-        //}
-      }
-
-      public bool ShowNextElementInLearningQueue(IntPtr elementWdwPtr)
+      public async Task<bool> ShowNextElementInLearningQueueAsync(IntPtr elementWdwPtr)
       {
         try
         {
@@ -313,7 +291,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
-      public bool SetElementState(IntPtr elementWdwPtr, ElementDisplayState state)
+      public async Task<bool> SetElementStateAsync(IntPtr elementWdwPtr, ElementDisplayState state)
       {
         try
         {
@@ -330,7 +308,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
-      public bool PostponeRepetition(IntPtr elementWdwPtr, int interval)
+      public async Task<bool> PostponeRepetitionAsync(IntPtr elementWdwPtr, int interval)
       {
         try
         {
@@ -347,7 +325,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
-      public bool ForceRepetitionAndResume(IntPtr elementWdwPtr,
+      public async Task<bool> ForceRepetitionAndResumeAsync(IntPtr elementWdwPtr,
                                            int    interval,
                                            bool   adjustPriority)
       {
@@ -367,7 +345,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
-      public int AppendAndAddElementFromText(IntPtr      elementWdwPtr,
+      public async Task<int> AppendAndAddElementFromTextAsync(IntPtr      elementWdwPtr,
                                              ElementType elementType,
                                              string      elementDesc)
       {
@@ -388,7 +366,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
       // Static addresses
       // _Unit193.TElWind.DoneClick
       // 00A0E29C       call        00A20A58
-      public bool Done(IntPtr elementWdwPtr)
+      public async Task<bool> DoneAsync(IntPtr elementWdwPtr)
       {
         try
         {
@@ -402,7 +380,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
-      public bool PasteArticle(IntPtr elementWdwPtr)
+      public async Task<bool> PasteArticleAsync(IntPtr elementWdwPtr)
       {
         try
         {
@@ -416,7 +394,29 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
-      public bool SetText(IntPtr   elementWdwPtr,
+      [SuppressMessage("Microsoft.Performance", "CA1801")]
+      public async Task<string> GetTextAsync(IntPtr elementWdwPtr, IControl control)
+      {
+        return null;
+
+        // TODO: Add out parameters to Process.NET
+        //try
+        //{
+        //  var ret = new DelphiUString(8000);
+
+        //  GetTextMethod(ElementWdwPtr.Read<IntPtr>(),
+        //                control.Id + 1,
+        //                ret);
+
+        //  return ret.Text;
+        //}
+        //catch (Exception ex)
+        //{
+        //  return null;
+        //}
+      }
+
+      public async Task<bool> SetTextAsync(IntPtr   elementWdwPtr,
                           IControl control,
                           string   text)
       {
@@ -440,7 +440,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
-      public bool ForceRepetitionExt(IntPtr elementWdwPtr,
+      public async Task<bool> ForceRepetitionExtAsync(IntPtr elementWdwPtr,
                                      int    interval,
                                      bool   adjustPriority)
       {

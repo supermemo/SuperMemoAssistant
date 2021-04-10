@@ -25,23 +25,13 @@
 
 
 
-namespace SuperMemoAssistant.SMA
+namespace SuperMemoAssistant.SMA.Hooks.Services
 {
-  using System.Threading.Tasks;
-  using SuperMemo;
+  using System;
 
-  public static class CoreEx
+  public interface ISMAHook : ISMAHookSystem, ISMAHookRemoteExec, ISMAHookIO
   {
-    #region Methods
-
-    public static Task<int> ExecuteOnMainThreadAsync(
-      this NativeMethod method,
-      bool              shouldHoldMainThread,
-      params object[]   parameters)
-    {
-      return Core.Hook.ExecuteOnMainThreadAsync(method, shouldHoldMainThread, parameters);
-    }
-
-    #endregion
+    bool OnHookInstalled(string    injectLibChannelName,
+                         Exception hookEx);
   }
 }

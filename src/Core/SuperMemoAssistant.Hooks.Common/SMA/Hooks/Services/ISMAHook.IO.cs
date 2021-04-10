@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
+// and/or sell copies of the Software, and to permit persons to whom the 
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -19,29 +19,38 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
+// 
+// 
+// Created On:   2019/01/19 04:25
+// Modified On:  2019/01/19 04:30
+// Modified By:  Alexis
 
 #endregion
 
 
 
 
-namespace SuperMemoAssistant.SMA
+namespace SuperMemoAssistant.SMA.Hooks.Services
 {
-  using System.Threading.Tasks;
-  using SuperMemo;
+  using System;
+  using System.Collections.Generic;
 
-  public static class CoreEx
+  public interface ISMAHookIO
   {
-    #region Methods
+    //
+    // IO Hooks
+    IEnumerable<string> GetTargetFilePaths();
 
-    public static Task<int> ExecuteOnMainThreadAsync(
-      this NativeMethod method,
-      bool              shouldHoldMainThread,
-      params object[]   parameters)
-    {
-      return Core.Hook.ExecuteOnMainThreadAsync(method, shouldHoldMainThread, parameters);
-    }
+    void OnFileCreate(String filePath,
+                      IntPtr fileHandle);
 
-    #endregion
+    void OnFileSeek(IntPtr fileHandle,
+                    UInt32 position);
+
+    void OnFileWrite(IntPtr fileHandle,
+                     Byte[] buffer,
+                     UInt32 count);
+
+    void OnFileClose(IntPtr fileHandle);
   }
 }

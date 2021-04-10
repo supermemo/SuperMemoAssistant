@@ -25,22 +25,48 @@
 
 
 
-namespace SuperMemoAssistant.SMA
+namespace SuperMemoAssistant.SuperMemo.Hooks
 {
-  using System.Threading.Tasks;
-  using SuperMemo;
+  using System.Collections.Generic;
 
-  public static class CoreEx
+  public class SMExecRequest<TMetadata>
   {
-    #region Methods
+    #region Constructors
 
-    public static Task<int> ExecuteOnMainThreadAsync(
-      this NativeMethod method,
-      bool              shouldHoldMainThread,
-      params object[]   parameters)
+    public SMExecRequest(
+      NativeMethod        method,
+      bool                shouldHoldMainThread,
+      IEnumerable<object> parameters,
+      TMetadata           metadata = default)
     {
-      return Core.Hook.ExecuteOnMainThreadAsync(method, shouldHoldMainThread, parameters);
+      Method               = method;
+      ShouldHoldMainThread = shouldHoldMainThread;
+      Parameters           = parameters;
+      Metadata             = metadata;
     }
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public NativeMethod        Method               { get; }
+    public bool                ShouldHoldMainThread { get; }
+    public IEnumerable<object> Parameters           { get; }
+    public TMetadata           Metadata             { get; }
+    public int                 ExecId               { get; set; }
+
+    #endregion
+  }
+
+  public class SMExecRequest : SMExecRequest<object>
+  {
+    #region Constructors
+
+    public SMExecRequest(NativeMethod method, bool shouldHoldMainThread, IEnumerable<object> parameters, object metadata = default) : base(
+      method, shouldHoldMainThread, parameters, metadata) { }
 
     #endregion
   }

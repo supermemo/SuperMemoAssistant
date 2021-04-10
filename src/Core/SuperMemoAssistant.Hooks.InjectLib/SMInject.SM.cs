@@ -19,15 +19,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2020/03/29 00:20
-// Modified On:  2020/04/07 10:31
-// Modified By:  Alexis
 
 #endregion
-
-
 
 
 
@@ -39,17 +32,19 @@
 namespace SuperMemoAssistant.Hooks.InjectLib
 {
   using System;
+  using System.Collections.Concurrent;
   using System.Collections.Generic;
   using System.Diagnostics;
+  using System.Diagnostics.CodeAnalysis;
   using System.Runtime.InteropServices;
-  using System.Runtime.Remoting;
+  using System.Threading;
   using Extensions;
   using Process.NET;
   using Process.NET.Marshaling;
   using Process.NET.Memory;
-  using Process.NET.Native.Types;
   using Process.NET.Patterns;
-  using SMA.Hooks;
+  using Process.NET.Utilities;
+  using SMA.Hooks.Models;
   using SuperMemo;
   using SuperMemoAssistantHooksNativeLib;
 
@@ -60,8 +55,43 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
     private readonly Dictionary<NativeMethod, int> _callTable = new Dictionary<NativeMethod, int>();
 
-    private ProcessSharp   _smProcess;
+    private readonly AutoResetEvent _execAvailableEvent = new AutoResetEvent(false);
+    private readonly object         _execHeldLock       = new Object();
+
+    private readonly ConcurrentQueue<NativeExecutionParameters> _execQueue = new ConcurrentQueue<NativeExecutionParameters>();
+
+    private bool _execHeld;
+    private bool _execRequested;
+
+    private IPointer _smAppMessagePtr;
+    private IPointer _smMainHandlePtr;
+
+    private ProcessSharp _smProcess;
+
+    /// <summary>Prevents the delegate from being collected</summary>
     private ManagedWndProc _wndProcDelegate;
+
+    private int _wndProcHookAddr;
+
+    #endregion
+
+
+
+
+    #region Methods Impl
+
+    public void RequestExecution(IEnumerable<NativeExecutionParameters> execParams)
+    {
+      lock (_execHeldLock)
+        foreach (var ep in execParams)
+          RequestExecutionInternal(ep);
+    }
+
+    public void RequestExecution(NativeExecutionParameters execParams)
+    {
+      lock (_execHeldLock)
+        RequestExecutionInternal(execParams);
+    }
 
     #endregion
 
@@ -75,19 +105,30 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     ///   the WndProc detour.
     /// </summary>
     /// <param name="nativeData">The offsets and method signatures for the running SuperMemo version</param>
-    private unsafe void InstallSM(NativeData nativeData)
+    private void InstallSM(NativeData nativeData)
     {
-      _smProcess = new ProcessSharp(System.Diagnostics.Process.GetCurrentProcess(),
+      _smProcess = new ProcessSharp(Process.GetCurrentProcess(),
                                     MemoryType.Local);
 
-      // WndProc
+      SetupWndProc(nativeData);
+      ScanSMMethods(nativeData);
+    }
+
+    private unsafe void SetupWndProc(NativeData nativeData)
+    {
+      var smMainInstancePtr = new IntPtr(nativeData.Pointers[NativePointer.SMMain_InstancePtr]);
+      var handleOffset      = nativeData.Pointers[NativePointer.Control_HandleOffset];
+
+      var applicationInstancePtr = new IntPtr(nativeData.Pointers[NativePointer.Application_InstancePtr]);
+      var onMessageOffset        = nativeData.Pointers[NativePointer.Application_OnMessageOffset];
+
+      _smMainHandlePtr = _smProcess[new ObjPtr(smMainInstancePtr, handleOffset)];
+      _smAppMessagePtr = _smProcess[new ObjPtr(applicationInstancePtr, onMessageOffset)];
+
       _wndProcDelegate = new ManagedWndProc(WndProc);
 
       WndProcWrapper.SetCallback(Marshal.GetFunctionPointerForDelegate(_wndProcDelegate));
-      SMA.SetWndProcHookAddr(WndProcWrapper.GetWndProcNativeWrapperAddr());
-
-      // Native calls
-      ScanSMMethods(nativeData);
+      _wndProcHookAddr = WndProcWrapper.GetWndProcNativeWrapperAddr();
     }
 
     private void ScanSMMethods(NativeData nativeData)
@@ -102,8 +143,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         if (hintAddrs.ContainsKey(pattern.PatternText))
           hintAddr = hintAddrs[pattern.PatternText];
 
-        var scanRes = scanner.Find(pattern,
-                                   hintAddr);
+        var scanRes  = scanner.Find(pattern, hintAddr);
         var procAddr = scanRes.BaseAddress.ToInt32();
 
         hintAddrs[pattern.PatternText] = scanRes.Offset;
@@ -111,6 +151,69 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       }
 
       SMA.SetPatternsHintAddresses(hintAddrs);
+    }
+
+    public void RequestExecutionInternal(NativeExecutionParameters execParams)
+    {
+      if (_execHeld == false && _execRequested == false)
+      {
+        _smAppMessagePtr.Write<int>(0, _wndProcHookAddr);
+
+        WindowHelper.PostMessage(_smMainHandlePtr.Read<IntPtr>(),
+                                 (int)InjectLibMessageId.SMA,
+                                 new IntPtr(0),
+                                 new IntPtr(0));
+      }
+
+      _execQueue.Enqueue(execParams);
+      _execAvailableEvent.Set();
+    }
+
+    private int ExecuteNextInQueue(
+      NativeExecutionParameters execParams,
+      ref bool                  shouldHoldMainThread)
+    {
+      int res = int.MinValue;
+
+      try
+      {
+        switch (execParams.Type)
+        {
+          case InjectLibExecutionType.HoldMainThread:
+            shouldHoldMainThread = true;
+            break;
+
+          case InjectLibExecutionType.ReleaseMainThread:
+            shouldHoldMainThread = false;
+            break;
+
+          case InjectLibExecutionType.ExecuteOnMainThread:
+            res                  = CallNativeMethod(execParams.Method, execParams.Parameters);
+            shouldHoldMainThread = shouldHoldMainThread || execParams.ShouldHoldMainThread;
+
+            return res;
+
+          case InjectLibExecutionType.AttachDebugger:
+            if (Debugger.IsAttached == false)
+              Debugger.Launch();
+
+            else
+              Debugger.Break();
+            break;
+
+          default:
+            OnException(new ArgumentException($"Invalid NativeExecutionParameters.Type {execParams.Type}."));
+            break;
+        }
+
+        res = 1;
+      }
+      catch (Exception ex)
+      {
+        OnException(ex);
+      }
+
+      return res;
     }
 
     /// <summary>
@@ -126,51 +229,47 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     {
       try
       {
-        try
-        {
-          SMA.Debug($"Received WndProc message {msgPtr->msg} with wParam {msgPtr->wParam}.");
-        }
-        catch (RemotingException) { }
+        //try
+        //{
+        //  SMA.Debug($"Received WndProc message {msgPtr->msg} with wParam {msgPtr->wParam}.");
+        //}
+        //catch (RemotingException) { }
 
         if (msgPtr       == null
-          || msgPtr->msg == (int)WindowsMessages.Quit
           || msgPtr->msg != (int)InjectLibMessageId.SMA)
           return;
 
-        int wParam = msgPtr->wParam;
+        *handled = true;
 
-        switch ((InjectLibMessageParam)wParam)
+        lock (_execHeldLock)
         {
-          case InjectLibMessageParam.ExecuteOnMainThread:
-            int res = int.MinValue;
+          _smAppMessagePtr.Write<int>(0, 0);
 
-            try
-            {
-              SMA.GetExecutionParameters(
-                out var method,
-                out var parameters);
+          _execHeld      = true;
+          _execRequested = false;
+        }
 
-              res = CallNativeMethod((NativeMethod)method, parameters);
-            }
-            catch (Exception ex)
-            {
-              OnException(ex);
-            }
-            finally
-            {
-              SMA.SetExecutionResult(res);
-            }
+        var shouldHoldMainThread = false;
+        var idResultMap          = new Dictionary<int, int>();
 
-            *handled = true;
-            break;
+        while (_execHeld)
+        {
+          while (_execQueue.TryDequeue(out var execParams))
+            idResultMap[execParams.Id] = ExecuteNextInQueue(execParams, ref shouldHoldMainThread);
 
-          case InjectLibMessageParam.AttachDebugger:
-            if (Debugger.IsAttached == false)
-              Debugger.Launch();
+          SMA.SetExecutionResults(idResultMap);
+          idResultMap.Clear();
 
-            else
-              Debugger.Break();
-            break;
+          if (shouldHoldMainThread && _execAvailableEvent.WaitOne(3000))
+            continue;
+
+          lock (_execHeldLock)
+          {
+            if (_execQueue.IsEmpty == false)
+              continue;
+
+            _execHeld = false;
+          }
         }
       }
       catch (Exception ex)
@@ -184,9 +283,9 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     /// <param name="method">The method to call</param>
     /// <param name="parameters">The method's parameters to pass along with the call</param>
     /// <returns>The returned value (eax register) from the call to <paramref name="method" /></returns>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "<Pending>")]
-    private int CallNativeMethod(NativeMethod method,
-                                 dynamic[]    parameters)
+    [SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "<Pending>")]
+    private int CallNativeMethod(NativeMethod        method,
+                                 IEnumerable<object> parameters)
     {
       SMA.Debug($"Executing native method {Enum.GetName(typeof(NativeMethod), method)}.");
 
@@ -197,24 +296,27 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       }
 
       // Possible null reference on parameters
-      var marshalledParameters = new IMarshalledValue[parameters.Length];
+      var marshalledParameters = new List<IMarshalledValue>();
+      var paramIt              = 0;
 
-      for (var i = 0; i < parameters.Length; i++)
+      foreach (var param in parameters)
       {
-        var p             = parameters[i];
-        var dynMarshalled = MarshalValue.Marshal(_smProcess, p);
+        var dynMarshalled = MarshalValue.Marshal(_smProcess, (dynamic)param);
 
         if (dynMarshalled is IMarshalledValue marshalled)
         {
-          marshalledParameters[i] = marshalled;
+          marshalledParameters.Add(marshalled);
         }
 
         else
         {
-          OnException(new ArgumentException($"CallNativeMethod: Parameter n°{i} '{p}' could not be marshalled for method {method}",
-                                            nameof(parameters)));
+          OnException(new ArgumentException(
+                        $"CallNativeMethod: Parameter n°{paramIt} '{param}' could not be marshalled for method {method}",
+                        nameof(parameters)));
           return -1;
         }
+
+        paramIt++;
       }
 
       try
@@ -290,7 +392,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
             return 1;
         }
 
-        switch (parameters.Length)
+        switch (marshalledParameters.Count)
         {
           case 1:
             return Delphi.registerCall1(_callTable[method],
@@ -332,7 +434,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
                                         marshalledParameters[5].Reference.ToInt32());
 
           default:
-            throw new NotImplementedException($"No execution path to handle {parameters.Length} parameters.");
+            throw new NotImplementedException($"No execution path to handle {marshalledParameters.Count} parameters.");
         }
       }
       finally

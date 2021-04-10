@@ -25,23 +25,21 @@
 
 
 
-namespace SuperMemoAssistant.SMA
+namespace SuperMemoAssistant.SMA.Hooks.Services
 {
-  using System.Threading.Tasks;
-  using SuperMemo;
+  using System;
+  using System.Collections.Generic;
 
-  public static class CoreEx
+  public interface ISMAHookSystem
   {
-    #region Methods
+    void KeepAlive();
 
-    public static Task<int> ExecuteOnMainThreadAsync(
-      this NativeMethod method,
-      bool              shouldHoldMainThread,
-      params object[]   parameters)
-    {
-      return Core.Hook.ExecuteOnMainThreadAsync(method, shouldHoldMainThread, parameters);
-    }
+    Dictionary<string, int> GetPatternsHintAddresses();
+    void                    SetPatternsHintAddresses(Dictionary<string, int> hintAddrs);
 
-    #endregion
+    void OnException(Exception ex);
+
+    void Debug(string          msg,
+               params object[] args);
   }
 }

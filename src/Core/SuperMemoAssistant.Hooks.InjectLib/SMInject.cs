@@ -19,11 +19,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2020/03/29 00:20
-// Modified On:  2020/04/07 10:39
-// Modified By:  Alexis
 
 #endregion
 
@@ -41,20 +36,24 @@ namespace SuperMemoAssistant.Hooks.InjectLib
   using System.Linq;
   using System.Reflection;
   using System.Runtime.Remoting;
+  using System.Runtime.Remoting.Channels.Ipc;
+  using System.Security.Principal;
   using System.Threading;
   using System.Threading.Tasks;
   using EasyHook;
   using Sentry;
-  using SMA.Hooks;
+  using SMA.Hooks.Services;
   using SuperMemo;
 
-  public sealed partial class SMInject : IEntryPoint, IDisposable
+  public sealed partial class SMInject : MarshalByRefObject, ISMInject, IEntryPoint, IDisposable
   {
     #region Properties & Fields - Non-Public
 
+    private readonly string _injectLibChannelName;
+
     private IDisposable SentryInstance { get; }
 
-    private SMAHookCallback SMA { get; set; }
+    private ISMAHook SMA { get; set; }
 
     private bool HasExited { get; set; }
 
@@ -69,7 +68,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     {
       RemotingConfiguration.CustomErrorsMode = CustomErrorsModes.Off;
     }
-    
+
     [SuppressMessage("Microsoft.Performance", "CA1801")]
     [SuppressMessage("Redundancy", "RCS1163:Unused parameter.", Justification = "Prototype cannot be changed")]
     public SMInject(RemoteHooking.IContext context,
@@ -81,8 +80,11 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
       SentryInstance = SentrySdk.Init("https://a63c3dad9552434598dae869d2026696@sentry.io/1362046");
 
-      SMA = (SMAHookCallback)RemoteHooking.IpcConnectClient<MarshalByRefObject>(channelName);
-      _   = Task.Factory.StartNew(KeepAlive, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+      SMA = (ISMAHook)RemoteHooking.IpcConnectClient<MarshalByRefObject>(channelName);
+      SMInjectServer =
+        RemoteHooking.IpcCreateServer(ref _injectLibChannelName, WellKnownObjectMode.Singleton, this, WellKnownSidType.WorldSid);
+
+      _ = Task.Factory.StartNew(KeepAlive, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
     }
 
     public void Dispose()
@@ -91,10 +93,34 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
       CleanupHooks();
 
+      _execAvailableEvent.Dispose();
       _dataAvailableEvent.Dispose();
       _smProcess.Dispose();
 
+      SMInjectServer?.StopListening(null);
+
       SentryInstance.Dispose();
+    }
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public IpcServerChannel SMInjectServer { get; }
+
+    #endregion
+
+
+
+
+    #region Methods Impl
+
+    public override object InitializeLifetimeService()
+    {
+      return null;
     }
 
     #endregion
@@ -117,11 +143,11 @@ namespace SuperMemoAssistant.Hooks.InjectLib
           InstallHooks();
           InstallSM(nativeData);
 
-          SMA.OnHookInstalled(true);
+          SMA.OnHookInstalled(_injectLibChannelName, null);
         }
         catch (Exception ex)
         {
-          SMA.OnHookInstalled(false, ex);
+          SMA.OnHookInstalled(_injectLibChannelName, ex);
           Environment.Exit(1);
           return;
         }

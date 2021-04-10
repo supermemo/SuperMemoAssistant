@@ -25,23 +25,21 @@
 
 
 
-namespace SuperMemoAssistant.SMA
+namespace SuperMemoAssistant.SMA.Hooks.Models
 {
-  using System.Threading.Tasks;
-  using SuperMemo;
+  using System;
 
-  public static class CoreEx
+  [Serializable]
+  public enum InjectLibExecutionType
   {
-    #region Methods
+    HoldMainThread,
+    ReleaseMainThread,
+    ExecuteOnMainThread,
+    AttachDebugger = 9999,
+  }
 
-    public static Task<int> ExecuteOnMainThreadAsync(
-      this NativeMethod method,
-      bool              shouldHoldMainThread,
-      params object[]   parameters)
-    {
-      return Core.Hook.ExecuteOnMainThreadAsync(method, shouldHoldMainThread, parameters);
-    }
-
-    #endregion
+  public enum InjectLibMessageId
+  {
+    SMA = 2345,
   }
 }

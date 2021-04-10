@@ -1,11 +1,12 @@
 ﻿#region License & Metadata
+
 // The MIT License (MIT)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -18,23 +19,45 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2018/12/21 15:18
-// Modified On:  2018/12/21 15:18
-// Modified By:  Alexis
+
 #endregion
 
-namespace SuperMemoAssistant.SMA.Hooks
+
+
+
+namespace SuperMemoAssistant.SuperMemo.Hooks
 {
-  public enum InjectLibMessageParam
+  public class SMExecResult<TMetadata>
   {
-    ExecuteOnMainThread = 9100101,
-    AttachDebugger = 9100199,
+    #region Constructors
+
+    public SMExecResult(int result, SMExecRequest<TMetadata> request)
+    {
+      Result  = result;
+      Request = request;
+    }
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public int                      Result   { get; }
+    public SMExecRequest<TMetadata> Request  { get; }
+    public TMetadata                Metadata => Request.Metadata;
+
+    #endregion
   }
 
-  public enum InjectLibMessageId
+  public class SMExecResult : SMExecResult<object>
   {
-    SMA = 2345,
+    #region Constructors
+
+    /// <inheritdoc />
+    public SMExecResult(int result, SMExecRequest<object> request) : base(result, request) { }
+
+    #endregion
   }
 }

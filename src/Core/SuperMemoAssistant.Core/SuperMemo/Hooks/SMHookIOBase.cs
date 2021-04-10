@@ -45,6 +45,8 @@ using SuperMemoAssistant.Sys.SparseClusteredArray;
 
 namespace SuperMemoAssistant.SuperMemo.Hooks
 {
+  using SMA.Hooks.Services;
+
   public abstract class SMHookIOBase
     : PerpetualMarshalByRefObject,
       ISMAHookIO,

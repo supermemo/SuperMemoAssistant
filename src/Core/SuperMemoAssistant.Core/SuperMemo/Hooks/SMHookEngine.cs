@@ -29,7 +29,6 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 {
   using System;
   using System.Collections.Generic;
-  using System.Diagnostics.CodeAnalysis;
   using System.Linq;
   using System.Runtime.Remoting.Channels.Ipc;
   using System.Threading;
@@ -41,17 +40,20 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
   using Interop.SuperMemo.Core;
   using Natives;
   using Nito.AsyncEx;
+  using PluginManager.Interop.Sys;
   using Process.NET;
   using SMA;
-  using SMA.Hooks;
+  using SMA.Hooks.Services;
   using Sys.Exceptions;
 
-  public sealed partial class SMHookEngine : SMAHookCallback, IDisposable
+  public sealed partial class SMHookEngine
+    : PerpetualMarshalByRefObject, ISMAHook, IDisposable
   {
     #region Constants & Statics
 
 #if DEBUG
     public const int WaitTimeout = 300000;
+    private string _injectLibChannelName;
 #else
     public const int WaitTimeout = 5000;
 #endif
@@ -70,8 +72,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     private IpcServerChannel ServerChannel { get; set; }
 
-    private List<string>     IOTargetFilePaths { get; } = new List<string>();
-    private List<ISMAHookIO> IOCallbacks       { get; } = new List<ISMAHookIO>();
+    private ISMInject _injectLib;
 
     #endregion
 
@@ -88,6 +89,12 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
       Core.Hook = this;
     }
 
+    /// <inheritdoc />
+    public void Dispose()
+    {
+      SMAInitEvent?.Dispose();
+    }
+
     #endregion
 
 
@@ -95,18 +102,19 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     #region Methods Impl
 
-    //
-    // System callbacks
-
-    public override bool OnHookInstalled(bool      success,
-                                         Exception hookEx = null)
+    public bool OnHookInstalled(string    injectLibChannelName,
+                                Exception hookEx)
     {
       if (hookEx != null)
         OnException(hookEx);
 
+      var success = hookEx == null;
+
       try
       {
         LogTo.Debug("Injected lib signal, success: {Success}", success);
+
+        _injectLibChannelName = injectLibChannelName;
 
         HookSuccess   = success;
         HookException = hookEx;
@@ -121,61 +129,6 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
         return false;
       }
-    }
-
-    public override void KeepAlive() { }
-
-    [SuppressMessage("CodeQuality", "Serilog004:Constant MessageTemplate verifier", Justification = "<Pending>")]
-    public override void Debug(string          msg,
-                               params object[] args)
-    {
-      LogTo.Debug(msg, args);
-    }
-
-
-    //
-    // IO callbacks
-
-    /// <inheritdoc />
-    public override IEnumerable<string> GetTargetFilePaths()
-    {
-      return IOTargetFilePaths;
-    }
-
-    /// <inheritdoc />
-    public override void OnFileCreate(string filePath,
-                                      IntPtr fileHandle)
-    {
-      foreach (var callback in IOCallbacks)
-        callback.OnFileCreate(filePath,
-                              fileHandle);
-    }
-
-    /// <inheritdoc />
-    public override void OnFileSeek(IntPtr fileHandle,
-                                    UInt32 position)
-    {
-      foreach (var callback in IOCallbacks)
-        callback.OnFileSeek(fileHandle,
-                            position);
-    }
-
-    /// <inheritdoc />
-    public override void OnFileWrite(IntPtr fileHandle,
-                                     Byte[] buffer,
-                                     UInt32 count)
-    {
-      foreach (var callback in IOCallbacks)
-        callback.OnFileWrite(fileHandle,
-                             buffer,
-                             count);
-    }
-
-    /// <inheritdoc />
-    public override void OnFileClose(IntPtr fileHandle)
-    {
-      foreach (var callback in IOCallbacks)
-        callback.OnFileClose(fileHandle);
     }
 
     #endregion
@@ -226,13 +179,30 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
       }
       catch (ArgumentException ex)
       {
-        LogTo.Warning(ex, "Failed to start and inject SuperMemo. Command line: '{BinPath} {V}'", binPath, collection.GetKnoFilePath().Quotify());
+        LogTo.Warning(ex, "Failed to start and inject SuperMemo. Command line: '{BinPath} {V}'", binPath,
+                      collection.GetKnoFilePath().Quotify());
       }
 
       LogTo.Debug("Waiting for signal from Injected library");
 
       // Wait for Signal from OnHookInstalled with timeout
       await HookInitEvent.WaitAsync(WaitTimeout).ConfigureAwait(false);
+
+      if (HookSuccess)
+      {
+        try
+        {
+          _injectLib = RemotingServicesEx.ConnectToIpcServer<ISMInject>(_injectLibChannelName);
+
+          // Sanity check
+          _ = _injectLib.ToString();
+        }
+        catch (Exception ex)
+        {
+          HookSuccess   = false;
+          HookException = ex;
+        }
+      }
 
       if (HookSuccess == false)
       {
@@ -278,7 +248,7 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
       var channelName = RemotingServicesEx.GenerateIpcServerChannelName();
 
       // TODO: Switch to Duplex (get callback)
-      ServerChannel = RemotingServicesEx.CreateIpcServer<SMAHookCallback, SMHookEngine>(
+      ServerChannel = RemotingServicesEx.CreateIpcServer<ISMAHook, SMHookEngine>(
         this,
         channelName
       );
@@ -293,15 +263,5 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
     }
 
     #endregion
-
-
-
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-      _mainThreadReadyEvent?.Dispose();
-      SMAInitEvent?.Dispose();
-    }
   }
 }

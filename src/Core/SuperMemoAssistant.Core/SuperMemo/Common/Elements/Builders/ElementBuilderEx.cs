@@ -97,7 +97,7 @@ End Element #1";
     public static string ToElementString(this ElementBuilder elemBuilder)
     {
       string collectionPath = Core.SM.Collection.Path;
-      int    parentId       = elemBuilder.Parent?.Id ?? 1;
+      int    parentId       = elemBuilder.ParentId ?? 1;
       string lastRepDate1   = DateTime.Today.ToString("dd.MM.yy", CultureInfo.InvariantCulture);
       string type;
 

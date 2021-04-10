@@ -88,7 +88,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
             return NativeMethod.TCompData_SetText.ExecuteOnMainThread(
               componentDataPtr,
               control.Id + 1,
-              new DelphiUTF16String(text), Core.Hook) == 1;
+              new DelphiUTF16String(text)) == 1;
           }
           catch (Exception ex)
           {

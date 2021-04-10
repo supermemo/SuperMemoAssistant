@@ -79,7 +79,12 @@ But most likely, NativeLib exists and failed to load other assemblies or librari
       }
 
       StopIPCServer();
-      Application.Current.Shutdown(1);
+
+      Application.Current.Dispatcher.InvokeAsync(() =>
+      {
+        MessageBox.Show("A critical error occurred in the hook engine. SMA is shutting down.");
+        Application.Current.Shutdown(1);
+      });
     }
 
     /// <inheritdoc />

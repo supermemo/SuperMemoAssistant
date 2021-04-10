@@ -44,7 +44,7 @@ namespace SuperMemoAssistant.UI.Settings.Layout
     /// <summary>The bindable text property dependency property</summary>
     public static readonly DependencyProperty TextProperty =
       DependencyProperty.Register(
-        "Text",
+        nameof(Text),
         typeof(string),
         typeof(TextEditorEx),
         new FrameworkPropertyMetadata

@@ -72,7 +72,7 @@ namespace SuperMemoAssistant.Plugins
     public const string ToastActionRestartAfterCrash = "PluginRestartAfterCrash";
     public const string ToastActionParameterPluginId = "PluginId";
 
-    private const string MinInteropVersion = "2.1.0-beta-6";
+    private const string MinInteropVersion = "2.1.0-beta-11";
 
     #endregion
 

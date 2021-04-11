@@ -14,7 +14,9 @@
     <repository type="$repositoryType$" url="$repositoryUrl$" branch="develop" commit="$commitId$" />
     <dependencies />
     <!-- releaseNotes will be replaced by MSBuild.Tools (see SuperMemoAssistant.csproj and https://github.com/alexis-/MSBuild.Tools) -->
-    <releaseNotes>- Added: ElementRegistryBase Branch finder
+    <releaseNotes>- Added: New IDestinationBranchFinder system. Fixes several issue with subfolders
+- Added: New async pathway for ElementRegistryBase. Awaiting the new hook engine system for true async
+- Added: ElementRegistryBase Branch finder
 - Added: IElementEx.cs
 - Added: Notification Manager in SMA (enables Plugins to use Windows Desktop Toast notifications)
 - Added: Toast activated event allows Plugins to react to their notification's activation
@@ -25,6 +27,7 @@
 - Added: Plugins initialization is executed in background and awaited only after collection is selected
 - Added: "Stable (Debug)" and "NuPack Debug" solution configurations
 - Added empty slots registry to check for files occupying empty file slots
+- Updated: Minimum Interop version to 2.1.0-beta-11
 - Updated: Refactored &amp; Improved ElementRegistryBase Add code
 - Updated: Refactored EmptySlotsRegistry
 - Updated: Disabled EmptySlotsRegistry
@@ -32,9 +35,11 @@
 - Updated: Version to 2.1.0
 - Updated: Min Interop Version to 2.1.0-beta-6
 - Updated: Packages
+- Fixed: ControlHtml.SetText called the native function with the wrong parameter
 - Fixed: Notification service
 - Fixed: Several UI tooltips
 - Fixed: Working for a crashing when setting a HTML Control text to an empty string
+- Misc: Several minor improvements &amp; fixes
 - Misc: More refactoring
 </releaseNotes>
   </metadata>

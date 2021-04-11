@@ -14,18 +14,9 @@
     </PropertyGroup>
 
     <PropertyGroup>
-      <OutputPath Condition=" '$(OutputPath)' == '' ">C:\Users\Lila\AppData\Local\SuperMemoAssistant\app-dev\</OutputPath>
-      <ImagesDir>$(SolutionDir)assets\images\</ImagesDir>
-      <SMAExe>$(OutputPath)$(SMAExeName)</SMAExe>
-    </PropertyGroup>
-
-    <PropertyGroup>
       <NuPkgFile>$(NuPkgDir)SuperMemoAssistant.$(PackageVersion).nupkg</NuPkgFile>
-      <SetupIcon>$(ImagesDir)icons\robot.ico</SetupIcon>
-      <SetupLoadingGif>$(ImagesDir)animations\robot-flashing.gif</SetupLoadingGif>
-      <UpdateUrl>https://releases.supermemo.wiki/sma/core/beta</UpdateUrl>
-      <BaseUrl>https://releases.supermemo.wiki/sma/core/packages</BaseUrl>
-      <NetVersion>net472</NetVersion>
+      <OutputPath Condition=" '$(OutputPath)' == '' ">$(LocalAppData)\SuperMemoAssistant\app-dev\</OutputPath>
+      <SMAExe>$(OutputPath)$(SMAExeName)</SMAExe>
     </PropertyGroup>
 
     <Exec Command="$(Squirrel) --releasify=$(NuPkgFile) --releaseDir=$(ReleaseDir) --baseUrl=$(BaseUrl) --updateUrl=$(UpdateUrl) --no-msi --framework-version=$(NetVersion) --exeStubRegexPattern=$(SMAExeName) --setupIcon=$(SetupIcon) --loadingGif=$(SetupLoadingGif)" />

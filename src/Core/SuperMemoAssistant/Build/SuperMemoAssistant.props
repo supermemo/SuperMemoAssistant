@@ -1,10 +1,16 @@
 <Project>
   <PropertyGroup>
+    <UpdateUrl>https://releases.supermemo.wiki/sma/core/beta</UpdateUrl>
+    <BaseUrl>https://releases.supermemo.wiki/sma/core/packages</BaseUrl>
     <NuSpecFileName>SuperMemoAssistant.nuspec</NuSpecFileName>
     <SMAExeName>SuperMemoAssistant.exe</SMAExeName>
     <NuspecFile>$(ProjectDir)Installer\$(NuSpecFileName)</NuspecFile>
+    <ImagesDir>$(SolutionDir)assets\images\</ImagesDir>
     <ReleaseDir>$(SolutionDir)releases\sma</ReleaseDir>
     <NuPkgDir>$(ReleaseDir)\nupkg\</NuPkgDir>
     <PackageOutputPath>$(NuPkgDir)</PackageOutputPath>
+    <SetupIcon>$(ImagesDir)icons\robot.ico</SetupIcon>
+    <SetupLoadingGif>$(ImagesDir)animations\robot-flashing.gif</SetupLoadingGif>
+    <NetVersion>net472</NetVersion>
   </PropertyGroup>
 </Project>

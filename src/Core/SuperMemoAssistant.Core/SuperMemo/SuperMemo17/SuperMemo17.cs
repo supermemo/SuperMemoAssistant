@@ -43,10 +43,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17
 
     public static readonly Version[] Versions =
     {
-      new Version("17.40"),
-      new Version("18.03"),
-      new Version("18.04"),
-      new Version("18.041"),
+      new("17.40"),
+      new("18.03"),
+      new("18.04"),
+      new("18.041"),
+      new("18.05"),
     };
     public const string RE_WindowTitle = "([^\\(]+) \\(SuperMemo 17: (.+)\\)";
 

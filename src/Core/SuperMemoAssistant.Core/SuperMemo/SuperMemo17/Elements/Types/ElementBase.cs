@@ -37,6 +37,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
   using System.ComponentModel;
   using System.Diagnostics.CodeAnalysis;
   using Anotar.Serilog;
+  using Extensions;
   using Interop.SuperMemo.Content;
   using Interop.SuperMemo.Core;
   using Interop.SuperMemo.Elements.Models;
@@ -168,6 +169,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     public override string ToString()
     {
       return $"({Id}|{TypeName[0]}) {Title}";
+    }
+
+    public string ToJson()
+    {
+      return this.Serialize(Newtonsoft.Json.Formatting.Indented);
     }
 
     public bool Delete()

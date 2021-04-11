@@ -27,6 +27,8 @@
 - Added: Plugins initialization is executed in background and awaited only after collection is selected
 - Added: "Stable (Debug)" and "NuPack Debug" solution configurations
 - Added empty slots registry to check for files occupying empty file slots
+- Updated: Interop submodule
+- Updated: ChangeLogs
 - Updated: Minimum Interop version to 2.1.0-beta-11
 - Updated: Refactored &amp; Improved ElementRegistryBase Add code
 - Updated: Refactored EmptySlotsRegistry

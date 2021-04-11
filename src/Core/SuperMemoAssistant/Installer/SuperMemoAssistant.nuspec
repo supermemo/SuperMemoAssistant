@@ -14,7 +14,9 @@
     <repository type="$repositoryType$" url="$repositoryUrl$" branch="develop" commit="$commitId$" />
     <dependencies />
     <!-- releaseNotes will be replaced by MSBuild.Tools (see SuperMemoAssistant.csproj and https://github.com/alexis-/MSBuild.Tools) -->
-    <releaseNotes>- Added: New IDestinationBranchFinder system. Fixes several issue with subfolders
+    <releaseNotes>- Added: 18.05 compatibility
+- Added: ElementBase.ToJson() (Core only)
+- Added: New IDestinationBranchFinder system. Fixes several issue with subfolders
 - Added: New async pathway for ElementRegistryBase. Awaiting the new hook engine system for true async
 - Added: ElementRegistryBase Branch finder
 - Added: IElementEx.cs
@@ -27,6 +29,7 @@
 - Added: Plugins initialization is executed in background and awaited only after collection is selected
 - Added: "Stable (Debug)" and "NuPack Debug" solution configurations
 - Added empty slots registry to check for files occupying empty file slots
+- Updated: Build files
 - Updated: Interop submodule
 - Updated: ChangeLogs
 - Updated: Minimum Interop version to 2.1.0-beta-11

@@ -118,7 +118,7 @@
       <Version>2.1.6</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Interop">
-      <Version>2.1.0-beta.11</Version>
+      <Version>2.1.0-beta.12</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.Sentry">
       <Version>2.1.0-beta.4</Version>

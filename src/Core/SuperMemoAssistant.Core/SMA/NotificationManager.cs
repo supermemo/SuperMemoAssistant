@@ -148,8 +148,8 @@ namespace SuperMemoAssistant.SMA
       {
         var activationType = FindAttribute(node, "activationType")?.Value;
 
-        if (activationType  != ToastActivationType.Background.ToString()
-          && activationType != ToastActivationType.Foreground.ToString())
+        if (!string.Equals(activationType, nameof(ToastActivationType.Background), StringComparison.InvariantCultureIgnoreCase)
+          && !string.Equals(activationType, nameof(ToastActivationType.Foreground), StringComparison.InvariantCultureIgnoreCase))
           return;
 
         var attrNode = FindAttribute(node);

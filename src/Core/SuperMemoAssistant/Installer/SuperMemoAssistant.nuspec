@@ -40,6 +40,7 @@
 - Updated: Version to 2.1.0
 - Updated: Min Interop Version to 2.1.0-beta-6
 - Updated: Packages
+- Fixed: Interop version was incorrect
 - Fixed: ControlHtml.SetText called the native function with the wrong parameter
 - Fixed: Notification service
 - Fixed: Several UI tooltips

@@ -157,7 +157,7 @@ namespace SuperMemoAssistant.UI
             }
             catch (Exception ex)
             {
-              LogTo.Error(ex, $"Exception while showing settings for {pluginInstance.Denomination} {pluginInstance.Package.Id}");
+              LogTo.Error(ex, "Exception while showing settings for {Denomination} {Id}", pluginInstance.Denomination, pluginInstance.Package.Id);
             }
           };
 
@@ -165,7 +165,7 @@ namespace SuperMemoAssistant.UI
         }
         catch (Exception ex)
         {
-          LogTo.Error(ex, $"Exception while creating Context Menu item for {pluginInstance.Denomination} {pluginInstance.Package.Id}");
+          LogTo.Error(ex, "Exception while creating Context Menu item for {Denomination} {Id}", pluginInstance.Denomination, pluginInstance.Package.Id);
         }
     }
 

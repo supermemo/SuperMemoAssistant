@@ -30,6 +30,7 @@ namespace SuperMemoAssistant.Plugins
   using System;
   using System.Collections.Generic;
   using System.Linq;
+  using System.Runtime.Remoting;
   using System.Threading.Tasks;
   using Anotar.Serilog;
   using Interop.Plugins;
@@ -62,6 +63,12 @@ namespace SuperMemoAssistant.Plugins
           pluginCallSuccessMap[plugins[i]] = results[i];
 
         return pluginCallSuccessMap;
+      }
+      catch (RemotingException ex)
+      {
+        LogTo.Warning(ex, "Remoting exception thrown in OnLoggerConfigUpdated");
+
+        return null;
       }
       catch (Exception ex)
       {

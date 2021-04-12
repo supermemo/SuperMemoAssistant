@@ -165,7 +165,7 @@ namespace SuperMemoAssistant.SMA
       }
       catch (Exception ex)
       {
-        LogTo.Warning(ex, "An exception occured while setting Plugin's notification arguments.");
+        LogTo.Warning(ex, "An exception occurred while setting Plugin's notification arguments.");
       }
     }
 

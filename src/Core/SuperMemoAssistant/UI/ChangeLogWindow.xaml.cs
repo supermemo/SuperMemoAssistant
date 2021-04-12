@@ -74,7 +74,7 @@ namespace SuperMemoAssistant.UI
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex, "An exception occured while checking whether to display the change log at startup");
+        LogTo.Error(ex, "An exception occurred while checking whether to display the change log at startup");
       }
     }
 

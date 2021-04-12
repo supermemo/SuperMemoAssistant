@@ -126,7 +126,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex, "An exception occured in one of OnSMStoppedEvent handlers");
+        LogTo.Error(ex, "An exception occurred in one of OnSMStoppedEvent handlers");
       }
     }
 

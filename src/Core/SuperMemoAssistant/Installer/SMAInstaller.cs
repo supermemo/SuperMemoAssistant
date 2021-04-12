@@ -225,7 +225,7 @@ namespace SuperMemoAssistant.Installer
     {
       var msg = State == SMAUpdateState.Updated
         ? $"SMA has been updated to version {updateVersion.Version}. Restart SMA to use the new version."
-        : $"An error occured while updating SMA to version {updateVersion.Version}. Check the logs for more information.";
+        : $"An error occurred while updating SMA to version {updateVersion.Version}. Check the logs for more information.";
 
       msg.ShowDesktopNotification(
         new ToastButton("Open the logs folder", SMAFileSystem.LogDir.FullPathWin)

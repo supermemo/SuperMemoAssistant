@@ -558,7 +558,7 @@ namespace SuperMemoAssistant.UI.ViewModels
     /// <param name="ex"></param>
     public async Task HandleExceptionAsync(Exception ex)
     {
-      LogTo.Error(ex, "Exception occured during a user requested operation on a plugin");
+      LogTo.Error(ex, "Exception occurred during a user requested operation on a plugin");
 
       await Dispatcher.Invoke(
         async () =>

@@ -155,10 +155,8 @@ namespace SuperMemoAssistant.Setup
       }
       catch (Exception ex)
       {
-        var errMsg = $"An exception occured while showing screen {screen?.ListTitle}";
-
-        LogTo.Error(ex, errMsg);
-        errMsg.ErrorMsgBox().Wait();
+        LogTo.Error(ex, "An exception occurred while showing screen {ListTitle}", screen?.ListTitle);
+        $"An exception occurred while showing screen {screen?.ListTitle}".ErrorMsgBox().RunSynchronously();
       }
     }
 

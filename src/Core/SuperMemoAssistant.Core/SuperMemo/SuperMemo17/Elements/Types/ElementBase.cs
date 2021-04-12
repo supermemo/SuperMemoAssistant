@@ -31,6 +31,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
   using System.Collections.Generic;
   using System.ComponentModel;
   using System.Diagnostics.CodeAnalysis;
+  using System.Globalization;
   using Anotar.Serilog;
   using Extensions;
   using Interop.SuperMemo.Content;
@@ -39,13 +40,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
   using Interop.SuperMemo.Elements.Types;
   using Interop.SuperMemo.Registry.Members;
   using Newtonsoft.Json;
+  using PluginManager.Interop.Sys;
   using PropertyChanged;
   using SMA;
   using Sys.Converters.Json;
 
   [SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "<Pending>")]
   [SuppressMessage("Design", "CA1063:Implement IDisposable Correctly", Justification          = "<Pending>")]
-  public abstract class ElementBase : MarshalByRefObject, IElement, INotifyPropertyChanged, IDisposable
+  public abstract class ElementBase : PerpetualMarshalByRefObject, IElement, INotifyPropertyChanged, IDisposable
   {
     #region Constants & Statics
 
@@ -264,14 +266,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
     public IEnumerable<IElement> EnumerateChildren()
     {
-      List<IElement> ret = new List<IElement>();
-
       try
       {
+        List<IElement> ret = new(ChildrenCount);
+
         if (ChildrenCount <= 0 || FirstChild == null)
           return ret;
 
-        IElement itEl = FirstChild;
+        var itEl = FirstChild;
 
         do
         {
@@ -280,13 +282,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
           itEl = itEl.NextSibling;
         } while (itEl != null);
+
+        return ret;
       }
       catch (Exception)
       {
         return new List<IElement>();
       }
-
-      return ret;
 
       /*
       if (ChildrenCount <= 0)
@@ -332,6 +334,10 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     #region Methods Abs
 
     public abstract ElementType Type { get; }
+
+    /// <inheritdoc/>
+    /// <remarks>GitHub issue: https://github.com/supermemo/SuperMemoAssistant/issues/216</remarks>
+    public string UniqueId => Id.ToString(CultureInfo.InvariantCulture);
 
     #endregion
 

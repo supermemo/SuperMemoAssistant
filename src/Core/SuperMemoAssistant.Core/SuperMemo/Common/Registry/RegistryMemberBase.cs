@@ -36,9 +36,10 @@ namespace SuperMemoAssistant.SuperMemo.Common.Registry
   using Anotar.Serilog;
   using Interop.SuperMemo.Core;
   using Models;
+  using PluginManager.Interop.Sys;
   using SMA;
 
-  public abstract class RegistryMemberBase : MarshalByRefObject, INotifyPropertyChanged
+  public abstract class RegistryMemberBase : PerpetualMarshalByRefObject, INotifyPropertyChanged
   {
     #region Constructors
 

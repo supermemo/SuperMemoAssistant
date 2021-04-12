@@ -180,7 +180,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Registry
 
     public IEnumerator<IMember> GetEnumerator()
     {
-      return Members.Values.ToList().GetEnumerator();
+      return Members.Values.Cast<IMember>().ToList().GetEnumerator();
     }
 
     public IEnumerable<IMember> FindByName(Regex regex)

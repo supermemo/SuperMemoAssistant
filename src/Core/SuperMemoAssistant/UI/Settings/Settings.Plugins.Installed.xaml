@@ -83,7 +83,7 @@
 
           <!--Default error message-->
           <Setter Property="Text"
-                  Value="An unknown error occured and plugins couldn't be downloaded. Check your logs and ask for assistance if the issue persists." />
+                  Value="An unknown error occurred and plugins couldn't be downloaded. Check your logs and ask for assistance if the issue persists." />
 
           <Style.Triggers>
             <!--Visible when status is Error-->

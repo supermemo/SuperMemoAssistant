@@ -112,7 +112,7 @@ namespace SuperMemoAssistant
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex, "An unknown exception occured during SMA Application startup");
+        LogTo.Error(ex, "An unknown exception occurred during SMA Application startup");
 
         Shutdown(SMAExitCodes.ExitCodeSMAStartupError);
       }

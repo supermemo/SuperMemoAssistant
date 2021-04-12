@@ -69,7 +69,7 @@ namespace SuperMemoAssistant.Sys.UIAutomation
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex, "Failed to restore window {WindowHandle}", WindowHandle);
+        LogTo.Warning(ex, "Failed to restore window {WindowHandle}", WindowHandle);
       }
     }
 

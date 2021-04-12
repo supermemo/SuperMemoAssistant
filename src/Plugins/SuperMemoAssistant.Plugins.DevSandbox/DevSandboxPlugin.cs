@@ -19,26 +19,22 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Modified On:  2020/02/21 19:57
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System.Windows.Input;
-using Anotar.Serilog;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
-using SuperMemoAssistant.Services;
-using SuperMemoAssistant.Services.IO.Keyboard;
-using SuperMemoAssistant.Services.Sentry;
-using SuperMemoAssistant.Sys.IO.Devices;
-
 namespace SuperMemoAssistant.Plugins.DevSandbox
 {
+  using System;
+  using System.IO;
+  using System.Windows.Input;
+  using Services;
+  using Services.IO.Keyboard;
+  using Services.Sentry;
+  using Sys.IO.Devices;
+
   // ReSharper disable once UnusedMember.Global
   // ReSharper disable once ClassNeverInstantiated.Global
   public class DevSandboxPlugin : SentrySMAPluginBase<DevSandboxPlugin>
@@ -46,6 +42,13 @@ namespace SuperMemoAssistant.Plugins.DevSandbox
     #region Constructors
 
     public DevSandboxPlugin() : base("https://a63c3dad9552434598dae869d2026696@sentry.io/1362046") { }
+
+    protected override void Dispose(bool disposing)
+    {
+      Kernel32.FreeConsole();
+
+      base.Dispose(disposing);
+    }
 
     #endregion
 
@@ -71,19 +74,21 @@ namespace SuperMemoAssistant.Plugins.DevSandbox
     {
       Svc.HotKeyManager
          .RegisterGlobal(
-           "TestSomething",
-           "TestSomething",
-           HotKeyScopes.SM,
-           new HotKey(Key.D1, KeyModifiers.CtrlAlt),
-           TestSomething
-         )
-         .RegisterGlobal(
            "TestAnotherThing",
            "TestAnotherThing",
            HotKeyScopes.SM,
            new HotKey(Key.D1, KeyModifiers.CtrlAltShift),
            TestAnotherThing
+         )
+         .RegisterGlobal(
+           "TestSomething",
+           "TestSomething",
+           HotKeyScopes.SM,
+           new HotKey(Key.D2, KeyModifiers.CtrlAltShift),
+           TestSomething
          );
+
+      Kernel32.CreateConsole();
 
       base.OnSMStarted(wasSMAlreadyStarted);
     }
@@ -98,18 +103,36 @@ namespace SuperMemoAssistant.Plugins.DevSandbox
 
     #region Methods
 
-    public static void TestSomething()
+    private static void TestSomething()
     {
-      var elId = Svc.SM.UI.ElementWdw.GenerateCloze();
-
-      LogTo.Debug("GenerateCloze: {ElId}", elId);
+      Console.WriteLine(Svc.SM.UI.ElementWdw.CurrentElement.ToJson());
     }
 
-    public static void TestAnotherThing()
+    private static void TestAnotherThing()
     {
-      var elId = Svc.SM.UI.ElementWdw.GenerateExtract(ElementType.Topic);
+      foreach (var template in Svc.SM.Registry.Template)
+        Console.WriteLine($"{template.Id}: {template.Name} ({template.UseCount})");
 
-      LogTo.Debug("GenerateExtract: {ElId}", elId);
+      int templateId;
+
+      do
+      {
+        Console.Write("Input template id: ");
+        string input = Console.ReadLine();
+
+        if (int.TryParse(input, out templateId) == false)
+          Console.WriteLine($"Invalid input: '{input}'.");
+
+        var template = Svc.SM.Registry.Template[templateId];
+
+        if (template == null || template.Empty)
+        {
+          Console.WriteLine("No such template.");
+          templateId = 0;
+        }
+      } while (templateId == 0);
+
+      Svc.SM.UI.ElementWdw.ApplyTemplate(templateId);
     }
 
     #endregion

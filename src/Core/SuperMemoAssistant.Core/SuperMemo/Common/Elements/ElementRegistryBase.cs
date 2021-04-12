@@ -458,7 +458,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
           var template = Core.SM.Registry.Template[builder.TemplateId.Value];
 
           if (template?.Empty == false)
-            Core.SM.UI.ElementWdw.ApplyTemplate(template.Id);
+            Core.SM.UI.ElementWdw.ApplyTemplate(template.Id, builder.TemplateApplyMode);
         }
 
         return (successFlag, elemId);

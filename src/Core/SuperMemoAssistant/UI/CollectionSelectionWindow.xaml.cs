@@ -242,14 +242,14 @@ namespace SuperMemoAssistant.UI
     private void BtnOptions_Click(object          sender,
                                   RoutedEventArgs e)
     {
-      _startupCfg.SuperMemo.ShowWindowAsync().Wait();
+      _startupCfg.SuperMemo.ShowWindowAsync().RunSynchronously();
 
       SaveConfig();
     }
 
     private void BtnUpdates_Click(object sender, RoutedEventArgs e)
     {
-      _startupCfg.Updates.ShowWindowAsync().Wait();
+      _startupCfg.Updates.ShowWindowAsync().RunSynchronously();
 
       SaveConfig();
     }
@@ -271,40 +271,42 @@ namespace SuperMemoAssistant.UI
       // Quote, Author, Url, Title
       var quoteFile = SMAFileSystem.GetAppExeFilePath("quotes.tsv");
 
-      if (quoteFile.Exists())
-        try
-        {
-          var lines = File.ReadAllLines(quoteFile.FullPath);
-          // First line is the heading.
-          if (lines.Length <= 1)
-            return;
+      if (!quoteFile.Exists())
+        return;
 
-          var randInt          = new Random();
-          var randomLineNumber = randInt.Next(1, lines.Length - 1);
-          var quoteLine        = lines[randomLineNumber];
-          var splitQuoteLine   = quoteLine.Split('\t');
+      try
+      {
+        var lines = File.ReadAllLines(quoteFile.FullPath);
+        // First line is the heading.
+        if (lines.Length <= 1)
+          return;
 
-          // Check that the chosen line has 4 fields
-          if (splitQuoteLine.Length == 4)
-          {
-            // If the quote doesn't end with sentence ending punctuation, add a full stop.
-            if (!SentenceEndingPunctuation.Any(p => splitQuoteLine[0].EndsWith(p)))
-              splitQuoteLine[0] += ".";
+        var randInt = new Random();
+        var randomLineNumber = randInt.Next(1, lines.Length - 1);
+        var quoteLine = lines[randomLineNumber];
+        var splitQuoteLine = quoteLine.Split('\t');
 
-            QuoteBodyTextBlock.Text    = $"\"{splitQuoteLine[0]}\"";
-            QuoteAuthorTextBlock.Text  = splitQuoteLine[1];
-            TitleHyperlink.NavigateUri = new Uri(splitQuoteLine[2]);
-            QuoteTitleTextBlock.Text   = splitQuoteLine[3];
-          }
-        }
-        catch (IOException ex)
+        // Check that the chosen line has 4 fields
+        if (splitQuoteLine.Length == 4)
         {
-          LogTo.Warning(ex, $"IOException when trying to open {quoteFile.FullPath}");
+          // If the quote doesn't end with sentence ending punctuation, add a full stop.
+          if (!SentenceEndingPunctuation.Any(p => splitQuoteLine[0].EndsWith(p)))
+            splitQuoteLine[0] += ".";
+
+          QuoteBodyTextBlock.Text = $"\"{splitQuoteLine[0]}\"";
+          QuoteAuthorTextBlock.Text = splitQuoteLine[1];
+          TitleHyperlink.NavigateUri = new Uri(splitQuoteLine[2]);
+          QuoteTitleTextBlock.Text = splitQuoteLine[3];
         }
-        catch (Exception ex)
-        {
-          LogTo.Error(ex, $"Exception caught while opening file {quoteFile.FullPath}");
-        }
+      }
+      catch (IOException ex)
+      {
+        LogTo.Warning(ex, "IOException when trying to open {FullPath}", quoteFile.FullPath);
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "Exception caught while opening file {FullPath}", quoteFile.FullPath);
+      }
     }
 
     private void TitleLink_RequestNavigate(object sender, RequestNavigateEventArgs e)

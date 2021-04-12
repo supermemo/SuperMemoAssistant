@@ -78,6 +78,10 @@ namespace SuperMemoAssistant.SMA.Utils
             if (smExePath.Exists())
               smExePaths.Add(smExePath);
           }
+          catch (IOException ex)
+          {
+            LogTo.Warning(ex, "IOException thrown while checking existence of a SuperMemo executable path");
+          }
           catch (Exception ex)
           {
             LogTo.Error(ex, "Exception thrown while checking existence of a SuperMemo executable path");

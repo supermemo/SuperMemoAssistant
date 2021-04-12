@@ -38,6 +38,7 @@ namespace SuperMemoAssistant.Setup.Screens
 {
   using System;
   using System.Collections.ObjectModel;
+  using System.Globalization;
   using System.IO;
   using System.Linq;
   using Anotar.Serilog;
@@ -127,7 +128,7 @@ namespace SuperMemoAssistant.Setup.Screens
 
       if (string.IsNullOrWhiteSpace(smBinPath) || File.Exists(smBinPath) == false)
       {
-        LogTo.Error($"ImportCollections.OnDisplayed called with a null or non-existent file, for smBinPath: {smBinPath}");
+        LogTo.Warning("ImportCollections.OnDisplayed called with a null or non-existent file, for smBinPath: {SmBinPath}", smBinPath);
         return;
       }
 
@@ -136,21 +137,21 @@ namespace SuperMemoAssistant.Setup.Screens
 
       if (smIniFilePath.Exists() == false)
       {
-        LogTo.Error($"supermemo.ini doesn't exist at '{smIniFilePath.FullPathWin}'. smBinPath: {smBinPath}");
+        LogTo.Warning("supermemo.ini doesn't exist at '{FullPathWin}'. smBinPath: {SmBinPath}", smIniFilePath.FullPathWin, smBinPath);
         return;
       }
 
       IniFile smIniFile = new IniFile();
       smIniFile.Load(smIniFilePath.FullPathWin, true);
 
-      var colDictionary = StartupCfg.Collections.ToDictionary(c => c.GetKnoFilePath().ToLower());
+      var colDictionary = StartupCfg.Collections.ToDictionary(c => c.GetKnoFilePath().ToLower(CultureInfo.InvariantCulture));
       var systemSection = smIniFile["Systems"];
 
       foreach (var systemLine in systemSection)
       {
-        if (string.IsNullOrWhiteSpace(systemLine.Key) || systemLine.Key.StartsWith("System") == false)
+        if (string.IsNullOrWhiteSpace(systemLine.Key) || systemLine.Key.StartsWith("System", StringComparison.OrdinalIgnoreCase) == false)
         {
-          LogTo.Error($"Found an unknown key in supermemo.ini's [Systems] section: {systemLine}");
+          LogTo.Warning("Found an unknown key in supermemo.ini's [Systems] section: {SystemLine}", systemLine);
           continue;
         }
 
@@ -158,12 +159,12 @@ namespace SuperMemoAssistant.Setup.Screens
         if (string.IsNullOrWhiteSpace(collectionPath) || Directory.Exists(collectionPath) == false
           || File.Exists(collectionPath + ".kno")                                         == false)
         {
-          LogTo.Warning($"Found a non-existing collection path in supermemo.ini's [Systems] section: '{systemLine}'");
+          LogTo.Warning("Found a non-existing collection path in supermemo.ini's [Systems] section: '{SystemLine}'", systemLine);
           continue;
         }
 
         var smImportCol              = new SMImportCollection(collectionPath);
-        var smImportColAlreadyExists = colDictionary.ContainsKey(smImportCol.GetKnoFilePath().ToLower());
+        var smImportColAlreadyExists = colDictionary.ContainsKey(smImportCol.GetKnoFilePath().ToLower(CultureInfo.InvariantCulture));
 
         smImportCol.IsEnabled = smImportColAlreadyExists == false;
         smImportCol.IsChecked = smImportColAlreadyExists;
@@ -175,11 +176,11 @@ namespace SuperMemoAssistant.Setup.Screens
     /// <inheritdoc />
     public override void OnNext()
     {
-      var colDictionary = StartupCfg.Collections.ToDictionary(c => c.GetKnoFilePath().ToLower());
+      var colDictionary = StartupCfg.Collections.ToDictionary(c => c.GetKnoFilePath().ToLower(CultureInfo.InvariantCulture));
 
       foreach (var smImportCol in Collections.Where(ic => ic.IsChecked))
       {
-        if (colDictionary.ContainsKey(smImportCol.GetKnoFilePath().ToLower()))
+        if (colDictionary.ContainsKey(smImportCol.GetKnoFilePath().ToLower(CultureInfo.InvariantCulture)))
           continue;
 
         StartupCfg.Collections.Add(new SMCollection(smImportCol.GetKnoFilePath(), DateTime.Now));

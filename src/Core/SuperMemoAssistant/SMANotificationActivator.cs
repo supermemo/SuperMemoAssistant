@@ -116,8 +116,8 @@ namespace SuperMemoAssistant
           case SMAPluginManager.ToastActionRestartAfterCrash:
             if (args.Contains(SMAPluginManager.ToastActionParameterPluginId) == false)
             {
-              LogTo.Error("Received a ToastActionRestartAfterCrash toast activation without a plugin id parameter: '{Arguments}'",
-                          arguments);
+              LogTo.Warning("Received a ToastActionRestartAfterCrash toast activation without a plugin id parameter: '{Arguments}'",
+                            arguments);
               return;
             }
 

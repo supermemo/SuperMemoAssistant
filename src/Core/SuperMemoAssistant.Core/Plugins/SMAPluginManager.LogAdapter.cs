@@ -32,6 +32,7 @@ namespace SuperMemoAssistant.Plugins
   using System.Diagnostics.CodeAnalysis;
   using System.Globalization;
   using System.Linq;
+  using System.Runtime.Remoting;
   using System.Text.RegularExpressions;
   using Anotar.Serilog;
   using PluginManager.Logger;
@@ -216,7 +217,11 @@ namespace SuperMemoAssistant.Plugins
     {
       string message = Format(exception, format, args);
 
-      Log.Logger?.Error(exception, format, args);
+      if (exception is RemotingException)
+        Log.Logger?.Warning(exception, format, args);
+
+      else
+        Log.Logger?.Error(exception, format, args);
 
       NotifyLoggers(message);
     }

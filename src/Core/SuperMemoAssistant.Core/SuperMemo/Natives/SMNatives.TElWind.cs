@@ -39,6 +39,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
   using Interop.SuperMemo.Content.Controls;
   using Interop.SuperMemo.Elements.Models;
   using Interop.SuperMemo.Registry.Members;
+  using Interop.SuperMemo.Registry.Models;
   using Process.NET.Execution;
   using Process.NET.Memory;
   using Process.NET.Native.Types;
@@ -298,14 +299,14 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         //}
       }
 
-      public bool ApplyTemplate(IntPtr elementWdwPtr, int templateId)
+      public bool ApplyTemplate(IntPtr elementWdwPtr, int templateId, TemplateUseMode templateUseMode)
       {
         try
         {
           NativeMethod.ElWdw_NewTemplate.ExecuteOnMainThread(
             elementWdwPtr,
             templateId,
-            2);
+            (int)templateUseMode);
 
           return true;
         }

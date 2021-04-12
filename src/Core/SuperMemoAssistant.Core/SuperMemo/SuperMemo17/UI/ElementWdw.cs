@@ -42,6 +42,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
   using Interop.SuperMemo.Elements.Types;
   using Interop.SuperMemo.Learning;
   using Interop.SuperMemo.Registry.Members;
+  using Interop.SuperMemo.Registry.Models;
   using Interop.SuperMemo.UI.Element;
   using Process.NET.Memory;
   using Process.NET.Types;
@@ -316,14 +317,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       }
     }
 
-    public bool ApplyTemplate(int templateId)
+    public bool ApplyTemplate(int templateId, TemplateUseMode applyMode = TemplateUseMode.Apply)
     {
       var template = Core.SM.Registry.Template[templateId];
 
       if (template == null || template.Empty)
         return false;
 
-      return Core.Natives.ElWind.ApplyTemplate(ElementWdwPtr.Read<IntPtr>(), templateId);
+      return Core.Natives.ElWind.ApplyTemplate(ElementWdwPtr.Read<IntPtr>(), templateId, applyMode);
     }
 
     public bool NextElementInLearningQueue()

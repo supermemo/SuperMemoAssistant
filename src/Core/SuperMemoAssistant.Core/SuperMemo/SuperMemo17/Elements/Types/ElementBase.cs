@@ -19,11 +19,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2020/03/29 00:20
-// Modified On:  2020/04/09 14:47
-// Modified By:  Alexis
 
 #endregion
 
@@ -43,11 +38,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
   using Interop.SuperMemo.Elements.Models;
   using Interop.SuperMemo.Elements.Types;
   using Interop.SuperMemo.Registry.Members;
+  using Newtonsoft.Json;
   using PropertyChanged;
   using SMA;
-  
+  using Sys.Converters.Json;
+
   [SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "<Pending>")]
-  [SuppressMessage("Design", "CA1063:Implement IDisposable Correctly", Justification = "<Pending>")]
+  [SuppressMessage("Design", "CA1063:Implement IDisposable Correctly", Justification          = "<Pending>")]
   public abstract class ElementBase : MarshalByRefObject, IElement, INotifyPropertyChanged, IDisposable
   {
     #region Constants & Statics
@@ -122,9 +119,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     public int TemplateId { get; set; }
     public int ConceptId  { get; set; }
 
-    public int    ComponentPos { get; set; } = -1;
+    public int ComponentPos { get; set; } = -1;
 
-    public byte[] AFactor      { get; set; }
+    public byte[] AFactor { get; set; }
 
     public int ParentId      { get; set; }
     public int FirstChildId  { get; set; }
@@ -147,16 +144,25 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
     public string Title => Core.SM.Registry.Text?[TitleTextId]?.Name;
 
+    [JsonConverter(typeof(IComponentGroupToComponentGroupIdJsonConverter))]
     public IComponentGroup ComponentGroup => Core.SM.Registry.Component?[ComponentPos];
-    public ITemplate       Template       => Core.SM.Registry.Template?[TemplateId];
-    public IConcept        Concept        => Core.SM.Registry.Concept?[ConceptId];
+    [JsonConverter(typeof(ITemplateToTemplateIdJsonConverter))]
+    public ITemplate Template => Core.SM.Registry.Template?[TemplateId];
+    [JsonConverter(typeof(IConceptToConceptIdJsonConverter))]
+    public IConcept Concept => Core.SM.Registry.Concept?[ConceptId];
 
-    public IElement Parent      => Core.SM.Registry.Element?[ParentId];
-    public IElement FirstChild  => Core.SM.Registry.Element?[FirstChildId];
-    public IElement LastChild   => Core.SM.Registry.Element?[LastChildId];
+    [JsonConverter(typeof(IElementToElementIdJsonConverter))]
+    public IElement Parent => Core.SM.Registry.Element?[ParentId];
+    [JsonIgnore]
+    public IElement FirstChild => Core.SM.Registry.Element?[FirstChildId];
+    [JsonIgnore]
+    public IElement LastChild => Core.SM.Registry.Element?[LastChildId];
+    [JsonIgnore]
     public IElement NextSibling => Core.SM.Registry.Element?[NextSiblingId];
+    [JsonIgnore]
     public IElement PrevSibling => Core.SM.Registry.Element?[PrevSiblingId];
 
+    [JsonProperty(ItemConverterType = typeof(IElementToElementIdJsonConverter))]
     public IEnumerable<IElement> Children => EnumerateChildren();
 
     #endregion
@@ -173,7 +179,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 
     public string ToJson()
     {
-      return this.Serialize(Newtonsoft.Json.Formatting.Indented);
+      return this.Serialize(Formatting.Indented);
     }
 
     public bool Delete()

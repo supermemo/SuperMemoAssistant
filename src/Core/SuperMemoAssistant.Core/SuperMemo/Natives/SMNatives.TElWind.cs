@@ -38,6 +38,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
   using Extensions;
   using Interop.SuperMemo.Content.Controls;
   using Interop.SuperMemo.Elements.Models;
+  using Interop.SuperMemo.Registry.Members;
   using Process.NET.Execution;
   using Process.NET.Memory;
   using Process.NET.Native.Types;
@@ -295,6 +296,24 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         //{
         //  return null;
         //}
+      }
+
+      public bool ApplyTemplate(IntPtr elementWdwPtr, int templateId)
+      {
+        try
+        {
+          NativeMethod.ElWdw_NewTemplate.ExecuteOnMainThread(
+            elementWdwPtr,
+            templateId,
+            2);
+
+          return true;
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, "Native method call threw an exception.");
+          return false;
+        }
       }
 
       public bool ShowNextElementInLearningQueue(IntPtr elementWdwPtr)

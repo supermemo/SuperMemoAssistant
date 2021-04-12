@@ -213,7 +213,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
     }
 
     public bool Add(out List<ElemCreationResult> results,
-                    ElemCreationFlags options,
+                    ElemCreationFlags            options,
                     params ElementBuilder[]      builders)
     {
       results = AsyncContext.Run(() => AddInternalAsync(options, builders));
@@ -224,7 +224,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
     // This is a fake async until the new hook engine system is implemented.
     // TODO: New hook engine system https://github.com/supermemo/SuperMemoAssistant/tree/improved-hook-engine
     public RemoteTask<List<ElemCreationResult>> AddAsync(
-      ElemCreationFlags options,
+      ElemCreationFlags       options,
       params ElementBuilder[] builders)
     {
       return AddInternalAsync(options, builders);
@@ -349,8 +349,8 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
     */
 
     /// <summary>
-    /// Ensures the <see cref="Core.SM.UI.ElementWdw.CurrentRootId"/> is a parent of <paramref name="parentId"/>.
-    /// This prevents error messages in SuperMemo when adding new elements.
+    ///   Ensures the <see cref="Core.SM.UI.ElementWdw.CurrentRootId" /> is a parent of <paramref name="parentId" />. This
+    ///   prevents error messages in SuperMemo when adding new elements.
     /// </summary>
     /// <param name="parentId">The parent of the new element</param>
     /// <returns></returns>
@@ -374,15 +374,16 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
     }
 
     /// <summary>
-    /// Calls the native function of SuperMemo and creates an element to <paramref name="builder"/>'s specifications.
+    ///   Calls the native function of SuperMemo and creates an element to <paramref name="elementSpecs" />'s specifications.
     /// </summary>
-    /// <param name="builder">The element's specifications</param>
+    /// <param name="type">The element's type (topic, item, etc..)</param>
+    /// <param name="elementSpecs">The element's specifications</param>
     /// <returns>The created element id, or -1 if creation failed.</returns>
-    private static Task<int> AddElementAsync(ElementBuilder builder)
+    private static Task<int> AddElementAsync(ElementType type, string elementSpecs)
     {
       return SysTask.FromResult(Core.SM.UI.ElementWdw.AppendAndAddElementFromText(
-        builder.Type,
-        builder.ToElementString()));
+                                  type,
+                                  elementSpecs));
 
 #if false
       elemId = -1;
@@ -420,7 +421,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
     }
 
     private async Task<(ElemCreationResultCodes resCode, int elemId)> AddElementAsync(ElementBuilder builder,
-                                                                                      int parentId)
+                                                                                      int            parentId)
     {
       try
       {
@@ -447,9 +448,20 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
         //
         // Create
 
-        var elemId = await AddElementAsync(builder).ConfigureAwait(false);
+        var elemId = await AddElementAsync(builder.Type, builder.ToElementString()).ConfigureAwait(false);
 
-        return (elemId > 0 ? successFlag : ElemCreationResultCodes.ErrorUnknown, elemId);
+        if (elemId <= 0)
+          return (ElemCreationResultCodes.ErrorUnknown, elemId);
+
+        if (builder.TemplateId.HasValue)
+        {
+          var template = Core.SM.Registry.Template[builder.TemplateId.Value];
+
+          if (template?.Empty == false)
+            Core.SM.UI.ElementWdw.ApplyTemplate(template.Id);
+        }
+
+        return (successFlag, elemId);
       }
       catch (Exception ex)
       {
@@ -514,13 +526,13 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
       List<ElemCreationResult> elements,
       IDestinationBranchFinder branchFinder)
     {
-      ElemCreationResultCodes errorCode = ElemCreationResultCodes.Success;
-      int                     parentId = -1;
+      ElemCreationResultCodes errorCode      = ElemCreationResultCodes.Success;
+      int                     parentId       = -1;
       int                     slotsAvailable = 0;
 
       for (int i = 0; i < elements.Count; i++)
       {
-        var       elem = elements[i];
+        var elem = elements[i];
 
         if (slotsAvailable <= 0 && errorCode == ElemCreationResultCodes.Success)
           (parentId, errorCode, slotsAvailable) = await branchFinder.GetOrCreateFolderAsync().ConfigureAwait(false);
@@ -561,9 +573,8 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
 
       try
       {
-        bool success          = true;
-        int  restoreElementId = Core.SM.UI.ElementWdw.CurrentElementId;
-        int  restoreHookId    = Core.SM.UI.ElementWdw.CurrentHookId;
+        int restoreElementId = Core.SM.UI.ElementWdw.CurrentElementId;
+        int restoreHookId    = Core.SM.UI.ElementWdw.CurrentHookId;
 
         //
         // Enter critical section
@@ -612,14 +623,9 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
           inSMUpdateLockMode = Core.SM.UI.ElementWdw.QuitSMUpdateLock() == false;
 
           Core.SM.UI.ElementWdw.GoToElement(restoreElementId);
-
-          inSMAUpdateLockMode = Core.SM.UI.ElementWdw.QuitSMAUpdateLock(true);
         }
 
-        else
-        {
-          inSMAUpdateLockMode = Core.SM.UI.ElementWdw.QuitSMAUpdateLock();
-        }
+        inSMAUpdateLockMode = Core.SM.UI.ElementWdw.QuitSMAUpdateLock(inSMUpdateLockMode);
 
         return results;
       }
@@ -879,43 +885,45 @@ Exception: {ex}",
 
 
 
-    #region Enums
-
-    private enum ElementCreationMethod
-    {
-      ClipboardContent,
-      ClipboardElement,
-      AddElement,
-    }
-
-    #endregion
-
-
     private interface IDestinationBranchFinder
     {
-      /// <summary>
-      /// Returns the next parent available for insertion.
-      /// </summary>
-      /// <returns>The next parent id. If an error occurs, the parent id is set to -1 and errorCode describes the error type.</returns>
+      /// <summary>Returns the next parent available for insertion.</summary>
+      /// <returns>
+      ///   The next parent id. If an error occurs, the parent id is set to -1 and errorCode describes the error type.
+      /// </returns>
       Task<(int parentId, ElemCreationResultCodes errorCode, int slotsAvailable)> GetOrCreateFolderAsync();
 
-      /// <summary>
-      /// Advances the iterator across folders for a count of <paramref name="count"/>.
-      /// </summary>
+      /// <summary>Advances the iterator across folders for a count of <paramref name="count" />.</summary>
       /// <param name="count">The number of slots "consumed" (how many children were inserted)</param>
       void Consume(int count);
     }
 
     private class ConstantBranchFinder : IDestinationBranchFinder
     {
+      #region Properties & Fields - Non-Public
+
       private readonly IElement _parent;
-      private int _slotsLeft;
+      private          int      _slotsLeft;
+
+      #endregion
+
+
+
+
+      #region Constructors
 
       public ConstantBranchFinder(IElement parent)
       {
-        _parent = parent;
+        _parent    = parent;
         _slotsLeft = _parent.GetAvailableSlots();
       }
+
+      #endregion
+
+
+
+
+      #region Methods Impl
 
       /// <inheritdoc />
       public Task<(int parentId, ElemCreationResultCodes errorCode, int slotsAvailable)> GetOrCreateFolderAsync()
@@ -933,6 +941,8 @@ Exception: {ex}",
       {
         _slotsLeft -= count;
       }
+
+      #endregion
     }
 
     /// <summary>Computes and creates auto subfolder structures</summary>
@@ -940,22 +950,16 @@ Exception: {ex}",
     {
       #region Properties & Fields - Non-Public
 
-      private readonly IElement                       _parent;
-      private readonly short                          _maxChildren;
-
+      private readonly short               _maxChildren;
+      private readonly IElement            _parent;
       private readonly List<SubfolderData> _subFolders;
-
-      private int _it;
-      private int _parentSlotsLeft;
-
-      #endregion
-
-
-
+      private          int                 _it;
 
       private Regex _titleRegex;
 
       private Regex TitleRegex => _titleRegex ??= new Regex($"\\[([0-9]+)\\] {Regex.Escape(_parent.Title)}");
+
+      #endregion
 
 
 
@@ -963,14 +967,12 @@ Exception: {ex}",
       #region Constructors
 
       public SubfolderBranchFinder(
-        IElement                       parent,
-        ElemCreationFlags              options)
+        IElement          parent,
+        ElemCreationFlags options)
       {
-        _parent          = parent;
+        _parent = parent;
 
-        _maxChildren     = Core.SM.UI.ElementWdw.LimitChildrenCount;
-        _parentSlotsLeft = GetAvailableSlots(_parent);
-
+        _maxChildren = Core.SM.UI.ElementWdw.LimitChildrenCount;
         _subFolders = parent.Children
                             .Choose(TryMatchSubfolder)
                             .ToList();
@@ -1002,8 +1004,72 @@ Exception: {ex}",
 
       #endregion
 
+
+
+
+      #region Methods Impl
+
+      /// <inheritdoc />
+      public async Task<(int parentId, ElemCreationResultCodes errorCode, int slotsAvailable)> GetOrCreateFolderAsync()
+      {
+        //
+        // Try & find the next available subfolder (if any)
+
+        while (_it <= _subFolders.Count)
+        {
+          var curSubFolder = _subFolders[_it - 1];
+
+          if (curSubFolder.SlotsLeft > 0)
+            return (curSubFolder.ElementId, ElemCreationResultCodes.Success, curSubFolder.SlotsLeft);
+
+          _it++;
+        }
+
+        //
+        // Existing subfolders have reached capacity, or we chose not to re-use them
+
+        // Parent has reached capacity
+        if (_it > _maxChildren)
+          return (-1, ElemCreationResultCodes.ErrorDestinationBranchNotCreated | ElemCreationResultCodes.ErrorTooManyChildren, 0);
+
+        var subFolderId = await CreateFolderAsync().ConfigureAwait(false);
+
+        // Failed to create subfolder
+        if (subFolderId < 0)
+          return (-1, ElemCreationResultCodes.ErrorDestinationBranchNotCreated | ElemCreationResultCodes.ErrorUnknown, 0);
+
+        // Successfully created the new subfolder, add it to the list & return with info
+        _subFolders.Add(new SubfolderData(subFolderId, _maxChildren));
+
+        return (subFolderId, ElemCreationResultCodes.Success, _maxChildren);
+      }
+
+      /// <inheritdoc />
+      public void Consume(int count)
+      {
+        if (_it > _subFolders.Count)
+          throw new InvalidOperationException("Consuming sub folder out of range");
+
+        var curSubFolder = _subFolders[_it - 1];
+
+        if (count > curSubFolder.SlotsLeft)
+          throw new ArgumentException(
+            $"Unable to count {count} slots in destination branch: only {curSubFolder.SlotsLeft} slots are available in current branch",
+            nameof(count));
+
+        curSubFolder.SlotsLeft -= count;
+      }
+
+      #endregion
+
+
+
+
+      #region Methods
+
       /// <summary>
-      /// Tries to create the next subfolder. Expects the parent to have slots left, and _it to reflect the new subfolder number.
+      ///   Tries to create the next subfolder. Expects the parent to have slots left, and _it to reflect the new subfolder
+      ///   number.
       /// </summary>
       /// <returns>The subfolder element id or -1 if creation failed.</returns>
       private async Task<int> CreateFolderAsync()
@@ -1035,7 +1101,7 @@ Exception: {ex}",
 
         var subfolderNo = int.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
 
-        return (true, new SubfolderData(subfolder.Id, subfolderNo, GetAvailableSlots(subfolder)));
+        return (true, new SubfolderData(subfolder.Id, GetAvailableSlots(subfolder)));
       }
 
       private int GetAvailableSlots(IElement elem)
@@ -1043,75 +1109,18 @@ Exception: {ex}",
         return _maxChildren - elem.ChildrenCount;
       }
 
-
-      #region Methods
-
-      /// <inheritdoc/>
-      public async Task<(int parentId, ElemCreationResultCodes errorCode, int slotsAvailable)> GetOrCreateFolderAsync()
-      {
-        //
-        // Try & find the next available subfolder (if any)
-
-        while (_it <= _subFolders.Count)
-        {
-          var curSubFolder = _subFolders[_it - 1];
-
-          if (curSubFolder.SlotsLeft > 0)
-            return (curSubFolder.ElementId, ElemCreationResultCodes.Success, curSubFolder.SlotsLeft);
-
-          _it++;
-        }
-
-        //
-        // Existing subfolders have reached capacity, or we chose not to re-use them
-
-        // Parent has reached capacity
-        if (_it > _maxChildren)
-          return (-1, ElemCreationResultCodes.ErrorDestinationBranchNotCreated | ElemCreationResultCodes.ErrorTooManyChildren, 0);
-
-        var subFolderId = await CreateFolderAsync().ConfigureAwait(false);
-
-        // Failed to create subfolder
-        if (subFolderId < 0)
-          return (-1, ElemCreationResultCodes.ErrorDestinationBranchNotCreated | ElemCreationResultCodes.ErrorUnknown, 0);
-
-        // Successfully created the new subfolder, add it to the list & return with info
-        _subFolders.Add(new SubfolderData(subFolderId, _it, _maxChildren));
-
-        return (subFolderId, ElemCreationResultCodes.Success, _maxChildren);
-      }
-
-      /// <inheritdoc/>
-      public void Consume(int count)
-      {
-        if (_it > _subFolders.Count)
-          throw new InvalidOperationException("Consuming sub folder out of range");
-
-        var curSubFolder = _subFolders[_it - 1];
-
-        if (count > curSubFolder.SlotsLeft)
-          throw new ArgumentException(
-            $"Unable to count {count} slots in destination branch: only {curSubFolder.SlotsLeft} slots are available in current branch",
-            nameof(count));
-
-        curSubFolder.SlotsLeft -= count;
-      }
-
       #endregion
     }
 
-      
-    /// <summary>
-    /// Contains data about a subfolder, see <see cref="SubfolderBranchFinder" />.
-    /// </summary>
+
+    /// <summary>Contains data about a subfolder, see <see cref="SubfolderBranchFinder" />.</summary>
     private class SubfolderData
     {
       #region Constructors
 
-      public SubfolderData(int elementId, int subfolderNo, int slotsLeft)
+      public SubfolderData(int elementId, int slotsLeft)
       {
         ElementId   = elementId;
-        SubfolderNo = subfolderNo;
         SlotsLeft   = slotsLeft;
       }
 
@@ -1122,9 +1131,8 @@ Exception: {ex}",
 
       #region Properties & Fields - Public
 
-      public int ElementId     { get; }
-      public int      SubfolderNo { get; }
-      public int      SlotsLeft   { get; set; }
+      public int ElementId   { get; }
+      public int SlotsLeft   { get; set; }
 
       #endregion
     }

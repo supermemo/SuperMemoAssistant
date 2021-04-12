@@ -41,6 +41,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
   using Interop.SuperMemo.Elements.Models;
   using Interop.SuperMemo.Elements.Types;
   using Interop.SuperMemo.Learning;
+  using Interop.SuperMemo.Registry.Members;
   using Interop.SuperMemo.UI.Element;
   using Process.NET.Memory;
   using Process.NET.Types;
@@ -313,6 +314,16 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
         LogTo.Error(ex, "SM internal method call threw an exception.");
         return false;
       }
+    }
+
+    public bool ApplyTemplate(int templateId)
+    {
+      var template = Core.SM.Registry.Template[templateId];
+
+      if (template == null || template.Empty)
+        return false;
+
+      return Core.Natives.ElWind.ApplyTemplate(ElementWdwPtr.Read<IntPtr>(), templateId);
     }
 
     public bool NextElementInLearningQueue()

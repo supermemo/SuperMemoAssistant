@@ -95,6 +95,10 @@
         "Pattern": "E8 ? ? ? ? 8D 45 EB",
         "Offset": 1
       },
+      "ElWdw_NewTemplate": {
+        "Pattern": "E8 ? ? ? ? A1 ? ? ? ? 8B 00 E8 ? ? ? ? 84 C0 74 12",
+        "Offset": 1 
+      },
       "TCompData_GetType": {
         "Pattern": "E8 ? ? ? ? 3A 45 EF",
         "Offset": 1
@@ -259,6 +263,10 @@
         "Pattern": "E8 ? ? ? ? 8D 45 EB 50",
         "Offset": 1
       },
+      "ElWdw_NewTemplate": {
+        "Pattern": "E8 ? ? ? ? A1 ? ? ? ? 8B 00 E8 ? ? ? ? 84 C0 74 12",
+        "Offset": 1
+      },
       "TCompData_GetType": {
         "Pattern": "E8 ? ? ? ? 3A 45 EF",
         "Offset": 1
@@ -421,6 +429,10 @@
       },
       "ElWdw_ExecuteUncommittedRepetition": { // TElWind::ExecuteUncommittedRepetition
         "Pattern": "E8 ? ? ? ? 8D 45 EB 50",
+        "Offset": 1
+      },
+      "ElWdw_NewTemplate": {
+        "Pattern": "E8 ? ? ? ? A1 ? ? ? ? 8B 00 E8 ? ? ? ? 84 C0 74 12",
         "Offset": 1
       },
       "TCompData_GetType": { // TComponentData::GetType
@@ -593,6 +605,10 @@
         "Pattern": "E8 ? ? ? ? 8D 45 EB 50",
         "Offset": 1
       },
+      "ElWdw_NewTemplate": {
+        "Pattern": "E8 ? ? ? ? A1 ? ? ? ? 8B 00 E8 ? ? ? ? 84 C0 74 12",
+        "Offset": 1
+      },
       "TCompData_GetType": { // TComponentData::GetType
         "Pattern": "E8 ? ? ? ? 3A 45 EF",
         "Offset": 1
@@ -761,6 +777,10 @@
       },
       "ElWdw_ExecuteUncommittedRepetition": { // TElWind::ExecuteUncommittedRepetition
         "Pattern": "E8 ? ? ? ? 8D 45 EB 50",
+        "Offset": 1
+      },
+      "ElWdw_NewTemplate": {
+        "Pattern": "E8 ? ? ? ? A1 ? ? ? ? 8B 00 E8 ? ? ? ? 84 C0 74 12",
         "Offset": 1
       },
       "TCompData_GetType": { // TComponentData::GetType

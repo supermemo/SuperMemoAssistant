@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <UpdateUrl>https://releases.supermemo.wiki/sma/core/beta</UpdateUrl>
+    <UpdateUrl>https://releases.supermemo.wiki/sma/core/</UpdateUrl>
     <BaseUrl>https://releases.supermemo.wiki/sma/core/packages</BaseUrl>
     <NuSpecFileName>SuperMemoAssistant.nuspec</NuSpecFileName>
     <SMAExeName>SuperMemoAssistant.exe</SMAExeName>

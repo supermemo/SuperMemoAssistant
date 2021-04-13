@@ -14,12 +14,24 @@
     <repository type="$repositoryType$" url="$repositoryUrl$" branch="develop" commit="$commitId$" />
     <dependencies />
     <!-- releaseNotes will be replaced by MSBuild.Tools (see SuperMemoAssistant.csproj and https://github.com/alexis-/MSBuild.Tools) -->
-    <releaseNotes>- Added: ElementWdw.ApplyTemplate(int templateId)
+    <releaseNotes>- Added missing file
+- Added: missing file
+- Added: IElement.UniqueId placeholder
+- Added: TemplateUseMode to ApplyTemplate
+- Added: AsyncErrorHandler
+- Added: Console to Dev Sandbox
+- Added: ElementWdw.ApplyTemplate(int templateId)
 - Added: Template can be set when creating a new element
+- Updated: Interop package
+- Updated: Submodules
+- Updated: Improved logging
 - Updated: Missing csproj update
 - Updated: ElementBase.ToJson() should now serialize its concepts, children, etc.
 - Updated: Interop version
+- Fixed: Registry member enumeration
 - Fixed: Notification xml injection was incorrect and prevented notifications from being activated
+- Misc: Minor fixes
+- Submodules
 </releaseNotes>
   </metadata>
   <files>

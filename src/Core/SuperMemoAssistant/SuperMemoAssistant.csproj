@@ -146,7 +146,7 @@
       <Version>2.1.6</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Installer">
-      <Version>1.9.5</Version>
+      <Version>1.9.5.1</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Interop">
       <Version>2.1.0-beta.17</Version>

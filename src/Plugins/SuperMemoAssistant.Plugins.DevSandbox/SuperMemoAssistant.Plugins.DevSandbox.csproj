@@ -61,10 +61,10 @@
       <Version>3.3.1</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Interop">
-      <Version>2.1.0-beta.15</Version>
+      <Version>2.1.0-beta.18</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Services.Sentry">
-      <Version>2.1.0-beta.4</Version>
+      <Version>2.1.0-beta.6</Version>
     </PackageReference>
   </ItemGroup>
   <Target Name="CopyOutput" AfterTargets="Build">

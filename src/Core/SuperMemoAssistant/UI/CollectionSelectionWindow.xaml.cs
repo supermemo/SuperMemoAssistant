@@ -99,7 +99,9 @@ namespace SuperMemoAssistant.UI
     public SMCollection                    Collection       { get; private set; }
     public ObservableHashSet<SMCollection> SavedCollections { get; private set; }
 
-    public IAsyncCommand<SMCollection> DeleteCommand => new AsyncRelayCommand<SMCollection>(DeleteCollectionAsync);
+    public IAsyncCommand<SMCollection> DeleteCommand        => new AsyncRelayCommand<SMCollection>(DeleteCollectionAsync);
+    public IAsyncCommand               GeneralOptionCommand => new AsyncRelayCommand(ShowGeneralOptionsAsync);
+    public IAsyncCommand               UpdateOptionCommand => new AsyncRelayCommand(ShowUpdatesOptionsAsync);
 
     #endregion
 
@@ -239,17 +241,16 @@ namespace SuperMemoAssistant.UI
       OpenSelectedCollection();
     }
 
-    private void BtnOptions_Click(object          sender,
-                                  RoutedEventArgs e)
+    private async Task ShowGeneralOptionsAsync()
     {
-      _startupCfg.SuperMemo.ShowWindowAsync().RunSynchronously();
+      await _startupCfg.SuperMemo.ShowWindowAsync().ConfigureAwait(false);
 
       SaveConfig();
     }
 
-    private void BtnUpdates_Click(object sender, RoutedEventArgs e)
+    private async Task ShowUpdatesOptionsAsync()
     {
-      _startupCfg.Updates.ShowWindowAsync().RunSynchronously();
+      await _startupCfg.Updates.ShowWindowAsync().ConfigureAwait(false);
 
       SaveConfig();
     }

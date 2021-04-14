@@ -142,13 +142,13 @@
 
         <Button Name="btnOptions"
                 Margin="10"
-                Click="BtnOptions_Click">
+                Command="{Binding GeneralOptionCommand}">
           <AccessText>_General Options</AccessText>
         </Button>
 
         <Button Name="btnUpdates"
                 Margin="10"
-                Click="BtnUpdates_Click">
+                Command="{Binding UpdateOptionCommand}">
           <AccessText>_Updates Options</AccessText>
         </Button>
 

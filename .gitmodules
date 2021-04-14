@@ -34,6 +34,7 @@
 [submodule "libs/PluginManager"]
 	path = libs/PluginManager
 	url = https://github.com/alexis-/PluginManager.Net.git
+	branch = legacy-net-framework
 [submodule "libs/MSBuild.Tools"]
 	path = libs/MSBuild.Tools
 	url = https://github.com/alexis-/MSBuild.Tools.git

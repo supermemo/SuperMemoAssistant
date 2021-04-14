@@ -14,8 +14,7 @@
     <repository type="$repositoryType$" url="$repositoryUrl$" branch="develop" commit="$commitId$" />
     <dependencies />
     <!-- releaseNotes will be replaced by MSBuild.Tools (see SuperMemoAssistant.csproj and https://github.com/alexis-/MSBuild.Tools) -->
-    <releaseNotes>- Updated: Release url
-- Fixed: Installer couldn't find the latest release
+    <releaseNotes>- Fixed: Crash when closing collection window options dialog
 </releaseNotes>
   </metadata>
   <files>

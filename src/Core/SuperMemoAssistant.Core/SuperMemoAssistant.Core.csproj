@@ -102,7 +102,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="PluginManager.Core">
-      <Version>0.2.1.144</Version>
+      <Version>0.2.1.148</Version>
       <ExcludeAssets>contentfiles; buildtransitive</ExcludeAssets>
       <PrivateAssets>build; contentfiles; buildtransitive</PrivateAssets>
       <IncludeAssets>runtime; compile; native; analyzers</IncludeAssets>

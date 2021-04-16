@@ -56,6 +56,9 @@ namespace SuperMemoAssistant.Setup.Screens
 
       Resources.MergedDictionaries.Add(new OnlinePluginPackageDataTemplate().Resources);
       Resources.MergedDictionaries.Add(new LocalPluginPackageDataTemplate().Resources);
+
+      //teOperationLogs.TextArea.DefaultInputHandler.NestedInputHandlers.Remove(
+      //  teOperationLogs.TextArea.DefaultInputHandler.CaretNavigation);
     }
 
     #endregion
@@ -89,8 +92,7 @@ namespace SuperMemoAssistant.Setup.Screens
     public override void OnDisplayed()
     {
       // Delay instantiation of the ViewModel as long as possible
-      if (DataContext == null)
-        DataContext = ViewModel;
+      DataContext ??= ViewModel;
 
       ((INotifyCollectionChanged)SMAPluginManager.Instance.AllPlugins).CollectionChanged += PluginCollectionChanged;
     }
@@ -116,18 +118,15 @@ namespace SuperMemoAssistant.Setup.Screens
       OnPropertyChanged(nameof(IsSetup));
     }
 
-    /// <summary>
-    ///   Automatically scroll to bottom when text is updated. TextBox is buggy as hell, and it seems impossible to preserve
-    ///   the vertical scrollbar position on update. The TextBox will scroll to the top when it is focused.
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void tbOperationLogs_TextChanged(object sender, TextChangedEventArgs e)
-    {
-      tbOperationLogs.ScrollToEnd();
-      tbOperationLogs.CaretIndex = tbOperationLogs.Text.Length;
-    }
-
     #endregion
+
+    private void teOperationLogs_TextChanged(object sender, System.EventArgs e)
+    {
+      if (teOperationLogs.Document != null && teOperationLogs.CaretOffset >= teOperationLogs.Document.TextLength)
+      {
+        teOperationLogs.ScrollToEnd();
+        teOperationLogs.CaretOffset = teOperationLogs.Document.TextLength;
+      }
+    }
   }
 }

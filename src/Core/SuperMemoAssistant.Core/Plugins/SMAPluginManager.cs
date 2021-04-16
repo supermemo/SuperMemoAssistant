@@ -133,16 +133,7 @@ namespace SuperMemoAssistant.Plugins
       if (e.PropertyName != nameof(UpdateCfg.CoreUpdateChannel))
         return;
 
-      var alphaRepo = PackageManager.SourceRepositories.Keys.FirstOrDefault(ps => ps.Name == UpdateCfg.PluginsAlphaRepositoryUrl);
-
-      if (alphaRepo == null)
-      {
-        LogTo.Error("Alpha repository is unavailable.");
-        return;
-      }
-
-      alphaRepo.IsEnabled = Core.CoreConfig.Updates.CoreUpdateChannel == UpdateCfg.CoreNightlyChannel
-        || Core.CoreConfig.Updates.CoreUpdateChannel.Equals("Test", StringComparison.OrdinalIgnoreCase);
+      SetAlphaRepoEnabledState(PackageManager.SourceRepositories);
     }
 
     /// <summary>Adds an additional handler for <see cref="SMAPluginManager" /> log output</summary>
@@ -153,6 +144,21 @@ namespace SuperMemoAssistant.Plugins
     /// <param name="logger">The log handler</param>
     public void RemoveLogger(Action<string> logger) => _logAdapter.RemoveLogger(logger);
 
+    private void SetAlphaRepoEnabledState(SourceRepositoryProvider srp)
+    {
+      var alphaRepo = srp.Keys.FirstOrDefault(ps => ps.Name == UpdateCfg.PluginsAlphaRepositoryUrl);
+
+      if (alphaRepo == null)
+      {
+        LogTo.Error("Alpha repository is unavailable.");
+        return;
+      }
+
+      // Only enable alpha repository when SMA core channel is set to Nightly or Test
+      alphaRepo.IsEnabled = Core.CoreConfig.Updates.CoreUpdateChannel == UpdateCfg.CoreNightlyChannel
+        || Core.CoreConfig.Updates.CoreUpdateChannel.Equals("Test", StringComparison.OrdinalIgnoreCase);
+    }
+
     #endregion
 
 
@@ -162,7 +168,11 @@ namespace SuperMemoAssistant.Plugins
 
     public override SourceRepositoryProvider CreateSourceRepositoryProvider(ISettings s)
     {
-      return new SourceRepositoryProvider(s, Core.CoreConfig.Updates.PluginsUpdateNuGetUrls);
+      var srp = new SourceRepositoryProvider(s, Core.CoreConfig.Updates.PluginsUpdateNuGetUrls);
+
+      SetAlphaRepoEnabledState(srp);
+
+      return srp;
     }
 
     /// <inheritdoc />

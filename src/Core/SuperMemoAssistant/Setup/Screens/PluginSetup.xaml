@@ -8,6 +8,7 @@
                           xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                           xmlns:behaviors="clr-namespace:SuperMemoAssistant.Sys.Windows.Behaviors;assembly=SuperMemoAssistant.Interop"
                           xmlns:fa5="http://schemas.fontawesome.com/icons/"
+                          xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
                           xmlns:viewModels="clr-namespace:SuperMemoAssistant.UI.ViewModels"
                           xmlns:models="clr-namespace:SuperMemoAssistant.UI.Settings.Models"
                           mc:Ignorable="d"
@@ -196,8 +197,18 @@
 
       </Grid>
 
+      <avalonEdit:TextEditor Name="teOperationLogs"
+                             Grid.Row="1"
+                             Margin="0 30 0 0"
+                             VerticalAlignment="Stretch"
+                             HorizontalAlignment="Stretch"
+                             ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                             TextChanged="teOperationLogs_TextChanged"
+                             IsReadOnly="True"
+                             Document="{Binding OperationLogs, Mode=OneWay}" />
+
       <!--The install logs are visible for all the duration of the install process, and after a failed install-->
-      <TextBox Name="tbOperationLogs"
+      <!--<TextBox Name="tbOperationLogs"
                Grid.Row="1"
                Margin="0 30 0 0"
                VerticalAlignment="Stretch"
@@ -208,7 +219,7 @@
                AcceptsReturn="True"
                IsReadOnlyCaretVisible="True"
                TextChanged="tbOperationLogs_TextChanged"
-               Text="{Binding OperationLogs, Mode=OneWay}" />
+               Text="{Binding OperationLogs, Mode=OneWay}" />-->
 
       <!--The grid is visible only during install and uninstall-->
       <Grid.Style>

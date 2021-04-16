@@ -81,19 +81,15 @@ namespace SuperMemoAssistant.UI.Settings
       //ViewModel.CancelTasks(); // TODO: Only on Cancel button
     }
 
-    /// <summary>
-    ///   Automatically scroll to bottom when text is updated. TextBox is buggy as hell, and it
-    ///   seems impossible to preserve the vertical scrollbar position on update. The TextBox will
-    ///   scroll to the top when it is focused.
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void tbOperationLogs_TextChanged(object sender, TextChangedEventArgs e)
-    {
-      tbOperationLogs.ScrollToEnd();
-      tbOperationLogs.CaretIndex = tbOperationLogs.Text.Length;
-    }
-
     #endregion
+
+    private void teOperationLogs_TextChanged(object sender, System.EventArgs e)
+    {
+      if (teOperationLogs.CaretOffset >= teOperationLogs.Document.TextLength)
+      {
+        teOperationLogs.ScrollToEnd();
+        teOperationLogs.CaretOffset = teOperationLogs.Document.TextLength;
+      }
+    }
   }
 }

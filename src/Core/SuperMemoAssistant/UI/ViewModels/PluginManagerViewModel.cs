@@ -33,7 +33,6 @@ namespace SuperMemoAssistant.UI.ViewModels
   using System.ComponentModel;
   using System.Linq;
   using System.Runtime.Remoting;
-  using System.Text;
   using System.Threading;
   using System.Threading.Tasks;
   using System.Windows;
@@ -42,6 +41,7 @@ namespace SuperMemoAssistant.UI.ViewModels
   using Anotar.Serilog;
   using Extensions;
   using Forge.Forms;
+  using ICSharpCode.AvalonEdit.Document;
   using NuGet.Protocol.Core.Types;
   using PluginManager.Models;
   using PluginManager.PackageManager.Models;
@@ -88,7 +88,7 @@ namespace SuperMemoAssistant.UI.ViewModels
 
     private PluginManagerViewModel()
     {
-      OperationLogs = new StringBuilder();
+      OperationLogs = new TextDocument();
       Plugins       = new ObservableCollection<PluginPackage<PluginMetadata>>();
 
       RefreshCommand = new AsyncRelayCommand<bool>(RefreshOnlinePluginsAsync, CanRefreshPlugin, HandleExceptionAsync);
@@ -114,6 +114,8 @@ namespace SuperMemoAssistant.UI.ViewModels
         PlayPauseCommand,
         PlayPauseDebugCommand
       };
+
+      OperationLogs.UndoStack.SizeLimit = 0;
 
       PackageManagerCommands.ForEach(c => c.CanExecuteChanged += PackageManagerCommand_CanExecuteChanged);
 
@@ -183,7 +185,7 @@ namespace SuperMemoAssistant.UI.ViewModels
     public string ErrorMessage { get; private set; }
 
     /// <summary>Logs of the plugin installation process</summary>
-    public StringBuilder OperationLogs { get; }
+    public TextDocument OperationLogs { get; }
 
     /// <summary>Whether to include versions marked as pre-release in the results</summary>
     public bool EnablePrerelease => SMA.Core.CoreConfig.Updates.CoreUpdateChannelIsPrerelease;

@@ -132,7 +132,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="PluginManager.Core">
-      <Version>0.2.1.148</Version>
+      <Version>0.2.1.149</Version>
     </PackageReference>
     <PackageReference Include="PropertyChanged.Fody">
       <Version>3.3.3</Version>

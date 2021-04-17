@@ -14,9 +14,9 @@
     <repository type="$repositoryType$" url="$repositoryUrl$" branch="develop" commit="$commitId$" />
     <dependencies />
     <!-- releaseNotes will be replaced by MSBuild.Tools (see SuperMemoAssistant.csproj and https://github.com/alexis-/MSBuild.Tools) -->
-    <releaseNotes>- Updated: Packages
-- Updated: PluginManager submodule tracks branch legacy-net-framework
-- Fixed: Crash when closing collection window options dialog
+    <releaseNotes>- Updated: Improved NuGet installing performance
+- Updated: Plugin operation logs TextBox swapped for Avalonia's TextEditor (improved performances)
+- Fixed: Alpha repo enabled status
 </releaseNotes>
   </metadata>
   <files>

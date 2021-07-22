@@ -33,6 +33,7 @@
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 {
   using System;
+  using Anotar.Serilog;
   using Common.Registry;
   using Common.Registry.Files;
   using Interop.SuperMemo.Registry.Members;
@@ -82,7 +83,17 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
     /// <inheritdoc />
     public int Add(string filePath, string registryName)
     {
-      throw new NotImplementedException();
+      try
+      {
+        var ret = ImportFile(filePath, registryName);
+
+        return ret;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "Failed to add sound to registry");
+        return -1;
+      }
     }
 
     #endregion

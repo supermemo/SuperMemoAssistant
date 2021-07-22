@@ -61,7 +61,7 @@ FirstGrade=8
 Ordinal=10004.000000
 Repetitions=1
 Lapses=0
-Interval=1
+Interval={9}
 LastRepetition={5}
 AFactor=1.200
 UFactor=1.000
@@ -132,7 +132,8 @@ End Element #1";
                               lastRepDate1,
                               elemBuilder.Reference?.ToString() ?? string.Empty,
                               layout.Build(elemBuilder.Contents),
-                              elemBuilder.Status);
+                              elemBuilder.Status,
+                              elemBuilder.Interval);
 
 
       ret = EncodeForSupermemo(ret);

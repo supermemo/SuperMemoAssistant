@@ -14,9 +14,12 @@
     <repository type="$repositoryType$" url="$repositoryUrl$" branch="develop" commit="$commitId$" />
     <dependencies />
     <!-- releaseNotes will be replaced by MSBuild.Tools (see SuperMemoAssistant.csproj and https://github.com/alexis-/MSBuild.Tools) -->
-    <releaseNotes>- Updated: Improved NuGet installing performance
-- Updated: Plugin operation logs TextBox swapped for Avalonia's TextEditor (improved performances)
-- Fixed: Alpha repo enabled status
+    <releaseNotes>- Added: implemented ComponentSound Sound getter
+- Added: interval to the element format string.
+- Added: ability to add sounds to sound reg.
+- Added: Forced creation of nuget and release folders
+- Updated: image registry to save with image wrapper format as extension
+- Fixed: Absolute path in nuget.config
 </releaseNotes>
   </metadata>
   <files>

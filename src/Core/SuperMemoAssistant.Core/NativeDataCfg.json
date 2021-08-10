@@ -447,6 +447,14 @@
         "Pattern": "E8 ? ? ? ? 0F BE 55 F3",
         "Offset": 1
       },
+      "TCompData_GetSoundRegMember": { // TComponentData::GetSoundItem
+        "Pattern": "55 8B EC 83 C4 F4 88 55 FB 89 45 FC 33 C0 8A 45 FB 48 83 F8 63 76 05 E8 ? ? ? ? 40 6B C0 0D 71 05 E8 ? ? ? ? 8B 55 FC 8B 44 02 33 8B 40 11 89 45 F4 8B 45 F4 8B E5 5D C3 90 55 8B EC 83 C4 F8",
+        "Offset": 1
+      },
+      "TCompData_SetSoundRegMember": { // TComponentData::SetSoundItem
+        "Pattern": "E8 ? ? ? ? 88 45 F3 EB 37",
+        "Offset": 1
+      },
       "TCompData_GetTextRegMember": { // TComponentData::GetTextItem
         "Pattern": "E8 ? ? ? ? 89 45 E8 8A 55 DE",
         "Offset": 1

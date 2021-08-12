@@ -313,7 +313,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
       if (IsDisposed)
         throw new InvalidOperationException(DisposedException);
 
-      if (Core.SM.Registry.Text[member] == null)
+      if (Core.SM.Registry.Sound[member] == null)
         return false;
 
       return Core.Natives.ElWind.Components.SetSoundRegMember(new IntPtr(_componentDataAddr),

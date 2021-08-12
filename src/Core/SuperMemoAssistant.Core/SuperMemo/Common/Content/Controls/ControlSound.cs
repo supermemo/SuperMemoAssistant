@@ -1,4 +1,5 @@
-﻿using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
+﻿using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
+using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
 using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
 using SuperMemoAssistant.SMA;
 using System;
@@ -24,14 +25,14 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
     #region Properties Impl - Public
 
     /// <inheritdoc />
-    public ISound ImageMember
+    public ISound SoundMember
     {
-      get => Core.SM.Registry.Sound[ImageMemberId];
-      set => ImageMemberId = value?.Id ?? throw new ArgumentNullException(nameof(value));
+      get => Core.SM.Registry.Sound[SoundMemberId];
+      set => SoundMemberId = value?.Id ?? throw new ArgumentNullException(nameof(value));
     }
 
     /// <inheritdoc />
-    public int ImageMemberId
+    public int SoundMemberId
     {
       get => Group.GetSoundRegMember(this);
       set => Group.SetSoundRegMember(this, value);

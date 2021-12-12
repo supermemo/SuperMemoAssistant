@@ -19,23 +19,21 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Modified On:  2020/02/21 20:04
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using Anotar.Serilog;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
-using SuperMemoAssistant.SuperMemo.Common.Elements;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types;
-
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
 {
+  using System.Diagnostics.CodeAnalysis;
+  using Anotar.Serilog;
+  using Common.Elements;
+  using Interop.SuperMemo.Elements.Models;
+  using Types;
+
+  [SuppressMessage("Naming", "CA1710:Identifiers should have correct suffix", Justification = "<Pending>")]
   public class ElementRegistry17 : ElementRegistryBase
   {
     #region Properties & Fields - Non-Public
@@ -86,7 +84,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
           return Elements[id] = new Task(id);
       }
 
-      LogTo.Warning($"Creating element with unknown type {elementType} for element id {id}");
+      LogTo.Warning("Creating element with unknown type {ElementType} for element id {Id}", elementType, id);
 
       return new Topic(id);
     }

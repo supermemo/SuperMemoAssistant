@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -19,36 +19,33 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2019/08/07 14:43
-// Modified On:  2019/08/07 14:47
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using Anotar.Serilog;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SuperMemo.Common.Registry.Models;
-
 namespace SuperMemoAssistant.SuperMemo.Common.Registry
 {
-  public abstract class RegistryMemberBase : MarshalByRefObject, INotifyPropertyChanged
+  using System;
+  using System.Collections.Generic;
+  using System.ComponentModel;
+  using System.Diagnostics.CodeAnalysis;
+  using System.IO;
+  using System.Linq;
+  using Anotar.Serilog;
+  using Interop.SuperMemo.Core;
+  using Models;
+  using PluginManager.Interop.Sys;
+  using SMA;
+
+  public abstract class RegistryMemberBase : PerpetualMarshalByRefObject, INotifyPropertyChanged
   {
     #region Constructors
 
     protected RegistryMemberBase(int id)
     {
-#if DEBUG && !DEBUG_IN_PROD
+#if DEBUG_REGISTRIES
       LogTo.Debug("[{0} {1}] Creating",
                   GetType().Name,
                   id);
@@ -90,15 +87,16 @@ namespace SuperMemoAssistant.SuperMemo.Common.Registry
     #region Methods
 
     /// <summary>
-    ///   Raises the <see cref="PropertyChanged" /> event for Property
-    ///   <paramref name="propertyName" />. Called by Fody.PropertyChanged
+    ///   Raises the <see cref="PropertyChanged" /> event for Property <paramref name="propertyName" />. Called by
+    ///   Fody.PropertyChanged
     /// </summary>
     /// <param name="propertyName">The changed property's name</param>
     /// <param name="before">The old value</param>
     /// <param name="after">The new value</param>
+    [SuppressMessage ("Microsoft.Performance", "CA1801")]
     protected void OnPropertyChanged(string propertyName, object before, object after)
     {
-#if DEBUG && !DEBUG_IN_PROD
+#if DEBUG_REGISTRIES
       LogTo.Debug("[{0} {1}] {2}: {3}",
                   GetType().Name,
                   Id,
@@ -128,14 +126,12 @@ namespace SuperMemoAssistant.SuperMemo.Common.Registry
         var dirPath  = Path.GetDirectoryName(filePath);
 
         // ReSharper disable once AssignNullToNotNullAttribute
-        var matchingFiles = Directory.GetFiles(dirPath,
-                                               fileName + "*");
+        var matchingFiles = Directory.GetFiles(dirPath, fileName + "*");
         return matchingFiles.FirstOrDefault();
       }
       catch (Exception ex)
       {
-        LogTo.Warning(ex,
-                      $"Failed to get file path for {GetType().Name} {Id} \"{Name}\"");
+        LogTo.Warning(ex, "Failed to get file path for {Name} {Id} \"{Name1}\"", GetType().Name, Id, Name);
         return null;
       }
     }
@@ -168,7 +164,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Registry
       }*/
     }
 
-    protected static string GetFilePathForSlotId(
+    public static string GetFilePathForSlotId(
       SMCollection collection,
       int          slotId,
       string       slotFileExt)

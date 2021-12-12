@@ -19,38 +19,37 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2020/01/11 15:02
-// Modified On:  2020/01/12 15:01
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Anotar.Serilog;
-using Process.NET.Execution;
-using Process.NET.Memory;
-using Process.NET.Native.Types;
-using Process.NET.Patterns;
-using Process.NET.Types;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
-using SuperMemoAssistant.SMA;
-
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable InconsistentNaming
 
 namespace SuperMemoAssistant.SuperMemo.Natives
 {
+  using System;
+  using System.Diagnostics.CodeAnalysis;
+  using System.Threading;
+  using System.Threading.Tasks;
+  using Anotar.Serilog;
+  using Extensions;
+  using Interop.SuperMemo.Content.Controls;
+  using Interop.SuperMemo.Elements.Models;
+  using Interop.SuperMemo.Registry.Members;
+  using Interop.SuperMemo.Registry.Models;
+  using Process.NET.Execution;
+  using Process.NET.Memory;
+  using Process.NET.Native.Types;
+  using Process.NET.Patterns;
+  using Process.NET.Types;
+  using SMA;
+
   public partial class SMNatives
   {
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>")]
     public partial class TElWind
     {
       #region Constructors
@@ -58,15 +57,15 @@ namespace SuperMemoAssistant.SuperMemo.Natives
       public TElWind(NativeData nativeData)
       {
         // TElWind object pointer
-        InstancePtr = new IntPtr(nativeData.Pointers[NativePointers.ElWdw_InstancePtr]);
+        InstancePtr = new IntPtr(nativeData.Pointers[NativePointer.ElWdw_InstancePtr]);
 
         // Object pointers
-        ElementIdPtr        = new ObjPtr(InstancePtr, nativeData.Pointers[NativePointers.ElWdw_ElementIdPtr]);
-        ObjectsPtr          = new ObjPtr(InstancePtr, nativeData.Pointers[NativePointers.ElWdw_ObjectsPtr]);
-        ComponentsDataPtr   = new ObjPtr(InstancePtr, nativeData.Pointers[NativePointers.ElWdw_ComponentsDataPtr]);
-        RecentGradePtr      = new ObjPtr(InstancePtr, nativeData.Pointers[NativePointers.ElWdw_RecentGradePtr]);
-        FocusedComponentPtr = new ObjPtr(InstancePtr, nativeData.Pointers[NativePointers.ElWdw_FocusedComponentPtr]);
-        LearningModePtr     = new ObjPtr(InstancePtr, nativeData.Pointers[NativePointers.ElWdw_LearningModePtr]);
+        ElementIdPtr        = new ObjPtr(InstancePtr, nativeData.Pointers[NativePointer.ElWdw_ElementIdPtr]);
+        ObjectsPtr          = new ObjPtr(InstancePtr, nativeData.Pointers[NativePointer.ElWdw_ObjectsPtr]);
+        ComponentsDataPtr   = new ObjPtr(InstancePtr, nativeData.Pointers[NativePointer.ElWdw_ComponentsDataPtr]);
+        RecentGradePtr      = new ObjPtr(InstancePtr, nativeData.Pointers[NativePointer.ElWdw_RecentGradePtr]);
+        FocusedComponentPtr = new ObjPtr(InstancePtr, nativeData.Pointers[NativePointer.ElWdw_FocusedComponentPtr]);
+        LearningModePtr     = new ObjPtr(InstancePtr, nativeData.Pointers[NativePointer.ElWdw_LearningModePtr]);
 
         // Memory patterns
         EnterUpdateLockCallSig = nativeData.GetMemoryPattern(NativeMethod.ElWdw_EnterUpdateLock);
@@ -173,12 +172,22 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
-      public int GenerateExtract(IntPtr elementWdwPtr, ElementType elementType, bool memorize = true, bool askUserToScheduleInterval = false)
+      [SuppressMessage("Style", "RCS1001:Add braces (when expression spans over multiple lines).",
+                       Justification = "<Pending>")]
+      [SuppressMessage("Usage", "VSTHRD002:Avoid problematic synchronous waits",
+                       Justification = "<Pending>")]
+      [SuppressMessage("Usage", "VSTHRD104:Offer async methods", Justification = "<Pending>")]
+      [SuppressMessage("AsyncUsage", "AsyncFixer04:A disposable object used in a fire & forget async call",
+                       Justification = "<Pending>")]
+      public int GenerateExtract(IntPtr      elementWdwPtr,
+                                 ElementType elementType,
+                                 bool        memorize                  = true,
+                                 bool        askUserToScheduleInterval = false)
       {
         using (var cts = new CancellationTokenSource(5000))
           try
           {
-            var waitForElemIdTask = Core.SM.Registry.Element.WaitForNextCreatedElement(cts.Token);
+            var waitForElemIdTask = Core.SM.Registry.Element.WaitForNextCreatedElementAsync(cts.Token);
 
             NativeMethod.ElWdw_GenerateExtract.ExecuteOnMainThread(
               elementWdwPtr,
@@ -203,13 +212,20 @@ namespace SuperMemoAssistant.SuperMemo.Natives
           }
       }
 
+      [SuppressMessage("Style", "RCS1001:Add braces (when expression spans over multiple lines).",
+                       Justification = "<Pending>")]
+      [SuppressMessage("Usage", "VSTHRD002:Avoid problematic synchronous waits",
+                       Justification = "<Pending>")]
+      [SuppressMessage("Usage", "VSTHRD104:Offer async methods", Justification = "<Pending>")]
+      [SuppressMessage("AsyncUsage", "AsyncFixer04:A disposable object used in a fire & forget async call",
+                       Justification = "<Pending>")]
       public int GenerateCloze(IntPtr elementWdwPtr, bool memorize = true, bool askUserToScheduleInterval = false)
       {
         using (var cts = new CancellationTokenSource(5000))
           try
           {
-            var waitForElemIdTask = Core.SM.Registry.Element.WaitForNextCreatedElement(cts.Token);
-            
+            var waitForElemIdTask = Core.SM.Registry.Element.WaitForNextCreatedElementAsync(cts.Token);
+
             NativeMethod.ElWdw_GenerateClozeDeletion.ExecuteOnMainThread(
               elementWdwPtr,
               memorize,
@@ -261,6 +277,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
+      [SuppressMessage("Microsoft.Performance", "CA1801")]
       public string GetText(IntPtr elementWdwPtr, IControl control)
       {
         return null;
@@ -282,6 +299,24 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         //}
       }
 
+      public bool ApplyTemplate(IntPtr elementWdwPtr, int templateId, TemplateUseMode templateUseMode)
+      {
+        try
+        {
+          NativeMethod.ElWdw_NewTemplate.ExecuteOnMainThread(
+            elementWdwPtr,
+            templateId,
+            (int)templateUseMode);
+
+          return true;
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, "Native method call threw an exception.");
+          return false;
+        }
+      }
+
       public bool ShowNextElementInLearningQueue(IntPtr elementWdwPtr)
       {
         try
@@ -298,13 +333,13 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
-      public bool SetElementState(IntPtr elementWdwPtr, int state)
+      public bool SetElementState(IntPtr elementWdwPtr, ElementDisplayState state)
       {
         try
         {
           NativeMethod.ElWdw_SetElementState.ExecuteOnMainThread(
             elementWdwPtr,
-            state);
+            (int)state);
 
           return true;
         }

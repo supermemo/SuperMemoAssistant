@@ -52,10 +52,11 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
   {
     #region Properties & Fields - Non-Public
 
-    protected SMCollection Collection => Core.SM.Collection;
+    protected static SMCollection Collection => Core.SM.Collection;
+    protected bool IsDisposed { get; private set; }
 
-    protected ConcurrentDictionary<IntPtr, (UInt32 position, SparseClusteredArray<byte> sca)> FileHandles { get; } =
-      new ConcurrentDictionary<IntPtr, (UInt32 position, SparseClusteredArray<byte> sca)>();
+    protected ConcurrentDictionary<IntPtr, (uint position, SparseClusteredArray<byte> sca)> FileHandles { get; } =
+      new ConcurrentDictionary<IntPtr, (uint position, SparseClusteredArray<byte> sca)>();
 
     #endregion
 
@@ -66,13 +67,25 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
 
     protected SMHookIOBase()
     {
-      Core.SMA.OnSMStartingEvent += OnSMStarting;
-      Core.SMA.OnSMStoppedEvent  += OnSMStopped;
+      Core.SMA.OnCollectionSelectedInternalEvent += OnCollectionSelectedAsync;
+      Core.SMA.OnSMStoppedInternalEvent  += OnSMStopped;
     }
 
-    public virtual void Dispose()
+    public void Dispose()
     {
-      OnSMStopped(null, null);
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+      if (IsDisposed)
+        return;
+      
+      if (disposing)
+        OnSMStopped(null, null);
+
+      IsDisposed = true;
     }
 
     #endregion
@@ -138,22 +151,22 @@ namespace SuperMemoAssistant.SuperMemo.Hooks
       CommitFromFiles();
     }
 
-    private async Task OnSMStarting(object sender, SMEventArgs e)
+    private async Task OnCollectionSelectedAsync(object sender, SMEventArgs e)
     {
-      LogTo.Debug($"Initializing {GetType().Name}");
+      LogTo.Debug("Initializing {Name}", GetType().Name);
 
       await Task.Run((Action)Initialize).ConfigureAwait(false);
     }
 
-    private void OnSMStopped(object sender, SMProcessArgs e)
+    private void OnSMStopped(object sender, SMProcessEventArgs e)
     {
-      LogTo.Debug($"Cleaning up {GetType().Name}");
+      LogTo.Debug("Cleaning up {Name}", GetType().Name);
 
       FileHandles.Clear();
 
       Cleanup();
 
-      LogTo.Debug($"Cleaning up {GetType().Name}... Done");
+      LogTo.Debug("Cleaning up {Name}... Done", GetType().Name);
     }
 
     #endregion

@@ -19,28 +19,27 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Modified On:  2020/03/11 17:58
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using Windows.UI.Notifications;
-
+// ReSharper disable IdentifierTypo
 namespace SuperMemoAssistant.Sys.Windows
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Diagnostics.CodeAnalysis;
+  using System.Globalization;
+  using System.Runtime.InteropServices;
+  using System.Text;
+  using global::Windows.Foundation.Metadata;
+  using global::Windows.UI.Notifications;
+  using Interop.SMA.Notifications;
+
   // https://github.com/WindowsNotifications/desktop-toasts/
-  public class DesktopNotificationManager
+  public static class DesktopNotificationManager
   {
     #region Constants & Statics
 
@@ -51,10 +50,9 @@ namespace SuperMemoAssistant.Sys.Windows
     private static bool   _registeredActivator;
 
     /// <summary>
-    ///   Gets the <see cref="DesktopNotificationHistory" /> object. You must have called
-    ///   <see cref="RegisterActivator{T}" /> first (and also
-    ///   <see cref="RegisterAumidAndComServer{T}(string)" /> if you're a classic Win32 app), or this
-    ///   will throw an exception.
+    ///   Gets the <see cref="DesktopNotificationHistory" /> object. You must have called <see cref="RegisterActivator{T}" />
+    ///   first (and also <see cref="RegisterAumidAndComServer{T}(string)" /> if you're a classic Win32 app), or this will
+    ///   throw an exception.
     /// </summary>
     public static DesktopNotificationHistory History
     {
@@ -67,8 +65,8 @@ namespace SuperMemoAssistant.Sys.Windows
     }
 
     /// <summary>
-    ///   Gets a boolean representing whether http images can be used within toasts. This is
-    ///   true if running under Desktop Bridge.
+    ///   Gets a boolean representing whether http images can be used within toasts. This is true if running under Desktop
+    ///   Bridge.
     /// </summary>
     public static bool CanUseHttpImages
     {
@@ -83,10 +81,9 @@ namespace SuperMemoAssistant.Sys.Windows
     #region Methods
 
     /// <summary>
-    ///   If not running under the Desktop Bridge, you must call this method to register your
-    ///   AUMID with the Compat library and to register your COM CLSID and EXE in LocalServer32
-    ///   registry. Feel free to call this regardless, and we will no-op if running under Desktop
-    ///   Bridge. Call this upon application startup, before calling any other APIs.
+    ///   If not running under the Desktop Bridge, you must call this method to register your AUMID with the Compat library and
+    ///   to register your COM CLSID and EXE in LocalServer32 registry. Feel free to call this regardless, and we will no-op if
+    ///   running under Desktop Bridge. Call this upon application startup, before calling any other APIs.
     /// </summary>
     /// <param name="aumid">An AUMID that uniquely identifies your application.</param>
     public static void RegisterAumidAndComServer<T>(string aumid)
@@ -118,22 +115,18 @@ namespace SuperMemoAssistant.Sys.Windows
       where T : NotificationActivator
     {
       // We register the EXE to start up when the notification is activated
-      string regString = String.Format("SOFTWARE\\Classes\\CLSID\\{{{0}}}\\LocalServer32", typeof(T).GUID);
-      var    key       = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(regString);
+      string regString = string.Format(CultureInfo.InvariantCulture,
+                                       @"SOFTWARE\Classes\CLSID\{{{0}}}\LocalServer32",
+                                       typeof(T).GUID);
+      var key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(regString);
 
       // Include a flag so we know this was a toast activation and should wait for COM to process
       // We also wrap EXE path in quotes for extra security
       key.SetValue(null, '"' + exePath + '"' + " " + TOAST_ACTIVATED_LAUNCH_ARG);
     }
 
-    /// <summary>
-    ///   Registers the activator type as a COM server client so that Windows can launch your
-    ///   activator.
-    /// </summary>
-    /// <typeparam name="T">
-    ///   Your implementation of NotificationActivator. Must have GUID and
-    ///   ComVisible attributes on class.
-    /// </typeparam>
+    /// <summary>Registers the activator type as a COM server client so that Windows can launch your activator.</summary>
+    /// <typeparam name="T">Your implementation of NotificationActivator. Must have GUID and ComVisible attributes on class.</typeparam>
     public static void RegisterActivator<T>()
       where T : NotificationActivator
     {
@@ -149,9 +142,8 @@ namespace SuperMemoAssistant.Sys.Windows
     }
 
     /// <summary>
-    ///   Creates a toast notifier. You must have called <see cref="RegisterActivator{T}" />
-    ///   first (and also <see cref="RegisterAumidAndComServer{T}(string)" /> if you're a classic
-    ///   Win32 app), or this will throw an exception.
+    ///   Creates a toast notifier. You must have called <see cref="RegisterActivator{T}" /> first (and also
+    ///   <see cref="RegisterAumidAndComServer{T}(string)" /> if you're a classic Win32 app), or this will throw an exception.
     /// </summary>
     /// <returns></returns>
     public static ToastNotifier CreateToastNotifier()
@@ -187,16 +179,20 @@ namespace SuperMemoAssistant.Sys.Windows
         throw new Exception("You must call RegisterActivator first.");
     }
 
+    public static bool IsApiAvailable()
+    {
+      return ApiInformation.IsTypePresent("Windows.ApplicationModel.Background.ToastNotificationActionTrigger");
+    }
+
     #endregion
 
 
 
 
     /// <summary>
-    ///   Code from
-    ///   https://github.com/qmatteoq/DesktopBridgeHelpers/edit/master/DesktopBridge.Helpers/Helpers.cs
+    ///   Code from https://github.com/qmatteoq/DesktopBridgeHelpers/edit/master/DesktopBridge.Helpers/Helpers.cs
     /// </summary>
-    private class DesktopBridgeHelpers
+    private static class DesktopBridgeHelpers
     {
       #region Constants & Statics
 
@@ -237,7 +233,7 @@ namespace SuperMemoAssistant.Sys.Windows
           {
             int           length = 0;
             StringBuilder sb     = new StringBuilder(0);
-            GetCurrentPackageFullName(ref length, sb);
+            _ = GetCurrentPackageFullName(ref length, sb);
 
             sb = new StringBuilder(length);
             int result = GetCurrentPackageFullName(ref length, sb);
@@ -254,8 +250,8 @@ namespace SuperMemoAssistant.Sys.Windows
   }
 
   /// <summary>
-  ///   Manages the toast notifications for an app including the ability the clear all toast
-  ///   history and removing individual toasts.
+  ///   Manages the toast notifications for an app including the ability the clear all toast history and removing individual
+  ///   toasts.
   /// </summary>
   public sealed class DesktopNotificationHistory
   {
@@ -272,8 +268,7 @@ namespace SuperMemoAssistant.Sys.Windows
     #region Constructors
 
     /// <summary>
-    ///   Do not call this. Instead, call <see cref="DesktopNotificationManager.History" /> to
-    ///   obtain an instance.
+    ///   Do not call this. Instead, call <see cref="DesktopNotificationManager.History" /> to obtain an instance.
     /// </summary>
     /// <param name="aumid"></param>
     internal DesktopNotificationHistory(string aumid)
@@ -315,10 +310,7 @@ namespace SuperMemoAssistant.Sys.Windows
         _history.Remove(tag);
     }
 
-    /// <summary>
-    ///   Removes a toast notification from the action using the notification's tag and group
-    ///   labels.
-    /// </summary>
+    /// <summary>Removes a toast notification from the action using the notification's tag and group labels.</summary>
     /// <param name="tag">The tag label of the toast notification to be removed.</param>
     /// <param name="group">The group label of the toast notification to be removed.</param>
     public void Remove(string tag, string group)
@@ -330,8 +322,7 @@ namespace SuperMemoAssistant.Sys.Windows
     }
 
     /// <summary>
-    ///   Removes a group of toast notifications, identified by the specified group label, from
-    ///   action center.
+    ///   Removes a group of toast notifications, identified by the specified group label, from action center.
     /// </summary>
     /// <param name="group">The group label of the toast notifications to be removed.</param>
     public void RemoveGroup(string group)
@@ -363,13 +354,12 @@ namespace SuperMemoAssistant.Sys.Windows
     #region Methods Abs
 
     /// <summary>
-    ///   This method will be called when the user clicks on a foreground or background
-    ///   activation on a toast. Parent app must implement this method.
+    ///   This method will be called when the user clicks on a foreground or background activation on a toast. Parent app must
+    ///   implement this method.
     /// </summary>
     /// <param name="arguments">
-    ///   The arguments from the original notification. This is either the
-    ///   launch argument if the user clicked the body of your toast, or the arguments from a button
-    ///   on your toast.
+    ///   The arguments from the original notification. This is either the launch argument if the user clicked the body of your
+    ///   toast, or the arguments from a button on your toast.
     /// </param>
     /// <param name="userInput">Text and selection values that the user entered in your toast.</param>
     /// <param name="appUserModelId">Your AUMID.</param>
@@ -389,6 +379,8 @@ namespace SuperMemoAssistant.Sys.Windows
 
     [StructLayout(LayoutKind.Sequential)]
     [Serializable]
+    [SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification                  = "<Pending>")]
+    [SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "<Pending>")]
     public struct NotificationUserInputData
     {
       [MarshalAs(UnmanagedType.LPWStr)] public string Key;
@@ -397,7 +389,7 @@ namespace SuperMemoAssistant.Sys.Windows
     }
 
     [ComImport]
-    [Guid("53E31837-6600-4A81-9395-75CFFE746F94")]
+    [System.Runtime.InteropServices.Guid("53E31837-6600-4A81-9395-75CFFE746F94")]
     [ComVisible(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface INotificationActivationCallback
@@ -408,81 +400,6 @@ namespace SuperMemoAssistant.Sys.Windows
         [In][MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)]
         NotificationUserInputData[] data,
         [In][MarshalAs(UnmanagedType.U4)] uint dataCount);
-    }
-
-    #endregion
-  }
-
-  /// <summary>
-  ///   Text and selection values that the user entered on your notification. The Key is the
-  ///   ID of the input, and the Value is what the user entered.
-  /// </summary>
-  public class NotificationUserInput : IReadOnlyDictionary<string, string>
-  {
-    #region Properties & Fields - Non-Public
-
-    private readonly NotificationActivator.NotificationUserInputData[] _data;
-
-    #endregion
-
-
-
-
-    #region Constructors
-
-    internal NotificationUserInput(NotificationActivator.NotificationUserInputData[] data)
-    {
-      _data = data;
-    }
-
-    #endregion
-
-
-
-
-    #region Properties Impl - Public
-
-    public int Count => _data.Length;
-
-    public string this[string key] => _data.First(i => i.Key == key).Value;
-
-    public IEnumerable<string> Keys => _data.Select(i => i.Key);
-
-    public IEnumerable<string> Values => _data.Select(i => i.Value);
-
-    #endregion
-
-
-
-
-    #region Methods Impl
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      return GetEnumerator();
-    }
-
-    public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
-    {
-      return _data.Select(i => new KeyValuePair<string, string>(i.Key, i.Value)).GetEnumerator();
-    }
-
-    public bool ContainsKey(string key)
-    {
-      return _data.Any(i => i.Key == key);
-    }
-
-    public bool TryGetValue(string key, out string value)
-    {
-      foreach (var item in _data)
-        if (item.Key == key)
-        {
-          value = item.Value;
-          return true;
-        }
-
-      value = null;
-      return false;
     }
 
     #endregion

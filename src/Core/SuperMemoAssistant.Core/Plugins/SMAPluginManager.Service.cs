@@ -19,32 +19,29 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Modified On:  2020/02/24 14:04
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Anotar.Serilog;
-using SuperMemoAssistant.Interop.Plugins;
-using SuperMemoAssistant.Plugins.Models;
-using SuperMemoAssistant.Sys.Remoting;
-
 namespace SuperMemoAssistant.Plugins
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Runtime.Remoting;
+  using System.Threading.Tasks;
+  using Anotar.Serilog;
+  using Interop.Plugins;
+  using Models;
+  using Sys.Remoting;
+
   public partial class SMAPluginManager
   {
     #region Methods
 
-    public async Task<Dictionary<PluginInstance, bool>> OnLoggerConfigUpdated()
+    public async Task<Dictionary<PluginInstance, bool>> OnLoggerConfigUpdatedAsync()
     {
       try
       {
@@ -52,7 +49,7 @@ namespace SuperMemoAssistant.Plugins
         var remoteTasks = plugins.AsParallel().Select(p => p.Plugin.OnMessage(PluginMessage.OnLoggerConfigUpdated));
 
         // ReSharper disable once ConstantConditionalAccessQualifier
-        var results = (await RemoteTask.WhenAll(remoteTasks))?.Cast<bool>()?.ToList();
+        var results = (await RemoteTask.WhenAll(remoteTasks).ConfigureAwait(false))?.Cast<bool>()?.ToList();
 
         if (results == null)
           return null;
@@ -66,6 +63,12 @@ namespace SuperMemoAssistant.Plugins
           pluginCallSuccessMap[plugins[i]] = results[i];
 
         return pluginCallSuccessMap;
+      }
+      catch (RemotingException ex)
+      {
+        LogTo.Warning(ex, "Remoting exception thrown in OnLoggerConfigUpdated");
+
+        return null;
       }
       catch (Exception ex)
       {

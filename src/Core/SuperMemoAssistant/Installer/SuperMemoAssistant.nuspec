@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>SuperMemoAssistant</id>
+    <!-- version will be replaced by MSBuild (see SuperMemoAssistant.csproj) -->
+    <version>$version$</version>
+    <title>SuperMemo Assistant</title>
+    <authors>SuperMemo.wiki</authors>
+    <description>SuperMemo Assistant supercharges your SuperMemo with powerful features like Incremental PDF, import from Chrome and Firefox, and more.</description>
+    <license type="expression">MIT</license>
+    <iconUrl>https://github.com/supermemo/Documentation/raw/master/docs/sma/content/images/icons/robot.ico</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <copyright></copyright>
+    <repository type="$repositoryType$" url="$repositoryUrl$" branch="develop" commit="$commitId$" />
+    <dependencies />
+    <!-- releaseNotes will be replaced by MSBuild.Tools (see SuperMemoAssistant.csproj and https://github.com/alexis-/MSBuild.Tools) -->
+    <releaseNotes>- Updated: Improved NuGet installing performance
+- Updated: Plugin operation logs TextBox swapped for Avalonia's TextEditor (improved performances)
+- Fixed: Alpha repo enabled status
+</releaseNotes>
+  </metadata>
+  <files>
+    <file src="$outputPath$*.*" target="lib\net45\" exclude="*.pdb;*.nupkg;*.vshost.*" />
+    <file src="$outputPath$SuperMemoAssistant*.pdb" target="lib\net45\" />
+    <file src="$outputPath$PluginManager*.pdb" target="lib\net45\" />
+    <file src="$outputPath$Process.NET*.pdb" target="lib\net45\" />
+    <file src="$outputPath$Squirrel*.pdb" target="lib\net45\" />
+  </files>
+</package>

@@ -35,7 +35,10 @@ using SuperMemoAssistant.SMA;
 
 namespace SuperMemoAssistant.SuperMemo.Common.Elements
 {
-  public class ConceptSnapshot : IDisposable
+  using System.Windows;
+  using Anotar.Serilog;
+
+  public sealed class ConceptSnapshot : IDisposable
   {
     #region Properties & Fields - Non-Public
 
@@ -56,8 +59,20 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
     /// <inheritdoc />
     public void Dispose()
     {
-      if (Core.SM.UI.ElementWdw.CurrentConceptId != ConceptId)
-        Core.SM.UI.ElementWdw.SetCurrentConcept(ConceptId);
+      try
+      {
+        if (Core.SM.UI.ElementWdw.CurrentConceptId != ConceptId)
+          Core.SM.UI.ElementWdw.SetCurrentConcept(ConceptId);
+      }
+      catch (Exception ex)
+      {
+        LogTo.Warning(ex, "Failed to restore concept context back to element {ConceptId}.", ConceptId);
+        MessageBox.Show($@"Failed to restore concept context back to element {ConceptId}..
+Your concept might have been changed.
+
+Exception: {ex}",
+                        "Warning");
+      }
     }
 
     #endregion

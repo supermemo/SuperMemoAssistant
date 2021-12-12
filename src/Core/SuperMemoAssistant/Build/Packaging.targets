@@ -1,0 +1,24 @@
+<Project>
+  <Target Name="WriteChangeLog" BeforeTargets="Build" DependsOnTargets="CreateChangeLogs">
+  </Target>
+  
+  <Target Name="UpdateNuSpec" BeforeTargets="GenerateNuspec" DependsOnTargets="PreparePackage">
+    <PropertyGroup>
+      <NuspecProperties>version=$(PackageVersion);repositoryType=$(RepositoryType);repositoryUrl=$(RepositoryUrl);commitId=$(GitCommitId);outputPath=$(OutputPath)</NuspecProperties>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="Releasify" AfterTargets="Pack">
+    <PropertyGroup>
+      <Squirrel>$(SquirrelToolsPath)\Update.exe</Squirrel>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <NuPkgFile>$(NuPkgDir)SuperMemoAssistant.$(PackageVersion).nupkg</NuPkgFile>
+      <OutputPath Condition=" '$(OutputPath)' == '' ">$(LocalAppData)\SuperMemoAssistant\app-dev\</OutputPath>
+      <SMAExe>$(OutputPath)$(SMAExeName)</SMAExe>
+    </PropertyGroup>
+
+    <Exec Command="$(Squirrel) --releasify=$(NuPkgFile) --releaseDir=$(ReleaseDir) --baseUrl=$(BaseUrl) --updateUrl=$(UpdateUrl) --no-msi --framework-version=$(NetVersion) --exeStubRegexPattern=$(SMAExeName) --setupIcon=$(SetupIcon) --loadingGif=$(SetupLoadingGif)" />
+  </Target>
+</Project>

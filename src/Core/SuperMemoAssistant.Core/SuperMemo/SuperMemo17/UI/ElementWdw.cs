@@ -19,53 +19,53 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Modified On:  2020/02/17 21:40
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using Anotar.Serilog;
-using Process.NET.Memory;
-using Process.NET.Types;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop;
-using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
-using SuperMemoAssistant.Interop.SuperMemo.Learning;
-using SuperMemoAssistant.Interop.SuperMemo.UI.Element;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SuperMemo.Common.Content.Controls;
-using SuperMemoAssistant.SuperMemo.Common.UI;
-
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 {
-  public class ElementWdw : WdwBase, IElementWdw
+  using System;
+  using System.ComponentModel;
+  using System.Diagnostics.CodeAnalysis;
+  using System.Threading.Tasks;
+  using Anotar.Serilog;
+  using Common.Content.Controls;
+  using Common.UI;
+  using Extensions;
+  using Interop;
+  using Interop.SuperMemo.Content.Controls;
+  using Interop.SuperMemo.Core;
+  using Interop.SuperMemo.Elements.Models;
+  using Interop.SuperMemo.Elements.Types;
+  using Interop.SuperMemo.Learning;
+  using Interop.SuperMemo.Registry.Members;
+  using Interop.SuperMemo.Registry.Models;
+  using Interop.SuperMemo.UI.Element;
+  using Process.NET.Memory;
+  using Process.NET.Types;
+  using SMA;
+
+  [SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "<Pending>")]
+  public sealed class ElementWdw : WdwBase, IElementWdw, IDisposable
   {
     #region Properties & Fields - Non-Public
 
-    protected ControlGroup _controlGroup = null;
+    private ControlGroup _controlGroup = null;
 
-    protected int LastElementId { get; set; }
+    private int LastElementId { get; set; }
 
-    protected IPointer SMMainWdwPtr             { get; set; }
-    protected IPointer ElementWdwPtr            { get; set; }
-    protected IPointer ElementIdPtr             { get; set; }
-    protected IPointer LimitChildrenCountPtr    { get; set; }
-    protected IPointer CurrentConceptIdPtr      { get; set; }
-    protected IPointer CurrentConceptGroupIdPtr { get; set; }
-    protected IPointer CurrentRootIdPtr         { get; set; }
-    protected IPointer CurrentHookIdPtr         { get; set; }
-    protected IPointer LearningModePtr          { get; set; }
+    private IPointer SMMainWdwPtr             { get; set; }
+    private IPointer ElementWdwPtr            { get; set; }
+    private IPointer ElementIdPtr             { get; set; }
+    private IPointer LimitChildrenCountPtr    { get; set; }
+    private IPointer CurrentConceptIdPtr      { get; set; }
+    private IPointer CurrentConceptGroupIdPtr { get; set; }
+    private IPointer CurrentRootIdPtr         { get; set; }
+    private IPointer CurrentHookIdPtr         { get; set; }
+    private IPointer LearningModePtr          { get; set; }
 
     #endregion
 
@@ -78,8 +78,35 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       IsAvailable = false;
 
-      Core.SMA.OnSMStartedEvent += OnSMStartedEvent;
-      Core.SMA.OnSMStoppedEvent += OnSMStoppedEvent;
+      Core.SMA.OnSMStartingInternalEvent += OnSMStartingAsync;
+      Core.SMA.OnSMStoppedInternalEvent  += OnSMStoppedEvent;
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+      LogTo.Debug("Cleaning up {Name}", GetType().Name);
+
+      _controlGroup?.Dispose();
+      SMMainWdwPtr?.Dispose();
+      ElementWdwPtr?.Dispose();
+      ElementIdPtr?.Dispose();
+      CurrentConceptIdPtr?.Dispose();
+      CurrentConceptGroupIdPtr?.Dispose();
+      CurrentRootIdPtr?.Dispose();
+      CurrentHookIdPtr?.Dispose();
+      LearningModePtr?.Dispose();
+
+      SMMainWdwPtr             = null;
+      ElementWdwPtr            = null;
+      ElementIdPtr             = null;
+      CurrentConceptIdPtr      = null;
+      CurrentConceptGroupIdPtr = null;
+      CurrentRootIdPtr         = null;
+      CurrentHookIdPtr         = null;
+      LearningModePtr          = null;
+
+      LogTo.Debug("Cleaning up {Name}... Done", GetType().Name);
     }
 
     #endregion
@@ -290,6 +317,16 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       }
     }
 
+    public bool ApplyTemplate(int templateId, TemplateUseMode applyMode = TemplateUseMode.Apply)
+    {
+      var template = Core.SM.Registry.Template[templateId];
+
+      if (template == null || template.Empty)
+        return false;
+
+      return Core.Natives.ElWind.ApplyTemplate(ElementWdwPtr.Read<IntPtr>(), templateId, applyMode);
+    }
+
     public bool NextElementInLearningQueue()
     {
       try
@@ -308,12 +345,11 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       }
     }
 
-    public bool SetElementState(int state)
+    public bool SetElementState(ElementDisplayState state)
     {
       try
       {
-        return Core.Natives.ElWind.SetElementState(ElementWdwPtr.Read<IntPtr>(),
-                                                   state);
+        return Core.Natives.ElWind.SetElementState(ElementWdwPtr.Read<IntPtr>(), state);
       }
       catch (Win32Exception ex)
       {
@@ -423,12 +459,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     {
       try
       {
-        //SetTextMethod(ElementWdwPtr.Read<IntPtr>(),
-        //              control.Id + 1,
-        //              new DelphiUString(text));
-
-        //return true;
-
         return Core.Natives.ElWind.SetText(ElementWdwPtr.Read<IntPtr>(),
                                            control,
                                            text);
@@ -517,36 +547,24 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       return ElementIdPtr.RestartTimer(updateValue);
     }
 
-    private async Task OnSMStartedEvent(object        sender,
-                                        SMProcessArgs e)
+    private async Task OnSMStartingAsync(object      sender,
+                                         SMEventArgs e)
     {
-      LogTo.Debug($"Initializing {GetType().Name}");
+      LogTo.Debug("Initializing {Name}", GetType().Name);
 
+      // TODO: Why ?
       await Task.Run(() =>
       {
         SMMainWdwPtr  = SMProcess[Core.Natives.SMMain.InstancePtr];
         ElementWdwPtr = SMProcess[Core.Natives.ElWind.InstancePtr];
         ElementWdwPtr.RegisterValueChangedEventHandler<int>(OnWindowCreated);
-      });
+      }).ConfigureAwait(false);
     }
 
-    private void OnSMStoppedEvent(object        sender,
-                                  SMProcessArgs e)
+    private void OnSMStoppedEvent(object             sender,
+                                  SMProcessEventArgs e)
     {
-      LogTo.Debug($"Cleaning up {GetType().Name}");
-
-      ElementIdPtr?.Dispose();
-
-      SMMainWdwPtr             = null;
-      ElementWdwPtr            = null;
-      ElementIdPtr             = null;
-      CurrentConceptIdPtr      = null;
-      CurrentConceptGroupIdPtr = null;
-      CurrentRootIdPtr         = null;
-      CurrentHookIdPtr         = null;
-      LearningModePtr          = null;
-
-      LogTo.Debug($"Cleaning up {GetType().Name}... Done");
+      Dispose();
     }
 
     private bool OnWindowCreated(byte[] newVal)
@@ -567,18 +585,23 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       LastElementId = CurrentElementId;
 
       // TODO: ??? This somehow gets delayed and causes all sorts of troubles
-      //OnElementChanged?.Invoke(new SMDisplayedElementChangedArgs(SMA.Instance,
+      //OnElementChanged?.Invoke(new SMDisplayedElementChangedEventArgs(SMA.Instance,
       //                                                   CurrentElement,
       //                                                   null));
 
       IsAvailable = true;
 
-      OnAvailable?.Invoke();
+      OnAvailableInternal?.Invoke();
+
+      OnAvailable?.InvokeRemote(
+        nameof(OnAvailable),
+        h => OnAvailable -= h
+      );
 
       return true;
     }
 
-    protected bool OnElementChangedInternal(byte[] newVal)
+    private bool OnElementChangedInternal(byte[] newVal)
     {
       int newElementId;
 
@@ -595,7 +618,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       return OnElementChangedInternal(newElementId);
     }
 
-    protected bool OnElementChangedInternal(int newElementId)
+    private bool OnElementChangedInternal(int newElementId)
     {
       if (newElementId <= 0)
         return false;
@@ -622,9 +645,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
         OnElementChanged?.InvokeRemote(
           nameof(OnElementChanged),
-          new SMDisplayedElementChangedArgs(Core.SM,
-                                            currentElement,
-                                            lastElement),
+          new SMDisplayedElementChangedEventArgs(Core.SM,
+                                                 currentElement,
+                                                 lastElement),
           h => OnElementChanged -= h
         );
       }
@@ -644,6 +667,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     #region Events
 
     public override event Action OnAvailable;
+    public event          Action OnAvailableInternal;
 
     #endregion
 
@@ -656,7 +680,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     // IElementWdw Impl
 
     /// <inheritdoc />
-    public IControlGroup ControlGroup => _controlGroup ?? (_controlGroup = new ControlGroup(SMProcess));
+    public IControlGroup ControlGroup => _controlGroup ??= new ControlGroup(SMProcess);
 
     /// <inheritdoc />
     public int CurrentElementId => ElementIdPtr?.Read<int>() ?? 0;
@@ -679,7 +703,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     public LearningMode CurrentLearningMode => (LearningMode)LearningModePtr.Read<int>();
 
     /// <inheritdoc />
-    public event Action<SMDisplayedElementChangedArgs> OnElementChanged;
+    public event Action<SMDisplayedElementChangedEventArgs> OnElementChanged;
 
 
     //

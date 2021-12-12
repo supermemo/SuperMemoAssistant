@@ -37,6 +37,8 @@ using System.Collections.Generic;
 
 namespace SuperMemoAssistant.Sys.SparseClusteredArray
 {
+  using System.Diagnostics.CodeAnalysis;
+
   public enum RelativePosition
   {
     BeforeContiguous,
@@ -49,7 +51,8 @@ namespace SuperMemoAssistant.Sys.SparseClusteredArray
     Super
   }
 
-  partial class SparseClusteredArray<T>
+  [SuppressMessage("Naming", "CA1710:Identifiers should have correct suffix", Justification = "<Pending>")]
+  public partial class SparseClusteredArray<T>
   {
     public class PositionalBoundsComparer : Comparer<IBounds>
     {

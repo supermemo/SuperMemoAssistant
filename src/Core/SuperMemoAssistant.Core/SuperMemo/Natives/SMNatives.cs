@@ -19,11 +19,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2020/01/11 15:01
-// Modified On:  2020/01/11 18:54
-// Modified By:  Alexis
 
 #endregion
 
@@ -48,6 +43,8 @@ namespace SuperMemoAssistant.SuperMemo.Natives
       SMMain      = new TSMMain(nativeData);
       Database    = new TDatabase(nativeData);
       Registry    = new TRegistry(Database, nativeData);
+      FileSpace   = new TFileSpace(Database, nativeData);
+      Queue       = new TQueue(nativeData);
     }
 
     #endregion
@@ -64,6 +61,8 @@ namespace SuperMemoAssistant.SuperMemo.Natives
     public TSMMain      SMMain      { get; }
     public TDatabase    Database    { get; }
     public TRegistry    Registry    { get; }
+    public TFileSpace   FileSpace   { get; }
+    public TQueue       Queue       { get; }
 
     #endregion
   }

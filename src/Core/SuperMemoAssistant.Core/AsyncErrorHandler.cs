@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/05/08 16:06
-// Modified On:  2018/12/13 12:49
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/03/29 06:02
 // Modified By:  Alexis
 
 #endregion
@@ -31,10 +31,9 @@
 
 
 using System;
+using System.Diagnostics;
+using System.Windows;
 using Anotar.Serilog;
-#if DEBUG
-using System.Threading;
-#endif
 
 namespace SuperMemoAssistant
 {
@@ -45,24 +44,16 @@ namespace SuperMemoAssistant
 
     public static void HandleException(Exception exception)
     {
-      LogTo.Error(exception,
-                  "Unhandled async exception");
+      LogTo.Error(exception, "Unhandled async exception");
 
-#if DEBUG
-      SynchronizationContext.Current.Post(RethrowOnMainThread,
-                                          exception);
-#endif
+      RethrowOnMainThread(exception);
     }
 
-#if DEBUG
-    private static void RethrowOnMainThread(object state)
+    [Conditional("DEBUG")]
+    private static void RethrowOnMainThread(Exception ex)
     {
-      Exception ex = state as Exception;
-
-      // ReSharper disable once PossibleNullReferenceException
-      throw ex;
+      Application.Current?.Dispatcher.InvokeAsync(() => throw ex);
     }
-#endif
 
     #endregion
   }

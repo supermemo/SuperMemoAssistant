@@ -19,28 +19,24 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2019/08/07 14:44
-// Modified On:  2020/01/12 10:30
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Threading.Tasks;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SuperMemo.Common.Registry;
-using SuperMemoAssistant.SuperMemo.Common.Registry.Files;
-using SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members;
-
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Types
 {
+  using System;
+  using System.Threading.Tasks;
+  using Common.Registry;
+  using Common.Registry.Files;
+  using Interop.SuperMemo.Registry.Members;
+  using Interop.SuperMemo.Registry.Types;
+  using Members;
+  using SMA;
+
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1710:Identifiers should have correct suffix", Justification = "<Pending>")]
   public class TemplateRegistry17 : RegistryBase<Template, ITemplate>, ITemplateRegistry
   {
     #region Properties & Fields - Non-Public

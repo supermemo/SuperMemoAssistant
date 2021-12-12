@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -19,28 +19,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2019/08/07 14:44
-// Modified On:  2019/08/07 14:46
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Threading.Tasks;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
-using SuperMemoAssistant.SuperMemo.Common.Registry;
-using SuperMemoAssistant.SuperMemo.Common.Registry.Models;
-
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Drawing;
+  using Common.Registry;
+  using Common.Registry.Models;
+  using Interop.SuperMemo.Elements.Types;
+  using Interop.SuperMemo.Registry.Members;
+  
+  /// <inheritdoc cref="IImage" />
   public class Image : RegistryMemberBase, IImage
   {
     #region Constructors
@@ -54,8 +49,9 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 
 
     #region Methods Impl
-
-    public async Task<Bitmap> GetContentAsync()
+    
+    /// <inheritdoc />
+    public Bitmap GetContent()
     {
       switch (LinkType)
       {
@@ -63,7 +59,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
           return null;
 
         case RegistryLinkType.FileAndRtx:
-          return await Task.Run(() => new Bitmap(GetFilePath()));
+          return new Bitmap(GetFilePath());
 
         case RegistryLinkType.Rtx:
         case RegistryLinkType.Rtf:
@@ -72,14 +68,16 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
 
       throw new NotImplementedException();
     }
-
+    
+    /// <inheritdoc cref="IRegistryMember" />
     public override string GetFilePath()
     {
       //TODO: switch () on filetype
       return TryFilePathOrSearch("png");
     }
 
-    public Task<bool> DeleteAsync()
+    /// <inheritdoc />
+    public bool Delete()
     {
       throw new NotImplementedException();
     }
@@ -89,12 +87,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
       throw new NotImplementedException();
     }
 
-    public Task<bool> NeuralAsync()
+    /// <inheritdoc />
+    public bool Neural()
     {
       throw new NotImplementedException();
     }
 
-    public Task<bool> RenameAsync(string newName)
+    /// <inheritdoc />
+    public bool Rename(string newName)
     {
       throw new NotImplementedException();
     }

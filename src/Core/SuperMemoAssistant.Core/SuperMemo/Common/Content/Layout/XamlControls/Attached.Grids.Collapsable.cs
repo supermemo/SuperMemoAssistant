@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -19,43 +19,39 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2019/03/01 23:36
-// Modified On:  2019/03/02 00:17
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using MoreLinq;
-
 namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Windows;
+  using System.Windows.Controls;
+  using MoreLinq;
+
   public class CollapsableGridAttachedProperty
   {
     #region Properties & Fields - Non-Public
 
-    private Grid                   _grid;
     private List<ColumnDefinition> _columnDefinitions;
-    private List<RowDefinition>    _rowDefinitions;
+
+    private Grid                _grid;
+    private List<RowDefinition> _rowDefinitions;
 
 
-    private ColumnDefinition EmptyColumn => new ColumnDefinition
+    private static ColumnDefinition EmptyColumn => new ColumnDefinition
     {
       Width    = GridLength.Auto,
       MinWidth = 0,
       MaxWidth = 0
     };
 
-    private RowDefinition EmptyRow => new RowDefinition
+    private static RowDefinition EmptyRow => new RowDefinition
     {
       Height    = GridLength.Auto,
       MinHeight = 0,
@@ -84,9 +80,11 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
       _grid.Initialized += OnInitialized;
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1814:Prefer jagged arrays over multidimensional",
+                                                     Justification = "<Pending>")]
     public void Refresh()
     {
-      bool hasRows = _rowDefinitions.Count > 0;
+      bool hasRows = _rowDefinitions.Count    > 0;
       bool hasCols = _columnDefinitions.Count > 0;
       int  rCount  = Math.Max(_rowDefinitions.Count, 1);
       int  cCount  = Math.Max(_columnDefinitions.Count, 1);
@@ -101,7 +99,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlControls
       for (int k = 0; k < _grid.Children.Count; k++)
       {
         var c = _grid.Children[k];
-        int i = (int)(c.GetValue(Grid.RowProperty) ?? 0);
+        int i = (int)(c.GetValue(Grid.RowProperty)    ?? 0);
         int j = (int)(c.GetValue(Grid.ColumnProperty) ?? 0);
 
         g[i, j].Add(c);

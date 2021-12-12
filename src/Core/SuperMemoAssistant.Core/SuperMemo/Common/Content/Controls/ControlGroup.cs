@@ -19,31 +19,28 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2019/05/08 19:51
-// Modified On:  2020/01/12 10:24
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using PluginManager.Interop.Sys;
-using Process.NET;
-using Process.NET.Memory;
-using SuperMemoAssistant.Interop.SuperMemo.Content.Controls;
-using SuperMemoAssistant.Interop.SuperMemo.Content.Models;
-using SuperMemoAssistant.SMA;
-
 namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
 {
-  public class ControlGroup : PerpetualMarshalByRefObject, IControlGroup, IDisposable
+  using System;
+  using System.Collections;
+  using System.Collections.Generic;
+  using System.Diagnostics.CodeAnalysis;
+  using System.Linq;
+  using Interop.SuperMemo.Content.Controls;
+  using Interop.SuperMemo.Content.Models;
+  using PluginManager.Interop.Sys;
+  using Process.NET;
+  using Process.NET.Memory;
+  using SMA;
+
+  [SuppressMessage("Naming", "CA1710:Identifiers should have correct suffix", Justification = "<Pending>")]
+  public sealed class ControlGroup : PerpetualMarshalByRefObject, IControlGroup, IDisposable
   {
     #region Constants & Statics
 
@@ -277,6 +274,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
       }
     }
 
+    [SuppressMessage("Microsoft.Performance", "CA1801")]
     public string GetText(IControl control)
     {
       if (IsDisposed)

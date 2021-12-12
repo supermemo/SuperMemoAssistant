@@ -19,21 +19,17 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Modified On:  2020/03/13 02:13
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace SuperMemoAssistant.Plugins
 {
+  using System.Linq;
+  using System.Threading.Tasks;
+
   public partial class SMAPluginManager
   {
     #region Constants & Statics
@@ -56,7 +52,7 @@ namespace SuperMemoAssistant.Plugins
     /// <summary>Start plugin <paramref name="packageId" /></summary>
     /// <param name="packageId">The plugin's package id to start</param>
     /// <returns>Success of operation</returns>
-    public async Task<bool> StartPlugin(string packageId)
+    public async Task<bool> StartPluginAsync(string packageId)
     {
       var pluginInstance = AllPlugins.FirstOrDefault(p => p.Package.Id == packageId);
 

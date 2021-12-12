@@ -65,6 +65,8 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       {
         foreach (var lh in LocalHooks)
           lh?.Dispose();
+        
+        _showWindowHook?.Dispose();
 
         LocalHook.Release();
       }

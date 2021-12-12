@@ -19,31 +19,29 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Modified On:  2020/02/22 16:41
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Anotar.Serilog;
-using PluginManager.Interop.Sys;
-using Process.NET;
-using Process.NET.Memory;
-using SuperMemoAssistant.Interop.SuperMemo;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SMA.Hooks;
-using SuperMemoAssistant.SuperMemo.Hooks;
-
 namespace SuperMemoAssistant.SuperMemo.Common
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Diagnostics.CodeAnalysis;
+  using System.Threading.Tasks;
+  using Anotar.Serilog;
+  using Hooks;
+  using Interop.SuperMemo;
+  using Interop.SuperMemo.Core;
+  using PluginManager.Interop.Sys;
+  using Process.NET;
+  using Process.NET.Memory;
+  using SMA;
+  using SMA.Hooks;
+  using SuperMemoAssistant.Extensions;
+
   public abstract class SuperMemoCore : SuperMemoBase
   {
     #region Constructors
@@ -56,7 +54,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
       _registry = new SuperMemoRegistryCore();
       _ui       = new SuperMemoUICore();
-      _hook     = new SMHookEngine();
+      Hook      = new SMHookEngine();
     }
 
     #endregion
@@ -73,6 +71,9 @@ namespace SuperMemoAssistant.SuperMemo.Common
   }
 
   /// <summary>Convenience class that implements shared code</summary>
+  [SuppressMessage("Design", "CA1051:Do not declare visible instance fields",
+                   Justification = "_registry and _ui need to be protected instance fields for SuperMemoCore to compile")]
+  [SuppressMessage("Design", "CA1063:Implement IDisposable Correctly", Justification = "<Pending>")]
   public abstract class SuperMemoBase
     : PerpetualMarshalByRefObject,
       IDisposable,
@@ -82,11 +83,11 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
     private readonly string _binPath;
 
+    private IPointer _ignoreUserConfirmationPtr;
+
     protected SuperMemoRegistryCore _registry;
     protected SuperMemoUICore       _ui;
-    protected SMHookEngine          _hook;
-
-    private IPointer _ignoreUserConfirmationPtr;
+    protected SMHookEngine          Hook { get; set; }
 
     #endregion
 
@@ -102,6 +103,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
       _binPath   = binPath;
     }
 
+    [SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "<Pending>")]
     public virtual void Dispose()
     {
       _ignoreUserConfirmationPtr = null;
@@ -111,7 +113,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
 
       try
       {
-        _hook.CleanupHooks();
+        Hook.CleanupHooks();
       }
       catch (Exception ex)
       {
@@ -124,7 +126,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
       }
       catch (Exception ex)
       {
-        LogTo.Error(ex, "An exception occured in one of OnSMStoppedEvent handlers");
+        LogTo.Error(ex, "An exception occurred in one of OnSMStoppedEvent handlers");
       }
     }
 
@@ -171,39 +173,37 @@ namespace SuperMemoAssistant.SuperMemo.Common
     //
     // SM-App Lifecycle
 
-    public async Task Start(NativeData nativeData)
+    public async Task StartAsync(NativeData nativeData)
     {
       AppVersion = nativeData.SMVersion;
 
-      await OnPreInit();
-
-      var smProcess = await _hook.CreateAndHook(
+      var smProcess = await Hook.CreateAndHookAsync(
         Collection,
         _binPath,
         GetIOCallbacks(),
         nativeData
-      );
+      ).ConfigureAwait(false);
 
       SMProcess               =  smProcess ?? throw new InvalidOperationException("Failed to start SuperMemo process");
       SMProcess.Native.Exited += OnSMExited;
 
+      // TODO: Base OnSMStarted event on a more reliable cue ?
+      Core.SM.UI.ElementWdw.OnAvailableInternal += ElementWdw_OnAvailable;
+
       Core.Natives = smProcess.Procedures;
 
-      await OnPostInit();
-
-      _hook.SignalWakeUp();
-    }
-
-    protected virtual async Task OnPreInit()
-    {
-      await Core.SMA.OnSMStarting();
-    }
-
-    protected virtual async Task OnPostInit()
-    {
       _ignoreUserConfirmationPtr = SMProcess[Core.Natives.Globals.IgnoreUserConfirmationPtr];
 
-      await Core.SMA.OnSMStarted();
+      await Core.SMA.OnSMStartingAsync().ConfigureAwait(false);
+
+      Hook.SignalWakeUp();
+    }
+
+    private void ElementWdw_OnAvailable()
+    {
+      Core.SMA.OnSMStartedAsync().RunAsync();
+
+      Core.SM.UI.ElementWdw.OnAvailableInternal -= ElementWdw_OnAvailable;
     }
 
     protected virtual void OnSMExited(object    called,

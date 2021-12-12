@@ -1,0 +1,22 @@
+<Project>
+
+  <PropertyGroup>
+    <SdkTemplateBuild>$(SolutionDir)src\Build\VS\src\SuperMemoAssistant.Sdk.Templates.Plugin\Solution\Content\src\</SdkTemplateBuild>
+  </PropertyGroup>
+  
+  <Import Project="$(SdkTemplateBuild)Directory.Build.targets" />
+  
+  <Target Name="ClearPreviousPackage" AfterTargets="Clean"
+          Condition=" '$(SuperMemoAssistantSdkVersion)' != '' "
+          DependsOnTargets="ReadPrereleaseSuffix">
+    <ItemGroup>
+      <ToDelete Include="$(PackageOutputPath)$(PackageId).$(PackageVersion).nupkg"/>
+      <ToDelete Include="$(PackageOutputPath)$(PackageId).$(PackageVersion)-$(PrereleaseSuffix)*.nupkg"/>
+    </ItemGroup>
+
+    <Delete Files="@(ToDelete)"/>
+    <Exec Command='rd "$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())" /q /s' Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') and $([MSBuild]::IsOSPlatform(Windows))"/>
+    <Exec Command='rm -rf "$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())"' Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') and !$([MSBuild]::IsOSPlatform(Windows))"/>
+  </Target>
+  
+</Project>

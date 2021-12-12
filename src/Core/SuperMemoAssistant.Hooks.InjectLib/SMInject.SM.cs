@@ -21,7 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/03/13 14:29
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/04/07 10:31
 // Modified By:  Alexis
 
 #endregion
@@ -29,20 +30,7 @@
 
 
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting;
-using Process.NET;
-using Process.NET.Marshaling;
-using Process.NET.Memory;
-using Process.NET.Native.Types;
-using Process.NET.Patterns;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.SMA.Hooks;
-using SuperMemoAssistant.SuperMemo;
-using SuperMemoAssistantHooksNativeLib;
+
 
 // ReSharper disable RedundantDelegateCreation
 // ReSharper disable PossibleMultipleEnumeration
@@ -50,6 +38,21 @@ using SuperMemoAssistantHooksNativeLib;
 
 namespace SuperMemoAssistant.Hooks.InjectLib
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Diagnostics;
+  using System.Runtime.InteropServices;
+  using System.Runtime.Remoting;
+  using Extensions;
+  using Process.NET;
+  using Process.NET.Marshaling;
+  using Process.NET.Memory;
+  using Process.NET.Native.Types;
+  using Process.NET.Patterns;
+  using SMA.Hooks;
+  using SuperMemo;
+  using SuperMemoAssistantHooksNativeLib;
+
   // ReSharper disable once ClassNeverInstantiated.Global
   public partial class SMInject
   {
@@ -68,8 +71,8 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     #region Methods
 
     /// <summary>
-    ///   Scan SuperMemo to find the methods matching the signatures provided by
-    ///   <paramref name="nativeData" />. Also sets up the WndProc detour.
+    ///   Scan SuperMemo to find the methods matching the signatures provided by <paramref name="nativeData" />. Also sets up
+    ///   the WndProc detour.
     /// </summary>
     /// <param name="nativeData">The offsets and method signatures for the running SuperMemo version</param>
     private unsafe void InstallSM(NativeData nativeData)
@@ -87,7 +90,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       ScanSMMethods(nativeData);
     }
 
-    protected void ScanSMMethods(NativeData nativeData)
+    private void ScanSMMethods(NativeData nativeData)
     {
       var scanner   = new PatternScanner(_smProcess.ModuleFactory.MainModule);
       var hintAddrs = SMA.GetPatternsHintAddresses();
@@ -111,8 +114,8 @@ namespace SuperMemoAssistant.Hooks.InjectLib
     }
 
     /// <summary>
-    ///   This is a detour from SuperMemo's WndProc method. This is used to hijack the main
-    ///   thread and execute code in SuperMemo in a thread-safe way
+    ///   This is a detour from SuperMemo's WndProc method. This is used to hijack the main thread and execute code in
+    ///   SuperMemo in a thread-safe way
     /// </summary>
     /// <param name="_"></param>
     /// <param name="msgPtr">The WndProc message</param>
@@ -129,16 +132,16 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         }
         catch (RemotingException) { }
 
-        if (msgPtr == null
+        if (msgPtr       == null
           || msgPtr->msg == (int)WindowsMessages.Quit
-          || msgPtr->msg != (int)InjectLibMessageIds.SMA)
+          || msgPtr->msg != (int)InjectLibMessageId.SMA)
           return;
 
         int wParam = msgPtr->wParam;
 
-        switch ((InjectLibMessageParams)wParam)
+        switch ((InjectLibMessageParam)wParam)
         {
-          case InjectLibMessageParams.ExecuteOnMainThread:
+          case InjectLibMessageParam.ExecuteOnMainThread:
             int res = int.MinValue;
 
             try
@@ -161,7 +164,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
             *handled = true;
             break;
 
-          case InjectLibMessageParams.AttachDebugger:
+          case InjectLibMessageParam.AttachDebugger:
             if (Debugger.IsAttached == false)
               Debugger.Launch();
 
@@ -176,14 +179,14 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       }
     }
 
+
     /// <summary>Calls method <paramref name="method" /> in SuperMemo</summary>
     /// <param name="method">The method to call</param>
     /// <param name="parameters">The method's parameters to pass along with the call</param>
-    /// <returns>
-    ///   The returned value (eax register) from the call to <paramref name="method" />
-    /// </returns>
-    protected int CallNativeMethod(NativeMethod method,
-                                   dynamic[]    parameters)
+    /// <returns>The returned value (eax register) from the call to <paramref name="method" /></returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "<Pending>")]
+    private int CallNativeMethod(NativeMethod method,
+                                 dynamic[]    parameters)
     {
       SMA.Debug($"Executing native method {Enum.GetName(typeof(NativeMethod), method)}.");
 
@@ -209,7 +212,7 @@ namespace SuperMemoAssistant.Hooks.InjectLib
         else
         {
           OnException(new ArgumentException($"CallNativeMethod: Parameter n°{i} '{p}' could not be marshalled for method {method}",
-                                            nameof(p)));
+                                            nameof(parameters)));
           return -1;
         }
       }
@@ -344,8 +347,8 @@ namespace SuperMemoAssistant.Hooks.InjectLib
 
 
 
-    protected unsafe delegate void ManagedWndProc(int          smMain,
-                                                  Delphi.TMsg* msgAddr,
-                                                  bool*        handled);
+    internal unsafe delegate void ManagedWndProc(int          smMain,
+                                                 Delphi.TMsg* msgAddr,
+                                                 bool*        handled);
   }
 }

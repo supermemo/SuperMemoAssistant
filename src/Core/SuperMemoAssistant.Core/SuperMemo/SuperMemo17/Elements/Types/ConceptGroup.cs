@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/08/07 15:17
-// Modified On:  2019/08/08 10:39
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/04/09 14:47
 // Modified By:  Alexis
 
 #endregion
@@ -30,11 +30,11 @@
 
 
 
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
-
 namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
 {
+  using Interop.SuperMemo.Elements.Models;
+  using Interop.SuperMemo.Elements.Types;
+
   public class ConceptGroup : ElementBase, IConceptGroup
   {
     #region Properties & Fields - Non-Public

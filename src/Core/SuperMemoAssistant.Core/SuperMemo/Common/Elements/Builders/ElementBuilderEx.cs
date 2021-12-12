@@ -21,7 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/01/28 18:50
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/04/09 14:46
 // Modified By:  Alexis
 
 #endregion
@@ -29,20 +30,20 @@
 
 
 
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using HtmlAgilityPack;
-using SuperMemoAssistant.Interop.SuperMemo.Content.Contents;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Builders;
-using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SuperMemo.Common.Content.Layout;
-using SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts;
-
 namespace SuperMemoAssistant.SuperMemo.Common.Elements.Builders
 {
+  using System;
+  using System.Globalization;
+  using System.Linq;
+  using System.Text;
+  using Content.Layout;
+  using Content.Layout.XamlLayouts;
+  using HtmlAgilityPack;
+  using Interop.SuperMemo.Content.Contents;
+  using Interop.SuperMemo.Elements.Builders;
+  using Interop.SuperMemo.Elements.Models;
+  using SMA;
+
   public static class ElementBuilderEx
   {
     #region Constants & Statics
@@ -88,12 +89,17 @@ End Element #1";
 
     #region Methods
 
+    /// <summary>
+    ///   Converts the <paramref name="elemBuilder" /> into an element description string suitable for SuperMemo
+    /// </summary>
+    /// <param name="elemBuilder">The element builder instance</param>
+    /// <returns>The element description</returns>
     public static string ToElementString(this ElementBuilder elemBuilder)
     {
-      string   collectionPath = Core.SM.Collection.Path;
-      int      parentId       = elemBuilder.Parent?.Id ?? 1;
-      string   lastRepDate1   = DateTime.Today.ToString("dd.MM.yy", CultureInfo.InvariantCulture);
-      string   type;
+      string collectionPath = Core.SM.Collection.Path;
+      int    parentId       = elemBuilder.ParentId ?? 1;
+      string lastRepDate1   = DateTime.Today.ToString("dd.MM.yy", CultureInfo.InvariantCulture);
+      string type;
 
       switch (elemBuilder.Type)
       {
@@ -164,7 +170,7 @@ End Element #1";
 
       var txtContent = (TextContent)elemBuilder
                                     .Contents
-                                    .FirstOrDefault(c => (c.ContentType & ContentTypeFlag.Text) != ContentTypeFlag.None);
+                                    .FirstOrDefault(c => (c.ContentType & ContentTypeFlags.Text) != ContentTypeFlags.None);
 
       if (txtContent != null)
       {

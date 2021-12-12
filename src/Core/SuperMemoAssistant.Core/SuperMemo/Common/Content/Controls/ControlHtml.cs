@@ -64,7 +64,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
     private IHTMLDocument2 _document;
 
     private int NativeControlAddr =>
-      _group._smProcess.Memory.Read<int>(Core.Natives.ElWind.ObjectsPtr, 4 * Id);
+      Group._smProcess.Memory.Read<int>(Core.Natives.ElWind.ObjectsPtr, 4 * Id);
 
     #endregion
 
@@ -87,7 +87,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
 
     #region Properties & Fields - Public
 
-    public IHTMLDocument2 Document => _document ?? (_document = GetDocument());
+    public IHTMLDocument2 Document => _document ??= GetDocument();
 
     #endregion
 
@@ -97,7 +97,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
     #region Properties Impl - Public
 
     /// <inheritdoc />
-    public IntPtr? DocumentHwnd => _documentHwnd ?? (_documentHwnd = GetDocumentHwnd());
+    public IntPtr? DocumentHwnd => _documentHwnd ??= GetDocumentHwnd();
 
     public override string Text
     {
@@ -114,8 +114,12 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
       }
       set
       {
+        // Prevents crashing
+        if (string.IsNullOrEmpty(value))
+          value = " ";
+
         Document.body.innerHTML = value;
-        Core.SM.UI.ElementWdw.SetText(this, value);
+        base.Text = value;
       }
     }
 
@@ -144,7 +148,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
       while (ieSrvFrame == null && (DateTime.Now - start).TotalMilliseconds <= 1000)
         try
         {
-          IntPtr shellEmbedHwnd = _group._smProcess.Memory.Read<IntPtr>(
+          IntPtr shellEmbedHwnd = Group._smProcess.Memory.Read<IntPtr>(
             new IntPtr(NativeControlAddr + Core.Natives.Control.HandleOffset)
           );
 

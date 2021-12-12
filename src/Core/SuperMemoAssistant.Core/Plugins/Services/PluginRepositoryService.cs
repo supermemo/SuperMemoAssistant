@@ -19,37 +19,36 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Modified On:  2020/02/27 15:53
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using Anotar.Serilog;
-using PluginManager.PackageManager;
-using PluginManager.PackageManager.Models;
-using PluginManager.Services;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Plugins.Models;
-using SuperMemoAssistant.Services.Sentry;
-using SuperMemoAssistant.SMA;
+
 
 // ReSharper disable PossibleMultipleEnumeration
 
 namespace SuperMemoAssistant.Plugins.Services
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Diagnostics.CodeAnalysis;
+  using System.Linq;
+  using System.Net;
+  using System.Net.Http;
+  using System.Threading;
+  using System.Threading.Tasks;
+  using System.Windows;
+  using Anotar.Serilog;
+  using Extensions;
+  using Models;
+  using PluginManager.PackageManager;
+  using PluginManager.PackageManager.Models;
+  using PluginManager.Services;
+  using SMA;
+  using SuperMemoAssistant.Services.Sentry;
+
   /// <inheritdoc />
   public class PluginRepositoryService : DefaultPluginRepositoryService<PluginMetadata>
   {
@@ -97,7 +96,7 @@ namespace SuperMemoAssistant.Plugins.Services
 
 
     #region Methods Impl
-    
+
     /// <inheritdoc />
     public override async Task<List<PluginMetadata>> FetchPluginMetadataList(CancellationToken cancellationToken = default)
     {
@@ -155,9 +154,9 @@ namespace SuperMemoAssistant.Plugins.Services
     #region Methods
 
     /// <summary>
-    ///   Search available NuGet repositories for all packages matching
-    ///   <paramref name="searchTerm" /> and <paramref name="enablePrerelease" />. Only NuGet packages
-    ///   that are also indexed by the API pointed to by <see cref="UpdateUrl" /> will be included.
+    ///   Search available NuGet repositories for all packages matching <paramref name="searchTerm" /> and
+    ///   <paramref name="enablePrerelease" />. Only NuGet packages that are also indexed by the API pointed to by
+    ///   <see cref="UpdateUrl" /> will be included.
     /// </summary>
     /// <param name="searchTerm">Part or totality of the package name to look for</param>
     /// <param name="enablePrerelease">Whether to include packages that are marked as pre-release</param>
@@ -167,7 +166,8 @@ namespace SuperMemoAssistant.Plugins.Services
     /// <param name="cancellationToken"></param>
     /// <returns>All available packages or <see langword="null" /></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public async Task<IEnumerable<PluginPackage<PluginMetadata>>> SearchPlugins(
+    [SuppressMessage("Security", "CA5359:Do Not Disable Certificate Validation", Justification = "<Pending>")]
+    public async Task<IEnumerable<PluginPackage<PluginMetadata>>> SearchPluginsAsync(
       string                               searchTerm,
       bool                                 enablePrerelease,
       PluginPackageManager<PluginMetadata> packageManager,

@@ -55,6 +55,8 @@ namespace SuperMemoAssistant.SMA.Configs
     [Action("BrowseFile", "Browse", Placement = Placement.Inline)]
     public string SMBinPath { get; set; }
 
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "<Pending>")]
     public Dictionary<string, int> PatternsHintAddresses { get; set; } = new Dictionary<string, int>();
 
     #endregion

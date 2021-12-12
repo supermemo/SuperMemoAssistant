@@ -19,40 +19,37 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2019/08/07 15:20
-// Modified On:  2020/01/12 10:26
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
-using Anotar.Serilog;
-using Process.NET.Assembly;
-using Process.NET.Types;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Members;
-using SuperMemoAssistant.Interop.SuperMemo.Registry.Types;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SuperMemo.Common.Extensions;
-using SuperMemoAssistant.SuperMemo.Common.Registry.Files;
-using SuperMemoAssistant.SuperMemo.Hooks;
-using SuperMemoAssistant.Sys.SparseClusteredArray;
-
 // ReSharper disable VirtualMemberCallInConstructor
 
 namespace SuperMemoAssistant.SuperMemo.Common.Registry
 {
+  using System;
+  using System.Collections;
+  using System.Collections.Concurrent;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Text.RegularExpressions;
+  using System.Threading;
+  using Anotar.Serilog;
+  using Extensions;
+  using Files;
+  using Hooks;
+  using Interop.SuperMemo.Registry.Members;
+  using Interop.SuperMemo.Registry.Types;
+  using Process.NET.Assembly;
+  using Process.NET.Types;
+  using SMA;
+  using SuperMemoAssistant.Extensions;
+  using Sys.SparseClusteredArray;
+
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1715:Identifiers should have correct prefix", Justification = "<Pending>")]
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1710:Identifiers should have correct suffix", Justification = "<Pending>")]
   public abstract class RegistryBase<TMember, IMember>
     : SMHookIOBase,
       IRegistry<IMember>
@@ -162,10 +159,10 @@ namespace SuperMemoAssistant.SuperMemo.Common.Registry
 
     protected override SparseClusteredArray<byte> GetSCAForFileName(string fileName)
     {
-      if (FileDesc.MemFileName.Equals(fileName, StringComparison.CurrentCultureIgnoreCase))
+      if (FileDesc.MemFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
         return MemSCA;
 
-      if (FileDesc.RtxFileName.Equals(fileName, StringComparison.CurrentCultureIgnoreCase))
+      if (FileDesc.RtxFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
         return RtxSCA;
 
       return null;
@@ -183,7 +180,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Registry
 
     public IEnumerator<IMember> GetEnumerator()
     {
-      return Members.Values.ToList().GetEnumerator();
+      return Members.Values.Cast<IMember>().ToList().GetEnumerator();
     }
 
     public IEnumerable<IMember> FindByName(Regex regex)

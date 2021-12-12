@@ -1,0 +1,18 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <PropertyGroup Label="PackageInfo">
+    <RepositoryUrl>https://github.com/supermemo/SuperMemoAssistant</RepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Build">
+    <RootNamespace>SuperMemoAssistant</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NBGV_WriteProjectVersion Condition=" '$(NBGV_WriteProjectVersion)' == '' ">false</NBGV_WriteProjectVersion>
+    <VersionJsonFilePath>$(SolutionDir)src\Core\version.json</VersionJsonFilePath>
+  </PropertyGroup>
+
+</Project>

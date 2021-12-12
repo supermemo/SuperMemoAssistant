@@ -19,26 +19,25 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2020/01/11 15:02
-// Modified On:  2020/01/11 18:42
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using Anotar.Serilog;
-using SuperMemoAssistant.SMA;
+
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable InconsistentNaming
 
 namespace SuperMemoAssistant.SuperMemo.Natives
 {
+  using System;
+  using System.Diagnostics.CodeAnalysis;
+  using Anotar.Serilog;
+  using SMA;
+
+  [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>")]
   public partial class SMNatives
   {
     public class TSMMain
@@ -47,7 +46,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
 
       public TSMMain(NativeData nativeData)
       {
-        InstancePtr = new IntPtr(nativeData.Pointers[NativePointers.SMMain_InstancePtr]);
+        InstancePtr = new IntPtr(nativeData.Pointers[NativePointer.SMMain_InstancePtr]);
       }
 
       #endregion

@@ -61,8 +61,9 @@ namespace SuperMemoAssistant.Plugins.Template
     #region Methods Impl
 
     /// <inheritdoc />
-    protected override void PluginInit()
+    protected override void OnPluginInitialized()
     {
+      base.OnPluginInitialized();
     }
     
     /// <inheritdoc />

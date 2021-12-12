@@ -1,0 +1,29 @@
+<Project>
+
+  <PropertyGroup>
+    <SdkTemplateBuild>$(SolutionDir)src\Build\VS\src\SuperMemoAssistant.Sdk.Templates.Plugin\Solution\Content\src\</SdkTemplateBuild>
+  </PropertyGroup>
+  
+  <Import Project="$(SdkTemplateBuild)Directory.Build.props" />
+
+  <PropertyGroup Label="PackageInfo">
+    <Authors>Alexis;SuperMemo.wiki</Authors>
+    <Copyright>© SuperMemo.wiki</Copyright>
+    <Company>SuperMemo.wiki</Company>
+  </PropertyGroup>
+  
+  <PropertyGroup Label="Package Settings">
+    <PackageOutputPath Condition=" '$(PackageOutputPath)' == '$(SolutionDir)releases\' ">$(SolutionDir)releases\nupkg\</PackageOutputPath>
+  </PropertyGroup>
+  
+  <PropertyGroup Label="Build">
+    <SdkCommonBuild>$(SolutionDir)src\Build\MSBuild\src\SuperMemoAssistant.Sdk.Common\Build\</SdkCommonBuild>
+    <CodeAnalysisRuleSet>$(SolutionDir)src\CodeStyle.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup Label="GitVersioning">
+    <!--GitVersioning cannot find the git root and throws an error-->
+    <!--<GitRepoRoot>$(SolutionDir)</GitRepoRoot>-->
+  </PropertyGroup>
+
+</Project>

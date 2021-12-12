@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -19,35 +19,30 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2019/03/02 18:29
-// Modified On:  2019/03/02 23:43
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.SMA.Configs;
-using SuperMemoAssistant.SuperMemo.Common.Content.Layout.XamlLayouts;
-
 namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Collections.ObjectModel;
+  using System.IO;
+  using System.Linq;
+  using System.Threading.Tasks;
+  using Interop.SuperMemo.Core;
+  using SMA;
+  using SMA.Configs;
+  using SuperMemoAssistant.Extensions;
+  using XamlLayouts;
+
   public class LayoutManager
   {
     #region Constants & Statics
-    
+
     public static LayoutManager Instance { get; } = new LayoutManager();
 
     public static XamlLayout GenericLayout => Instance._layoutMap[GenericLayoutName];
@@ -76,7 +71,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout
 
     public LayoutManager()
     {
-      Core.SMA.OnSMStartedEvent += OnSMStarted;
+      Core.SMA.OnSMStartingInternalEvent += OnSMStartingAsync;
     }
 
     #endregion
@@ -165,7 +160,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout
       _config.Default = Default.Name;
       _config.Layouts = new List<XamlLayout>(Layouts.Where(l => l.IsBuiltIn == false));
 
-      Core.Configuration.Save(_config).RunAsync();
+      Core.Configuration.SaveAsync(_config).RunAsync();
     }
 
     private void OnLayoutNameChanged(XamlLayout xamlLayout, string before, string after)
@@ -180,9 +175,9 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout
       _layoutMap[after] = xamlLayout;
     }
 
-    private async Task OnSMStarted(object sender, Interop.SuperMemo.Core.SMProcessArgs eventArgs)
+    private async Task OnSMStartingAsync(object sender, SMEventArgs eventArgs)
     {
-      _config = await Core.Configuration.Load<LayoutsCfg>() ?? new LayoutsCfg();
+      _config = await Core.Configuration.LoadAsync<LayoutsCfg>().ConfigureAwait(false) ?? new LayoutsCfg();
 
       _layouts   = new ObservableCollection<XamlLayout>(_config.Layouts);
       _layoutMap = _layouts.ToDictionary(k => k.Name);
@@ -202,13 +197,16 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Layout
       );
     }
 
-    private string LoadXamlFromResource(string xamlFileName)
+    private static string LoadXamlFromResource(string xamlFileName)
     {
-      var assembly   = Assembly.GetExecutingAssembly();
       var @namespace = typeof(XamlLayout).Namespace;
+      var assembly   = typeof(XamlLayout).Assembly;
 
       using (var stream = assembly.GetManifestResourceStream($"{@namespace}.{xamlFileName}"))
-      using (var streamReader = new StreamReader(stream ?? throw new ArgumentException(nameof(xamlFileName))))
+      using (var streamReader =
+        new StreamReader(
+          stream ?? throw new ArgumentException($"'{nameof(xamlFileName)}' Invalid stream for Xaml resource '{@namespace}.{xamlFileName}'"))
+      )
         return streamReader.ReadToEnd();
     }
 

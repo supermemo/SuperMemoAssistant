@@ -19,50 +19,50 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Modified On:  2020/03/13 02:07
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Threading;
-using Windows.Data.Xml.Dom;
-using Windows.UI.Notifications;
-using Extensions.System.IO;
-using Microsoft.QueryStringDotNET;
-using Microsoft.Toolkit.Uwp.Notifications;
-using PluginManager;
-using PluginManager.Contracts;
-using PluginManager.Interop.Contracts;
-using PluginManager.Logger;
-using PluginManager.PackageManager.Models;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Interop;
-using SuperMemoAssistant.Interop.Plugins;
-using SuperMemoAssistant.Interop.SuperMemo;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.Plugins.Models;
-using SuperMemoAssistant.SMA;
-using SuperMemoAssistant.Sys.Windows;
-
 // ReSharper disable RedundantTypeArgumentsOfMethod
 
 namespace SuperMemoAssistant.Plugins
 {
+  using System;
+  using System.ComponentModel;
+  using System.Diagnostics;
+  using System.Linq;
+  using System.Threading;
+  using System.Threading.Tasks;
+  using System.Windows;
+  using System.Windows.Threading;
+  using Anotar.Serilog;
+  using Extensions;
+  using global::Extensions.System.IO;
+  using Interop;
+  using Interop.SMA;
+  using Interop.SuperMemo.Core;
+  using Microsoft.QueryStringDotNET;
+  using Microsoft.Toolkit.Uwp.Notifications;
+  using Models;
+  using NuGet.Configuration;
+  using NuGet.Versioning;
+  using PluginManager.Contracts;
+  using PluginManager.Logger;
+  using PluginManager.Models;
+  using PluginManager.PackageManager.Models;
+  using PluginManager.PackageManager.NuGet;
+  using SMA;
+  using SMA.Configs;
+  using Sys.Windows;
   using TPluginManager =
-    PluginManagerBase<SMAPluginManager, PluginInstance, PluginMetadata, IPluginManager<ISuperMemoAssistant>, ISuperMemoAssistant, ISMAPlugin
+    PluginManager.PluginManagerBase<SMAPluginManager, Models.PluginInstance, Models.PluginMetadata,
+      PluginManager.Interop.Contracts.IPluginManager<Interop.SMA.ISuperMemoAssistant>, Interop.SMA.ISuperMemoAssistant,
+      Interop.Plugins.ISMAPlugin
     >;
 
-  /// <inheritdoc cref="TPluginManager"/>
+  /// <inheritdoc cref="TPluginManager" />
   public partial class SMAPluginManager : TPluginManager, IPluginLocations
   {
     #region Constants & Statics
@@ -71,6 +71,8 @@ namespace SuperMemoAssistant.Plugins
 
     public const string ToastActionRestartAfterCrash = "PluginRestartAfterCrash";
     public const string ToastActionParameterPluginId = "PluginId";
+
+    private const string MinInteropVersion = "2.1.0-beta.11";
 
     #endregion
 
@@ -91,11 +93,17 @@ namespace SuperMemoAssistant.Plugins
 
     private SMAPluginManager()
     {
-      Core.SMA.OnSMStartedEvent += OnSMStarted;
-      Core.SMA.OnSMStoppedEvent += OnSMStopped;
-
-      base.Initialize(false).Wait();
+      Core.SMA.OnSMStoppedInternalEvent += OnSMStopped;
     }
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public PluginInstance this[Guid sessionGuid] => RunningPluginMap.SafeGet(sessionGuid);
 
     #endregion
 
@@ -104,17 +112,28 @@ namespace SuperMemoAssistant.Plugins
 
     #region Methods
 
-    private async Task OnSMStarted(object sender, SMProcessArgs e)
+    public async Task InitializeAsync()
     {
+      await base.Initialize(false).ConfigureAwait(false);
+
+      Core.CoreConfig.Updates.PropertyChanged += OnUpdatesConfigChanged;
+      OnUpdatesConfigChanged(null, new PropertyChangedEventArgs(nameof(UpdateCfg.CoreUpdateChannel)));
+
       // ReSharper disable once AssignNullToNotNullAttribute
       _uiSynchronizationContext = new DispatcherSynchronizationContext(Application.Current.Dispatcher);
-
-      await StartPlugins().ConfigureAwait(false);
     }
 
-    private void OnSMStopped(object sender, SMProcessArgs e)
+    private void OnSMStopped(object sender, SMProcessEventArgs e)
     {
       base.Cleanup();
+    }
+
+    private void OnUpdatesConfigChanged(object sender, PropertyChangedEventArgs e)
+    {
+      if (e.PropertyName != nameof(UpdateCfg.CoreUpdateChannel))
+        return;
+
+      SetAlphaRepoEnabledState(PackageManager.SourceRepositories);
     }
 
     /// <summary>Adds an additional handler for <see cref="SMAPluginManager" /> log output</summary>
@@ -125,6 +144,21 @@ namespace SuperMemoAssistant.Plugins
     /// <param name="logger">The log handler</param>
     public void RemoveLogger(Action<string> logger) => _logAdapter.RemoveLogger(logger);
 
+    private void SetAlphaRepoEnabledState(SourceRepositoryProvider srp)
+    {
+      var alphaRepo = srp.Keys.FirstOrDefault(ps => ps.Name == UpdateCfg.PluginsAlphaRepositoryUrl);
+
+      if (alphaRepo == null)
+      {
+        LogTo.Error("Alpha repository is unavailable.");
+        return;
+      }
+
+      // Only enable alpha repository when SMA core channel is set to Nightly or Test
+      alphaRepo.IsEnabled = Core.CoreConfig.Updates.CoreUpdateChannel == UpdateCfg.CoreNightlyChannel
+        || Core.CoreConfig.Updates.CoreUpdateChannel.Equals("Test", StringComparison.OrdinalIgnoreCase);
+    }
+
     #endregion
 
 
@@ -132,62 +166,59 @@ namespace SuperMemoAssistant.Plugins
 
     #region IPluginManagerBase
 
+    public override SourceRepositoryProvider CreateSourceRepositoryProvider(ISettings s)
+    {
+      var srp = new SourceRepositoryProvider(s, Core.CoreConfig.Updates.PluginsUpdateNuGetUrls);
+
+      SetAlphaRepoEnabledState(srp);
+
+      return srp;
+    }
+
+    /// <inheritdoc />
+    protected override void OnPluginStartFailed(
+      PluginInstance     pluginInstance,
+      PluginStartFailure reason,
+      string             errMsg)
+    {
+      base.OnPluginStartFailed(pluginInstance, reason, errMsg);
+
+      errMsg.ShowDesktopNotification();
+    }
+
     /// <inheritdoc />
     protected override void OnPluginCrashed(PluginInstance pluginInstance)
     {
-      ToastContent toastContent = new ToastContent
-      {
-        Visual = new ToastVisual
+      $"{pluginInstance.ToString().CapitalizeFirst()} has crashed.".ShowDesktopNotification(
+        // Restart action
+        new ToastButton("Restart",
+                        new QueryString
+                        {
+                          { "action", ToastActionRestartAfterCrash },
+                          { ToastActionParameterPluginId, pluginInstance.Package.Id }
+                        }.ToString())
         {
-          BindingGeneric = new ToastBindingGeneric
-          {
-            Children =
-            {
-              new AdaptiveText
-              {
-                Text = $"{pluginInstance.ToString().CapitalizeFirst()} has crashed."
-              }
-            }
-          }
+          ActivationType = ToastActivationType.Background
         },
-        Actions = new ToastActionsCustom
+
+        // Open logs folder action
+        new ToastButton("Open the logs folder", SMAFileSystem.LogDir.FullPathWin)
         {
-          Buttons =
-          {
-            // Restart action
-            new ToastButton("Restart",
-                            new QueryString
-                            {
-                              { "action", ToastActionRestartAfterCrash },
-                              { ToastActionParameterPluginId, pluginInstance.Package.Id }
-                            }.ToString())
-            {
-              ActivationType = ToastActivationType.Background
-            },
-
-            // Open logs folder action
-            new ToastButton("Open the logs folder", SMAFileSystem.LogDir.FullPathWin)
-            {
-              ActivationType = ToastActivationType.Protocol
-            }
-          }
+          ActivationType = ToastActivationType.Protocol
         }
-      };
-
-      var doc = new XmlDocument();
-      doc.LoadXml(toastContent.GetContent());
-
-      // And create the toast notification
-      var toast = new ToastNotification(doc);
-
-      // And then show it
-      DesktopNotificationManager.CreateToastNotifier().Show(toast);
+      );
     }
 
     /// <inheritdoc />
     public override string GetPluginHostTypeAssemblyName(PluginInstance pluginInstance)
     {
       return "SuperMemoAssistant.Interop";
+    }
+
+    /// <inheritdoc />
+    public override NuGetVersion GetPluginHostTypeAssemblyMinimumVersion(PluginInstance pluginInstance)
+    {
+      return NuGetVersion.Parse(MinInteropVersion); // NuGetVersion.Parse(typeof(SMAConst).GetAssemblyVersion());
     }
 
     /// <inheritdoc />

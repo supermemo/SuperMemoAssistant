@@ -19,36 +19,58 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Created On:   2020/01/11 19:03
-// Modified On:  2020/01/11 19:03
-// Modified By:  Alexis
 
 #endregion
 
 
 
 
-using System;
-using System.Threading.Tasks;
-using Anotar.Serilog;
-using AsyncEvent;
-using SuperMemoAssistant.Interop.SuperMemo.Core;
-using SuperMemoAssistant.SMA.UI;
-
 namespace SuperMemoAssistant.SMA
 {
+  using System;
+  using System.Threading.Tasks;
+  using Anotar.Serilog;
+  using AsyncEvent;
+  using Extensions;
+  using Interop.SuperMemo.Core;
+
   public partial class SMA
   {
     #region Methods
 
-    public async Task OnSMStarting()
+    public async Task OnCollectionSelectedAsync(SMCollection collection)
     {
       try
       {
-        if (OnSMStartingEvent != null)
-          await OnSMStartingEvent.InvokeAsync(this, new SMEventArgs(_sm)).ConfigureAwait(false);
+        _sm.UI.ElementWdw.OnAvailableInternal += OnSuperMemoWindowsAvailable;
+
+        if (OnCollectionSelectedInternalEvent != null)
+          await OnCollectionSelectedInternalEvent.InvokeAsync(this, new SMEventArgs(_sm)).ConfigureAwait(false);
+
+        OnCollectionSelectedEvent?.InvokeRemote(
+          nameof(OnCollectionSelectedAsync),
+          collection,
+          h => OnCollectionSelectedEvent -= h
+        );
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "Exception while notifying subscribers of OnCollectionSelected");
+        throw;
+      }
+    }
+
+    public async Task OnSMStartingAsync()
+    {
+      try
+      {
+        if (OnSMStartingInternalEvent != null)
+          await OnSMStartingInternalEvent.InvokeAsync(this, new SMEventArgs(_sm)).ConfigureAwait(false);
+
+        OnSMStartingEvent?.InvokeRemote(
+          nameof(OnSMStartingEvent),
+          h => OnSMStartingEvent -= h
+        );
       }
       catch (Exception ex)
       {
@@ -57,23 +79,25 @@ namespace SuperMemoAssistant.SMA
       }
     }
 
-    public async Task OnSMStarted()
+    public async Task OnSMStartedAsync()
     {
       try
       {
-        await SaveConfig(false).ConfigureAwait(false);
+        await SaveConfigAsync().ConfigureAwait(false);
 
-        SMAUI.Initialize();
-
-        if (OnSMStartedEvent != null)
-          await OnSMStartedEvent.InvokeAsync(
+        if (OnSMStartedInternalEvent != null)
+          await OnSMStartedInternalEvent.InvokeAsync(
             this,
-            new SMProcessArgs(_sm, SMProcess.Native)).ConfigureAwait(true);
+            new SMProcessEventArgs(_sm, SMProcess.Native)).ConfigureAwait(false);
+
+        OnSMStartedEvent?.InvokeRemote(
+          nameof(OnSMStartingEvent),
+          h => OnSMStartingEvent -= h
+        );
       }
       catch (Exception ex)
       {
         LogTo.Error(ex, "Exception while notifying subscribers of OnSMStarted");
-
         throw;
       }
     }
@@ -84,7 +108,12 @@ namespace SuperMemoAssistant.SMA
 
       try
       {
-        OnSMStoppedEvent?.Invoke(this, null);
+        OnSMStoppedInternalEvent?.Invoke(this, null);
+
+        OnSMStoppedEvent?.InvokeRemote(
+          nameof(OnSMStartingEvent),
+          h => OnSMStartingEvent -= h
+        );
       }
       catch (Exception ex)
       {
@@ -105,9 +134,18 @@ namespace SuperMemoAssistant.SMA
 
     #region Events
 
-    public event AsyncEventHandler<SMProcessArgs> OnSMStartedEvent;
-    public event AsyncEventHandler<SMEventArgs>   OnSMStartingEvent;
-    public event EventHandler<SMProcessArgs> OnSMStoppedEvent;
+    /// <inheritdoc />
+    public event Action<SMCollection> OnCollectionSelectedEvent;
+    public event AsyncEventHandler<SMEventArgs> OnCollectionSelectedInternalEvent;
+    /// <inheritdoc />
+    public event Action OnSMStartedEvent;
+    public event AsyncEventHandler<SMProcessEventArgs> OnSMStartedInternalEvent;
+    /// <inheritdoc />
+    public event Action OnSMStartingEvent;
+    public event AsyncEventHandler<SMEventArgs> OnSMStartingInternalEvent;
+    /// <inheritdoc />
+    public event Action OnSMStoppedEvent;
+    public event EventHandler<SMProcessEventArgs> OnSMStoppedInternalEvent;
 
     #endregion
   }

@@ -22,8 +22,9 @@
 // 
 // 
 // Created On:   2020/01/11 15:53
-// Modified On:  2020/01/11 16:00
-// Modified By:  Alexis
+// Modified On:  2022/12/17 16:00
+// Modified By:  - Alexis
+//               - Ki
 
 #endregion
 
@@ -48,8 +49,10 @@ namespace SuperMemoAssistant.SuperMemo
     ElWdw_LearningModePtr,
     SMMain_InstancePtr,
     Database_InstancePtr,
+    Contents_InstancePtr,
     Registry_FileSpaceInstance,
     Registry_TextRegistryInstance,
+    Registry_CommentRegistryInstance,
     Registry_ImageRegistryInstance,
     Registry_SoundRegistryInstance,
     Registry_VideoRegistryInstance,

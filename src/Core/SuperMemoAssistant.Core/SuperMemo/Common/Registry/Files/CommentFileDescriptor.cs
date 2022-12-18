@@ -1,4 +1,4 @@
-﻿#region License & Metadata
+#region License & Metadata
 
 // The MIT License (MIT)
 // 
@@ -21,37 +21,29 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/01/19 04:25
-// Modified On:  2022/12/17 04:30
-// Modified By:  - Alexis
-//               - Ki
+// Created On:   2022/12/17 14:51
+// Modified On:  2022/12/17 14:55
+// Modified By:  Ki
 
 #endregion
 
 
 
 
-using System;
-using System.Collections.Generic;
+using SuperMemoAssistant.Interop;
 
-namespace SuperMemoAssistant.SMA.Hooks
+namespace SuperMemoAssistant.SuperMemo.Common.Registry.Files
 {
-  public interface ISMAHookSystem
+  public class CommentFileDescriptor : IRegistryFileDescriptor
   {
-    //
-    // System
-    void OnException(Exception ex);
+    #region Properties Impl - Public
 
-    void SetWndProcHookAddr(int addr);
+    public string RegistryName => "Comment";
+    public string MemFileName  => SMConst.Files.CommentMemFileName;
+    public string RtxFileName  => SMConst.Files.CommentRtxFileName;
+    public string RtfFileName  => SMConst.Files.CommentRtfFileName;
+    public bool   IsOptional   => false;
 
-    bool OnUserMessage(int wParam);
-
-    void GetExecutionParameters(out int       method,
-                                out dynamic[] parameters);
-
-    void SetExecutionResult(int result, dynamic outParameter);
-
-    Dictionary<string, int> GetPatternsHintAddresses();
-    void                    SetPatternsHintAddresses(Dictionary<string, int> hintAddrs);
+    #endregion
   }
 }

@@ -311,7 +311,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
     public bool FindText()
     {
-      try
+      throw new NotImplementedException();
+      /*try
       {
         return Core.Natives.Contents.FindText(
           ContentsPtr.Read<IntPtr>(),
@@ -321,7 +322,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       {
         LogTo.Error(ex, "Native method call threw an exception.");
         return false;
-      }
+      }*/
     }
 
     public int GenerateExtract(ElementType elementType, bool memorize = true, bool askUserToScheduleInterval = false)
@@ -562,7 +563,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
 
     public float GetElementPriority(int elementNumber)
     {
-      try
+      throw new NotImplementedException();
+      /*try
       {
         return Core.Natives.ElWind.GetElementPriority(elementNumber);
       }
@@ -575,7 +577,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       {
         LogTo.Error(ex, "SM internal method call threw an exception.");
         return 0;
-      }
+      }*/
     }
 
     public bool PostponeRepetition(int interval)

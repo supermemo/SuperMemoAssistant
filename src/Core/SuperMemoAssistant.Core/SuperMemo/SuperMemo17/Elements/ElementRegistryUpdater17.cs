@@ -209,7 +209,6 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
         elem.ConceptId  = elElem._elem.conceptId;
 
         elem.ComponentPos = elElem._elem.componPos;
-        elem.CommentId = elElem._elem.commentId;
         // elem.AFactor = elElem._elem.AFactor
       }
 

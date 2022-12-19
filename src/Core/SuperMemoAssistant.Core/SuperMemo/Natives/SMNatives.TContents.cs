@@ -64,7 +64,8 @@ namespace SuperMemoAssistant.SuperMemo.Natives
 
       public bool FindText(IntPtr contentsPtr, string text)
       {
-        // TODO Delete this, This does nothing!
+        throw new NotImplementedException();
+        /* This does nothing!
         try
         {
           string str = "Testng";
@@ -77,6 +78,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
           LogTo.Error(ex, "Native method call threw an exception.");
           return false;
         }
+        */
       }
     }
   }

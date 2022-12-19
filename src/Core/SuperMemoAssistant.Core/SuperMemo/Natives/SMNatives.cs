@@ -39,6 +39,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
       Globals     = new TGlobals(nativeData);
       Application = new TApplication(nativeData);
       Control     = new TControl(nativeData);
+      Contents    = new TContents(nativeData);
       ElWind      = new TElWind(nativeData);
       SMMain      = new TSMMain(nativeData);
       Database    = new TDatabase(nativeData);
@@ -60,6 +61,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
     public TElWind      ElWind      { get; }
     public TSMMain      SMMain      { get; }
     public TDatabase    Database    { get; }
+    public TContents    Contents    { get; }
     public TRegistry    Registry    { get; }
     public TFileSpace   FileSpace   { get; }
     public TQueue       Queue       { get; }

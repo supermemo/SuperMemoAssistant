@@ -42,7 +42,7 @@ namespace SuperMemoAssistant.SuperMemo.Common.Registry.Files
     public string MemFileName  => SMConst.Files.CommentMemFileName;
     public string RtxFileName  => SMConst.Files.CommentRtxFileName;
     public string RtfFileName  => SMConst.Files.CommentRtfFileName;
-    public bool   IsOptional   => false;
+    public bool   IsOptional   => true;
 
     #endregion
   }

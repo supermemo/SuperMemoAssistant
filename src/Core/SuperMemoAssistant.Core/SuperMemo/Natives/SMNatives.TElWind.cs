@@ -497,7 +497,8 @@ namespace SuperMemoAssistant.SuperMemo.Natives
 
       public float GetElementPriority(int elementNumber)
       {
-        // TODO this doesn't work because there's no way to get the ST0 float value
+        throw new NotImplementedException();
+        /* TODO this doesn't work because there's no way to get the ST0 float value
         try
         {
           var priority = NativeMethod.TPriority_GetElementPriority.ExecuteOnMainThread(elementNumber);
@@ -508,7 +509,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         {
           LogTo.Error(ex, "Native method call threw an exception.");
           return 0;
-        }
+        }*/
       }
 
       public bool PostponeRepetition(IntPtr elementWdwPtr, int interval)

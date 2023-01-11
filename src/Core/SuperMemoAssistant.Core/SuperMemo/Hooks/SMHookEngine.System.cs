@@ -22,8 +22,9 @@
 // 
 // 
 // Created On:   2020/03/29 00:20
-// Modified On:  2020/04/09 15:11
-// Modified By:  Alexis
+// Modified On:  2022/12/17 15:11
+// Modified By:  - Alexis
+//               - Ki
 
 #endregion
 
@@ -129,9 +130,10 @@ But most likely, NativeLib exists and failed to load other assemblies or librari
     }
 
     /// <inheritdoc />
-    public override void SetExecutionResult(int result)
+    public override void SetExecutionResult(int result, dynamic outParameter)
     {
       _execCtxt.ExecutionResult = result;
+      _execCtxt.ExecutionOutParameter = outParameter;
       _mainThreadReadyEvent.Set();
     }
 
@@ -144,13 +146,15 @@ But most likely, NativeLib exists and failed to load other assemblies or librari
 
     // TODO: Not thread safe & ugly overall...
     public int ExecuteOnMainThread(NativeMethod method,
-                                   dynamic[]    parameters)
+                                   dynamic[]    parameters,
+                                   out dynamic  outParameter)
     {
       _mainThreadReadyEvent.Reset();
 
       _execCtxt.ExecutionResult     = 0;
       _execCtxt.ExecutionMethod     = method;
       _execCtxt.ExecutionParameters = parameters;
+      _execCtxt.ExecutionOutParameter = null;
 
       var smMem = Core.SM.SMProcess.Memory;
 
@@ -172,6 +176,7 @@ But most likely, NativeLib exists and failed to load other assemblies or librari
       Core.Natives.Application.TApplicationOnMessagePtr.Write<int>(smMem, 0);
 
       _execCtxt.ExecutionParameters = null;
+      outParameter = _execCtxt.ExecutionOutParameter;
 
       return _execCtxt.ExecutionResult;
     }
@@ -187,6 +192,7 @@ But most likely, NativeLib exists and failed to load other assemblies or librari
 
       public NativeMethod         ExecutionMethod     { get; set; }
       public IEnumerable<dynamic> ExecutionParameters { get; set; }
+      public dynamic              ExecutionOutParameter { get; set; }
       public int                  ExecutionResult     { get; set; }
 
       #endregion

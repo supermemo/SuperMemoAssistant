@@ -32,8 +32,10 @@ namespace SuperMemoAssistant.SuperMemo.Natives
 {
   using System;
   using System.Diagnostics.CodeAnalysis;
+  using System.Runtime.InteropServices;
   using System.Threading;
   using System.Threading.Tasks;
+  using System.Windows;
   using Anotar.Serilog;
   using Extensions;
   using Interop.SuperMemo.Content.Controls;
@@ -263,6 +265,47 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
+      public bool NextRepetition(IntPtr elementWdwPtr)
+      {
+        try
+        {
+          return NativeMethod.ElWdw_NextRepetitionClick.ExecuteOnMainThread(
+            elementWdwPtr) == 1;
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, "Native method call threw an exception.");
+          return false;
+        }
+      }
+
+      public bool ForwardButtonClick(IntPtr elementWdwPtr)
+      {
+        try
+        {
+          return NativeMethod.ElWdw_ForwardButtonClick.ExecuteOnMainThread(
+            elementWdwPtr) == 1;
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, "Native method call threw an exception.");
+          return false;
+        }
+      }
+      public bool BackButtonClick(IntPtr elementWdwPtr)
+      {
+        try
+        {
+          return NativeMethod.ElWdw_BackButtonClick.ExecuteOnMainThread(
+            elementWdwPtr) == 1;
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, "Native method call threw an exception.");
+          return false;
+        }
+      }
+
       public bool DeleteCurrentElement(IntPtr elementWdwPtr)
       {
         try
@@ -350,6 +393,125 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         }
       }
 
+      public bool AppendComment(IntPtr databasePtr, int elementId, string comment)
+      {
+        try
+        {
+          NativeMethod.Database_AppendComment.ExecuteOnMainThread(
+            databasePtr,
+            elementId,
+            new DelphiUTF16String(comment));
+
+          return true;
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, "Native method call threw an exception.");
+          return false;
+        }
+      }
+
+      public bool SetPriority(int elementId, double priority)
+      {
+        try
+        {
+          NativeMethod.Priority_SetPriority.ExecuteOnMainThread(
+            elementId,
+            (Int64)priority);
+
+          return true;
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, "Native method call threw an exception.");
+          return false;
+        }
+      }
+
+      public bool SetTitle(IntPtr databasePtr, int elementId, string title)
+      {
+        try
+        {
+          NativeMethod.Database_SetTitle.ExecuteOnMainThread(
+            databasePtr,
+            elementId,
+            new DelphiUTF16String(title));
+
+          return true;
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, "Native method call threw an exception.");
+          return false;
+        }
+      }
+
+      public bool SetGrade(IntPtr elementWdwPtr, int grade)
+      {
+        try
+        {
+          NativeMethod.ElWdw_SetGrade.ExecuteOnMainThread(
+            elementWdwPtr,
+            (int)grade);
+
+          return true;
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, "Native method call threw an exception.");
+          return false;
+        }
+      }
+
+      public string GetElementAsText(IntPtr elementWdwPtr)
+      {
+        try
+        {
+          dynamic ret = "";
+          if (NativeMethod.ElWdw_GetElementAsText.ExecuteOnMainThreadWithOutParameter(out ret, elementWdwPtr) == 0)
+          {
+            return null;
+          }
+          return (string)ret;
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, "Native method call threw an exception.");
+          return null;
+        }
+      }
+
+      public bool BeginLearning(IntPtr elementWdwPtr, int learningMode)
+      {
+        try
+        {
+          NativeMethod.ElWdw_BeginLearning.ExecuteOnMainThread(elementWdwPtr, learningMode);
+          return true;
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, "Native method call threw an exception.");
+          return false;
+        }
+      }
+
+      public float GetElementPriority(int elementNumber)
+      {
+        throw new NotImplementedException();
+        /* TODO this doesn't work because there's no way to get the ST0 float value
+        try
+        {
+          var priority = NativeMethod.TPriority_GetElementPriority.ExecuteOnMainThread(elementNumber);
+
+          return priority;
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, "Native method call threw an exception.");
+          return 0;
+        }*/
+      }
+
       public bool PostponeRepetition(IntPtr elementWdwPtr, int interval)
       {
         try
@@ -402,6 +564,22 @@ namespace SuperMemoAssistant.SuperMemo.Natives
         {
           LogTo.Error(ex, "Native method call threw an exception.");
           return -1;
+        }
+      }
+
+      public bool DismissElement(IntPtr elementWdwPtr, int elNo)
+      {
+        try
+        {
+          return NativeMethod.ElWdw_DismissElement.ExecuteOnMainThread(
+            elementWdwPtr,
+            elNo,
+            0) == 1;
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, "Native method call threw an exception.");
+          return false;
         }
       }
 

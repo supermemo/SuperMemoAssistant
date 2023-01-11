@@ -219,6 +219,7 @@ namespace SuperMemoAssistant.SuperMemo.Common
         _registry.Element,
         _registry.Component,
         _registry.Text,
+        _registry.Comment,
         _registry.Binary,
         _registry.Concept,
         _registry.Image,

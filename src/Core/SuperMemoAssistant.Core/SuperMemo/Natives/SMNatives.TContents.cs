@@ -1,4 +1,4 @@
-﻿#region License & Metadata
+#region License & Metadata
 
 // The MIT License (MIT)
 // 
@@ -19,53 +19,67 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
+// 
+// 
+// Created On:   2021/12/04 15:01
+// Modified On:  2021/12/04 16:04
+// Modified By:  Ki
 
 #endregion
 
 
 
 
-// ReSharper disable InconsistentNaming
+using Anotar.Serilog;
+using Process.NET.Types;
+using SuperMemoAssistant.SMA;
+using System;
+
 // ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable InconsistentNaming
 
 namespace SuperMemoAssistant.SuperMemo.Natives
 {
   public partial class SMNatives
   {
-    #region Constructors
-
-    public SMNatives(NativeData nativeData)
+    public class TContents
     {
-      Globals     = new TGlobals(nativeData);
-      Application = new TApplication(nativeData);
-      Control     = new TControl(nativeData);
-      Contents    = new TContents(nativeData);
-      ElWind      = new TElWind(nativeData);
-      SMMain      = new TSMMain(nativeData);
-      Database    = new TDatabase(nativeData);
-      Registry    = new TRegistry(Database, nativeData);
-      FileSpace   = new TFileSpace(Database, nativeData);
-      Queue       = new TQueue(nativeData);
+      #region Constructors
+
+      public TContents(NativeData nativeData)
+      {
+        InstancePtr = new IntPtr(nativeData.Pointers[NativePointer.Contents_InstancePtr]);
+      }
+
+      #endregion
+
+
+
+
+      #region Properties & Fields - Public
+
+      public IntPtr InstancePtr { get; }
+
+      #endregion
+
+      public bool FindText(IntPtr contentsPtr, string text)
+      {
+        throw new NotImplementedException();
+        /* This does nothing!
+        try
+        {
+          string str = "Testng";
+          return NativeMethod.Contents_FindText.ExecuteOnMainThread(
+            contentsPtr,
+            str) == 1;
+        }
+        catch (Exception ex)
+        {
+          LogTo.Error(ex, "Native method call threw an exception.");
+          return false;
+        }
+        */
+      }
     }
-
-    #endregion
-
-
-
-
-    #region Properties & Fields - Public
-
-    public TGlobals     Globals     { get; }
-    public TApplication Application { get; }
-    public TControl     Control     { get; }
-    public TElWind      ElWind      { get; }
-    public TSMMain      SMMain      { get; }
-    public TDatabase    Database    { get; }
-    public TContents    Contents    { get; }
-    public TRegistry    Registry    { get; }
-    public TFileSpace   FileSpace   { get; }
-    public TQueue       Queue       { get; }
-
-    #endregion
   }
 }

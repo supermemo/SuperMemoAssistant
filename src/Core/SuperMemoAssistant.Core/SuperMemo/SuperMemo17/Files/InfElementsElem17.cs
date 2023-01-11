@@ -22,8 +22,9 @@
 // 
 // 
 // Created On:   2018/05/19 14:02
-// Modified On:  2019/01/24 14:09
-// Modified By:  Alexis
+// Modified On:  2022/12/17 14:09
+// Modified By:  - Alexis
+//               - Ki
 
 #endregion
 
@@ -93,13 +94,13 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
     [FieldOffset(50)]
     /* 0x32 */ public int unknown12;
     [FieldOffset(54)]
-    /* 0x36 */ public int unknown13;
-    [FieldOffset(58)]
-    /* 0x3A */ public byte unknownbyte16;
-    [FieldOffset(59)]
-    /* 0x3B */ public byte unknownbyte17;
-    [FieldOffset(60)]
-    /* 0x3C */ public byte unknownbyte18;
+    /* 0x36 */ public byte unknownbyte16;
+    [FieldOffset(55)]
+    /* 0x37 */ public byte unknownbyte17;
+    [FieldOffset(56)]
+    /* 0x38 */ public byte unknownbyte18;
+    [FieldOffset(57)]
+    /* 0x39 */ public int commentId;
     [FieldOffset(61)]
     /* 0x3D */ public int templateId;
     [FieldOffset(65)]
@@ -131,7 +132,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Files
     [FieldOffset(109)]
     /* 0x6D */ public byte unknownbyte22;
     [FieldOffset(110)]
-    /* 0x6E */ public int unknown27;
+    /* 0x6E */ public int ElementNumber;
     [FieldOffset(114)]
     /* 0x72 */ public int unknown28;
 

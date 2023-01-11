@@ -1,4 +1,4 @@
-﻿#region License & Metadata
+#region License & Metadata
 
 // The MIT License (MIT)
 // 
@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
+// and/or sell copies of the Software, and to permit persons to whom the 
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,38 +21,28 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2019/12/13 16:37
-// Modified On:  2020/01/13 12:45
-// Modified By:  Alexis
+// Created On:   2022/12/17 14:51
+// Modified On:  2022/12/17 14:55
+// Modified By:  Ki
 
 #endregion
 
 
 
 
-using SuperMemoAssistant.SuperMemo;
+using SuperMemoAssistant.Interop;
 
-namespace SuperMemoAssistant.SMA
+namespace SuperMemoAssistant.SuperMemo.Common.Registry.Files
 {
-  public static class CoreEx
+  public class CommentFileDescriptor : IRegistryFileDescriptor
   {
-    #region Methods
+    #region Properties Impl - Public
 
-    public static int ExecuteOnMainThread(
-      this   NativeMethod method,
-      params dynamic[]    parameters)
-    {
-      dynamic __unused = null;
-      return Core.Hook.ExecuteOnMainThread(method, parameters, out __unused);
-    }
-
-    public static int ExecuteOnMainThreadWithOutParameter(
-      this NativeMethod method,
-      out dynamic outParameter,
-      params dynamic[] parameters)
-    {
-      return Core.Hook.ExecuteOnMainThread(method, parameters, out outParameter);
-    }
+    public string RegistryName => "Comment";
+    public string MemFileName  => SMConst.Files.CommentMemFileName;
+    public string RtxFileName  => SMConst.Files.CommentRtxFileName;
+    public string RtfFileName  => SMConst.Files.CommentRtfFileName;
+    public bool   IsOptional   => true;
 
     #endregion
   }

@@ -57,6 +57,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     public static IReadOnlyDictionary<string, ElementFieldFlags> FieldFlagMapping { get; } = new Dictionary<string, ElementFieldFlags>()
     {
       { nameof(TitleTextId), ElementFieldFlags.Name },
+      { nameof(CommentId), ElementFieldFlags.Comment },
       { nameof(Deleted), ElementFieldFlags.Deleted },
       { nameof(TemplateId), ElementFieldFlags.Template },
       { nameof(ConceptId), ElementFieldFlags.Concept },
@@ -117,6 +118,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     #region Properties & Fields - Public
 
     public int TitleTextId { get; set; }
+    public int CommentId { get; set; }
 
     public int TemplateId { get; set; }
     public int ConceptId  { get; set; }
@@ -145,6 +147,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements.Types
     public int ChildrenCount   { get; set; }
 
     public string Title => Core.SM.Registry.Text?[TitleTextId]?.Name;
+    public string Comment => Core.SM.Registry.Comment?[CommentId]?.Name;
 
     [JsonConverter(typeof(IComponentGroupToComponentGroupIdJsonConverter))]
     public IComponentGroup ComponentGroup => Core.SM.Registry.Component?[ComponentPos];

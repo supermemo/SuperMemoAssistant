@@ -14,9 +14,449 @@
     <repository type="$repositoryType$" url="$repositoryUrl$" branch="develop" commit="$commitId$" />
     <dependencies />
     <!-- releaseNotes will be replaced by MSBuild.Tools (see SuperMemoAssistant.csproj and https://github.com/alexis-/MSBuild.Tools) -->
-    <releaseNotes>- Updated: Improved NuGet installing performance
+    <releaseNotes>- Added: Forced creation of nuget and release folders
+- Added missing file
+- Added: missing file
+- Added: IElement.UniqueId placeholder
+- Added: TemplateUseMode to ApplyTemplate
+- Added: AsyncErrorHandler
+- Added: Console to Dev Sandbox
+- Added: ElementWdw.ApplyTemplate(int templateId)
+- Added: Template can be set when creating a new element
+- Added: 18.05 compatibility
+- Added: ElementBase.ToJson() (Core only)
+- Added: New IDestinationBranchFinder system. Fixes several issue with subfolders
+- Added: New async pathway for ElementRegistryBase. Awaiting the new hook engine system for true async
+- Added: ElementRegistryBase Branch finder
+- Added: IElementEx.cs
+- Added: Notification Manager in SMA (enables Plugins to use Windows Desktop Toast notifications)
+- Added: Toast activated event allows Plugins to react to their notification's activation
+- Added: Indexer to find Plugin by its session ID
+- Added: Documentation
+- Added: Confirmation when canceling a NuGet operation
+- Added: Hardcoded interop minimum version
+- Added: Plugins initialization is executed in background and awaited only after collection is selected
+- Added: "Stable (Debug)" and "NuPack Debug" solution configurations
+- Added: New update channel system
+- Added: Plugin Lifecycle event system
+- Added: OmniMemo Plugin submodule
+- Added empty slots registry to check for files occupying empty file slots
+- Added: Compatibility with SM 18.041hp
+- Added: Native access to TQueue and TFileSpace
+- Added: WIP fix for collection corruption bug when a collection has non-empty file slots
+- Added: nuget.config
+- Added: releases directory to the repo
+- Added: Button to attach the debugger when starting development plugins
+- Added: Coding style (CodeStyle.ruleset)
+- Added: SMA now validates the Interop version of plugins and warn user if the plugin is incompatible
+- Added: Alpha (nightly) channel for plugins
+- Added: Core Configuration option to add new NuGet repositories for plugins
+- Added: Notification when a plugin failed to start with an informational reason description
+- Added: Helpers to create desktop notifications
+- Added: Nightly/Beta/Stable configurations
+- Added: SuperMemoAssistant.VersionBuilder project which determines the project's version
+- Added: Project build files (Directory.Build.*, *.targets)
+- Added: Git hooks for Commit Message and Pre Commit (wip)
+- Added: README files for the different parts of the project (empty - wip)
+- Added: Log file in Temp when an exception occurs in the ModuleInitializer
+- Added: VS GitHooks submodule
+- Added: Directory.Build.targets (moved Microsoft.SourceLink.GitHub and Nerdbank.GitVersioning PackageReferences)
+- Added: SuperMemoAssistant MSBuild SDKs under src/Build/MSBuild
+- Added: Visual Studio SMA extension and plugin C# templates under src/Build/VS
+- Added: Global package settings in Directory.Build.Props
+- Added: SMA SDK references in global.json
+- Added: SuperMemoAssistant.Interop submodule
+- Added: SuperMemoAssistant.Services.HTML submodule
+- Added: SuperMemoAssistant.Services.Medias.Images submodule
+- Added: SuperMemoAssistant.Services.Sentry submodule
+- Added: SuperMemoAssistant.Services.UI submodule
+- Added: Build targets for packaging &amp; change log (WIP)
+- Added: Package information to SuperMemoAssistant.Interop
+- Added: Default NuSpec package information
+- Added: Default NuSpec &lt;icon&gt;
+- Added: robot icon for NuSpec &lt;icon&gt; node
+- Added a Directory.Build.Props in src/ which defines the global project values
+- Added: Quote file
+- Added: Random quotes to the collection selection window from a tsv file.
+- Added: Solution-wide Directory.Build.Props
+- Added: Only one instance of SMA can be run #156
+- Added: Rescue tool ("SMA Updater") which can install or update to any SMA version #152
+- Added: Installer ability to rollback to a previous version #151
+- Added: Distribution channels for SMA updates (stable, beta, nightly) #86
+- Added: Update settings accessible from Collection Window
+- Added: Shortcut for "SMA Updater" on install
+- Added: Debug symbols (pdb) to Services nuspec
+- Added: SuperMemo 18.04 compatibility #138
+- Added: automated ChangeLog and NuPkg Release notes #52
+- Added: Splash screen (also overrides SuperMemo's) #100
+- Added: Plugin labels (e.g. Official, Verified)
+- Added: A ChangeLog Popup after update, and a Change Logs Tab in the Settings #134
+- Added: Limited settings window to one instance displayed at a time #113
+- Added: Tool tips (hints) to UI icons that do not have a label #130
+- Added: During installation, the confirmation popup displays the install folder destination #129
+- Added: Import collection from SuperMemo (supermemo.ini) setup step #73
+- Added Notifications #53
+- Added Notification + Option to restart on plugin crash
+- Added plugin labels #133
+- Added ToolTips to UI icons #130
+- Added install destination folder in confirmation popup message #129 (Squirrel.Windows)
+- Added cancel button + reset in Collection Selection #117
+- Added a setup step to import collections from supermemo.ini #73
+- Added CfgBase with reset on cancel
+- Added automatic version configuration
+- Added more documentation
+- Added SMA Setup screen
+- Added Pugin Setup
+- Added License agreement
+- Added SMA update notifications
+- Added the Logger configuration panel to Settings (will be moved under the General tab later)
+- Added nuget.config with local Squirrel.Windows repository
+- Added Squirrel.Windows submodule
+- Added Logger configuration (WIP) Fix #64
+- Added Plugin OnMessage (WIP)
+- Added PluginMessage.OnLoggerConfigUpdated (WIP)
+- Added SM exe setup window
+- Added SuperMemoAssistant.Plugins.Import.BrowserPlugin submodule
+- Added Browser Import projects to solution
+- Added ObjectToStringJsonConverter.cs
+- Added mshtml assembly check
+- Added debug key logger
+- Added plugin Template
+- Added Services.HTML
+- Added Title bar collapse option
+- Added Layout editor interface [WIP]
+- Added SoundContent
+- Added Options (SM path, hint addresses) in CollectionSelectionWindow
+- Added ImageEx, StreamEx extension classes
+- Added Array Buffers in IOHooks
+- Added SuperMemoAssistant.Core.Remote project
+- Added Dictionary submodules
+- Added Error catching in Prod
+- Added Sentry
+- Added Type to IElement
+- Added Global Settings
+- Added Element Picker
+- Added exception messages
+- Added dynamic component building
+- Added new Keyboard hook method
+- Added EasyHook dll
+- Added binary registry
+- Added GetFirst* methods to ControlGroup and ComponentGroup
+- Added ImageWrapper
+- Updated: Improved NuGet installing performance
 - Updated: Plugin operation logs TextBox swapped for Avalonia's TextEditor (improved performances)
+- Updated: Packages
+- Updated: PluginManager submodule tracks branch legacy-net-framework
+- Updated: Release url
+- Updated: Interop package
+- Updated: Submodules
+- Updated: Improved logging
+- Updated: Missing csproj update
+- Updated: ElementBase.ToJson() should now serialize its concepts, children, etc.
+- Updated: Interop version
+- Updated: Build files
+- Updated: Interop submodule
+- Updated: ChangeLogs
+- Updated: Minimum Interop version to 2.1.0-beta-11
+- Updated: Refactored &amp; Improved ElementRegistryBase Add code
+- Updated: Refactored EmptySlotsRegistry
+- Updated: Disabled EmptySlotsRegistry
+- Updated: Each project now has its own Sentry key for bug reporting
+- Updated: Version to 2.1.0
+- Updated: Min Interop Version to 2.1.0-beta-6
+- Updated: Minor fix
+- Updated: Bumped version to 2.0.5
+- Updated: SM Interop Package version
+- Updated: ChangeLogs is now being built on successful build
+- Updated: Coding style
+- Updated: Submodule
+- Updated: Moved &lt;RootNamespace&gt;SuperMemoAssistant&lt;/RootNamespace&gt; to src/Core
+- Updated: Moved SuperMemoAssistant from AppHost to Core
+- Updated: Removed DEBUG_INPROD
+- Updated: Registry logging now uses the DEBUG_REGISTRIES define
+- Updated: Moved plugin initialization in App.xaml.cs after loading the Core config
+- Updated: Refactored project folder structure
+- Updated: Applied coding style to most of Core (except apphost)
+- Updated: Improved async code
+- Updated: DevSandboxPlugin and TemplatePlugin to the new SMA SDK
+- Updated: Cleaned template plugin's csproj for integration in the VS extension's C# templates
+- Updated: Fixed several issue with Directory.Build.Props
+- Updated: Added default settings in version.json
+- Updated: Moved UI from Core to AppHost
+- Updated: Cleaned NativeLib
+- Updated: Packages default icon is now hidden in the solution explorer
+- Updated: AsyncErrorHandler now uses conditional debug
+- Updated: Submodules' Project (csproj) to the new SDK format
+- Updated: Generate documentation to default
+- Updated: Plugins' project (csproj) to the new SDK format
+- Updated: Project (csproj) format to the new SDK format
+- Updated: Moved all resources to the assets folder
+- Updated: Refactored projects to make their organization more clean and consistent
+- Updated: SMA SDK csproj transition WIP
+- Updated: Change log
+- Updated: Stub executable now selects the version based on the local RELEASES file first #161 #151
+- Updated: Improved Installer ability to optimize the download size by choosing delta updates
+- Updated: All windows' default size are less or equal to 800x600 #160
+- Updated: Tool tips (wip) #166
+- Updated: All projects to PackageReference
+- Updated: Change log is now generated before build to include the include the latest commit messages in the package
+- Updated: ChangeLogs is now an embedded resource
+- Updated: NuSpec dependencies version
+- Updated some NuGet packages
+- Updated Subrepo ref
+- Updated DeviceId package
+- Updated nuGets
+- Updated gitmodules
+- Updated Dictionary.Interop path
+- Updated/Fixed WndProc hook to capture SM's program flow only during the requested operations
+- Fixed: Absolute path in nuget.config
+- Fixed: Minor bug in PluginManager
 - Fixed: Alpha repo enabled status
+- Fixed: Crash when closing collection window options dialog
+- Fixed: Installer couldn't find the latest release
+- Fixed: Registry member enumeration
+- Fixed: Notification xml injection was incorrect and prevented notifications from being activated
+- Fixed: Interop version was incorrect
+- Fixed: ControlHtml.SetText called the native function with the wrong parameter
+- Fixed: Notification service
+- Fixed: Several UI tooltips
+- Fixed: Working for a crashing when setting a HTML Control text to an empty string
+- Fixed: SMA Packaging
+- Fixed: Crash when removing a collection in the collection selection window
+- Fixed: Update button was disabled when NuGet determined the latest version was installed
+- Fixed: Installer's Stub executable didn't handle semver 2.0 correctyl
+- Fixed: Installer didn't recognize semantic version correctly
+- Fixed: Semantic version to strictly abide to the semver 2.0
+- Fixed: Updated plugins didn't copy their content to the home folder
+- Fixed: Crash on platforms where notifications are unavailable
+- Fixed: Rewrote Interop history
+- Fixed: Commit message hook
+- Fixed: Async/Await would sometime freeze in case of issue during initialization
+- Fixed: Solution didn't point to SuperMemoAssistant.Interop
+- Fixed: Issue where updater wouldn't recognize identical target and local versions
+- Fixed: Update channel selection
+- Fixed: SMA interrupts update mid-way when exiting #88 #161 #151
+- Fixed: Updated plugin does not refresh in the UI (still happens in the Browse tab)
+- Fixed: Occasional error when updating a Plugin
+- Fixed: Change Log window now displays correctly
+- Fixed: Wrong offsets for Hook and Concept in NativeDataCfg.json
+- Fixed: Collection Selection &gt; Options, and other option windows can now be canceled and revert changes #117
+- Fixed an issue where Anotar.Serilog was kept as a reference https://github.com/Fody/Anotar/issues/324
+- Fixed an issue where updated registry elements would have their Empty property set to true
+- Fixed an issue where creating non-memorized element with repetition history would prompt a warning dialog in SM (rep history totally removed from element builder string)
+- Fixed logging
+- Fixed logging issues
+- Fixed several issues
+- Fixed collection lock check
+- Fixed several smaller issues
+- Fixed for Forge.Forms repo url
+- Fixed a bug where the hooked OnWnd method was being called while disposed
+- Fixed Logger path. Now logs in AppData/Roaming
+- Fixed issue with space in collection path
+- Fixed several bugs in Component, Element, Members registries
+- Fixed binary file structures
+- Fixed slot file paths for .html &amp; .jpg registry members
+- Removed: SuperMemoAssistant.Interop (replacing with submodule)
+- Removed: SuperMemoAssistant.Services.HTML (replacing with submodule)
+- Removed: SuperMemoAssistant.Services.Medias.Images (replacing with submodule)
+- Removed: SuperMemoAssistant.Services.Sentry (replacing with submodule)
+- Removed: SuperMemoAssistant.Services.UI (replacing with submodule)
+- Removed: SuperMemoAssistant.Interop.Shared project (transferring to submodule)
+- Removed: Console logging
+- Removed: nuget.config
+- Removed Forge.Forms submodule
+- Removed JetBrains annotations
+- Removed Feeds plugin
+- Removed sentry debug
+- Removed Resources
+- Removed Patagames WPF submodule
+- Removed ModuleInit from SuperMemoAssistant.Core
+- Removed legacy code (Menus, ElementDataWdw)
+- Removed MediaPlayer plugin from this repo
+- Misc: Minor fixes
+- Misc: Several minor improvements &amp; fixes
+- Misc: More refactoring
+- Misc: Minor improvements
+- Misc: Reorganized Template plugin
+- Misc: Cleaned up SMAInstaller from legacy Change Log code
+- Misc minor fixes
+- Misc. minor improvements
+- Misc minor improvements
+- Misc fixes
+- Misc. minor changes
+- Seperate comment and title search
+- Navigation, priority, control, html,comment update
+- Co-authored-by: kpence &lt;kpence@tamu.edu&gt;
+- Submodules
+- Remove console logging
+- Add random quotes to the collection selection window from a tsv file.
+- Several other minor updates
+- Plugin Manager is now initialized on startup (but plugins are still run after SM has started)
+- Plugin enabled/Disabled is temporarily hidden
+- Remove Hint Pattern from the option UI
+- Improved Documentation
+- Several other fixes &amp; additions
+- Plugin system is now fully functional
+- Migrated most of the projects to NuGet and referenced them instead of having local project dependencies
+- Several smaller UI improvement (Collection Selection, Settings, etc.)
+- Started documenting the project
+- Refactoring &amp; many minor other additions &amp; fixes
+- (Settings) Browse plugins WIP
+- (PluginManager) Moved Plugin management core features to their own NuGet package "PluginManager.Core"
+- (ElementWdw) Added GenerateCloze and GenerateExtract (new API)
+- (ElementWdw) Changed LearningMode to its enum instead of int
+- (ElementRegistryBase) Added WaitForElement** methods
+- (ElementRegistry17) Fixed crash when unknown element types are produced
+- (Plugins) Changed the copy destination to MyDocuments\SuperMemoAssistant\Plugins
+- (Plugins) Added DevSandboxPlugin
+- (ModuleInitializer) Fixed no exception logging (Anotar reload needed)
+- (SMATaskbarIcon) Fixed OnSMStarted crashing due UI access from another thread
+- (RemotingConfiguration.CustomErrorsMode) Moved config to static constructors in SMA, InjectLib, SMAPluginBase
+- (Configs) Renamed StartupCfg to CoreCfg
+- (Configs) Split CoreCfg into two subclasses (UpdateCfg and StartupCfg)
+- (Configs) Moved Update configs from App.config to CoreCfg.json
+- (Sentry) Moved sentry api token to a parameter
+- (Solution) Added NuPack* solution configurations (see MSBuild.Tools)
+- (Solution) Cleaned and optimized solution's configurations &amp; platforms
+- (Sys.IO.*) Moved Sys.IO.* file and directory facilities to their own NuGet Extensions.System.IO
+- (Extensions.System.IO) Added submodule
+- Many other minor fixes &amp; enhancements
+- Removing Forge.Forms submodule, Removing Extensions.System.IO for re-addition afterward (bug)
+- Turned SuperMemoAssistant.Services.Sentry in a class library
+- Minor fixes
+- SMA Installer (Debug only)
+- SMA is now located in %LocalAppData%\SuperMemoAssistant, and its data (plugins, configs, logs) in %UserProfile%\Documents\SuperMemo Assistant
+- Created a nuget for libs/mhshtml/Microsoft.mshtml.dll called "SuperMemoAssistant.mshtml"
+- Several minor improvements &amp; fixes
+- Installer: Minor update
+- Installer (WIP)
+- Minor AppHost refactoring
+- Minor additions &amp; fixes
+- Collection config #56
+- Update README.md
+- added ability to query current learning mode
+- Improved KeyboardHook logging
+- App.xaml.cs: Replaced Environment.Exit with Shutdown
+- SMATaskbarIcon: Fixed null issue when right clicking the tray icon
+- NativeDataCfg.json: Updated versions number
+- InjectLib: Better exception handling
+- Several minor additions, bug fixes, cleanup
+- Minor fix
+- Temporary fix for exception when restoring OnMessage addr
+- Enhanced concept handling
+- Several minor fixes/additions (Extensions, RemoteTasks, ..)
+- Package update
+- Add license scan report and status
+- Signed-off-by: fossabot &lt;badges@fossa.io&gt;
+- Open collection through command line
+- Minor other improvements &amp; fixes
+- Improved logging
+- Fix attempt for borderless window for SM18
+- Minor cleanup
+- Moved gif tutorials to their own repo (https://github.com/supermemo/Documentation)
+- Validate SMA location
+- Better exception logging for RemoteTask
+- Add files via upload
+- Cleanup
+- Cleaning up
+- VS upgrade
+- SM 18.3 support
+- Missing files
+- Multi-sm version system seems to work OK.
+- Not quite sure about the direction SMNatives is taking. This is a restore point.
+- Multi-Version handling WIP
+- Several fixes
+- Several minor fixes
+- Auto-subfolder, Better element creation control, child per branch setting, minor fixes
+- Few additions, Several minor fixes &amp; sanity checks
+- ElementRegistry: Element batch creation
+- XamlControlHtml: Fixed encoding
+- ElementBuilderEx: Improved references + title
+- Additions, fixes, ...
+- Layout / Layout editor
+- Several fixes/improvements (logging, keyboard hook scope, ...)
+- Settings, UI, ...
+- Layouts
+- Other fixes/refactoring/...
+- Plugin isolation
+- Settings (plugins, layouts, ...)
+- Minor push
+- Deleted submodule
+- Plugin isolation + UI
+- Lot of refactoring + improvements
+- Remoting/plugin interop additions/fixes
+- Finalizing plugin isolation
+- Some refactoring
+- Upgraded all projects to .NET 7.2
+- Many other fixes/additions
+- Plugin Manager
+- Plugin package management system
+- Optimized registries I/O processing
+- Vast refactoring
+- New element Layout system based on WPF + XAML
+- Refactored native calls to only use SM17Natives
+- Native calls: Added ShowNextElementInLearningQueue
+- Native calls: Added SetElementState
+- Native calls: Added ExecuteUncommitedRepetition
+- Native calls: Added ScheduleInInterval
+- Native calls: Added ForceRepetitionExt
+- Native calls: Added ForceRepetitionAndResume (special handling)
+- Native calls: Added RestoreLearningMode
+- Native calls: Added PostponeRepetition (special handling)
+- NuGet: Added DeviceId package
+- Sentry: Added User context
+- Sentry: Updated to 1.1.0
+- Span: Added object holder child class
+- Interop: Added SM LearningMode, DisplayState enums
+- Several minor changes/additions
+- LoadAssembliesOnStartup
+- NativeFuncScanner overhaul (caching, centralized procedure store, ...)
+- CorePlugin + CoreCfg
+- Disabled InitOnLoad
+- Fix for Delete preventing update in ElementBase
+- Changed default ElementBuilder.TextContent Encoding to Unicode
+- Refactored Svc
+- Several minor fixes/refactor
+- Improved Element/Component builder
+- PluginHost/App WIP
+- Fixing KeyboardHook.cs
+- Started removing FlaUI library
+- Handle WM_QUIT in WndProc
+- Smaller fixes
+- New MainThread execution method
+- New keyboard hotkey capture method
+- Configured Serilog Logger
+- Many fixes/additions
+- Many core addition, improvements, bug fixes
+- Renamed ControlWeb to ControlHtml.cs
+- ElementRegistry: Image creation
+- ElementBuilder: New IContent interface &amp; TextContent/ImageContent classes for a more modular element creation system
+- ElementClipboardBuilder.cs: Renamed from ElementClipboard.cs
+- ElementClipboardBuilder.cs: Handle images
+- Image: Several fixes for image registry member
+- IRegistryMember: Added Empty, UseCount properties
+- Signed-off-by: Alexis &lt;alexis@incogito.org&gt;
+- CollectionSelectionWindow: Auto-select first collection
+- CollectionSelectionWindow: Enter and Alt+O keyboard shortcut to open collection
+- ControlWeb: Fixed exception in setting outerHtml (use innerHtml instead)
+- ElementRegistry/ElementBuilder: Images + refactored
+- Text/Image/...Registry: Added native (sm) registry ptr
+- ImageRegistry: Add image to native (sm) registry
+- ElementWdw: Added Delete, FocusWindow + Try/catches on native calls
+- ISuperMemo: Added IgnoreUserConfirmation
+- CollectionFSService: Added method to get plugin resources path
+- Keys: Added shift modifier
+- Collection selection interface
+- Implemented program flow
+- ControlWeb::GetDocument now retries 5 times on ElementNotAvailableException and TimeOutException
+- Several small fixes
+- AppDomain serialization fixes
+- Setup Svc &amp; System.Windows.Application in PluginHost
+- Minor fix to ComponentRegistry (component groups did not get inserted while loading)
+- Introduced LastElement to DisplayElementChanged event
+- Services.Svc refactoring
+- WIP
+- Initial Commit
 </releaseNotes>
   </metadata>
   <files>

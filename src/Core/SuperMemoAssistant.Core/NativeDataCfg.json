@@ -367,6 +367,7 @@
       "ElWdw_ComponentData_ComponentCountPtr": "0x000A", // TComponentData::DComponentNo:byte
       "ElWdw_ComponentData_IsModifiedPtr": "0x0013", // TComponentData::TheModifiedStatus:Boolean
       "Database_InstancePtr": "0x00CA60D0", // gvar_00CA30C8:TDatabase
+      "Contents_InstancePtr": "0x00CA3804", // gvar_00CA3804:TContents
       "Control_ParentOffset": "0x0040", // TControl::FParent:TWinControl
       "Control_WindowProcOffset": "0x0048", // TControl::FWindowProc:TWndMethod
       "Control_HandleOffset": "0x0288", // TWinControl::FHandle:HWND
@@ -696,6 +697,7 @@
       "SMMain_InstancePtr": "0x00CA61C0", // gvar_00CA31B8:TSMMain (above TContents)
       "Registry_FileSpaceInstance": "0x0C", // TDatabase::FileSpace:TFileSpace
       "Registry_TextRegistryInstance": "0x4E2", // TDatabase::TextRegistry:TTextRegistry
+      "Registry_CommentRegistryInstance": "0x4E6", // TDatabase::TCommentRegistry:TextRegistry
       "Registry_ImageRegistryInstance": "0x4FA", // TDatabase::ImageRegistry:TImageRegistry
       "Registry_SoundRegistryInstance": "0x4FE", // TDatabase::SoundRegistry:TSoundRegistry
       "Registry_VideoRegistryInstance": "0x502", // TDatabase::VideoRegistry:TVideoRegistry
@@ -715,6 +717,7 @@
       "ElWdw_ComponentData_ComponentCountPtr": "0x000A", // TComponentData::DComponentNo:byte
       "ElWdw_ComponentData_IsModifiedPtr": "0x0013", // TComponentData::TheModifiedStatus:Boolean
       "Database_InstancePtr": "0x00CA60D0", // gvar_00CA30C8:TDatabase
+      "Contents_InstancePtr": "0x00CA3804", // gvar_00CA3804:TContents
       "Control_ParentOffset": "0x0040", // TControl::FParent:TWinControl
       "Control_WindowProcOffset": "0x0048", // TControl::FWindowProc:TWndMethod
       "Control_HandleOffset": "0x0288", // TWinControl::FHandle:HWND
@@ -770,6 +773,10 @@
       "ElWdw_SetElementState": { // TElWind::SetElementState
         "Pattern": "E8 ? ? ? ? EB 7C B2 02",
         "Offset": 1
+      },
+      "ElWdw_SetGrade": { // TElWind::SetGrade
+        "Pattern": "E8 ? ? ? ? EB 46 BA ? ? ? ? 8B 45 FC",
+        "Offset":  1
       },
       "ElWdw_ScheduleInInterval": { // TElWind::ScheduleInInterval
         "Pattern": "E8 ? ? ? ? 80 BD ? ? ? ? ? 75 45 8D 45 8E",
@@ -838,6 +845,42 @@
       "Queue_GetItem": { // TQueue::GetItem
         "Pattern": "E8 ? ? ? ? 89 45 AB",
         "Offset": 1
+      },
+      "TPriority_GetElementPriority": { // TPriority::GetElementPriority
+        "Pattern": "E8 ? ? ? ? DD 5D E8 9B EB 0C",
+        "Offset": 1
+      },
+      "ElWdw_GetElementAsText": { // TElWind::GetElementAsText
+        "Pattern": "E8 ? ? ? ? 8B 55 E0 8D 45 F8 E8 ? ? ? ? 8D 55 F4",
+        "Offset":  1
+      },
+      "ElWdw_BeginLearning": { // TElWind::BeginLearning
+        "Pattern": "E8 ? ? ? ? EB 24 8B 55 FC",
+        "Offset": 1
+      },
+      "Contents_FindText": { // TContents::FindText
+        "Pattern": "E8 ? ? ? ? EB 77 8D 45 F8",
+        "Offset": 1
+      },
+      "Database_SetTitle": { // TDatabase::SetTitle
+        "Pattern": "E8 ? ? ? ? 83 7D 08 00 74 14",
+        "Offset": 1
+      },
+      "Priority_SetPriority": { // TPriority::SetPriority
+        "Pattern": "E8 ? ? ? ? 8B 45 92",
+        "Offset": 1
+      },
+      "Database_AppendComment": { // TDatabase::AppendComment
+        "Pattern": "E8 ? ? ? ? 8D 55 F0 A1 ? ? ? ? 8B 00 B1 01",
+        "Offset": 1
+      },
+      "ElWdw_DismissElement": { // TElWind::DismissElement
+        "Pattern": "E8 ? ? ? ? B1 01 8B 55 E0 A1 ? ? ? ? E8 ? ? ? ? 80 7D F7 00",
+        "Offset": 1
+      },
+      "ElWdw_NextRepetitionClick": { // TElWind::NextRepetitionClick
+        "Pattern": "E8 ? ? ? ? 59 59 5D C3 8B C0 55 8B EC 51 89 45 FC 33 D2",
+        "Offset": 1
       }
     },
     "NativeDataPatterns": {},
@@ -853,7 +896,9 @@
       // TElWind::ForceRepetitionExt
       "ElWdw_ForceRepetitionExt": "55 8B EC 81 C4 ? ? ? ? 88 4D F7 89 55 F8 89 45 FC 8D 4D 81",
       // ???? TElWind::MIForgetClick or TElWind::MIJumpIntervalClick => Last call
-      "ElWdw_RestoreLearningMode": "55 8B EC 51 89 45 FC 8B 45 FC 80 B8 ? ? ? ? ? 75 1E"
+      "ElWdw_RestoreLearningMode": "55 8B EC 51 89 45 FC 8B 45 FC 80 B8 ? ? ? ? ? 75 1E",
+      "ElWdw_BackButtonClick":  "55 8B EC 83 C4 F4 89 55 F4 89 45 FC 8B 45 FC E8 ? ? ? ? 84 C0 0F 85 ? ? ? ?",
+      "ElWdw_ForwardButtonClick": "55 8B EC 83 C4 F4 89 55 F4 89 45 FC A1 ? ? ? ? 8B 00 8B 80 ? ? ? ? E8 ? ? ? ?"
     }
   }
 }

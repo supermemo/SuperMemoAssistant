@@ -38,6 +38,8 @@ In short, SMA is an interface to programmatically **interact with SuperMemo**.
 
 [Get started now](https://www.supermemo.wiki/sma/).
 
+The official SMA release is compatible with SuperMemo up to version 18. For version 19, you may check [this community fork](https://github.com/Celestial-Plato/SuperMemoAssistant-19.1-community).
+
 ### Plugins
 
 - [Incremental PDF](https://github.com/supermemo/SuperMemoAssistant.Plugins.PDF) unlocks the power of SuperMemo for PDF files.

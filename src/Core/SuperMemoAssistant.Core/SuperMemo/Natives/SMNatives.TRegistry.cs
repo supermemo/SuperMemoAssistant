@@ -22,8 +22,9 @@
 // 
 // 
 // Created On:   2019/08/09 18:26
-// Modified On:  2019/12/14 20:01
-// Modified By:  Alexis
+// Modified On:  2022/12/17 20:01
+// Modified By:  - Alexis
+//               - Ki
 
 #endregion
 
@@ -52,6 +53,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
       public TRegistry(TDatabase db, NativeData nativeData)
       {
         TextRegistryInstance     = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointer.Registry_TextRegistryInstance]);
+        CommentRegistryInstance  = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointer.Registry_CommentRegistryInstance]);
         ImageRegistryInstance    = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointer.Registry_ImageRegistryInstance]);
         SoundRegistryInstance    = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointer.Registry_SoundRegistryInstance]);
         VideoRegistryInstance    = new ObjPtr(db.InstancePtr, nativeData.Pointers[NativePointer.Registry_VideoRegistryInstance]);
@@ -82,6 +84,7 @@ namespace SuperMemoAssistant.SuperMemo.Natives
       #region Properties Impl - Public
 
       public ObjPtr TextRegistryInstance     { get; }
+      public ObjPtr CommentRegistryInstance  { get; }
       public ObjPtr ImageRegistryInstance    { get; }
       public ObjPtr SoundRegistryInstance    { get; }
       public ObjPtr VideoRegistryInstance    { get; }

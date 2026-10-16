@@ -22,8 +22,9 @@
 // 
 // 
 // Created On:   2020/03/29 00:20
-// Modified On:  2020/04/07 10:36
-// Modified By:  Alexis
+// Modified On:  2022/12/17 10:36
+// Modified By:  - Alexis
+//               - Ki
 
 #endregion
 
@@ -93,6 +94,13 @@ namespace SuperMemoAssistant.Hooks.InjectLib
       int arg4,
       int arg5,
       int arg6);
+
+    [DllImport("SuperMemoAssistant.Hooks.NativeLib.dll",
+               CallingConvention = CallingConvention.StdCall)]
+    internal static extern int registerCallDouble1(
+      int functionPtr,
+      int arg1,
+      double arg2);
 
     #endregion
 

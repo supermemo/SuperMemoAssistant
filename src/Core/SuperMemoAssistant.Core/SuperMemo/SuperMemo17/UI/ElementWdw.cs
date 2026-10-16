@@ -66,6 +66,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
     private IPointer CurrentRootIdPtr         { get; set; }
     private IPointer CurrentHookIdPtr         { get; set; }
     private IPointer LearningModePtr          { get; set; }
+    private IPointer ContentsPtr              { get; set; }
+    private IPointer DatabasePtr              { get; set; }
 
     #endregion
 
@@ -88,6 +90,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       LogTo.Debug("Cleaning up {Name}", GetType().Name);
 
       _controlGroup?.Dispose();
+      _controlGroup = null;
       SMMainWdwPtr?.Dispose();
       ElementWdwPtr?.Dispose();
       ElementIdPtr?.Dispose();
@@ -96,6 +99,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       CurrentRootIdPtr?.Dispose();
       CurrentHookIdPtr?.Dispose();
       LearningModePtr?.Dispose();
+      ContentsPtr?.Dispose();
+      DatabasePtr?.Dispose();
 
       SMMainWdwPtr             = null;
       ElementWdwPtr            = null;
@@ -105,6 +110,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       CurrentRootIdPtr         = null;
       CurrentHookIdPtr         = null;
       LearningModePtr          = null;
+      ContentsPtr              = null;
+      DatabasePtr              = null;
 
       LogTo.Debug("Cleaning up {Name}... Done", GetType().Name);
     }
@@ -147,6 +154,60 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       var success = Core.Natives.SMMain.SelectDefaultConcept(SMMainWdwPtr.Read<IntPtr>(), conceptId);
 
       return success && CurrentConceptId == conceptId;
+    }
+
+    public bool ForwardButtonClick()
+    {
+      try
+      {
+        return Core.Natives.ElWind.BackButtonClick(ElementWdwPtr.Read<IntPtr>());
+      }
+      catch (Win32Exception ex)
+      {
+        LogTo.Warning(ex, "Failed to read ElementWdwPtr");
+        return false;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
+    public bool BackButtonClick()
+    {
+      try
+      {
+        return Core.Natives.ElWind.BackButtonClick(ElementWdwPtr.Read<IntPtr>());
+      }
+      catch (Win32Exception ex)
+      {
+        LogTo.Warning(ex, "Failed to read ElementWdwPtr");
+        return false;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
+    public bool NextRepetition()
+    {
+      try
+      {
+        return Core.Natives.ElWind.NextRepetition(ElementWdwPtr.Read<IntPtr>());
+      }
+      catch (Win32Exception ex)
+      {
+        LogTo.Warning(ex, "Failed to read ElementWdwPtr");
+        return false;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "SM internal method call threw an exception.");
+        return false;
+      }
     }
 
     public bool GoToElement(int elementId)
@@ -248,6 +309,22 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       }
     }
 
+    public bool FindText()
+    {
+      throw new NotImplementedException();
+      /*try
+      {
+        return Core.Natives.Contents.FindText(
+          ContentsPtr.Read<IntPtr>(),
+          "test");
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "Native method call threw an exception.");
+        return false;
+      }*/
+    }
+
     public int GenerateExtract(ElementType elementType, bool memorize = true, bool askUserToScheduleInterval = false)
     {
       try
@@ -286,6 +363,24 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       try
       {
         return Core.Natives.ElWind.DeleteCurrentElement(ElementWdwPtr.Read<IntPtr>());
+      }
+      catch (Win32Exception ex)
+      {
+        LogTo.Warning(ex, "Failed to read ElementWdwPtr");
+        return false;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
+    public bool DismissElement(int elNo)
+    {
+      try
+      {
+        return Core.Natives.ElWind.DismissElement(ElementWdwPtr.Read<IntPtr>(), elNo);
       }
       catch (Win32Exception ex)
       {
@@ -361,6 +456,129 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
         LogTo.Error(ex, "SM internal method call threw an exception.");
         return false;
       }
+    }
+
+    public bool SetPriority(int elementId, double priority)
+    {
+      try
+      {
+        return Core.Natives.ElWind.SetPriority(elementId, priority);
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
+    public bool AppendComment(int elementId, string comment)
+    {
+      try
+      {
+        return Core.Natives.ElWind.AppendComment(DatabasePtr.Read<IntPtr>(), elementId, comment);
+      }
+      catch (Win32Exception ex)
+      {
+        LogTo.Warning(ex, "Failed to read DatabasePtr?");
+        return false;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
+    //
+    public bool SetTitle(int elementId, string title)
+    {
+      try
+      {
+        return Core.Natives.ElWind.SetTitle(DatabasePtr.Read<IntPtr>(), elementId, title);
+      }
+      catch (Win32Exception ex)
+      {
+        LogTo.Warning(ex, "Failed to read DatabasePtr?");
+        return false;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
+    public bool SetGrade(int grade)
+    {
+      try
+      {
+        return Core.Natives.ElWind.SetGrade(ElementWdwPtr.Read<IntPtr>(), grade);
+      }
+      catch (Win32Exception ex)
+      {
+        LogTo.Warning(ex, "Failed to read ElementWdwPtr");
+        return false;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
+    public string GetElementAsText()
+    {
+      try
+      {
+        return Core.Natives.ElWind.GetElementAsText(ElementWdwPtr.Read<IntPtr>());
+      }
+      catch (Win32Exception ex)
+      {
+        LogTo.Warning(ex, "Failed to read ElementWdwPtr");
+        return null;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "SM internal method call threw an exception.");
+        return null;
+      }
+    }
+
+    public bool BeginLearning(LearningMode learningMode)
+    {
+      try
+      {
+        return Core.Natives.ElWind.BeginLearning(ElementWdwPtr.Read<IntPtr>(), (int)learningMode);
+      }
+      catch (Win32Exception ex)
+      {
+        LogTo.Warning(ex, "Failed to read ElementWdwPtr");
+        return false;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "SM internal method call threw an exception.");
+        return false;
+      }
+    }
+
+    public float GetElementPriority(int elementNumber)
+    {
+      throw new NotImplementedException();
+      /*try
+      {
+        return Core.Natives.ElWind.GetElementPriority(elementNumber);
+      }
+      catch (Win32Exception ex)
+      {
+        LogTo.Warning(ex, "Failed to read ElementWdwPtr");
+        return 0;
+      }
+      catch (Exception ex)
+      {
+        LogTo.Error(ex, "SM internal method call threw an exception.");
+        return 0;
+      }*/
     }
 
     public bool PostponeRepetition(int interval)
@@ -579,6 +797,8 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.UI
       CurrentRootIdPtr         = SMProcess[Core.Natives.Globals.CurrentRootIdPtr];
       CurrentHookIdPtr         = SMProcess[Core.Natives.Globals.CurrentHookIdPtr];
       LearningModePtr          = SMProcess[Core.Natives.ElWind.LearningModePtr];
+      ContentsPtr              = SMProcess[Core.Natives.Contents.InstancePtr];
+      DatabasePtr              = SMProcess[Core.Natives.Database.InstancePtr];
 
       ElementIdPtr.RegisterValueChangedEventHandler<int>(OnElementChangedInternal);
 

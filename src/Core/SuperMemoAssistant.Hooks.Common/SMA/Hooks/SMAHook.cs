@@ -22,8 +22,9 @@
 // 
 // 
 // Created On:   2019/01/19 04:25
-// Modified On:  2019/01/19 04:30
-// Modified By:  Alexis
+// Modified On:  2022/12/17 04:30
+// Modified By:  - Alexis
+//               - Ki
 
 #endregion
 
@@ -69,10 +70,10 @@ namespace SuperMemoAssistant.SMA.Hooks
 
     public abstract bool OnUserMessage(int wParam);
 
-    public abstract void GetExecutionParameters(out int       method,
+    public abstract void GetExecutionParameters(out int method,
                                                 out dynamic[] parameters);
 
-    public abstract void SetExecutionResult(int result);
+    public abstract void SetExecutionResult(int result, dynamic outParameter);
 
     public abstract Dictionary<string, int> GetPatternsHintAddresses();
 

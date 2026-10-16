@@ -22,8 +22,9 @@
 // 
 // 
 // Created On:   2020/01/11 14:50
-// Modified On:  2020/01/11 21:04
-// Modified By:  Alexis
+// Modified On:  2022/12/17 12:57
+// Modified By:  - Alexis
+//               - Ki
 
 #endregion
 
@@ -53,11 +54,20 @@ namespace SuperMemoAssistant.SuperMemo
     ElWdw_SetText,
     ElWdw_NextElementInLearningQueue,
     ElWdw_SetElementState,
+    ElWdw_SetGrade,
+    ElWdw_GetElementAsText,
+    ElWdw_BeginLearning,
+    Database_SetTitle,
+    Database_AppendComment,
+    Priority_SetPriority,
+    TPriority_GetElementPriority,
     ElWdw_ScheduleInInterval,
     ElWdw_ExecuteUncommittedRepetition,
     ElWdw_ForceRepetitionExt,
     ElWdw_RestoreLearningMode,
     ElWdw_NewTemplate,
+    ElWdw_NextRepetitionClick,
+    ElWdw_DismissElement,
     TCompData_GetType,
     TCompData_GetText,
     TCompData_SetText,
@@ -72,6 +82,9 @@ namespace SuperMemoAssistant.SuperMemo
     FileSpace_IsSlotOccupied,
     Queue_Last,
     Queue_GetItem,
+    Contents_FindText,
+    ElWdw_BackButtonClick,
+    ElWdw_ForwardButtonClick,
 
     // Special handling
     AppendAndAddElementFromText,

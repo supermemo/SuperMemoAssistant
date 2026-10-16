@@ -249,9 +249,19 @@ namespace SuperMemoAssistant.SuperMemo.Common.Elements
       return Elements.Values.Where(e => regex.IsMatch(e.Title)).Select(e => (IElement)e).ToList();
     }
 
+    public IEnumerable<IElement> FindByComment(Regex regex)
+    {
+      return Elements.Values.Where(e => regex.IsMatch(e.Comment)).Select(e => (IElement)e).ToList();
+    }
+
     public IElement FirstOrDefaultByName(Regex regex)
     {
       return (IElement)Elements.Values.FirstOrDefault(e => regex.IsMatch(e.Title));
+    }
+
+    public IElement FirstOrDefaultByComment(Regex regex)
+    {
+      return (IElement)Elements.Values.FirstOrDefault(e => e.Comment != null && regex.IsMatch(e.Comment));
     }
 
     public IElement FirstOrDefaultByName(string exactName)

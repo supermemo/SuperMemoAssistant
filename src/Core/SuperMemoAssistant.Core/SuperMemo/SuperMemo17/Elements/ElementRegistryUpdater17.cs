@@ -22,8 +22,9 @@
 // 
 // 
 // Created On:   2020/01/13 16:38
-// Modified On:  2020/01/13 21:01
-// Modified By:  Alexis
+// Modified On:  2022/12/17 21:01
+// Modified By:  - Alexis
+//               - Ki
 
 #endregion
 
@@ -154,6 +155,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
       InfElementsElemContainer17 elElem)
     {
       elem.TitleTextId = elElem._elem.titleTextId;
+      elem.CommentId   = elElem._elem.commentId;
       elem.Deleted     = cttElem != null && cttElem.deleted != 0;
 
       elem.TemplateId = elElem._elem.templateId;
@@ -201,6 +203,7 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Elements
       if (elElem != null)
       {
         elem.TitleTextId = elElem._elem.titleTextId;
+        elem.CommentId   = elElem._elem.commentId;
 
         elem.TemplateId = elElem._elem.templateId;
         elem.ConceptId  = elElem._elem.conceptId;

@@ -53,6 +53,7 @@ namespace SuperMemoAssistant.SuperMemo
       base.Component = Component = new ComponentRegistry();
       base.Concept   = Concept   = new ConceptRegistry17();
       base.Text      = Text      = new TextRegistry17();
+      base.Comment   = Comment   = new CommentRegistry17();
       base.Image     = Image     = new ImageRegistry17();
       base.Template  = Template  = new TemplateRegistry17();
       base.Sound     = Sound     = new SoundRegistry17();
@@ -71,6 +72,7 @@ namespace SuperMemoAssistant.SuperMemo
     public new ComponentRegistry   Component { get; }
     public new ConceptRegistry17   Concept   { get; }
     public new TextRegistry17      Text      { get; }
+    public new CommentRegistry17   Comment   { get; }
     public new ImageRegistry17     Image     { get; }
     public new TemplateRegistry17  Template  { get; }
     public new SoundRegistry17     Sound     { get; }
@@ -97,6 +99,7 @@ namespace SuperMemoAssistant.SuperMemo
     public IComponentRegistry Component { get; protected set; }
     public IConceptRegistry   Concept   { get; protected set; }
     public ITextRegistry      Text      { get; protected set; }
+    public ICommentRegistry   Comment   { get; protected set; }
     public IImageRegistry     Image     { get; protected set; }
     public ITemplateRegistry  Template  { get; protected set; }
     public ISoundRegistry     Sound     { get; protected set; }

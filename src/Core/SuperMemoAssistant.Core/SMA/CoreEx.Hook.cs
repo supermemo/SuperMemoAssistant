@@ -42,7 +42,16 @@ namespace SuperMemoAssistant.SMA
       this   NativeMethod method,
       params dynamic[]    parameters)
     {
-      return Core.Hook.ExecuteOnMainThread(method, parameters);
+      dynamic __unused = null;
+      return Core.Hook.ExecuteOnMainThread(method, parameters, out __unused);
+    }
+
+    public static int ExecuteOnMainThreadWithOutParameter(
+      this NativeMethod method,
+      out dynamic outParameter,
+      params dynamic[] parameters)
+    {
+      return Core.Hook.ExecuteOnMainThread(method, parameters, out outParameter);
     }
 
     #endregion

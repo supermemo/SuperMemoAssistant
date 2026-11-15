@@ -54,6 +54,14 @@ namespace SuperMemoAssistant.SuperMemo.SuperMemo17.Registry.Members
       throw new NotImplementedException();
     }
 
+    /// <inheritdoc cref="IRegistryMember" />
+    public override string GetFilePath()
+    {
+      //TODO: switch () on filetype
+      return TryFilePathOrSearch("mp3");
+    }
+
+
     public IEnumerable<IElement> GetLinkedElements()
     {
       throw new NotImplementedException();

@@ -97,6 +97,23 @@ namespace SuperMemoAssistant.SuperMemo.Natives
           }
         }
 
+        // TComponentData.GetSoundItem
+        public int GetSoundRegMember(IntPtr componentDataPtr,
+                                     IControl control)
+        {
+          try
+          {
+            return NativeMethod.TCompData_GetSoundRegMember.ExecuteOnMainThread(
+              componentDataPtr,
+              control.Id + 1);
+          }
+          catch (Exception ex)
+          {
+            LogTo.Error(ex, "Native method call threw an exception.");
+            return -1;
+          }
+        }
+
         // TComponentData.GetTextItem
         public int GetTextRegMember(IntPtr   componentDataPtr,
                                     IControl control)
@@ -111,6 +128,25 @@ namespace SuperMemoAssistant.SuperMemo.Natives
           {
             LogTo.Error(ex, "Native method call threw an exception.");
             return -1;
+          }
+        }
+
+        // TComponentData.SetSoundItem
+        public bool SetSoundRegMember(IntPtr   componentDataPtr,
+                                     IControl control,
+                                     int      member)
+        {
+          try
+          {
+            return NativeMethod.TCompData_SetSoundRegMember.ExecuteOnMainThread(
+              componentDataPtr,
+              control.Id + 1,
+              member) == 1;
+          }
+          catch (Exception ex)
+          {
+            LogTo.Error(ex, "Native method call threw an exception.");
+            return false;
           }
         }
 

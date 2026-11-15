@@ -61,6 +61,8 @@ namespace SuperMemoAssistant.SuperMemo
     TCompData_GetType,
     TCompData_GetText,
     TCompData_SetText,
+    TCompData_GetSoundRegMember,
+    TCompData_SetSoundRegMember,
     TCompData_GetTextRegMember,
     TCompData_SetTextRegMember,
     TCompData_GetImageRegMember,

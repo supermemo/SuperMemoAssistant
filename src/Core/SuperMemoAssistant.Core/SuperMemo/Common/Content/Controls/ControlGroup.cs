@@ -141,10 +141,10 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
       return GetFirstControl<IControlRtf>();
     }
 
-    //public IControlSound GetFirstSoundControl()
-    //{
-    //  return GetFirstControl<IControlSound>();
-    //}
+    public IControlSound GetFirstSoundControl()
+    {
+      return GetFirstControl<IControlSound>();
+    }
 
     //public IControlSpelling GetFirstSpellingControl()
     //{
@@ -220,9 +220,8 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
                                   this);
 
         case 0x03:
-          return new ComponentControlBase(idx,
-                                          ComponentType.Sound,
-                                          this);
+          return new ControlSound(idx,
+                                  this);
 
         case 0x04:
           return new ComponentControlBase(idx,
@@ -297,6 +296,29 @@ namespace SuperMemoAssistant.SuperMemo.Common.Content.Controls
       return Core.Natives.ElWind.Components.SetText(new IntPtr(_componentDataAddr),
                                                     control,
                                                     text);
+    }
+
+    public int GetSoundRegMember(IControl control)
+    {
+      if (IsDisposed)
+        throw new InvalidOperationException(DisposedException);
+
+      return Core.Natives.ElWind.Components.GetSoundRegMember(new IntPtr(_componentDataAddr),
+                                                              control);
+    }
+
+    public bool SetSoundRegMember(IControl control,
+                                  int member)
+    {
+      if (IsDisposed)
+        throw new InvalidOperationException(DisposedException);
+
+      if (Core.SM.Registry.Sound[member] == null)
+        return false;
+
+      return Core.Natives.ElWind.Components.SetSoundRegMember(new IntPtr(_componentDataAddr),
+                                                             control,
+                                                             member);
     }
 
     public int GetTextRegMember(IControl control)
